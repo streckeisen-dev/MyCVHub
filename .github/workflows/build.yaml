@@ -1,0 +1,49 @@
+name: Build pipeline
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4.0.3
+      with:
+        node-version: '21'
+
+    - name: Build frontend
+      working-directory: frontend
+      run: |
+        npm ci
+        npm run build
+
+      - name: Upload frontend artifact
+        uses: actions/upload-artifact@v3.2.1-node20
+        with:
+          name: frontend-artifact
+          path: frontend/dist
+    
+    - name: Setup JDK
+      uses: actions/setup-java@v4.2.2
+      with:
+        java-version: '21'
+
+    - name: Build backend
+      working-directory: backend
+      run: ./mvnw clean package
+      
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v3.2.1-node20
+        with:
+          name: backend-artifact
+          path: backend/target/mycv.jar
