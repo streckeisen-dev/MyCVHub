@@ -13,6 +13,7 @@ FROM eclipse-temurin:21-jdk-alpine as backend-build
 WORKDIR /app/backend
 
 COPY backend/target/mycv.jar app.jar
+RUN chmod +x app.jar
 COPY --from=frontend-build /app/frontend/dist ./static
 
 EXPOSE 8080
