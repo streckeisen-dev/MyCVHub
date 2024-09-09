@@ -1,6 +1,8 @@
 FROM node:21 AS frontend-build
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
+RUN npm ci
+COPY frontend/ .
 RUN npm run build
 
 FROM maven:3.9-eclipse-temurin-21-alpine as backend-build
