@@ -7,10 +7,10 @@ dl.formatted {
   display: grid;
   gap: 10px;
   grid-template-columns: auto auto;
-}
 
-dl.formatted > dt {
-  font-weight: bold;
+  & > dt {
+    font-weight: bold;
+  }
 }
 
 div.loading-spinner {

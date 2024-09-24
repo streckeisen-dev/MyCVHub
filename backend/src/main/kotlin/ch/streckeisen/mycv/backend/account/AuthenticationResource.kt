@@ -74,7 +74,7 @@ class AuthenticationResource(
     private fun createRefreshToken(refreshToken: String, expiresIn: Long) =
         ResponseCookie.from(REFRESH_TOKEN_NAME, refreshToken)
             .httpOnly(true)
-            .secure(false)
+            .secure(true)
             .path("/api/auth/refresh")
             .maxAge(expiresIn)
             .sameSite("Strict")
