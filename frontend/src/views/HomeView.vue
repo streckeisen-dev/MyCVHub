@@ -1,12 +1,11 @@
 <template>
   <main>
     <p>REST Connection: {{ restConnection }}</p>
-    <TheWelcome />
+    <p>Welcome</p>
   </main>
 </template>
 
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
 import testApi from '@/api/test-api'
 import { ref } from 'vue'
 

@@ -1,21 +1,52 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import {
+  createRouter,
+  createWebHistory
+} from 'vue-router'
+import type {
+  NavigationGuardNext,
+  RouteLocationNormalized,
+  RouteLocationNormalizedLoaded
+} from 'vue-router'
+import accountApi from '@/api/account-api'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView
+      redirect: '/ui'
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      path: '/ui',
+      name: 'home',
+      component: () => import('@/views/HomeView.vue')
+    },
+    {
+      path: '/ui/login',
+      name: 'login',
+      component: () => import('@/views/account/Login.vue')
+    },
+    {
+      path: '/ui/signup',
+      name: 'signup',
+      component: () => import('@/views/account/SignUp.vue')
+    },
+    {
+      path: '/ui/logout',
+      name: 'logout',
+      component: () => import('@/views/account/Logout.vue')
+    },
+    {
+      path: '/ui/account',
+      name: 'account',
+      component: () => import('@/views/account/ShowAccount.vue'),
+      meta: {
+        authRequired: true
+      }
+    },
+    {
+      path: '/ui/:pathMatch(.*)*',
+      component: () => import('@/views/NotFound.vue')
     }
   ]
 })

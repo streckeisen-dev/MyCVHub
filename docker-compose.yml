@@ -19,6 +19,7 @@ services:
       - MYCV_DATASOURCE=jdbc:postgresql://postgres:5432/mycv
       - MYCV_DB_USERNAME=postgres
       - MYCV_DB_PASSWORD=postgres
+      - JWT_SECRET=wHqRTjE8tXtgm/zhvn1qmmxLkcA+MvjnbX0aLkNhLm4=
     ports:
       - "8080:8080"
     depends_on:

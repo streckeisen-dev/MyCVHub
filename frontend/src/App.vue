@@ -1,87 +1,90 @@
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <v-app id="mycv-app">
+    <v-app-bar role="navigation" aria-label="Header navigation" border>
+      <template v-slot:prepend>
+        <v-app-bar-nav-icon @click="isNavMenuOpen = !isNavMenuOpen"></v-app-bar-nav-icon>
+      </template>
+      <v-app-bar-title>
+        <router-link :to="{ name: 'home'}">MyCV</router-link>
+      </v-app-bar-title>
+    </v-app-bar>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+    <v-navigation-drawer id="side-nav" v-model="isNavMenuOpen" disable-resize-watcher>
+      <v-list-item v-if="accountApi.isUserLoggedIn()" prepend-icon="mdi-account-circle" link>
+        <router-link :to="{ name: 'account' }">Account</router-link>
+      </v-list-item>
+      <v-list-item v-else prepend-icon="mdi-account-circle" link>
+        <router-link :to="{ name: 'login' }">Login / Sign up</router-link>
+      </v-list-item>
 
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
+      <v-divider />
 
-  <suspense>
-    <RouterView />
-  </suspense>
+      <v-list-item link prepend-icon="mdi-home">
+        <router-link :to="{ name: 'home' }">Home</router-link>
+      </v-list-item>
+
+      <v-list-item v-if="accountApi.isUserLoggedIn()" class="flex-wrap">
+        <v-btn color="btn-primary" :to="{ name: 'logout' }">Logout</v-btn>
+      </v-list-item>
+    </v-navigation-drawer>
+
+    <v-main>
+      <suspense v-if="!isTokenRefreshPending">
+        <router-view />
+      </suspense>
+      <v-progress-circular v-else
+                           indeterminate
+                           color="secondary"
+                           class="loading-spinner"
+      />
+    </v-main>
+
+    <v-footer></v-footer>
+  </v-app>
 </template>
 
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import {
+  type NavigationGuardNext,
+  type RouteLocationNormalized,
+  type RouteLocationNormalizedLoaded,
+  RouterLink,
+  RouterView
+} from 'vue-router'
+import { onMounted, ref } from 'vue'
+import { useTheme } from 'vuetify'
+import accountApi from '@/api/account-api'
+import router from '@/router'
+import { refreshToken } from '@/api/api-helper'
+
+const isNavMenuOpen = ref(false)
+const isTokenRefreshPending = ref(true)
+
+const vuetifyTheme = useTheme()
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ({ matches }) => {
+  vuetifyTheme.global.name.value = matches ? 'dark' : 'light'
+})
+
+router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalizedLoaded, next: NavigationGuardNext) => {
+  next()
+  isNavMenuOpen.value = false
+})
+
+onMounted(async () => {
+  try {
+    await refreshToken()
+  } catch (error) {
+    if (router.currentRoute.value.meta.authRequired) {
+      await router.push({ name: 'login' })
+    }
+  } finally {
+    isTokenRefreshPending.value = false
+  }
+})
 </script>
 
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+#side-nav button {
+  justify-self: center;
 }
 </style>

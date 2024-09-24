@@ -1,10 +1,16 @@
 import { fetchFromApi, getJSONIfResponseIsOk } from '@/api/api-helper'
 
-export default {
-  async testConnection(): Promise<TestResponse> {
-    return await fetchFromApi('/test')
-      .then(getJSONIfResponseIsOk<TestResponse>)
+async function testConnection(): Promise<TestResponse> {
+  try {
+    const response = await fetchFromApi('/test')
+    return getJSONIfResponseIsOk<TestResponse>(response)
+  } catch (error) {
+    return Promise.reject(error)
   }
+}
+
+export default {
+  testConnection
 }
 
 export type TestResponse = {

@@ -1,3 +1,4 @@
-export interface ErrorDto {
-    errorMessage: string
+export type ErrorDto = {
+  message: string,
+  errors: { [key: string]: string }
 }
