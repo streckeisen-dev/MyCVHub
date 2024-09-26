@@ -1,4 +1,4 @@
-package ch.streckeisen.mycv.backend.country
+package ch.streckeisen.mycv.backend.publicapi
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import org.springframework.http.ResponseEntity

@@ -34,10 +34,10 @@ class Applicant(
 
     val hasPublicProfile: Boolean = true,
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "applicant")
     val workExperiences: List<WorkExperience> = listOf(),
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "applicant")
     val skills: List<Skill> = listOf(),
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "applicant")
     val education: List<Education> = listOf(),
 )

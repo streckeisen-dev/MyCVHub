@@ -11,7 +11,7 @@ class ApplicantValidationService(
 ) {
     private val phoneNumberUtil = PhoneNumberUtil.getInstance()
 
-    fun validateAddress(
+    /*fun validateAddress(
         validationErrorBuilder: ValidationException.ValidationErrorBuilder,
         address: AddressDto
     ): ValidationException.ValidationErrorBuilder {
@@ -39,7 +39,7 @@ class ApplicantValidationService(
             validationErrorBuilder.addError("country", "Invalid country code")
         }
         return validationErrorBuilder
-    }
+    }*/
 
     fun validatePassword(validationErrorBuilder: ValidationException.ValidationErrorBuilder, password: String?) {
         if (password.isNullOrBlank()) {

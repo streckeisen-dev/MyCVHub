@@ -1,7 +1,6 @@
 package ch.streckeisen.mycv.backend.account
 
 import ch.streckeisen.mycv.backend.cv.applicant.ApplicantRepository
-import ch.streckeisen.mycv.backend.cv.applicant.toAccountDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder

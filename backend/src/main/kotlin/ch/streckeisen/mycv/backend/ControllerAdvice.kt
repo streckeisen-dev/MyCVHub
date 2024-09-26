@@ -1,8 +1,10 @@
 package ch.streckeisen.mycv.backend
 
+import ch.streckeisen.mycv.backend.exceptions.ResultNotFoundException
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.security.SignatureException
+import org.postgresql.util.PSQLException
 import org.springframework.dao.DataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -54,5 +56,17 @@ class ControllerAdvice : ResponseEntityExceptionHandler() {
     fun handleSignatureException(ex: SignatureException): ResponseEntity<ErrorDto> {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
             .body(ErrorDto("Invalid JWT signature"))
+    }
+
+    @ExceptionHandler
+    fun handleResultNotFoundException(ex: ResultNotFoundException): ResponseEntity<ErrorDto> {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(ErrorDto(ex.message!!))
+    }
+
+    @ExceptionHandler
+    fun handlePsqlException(ex: PSQLException): ResponseEntity<ErrorDto> {
+        return ResponseEntity.internalServerError()
+            .body(ErrorDto("Error during data processing"))
     }
 }
