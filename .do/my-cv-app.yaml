@@ -1,0 +1,42 @@
+alerts:
+- rule: DEPLOYMENT_FAILED
+- rule: DOMAIN_FAILED
+domains:
+- domain: cv.streckeisen.dev
+  type: PRIMARY
+envs:
+- key: MYCV_DATASOURCE
+  scope: RUN_AND_BUILD_TIME
+  value: jdbc:postgresql://db-postgresql-fra1-45654-do-user-17705918-0.e.db.ondigitalocean.com:25061/my-cv-app?sslmode=require
+- key: MYCV_DB_USERNAME
+  scope: RUN_AND_BUILD_TIME
+  value: mycv-db-user
+- key: MYCV_DB_PASSWORD
+  scope: RUN_AND_BUILD_TIME
+  type: SECRET
+  value: EV[1:XfVrZtXk+F/+8j4Y4bzdyZAbWHfwszzF:d3h+e+h3czmG8Pi87plPuXRGpIYA0Z3iEck06xuZkvGj2cl+PGwaLw==]
+- key: JWT_SECRET
+  scope: RUN_AND_BUILD_TIME
+  type: SECRET
+  value: EV[1:C2s3gQWvi70wQyeRj6EtAukHE8m3Avro:0OHRHTOYzMXlKSl6DelI4RWK4CQrWy7MP+ooJutFTIA7cLEA0+YoaqA5Oqct223AwT/G9lUjEpUhTufFEi0ECV0USpElOG6MdrsFGTIRLcEEYRPCITGyGzRnzf/fE7uMPMqhe9S5TobH+ohDjDYisNYsmQ/o6y8GE82bK1i7D7fA+kcf+EsPRbwhIYGIrOpku9GfB6yCW/ZLNhwvxQ9Vcbognj2jJZ12ERNxNMuAa70Aj9WSuqf5FK5e36A=]
+features:
+- buildpack-stack=ubuntu-22
+ingress:
+  rules:
+  - component:
+      name: my-cv
+    match:
+      path:
+        prefix: /
+name: my-cv-app
+region: fra
+services:
+- dockerfile_path: Dockerfile
+  github:
+    branch: main
+    repo: lstreckeisen/my-cv
+  http_port: 8080
+  instance_count: 2
+  instance_size_slug: apps-s-1vcpu-1gb
+  name: my-cv
+  source_dir: /
