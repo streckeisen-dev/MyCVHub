@@ -1,0 +1,25 @@
+spring:
+  application.name: "MyCV"
+  datasource:
+    url: ${MYCV_DATASOURCE}
+    username: ${MYCV_DB_USERNAME}
+    password: ${MYCV_DB_PASSWORD}
+    hikari.maximum-pool-size: 10
+
+  jpa:
+    generate-ddl: false
+
+  liquibase.change-log: db/changelog/db.changelog-master.xml
+
+security.jwt:
+  secret: ${JWT_SECRET}
+  access.expiration-time: 3600000
+  refresh.expiration-time: 432000000
+
+logging:
+  file.name: /app/logs/mycv.log
+  include-application-name: false
+  logback:
+    rollingpolicy:
+      max-history: 5
+      max-file-size: 5MB
