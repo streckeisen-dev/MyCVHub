@@ -53,9 +53,7 @@
     </v-row>
   </v-container>
   <v-container v-else-if="isAccountLoading">
-    <v-progress-circular indeterminate
-                         color="secondary"
-                         class="loading-spinner" />
+    <loading-spinner />
   </v-container>
   <v-empty-state v-else headline="Oops, something went wrong"
                  title="Failed to load your account"
@@ -66,6 +64,7 @@
 import accountApi from '@/api/account-api'
 import type { AccountDto } from '@/dto/AccountDto'
 import { ref } from 'vue'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
 
 const account = ref<AccountDto>()
 const isAccountLoading = ref<boolean>(true)

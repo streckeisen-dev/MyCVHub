@@ -5,7 +5,7 @@
         <v-app-bar-nav-icon @click="isNavMenuOpen = !isNavMenuOpen"></v-app-bar-nav-icon>
       </template>
       <v-app-bar-title>
-        <router-link :to="{ name: 'home'}">MyCV</router-link>
+        <router-link :to="{ name: 'home' }">MyCV</router-link>
       </v-app-bar-title>
     </v-app-bar>
 
@@ -32,11 +32,7 @@
       <suspense v-if="!isTokenRefreshPending">
         <router-view />
       </suspense>
-      <v-progress-circular v-else
-                           indeterminate
-                           color="secondary"
-                           class="loading-spinner"
-      />
+      <loading-spinner v-else />
     </v-main>
 
     <v-footer></v-footer>
@@ -56,6 +52,7 @@ import { useTheme } from 'vuetify'
 import accountApi from '@/api/account-api'
 import router from '@/router'
 import { refreshToken } from '@/api/api-helper'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
 
 const isNavMenuOpen = ref(false)
 const isTokenRefreshPending = ref(true)
@@ -65,10 +62,12 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ({ 
   vuetifyTheme.global.name.value = matches ? 'dark' : 'light'
 })
 
-router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalizedLoaded, next: NavigationGuardNext) => {
-  next()
-  isNavMenuOpen.value = false
-})
+router.beforeEach(
+  (to: RouteLocationNormalized, from: RouteLocationNormalizedLoaded, next: NavigationGuardNext) => {
+    next()
+    isNavMenuOpen.value = false
+  }
+)
 
 onMounted(async () => {
   try {
