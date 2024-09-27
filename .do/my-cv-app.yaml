@@ -31,12 +31,13 @@ ingress:
 name: my-cv-app
 region: fra
 services:
-- dockerfile_path: Dockerfile
-  github:
-    branch: main
-    repo: lstreckeisen/my-cv
+- image:
+    registry: lstreckeisen
+    registry_credentials: EV[1:SZtHlCRh25xCY3lgXqdDKGg+1Uf2qOT5:xUH8j/qTcMTJHA8bxhgPo7mUCZvxZKIUasaVApbs2qcRz/miKM2eKET3FlwDagScTgdj4HgC]
+    registry_type: DOCKER_HUB
+    repository: my-cv
+    tag: latest
   http_port: 8080
   instance_count: 2
   instance_size_slug: apps-s-1vcpu-1gb
   name: my-cv
-  source_dir: /
