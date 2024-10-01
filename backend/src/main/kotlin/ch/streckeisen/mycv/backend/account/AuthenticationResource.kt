@@ -25,8 +25,8 @@ class AuthenticationResource(
     }
 
     @PostMapping("/signUp")
-    fun register(@RequestBody userRegistration: UserRegistrationDto): ResponseEntity<LoginResponseDto> {
-        val loginResult = authenticationService.registerNewUser(userRegistration)
+    fun register(@RequestBody userRegistration: SignupRequestDto): ResponseEntity<LoginResponseDto> {
+        val loginResult = authenticationService.signUp(userRegistration)
         return handleLoginResult(loginResult)
     }
 
