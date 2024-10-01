@@ -201,7 +201,7 @@ class ApplicantValidationServiceTest {
                     null,
                     null,
                     null,
-                    LocalDate.now().minusDays(2),
+                    LocalDate.now().plusDays(2),
                     null,
                     null,
                     null,
