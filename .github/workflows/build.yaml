@@ -57,6 +57,10 @@ jobs:
         name: JUnit Test Results
         path: backend/target/surefire-reports/TEST-*.xml
         reporter: java-junit
+      permissions:
+        id-token: write
+        contents: read
+        checks: write
 
     - name: Build backend
       working-directory: backend
