@@ -22,7 +22,7 @@ class Applicant(
     val phone: String,
     val birthday: LocalDate,
     val street: String,
-    val houseNumber: String,
+    val houseNumber: String?,
     val postcode: String,
     val city: String,
     val country: String,

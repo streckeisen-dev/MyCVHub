@@ -1,6 +1,6 @@
 package ch.streckeisen.mycv.backend.publicapi
 
-import ch.streckeisen.mycv.backend.cv.applicant.ApplicantService
+import ch.streckeisen.mycv.backend.cv.applicant.ApplicantManager
 import ch.streckeisen.mycv.backend.exceptions.ResultNotFoundException
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/public/profile")
 class PublicProfileResource(
-    private val applicantService: ApplicantService
+    private val applicantManager: ApplicantManager
 ) {
     @GetMapping("/{id}")
     fun getApplicant(@PathVariable("id") id: Long): ResponseEntity<PublicProfileDto> {
-        return applicantService.getById(id)
+        return applicantManager.getById(id)
             .fold(
                 onSuccess = { applicant ->
                     val currentUsername = SecurityContextHolder.getContext().authentication?.principal as String?
@@ -34,7 +34,7 @@ class PublicProfileResource(
 
     @GetMapping("/{alias}")
     fun getApplicantByAlias(@PathVariable("alias") alias: String): ResponseEntity<PublicProfileDto> {
-        return applicantService.getById(2)
+        return applicantManager.getById(2)
             .fold(
                 onSuccess = { applicant ->
                     val currentUsername = SecurityContextHolder.getContext().authentication?.principal as String?
