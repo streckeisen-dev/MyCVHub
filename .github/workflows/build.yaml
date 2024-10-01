@@ -52,6 +52,7 @@ jobs:
     
     - name: Backend test report
       if: always()
+      working-directory: backend
       uses: dorny/test-reporter@v1
       with:
         name: JUnit Test Results
