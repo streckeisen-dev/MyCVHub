@@ -52,11 +52,10 @@ jobs:
     
     - name: Backend test report
       if: always()
-      working-directory: backend
       uses: dorny/test-reporter@v1
       with:
         name: JUnit Test Results
-        path: target/surefire-reports/TEST-*.xml
+        path: backend/target/surefire-reports/TEST-*.xml
         reporter: java-junit
 
     - name: Build backend
