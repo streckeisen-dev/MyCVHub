@@ -23,9 +23,8 @@ class JwtService(
         return extractClaim(token, Claims::getSubject)
     }
 
-    fun <T> extractClaim(token: String, claimsResolver: (Claims) -> T): T {
-        val claims = extractAllClaims(token)
-        return claimsResolver.invoke(claims)
+    fun extractExpiration(token: String): Date {
+        return extractClaim(token, Claims::getExpiration)
     }
 
     fun generateAccessToken(userDetails: UserDetails): String {
@@ -59,8 +58,9 @@ class JwtService(
         return extractExpiration(token).before(Date())
     }
 
-    private fun extractExpiration(token: String): Date {
-        return extractClaim(token, Claims::getExpiration)
+    private fun <T> extractClaim(token: String, claimsResolver: (Claims) -> T): T {
+        val claims = extractAllClaims(token)
+        return claimsResolver.invoke(claims)
     }
 
     private fun extractAllClaims(token: String): Claims {
