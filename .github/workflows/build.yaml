@@ -1,5 +1,10 @@
 name: MyCV CI/CD pipeline
 
+permissions:
+  id-token: write
+  contents: read
+  checks: write
+
 on:
   push:
     branches:
@@ -63,10 +68,6 @@ jobs:
         name: JUnit Test Results
         path: backend/target/surefire-reports/TEST-*.xml
         reporter: java-junit
-      permissions:
-        id-token: write
-        contents: read
-        checks: write
 
     - name: Build backend
       working-directory: backend
