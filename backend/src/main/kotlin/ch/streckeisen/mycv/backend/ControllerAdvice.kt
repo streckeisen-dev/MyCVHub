@@ -5,6 +5,7 @@ import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.security.SignatureException
 import org.postgresql.util.PSQLException
+import org.slf4j.LoggerFactory
 import org.springframework.dao.DataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -17,6 +18,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 class ControllerAdvice : ResponseEntityExceptionHandler() {
+    //private val logger = LoggerFactory.getLogger(ControllerAdvice::class.java)
+
     @ExceptionHandler
     fun handleValidationError(ex: ValidationException): ResponseEntity<ErrorDto> {
         return ResponseEntity.badRequest().body(ErrorDto(ex.message!!, ex.errors))
@@ -24,6 +27,7 @@ class ControllerAdvice : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler
     fun handleDatabaseError(ex: DataAccessException): ResponseEntity<ErrorDto> {
+        logger.error(ex.message, ex)
         return ResponseEntity.badRequest()
             .body(ErrorDto("A database error occurred. Please contact the administrator"))
     }
@@ -66,6 +70,7 @@ class ControllerAdvice : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler
     fun handlePsqlException(ex: PSQLException): ResponseEntity<ErrorDto> {
+        logger.error(ex.message, ex)
         return ResponseEntity.internalServerError()
             .body(ErrorDto("Error during data processing"))
     }

@@ -1,6 +1,6 @@
 package ch.streckeisen.mycv.backend.cv.applicant
 
-import ch.streckeisen.mycv.backend.account.SignupRequestDto
+import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import com.google.i18n.phonenumbers.NumberParseException
 import com.google.i18n.phonenumbers.PhoneNumberUtil

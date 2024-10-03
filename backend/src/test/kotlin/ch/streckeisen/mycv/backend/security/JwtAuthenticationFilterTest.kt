@@ -26,7 +26,7 @@ import kotlin.test.assertTrue
 
 class JwtAuthenticationFilterTest {
     private lateinit var jwtService: JwtService
-    private lateinit var userDetailsService: UserDetailsService
+    private lateinit var userDetailsService: UserDetailsServiceImpl
     private lateinit var handlerExceptionResolver: HandlerExceptionResolver
     private lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
 
@@ -77,21 +77,25 @@ class JwtAuthenticationFilterTest {
         val request = mockRequest()
         val response = mockResponse()
         val filterChain = mockFilterChain()
+        val userId = 1L
         val username = "username"
         val token = "abcdefg"
         val user = User.withUsername(username).password("password").build()
+        val userDetails = MyCvUserDetails(user, userId)
         assertNull(SecurityContextHolder.getContext().authentication)
         every { request.getHeader(HttpHeaders.AUTHORIZATION) } returns "Bearer $token"
         every { jwtService.extractUsername(eq(token)) } returns username
         every { jwtService.isTokenValid(any(), any()) } returns true
-        every { userDetailsService.loadUserByUsername(eq(username)) } returns user
+        every { userDetailsService.loadUserByUsername(eq(username)) } returns userDetails
 
         jwtAuthenticationFilter.doFilter(request, response, filterChain)
 
         val auth = SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken
         assertNotNull(auth)
         assertTrue { auth.isAuthenticated }
-        assertEquals(username, auth.principal)
+        val principal = auth.principal as MyCvPrincipal
+        assertEquals(username, principal.username)
+        assertEquals(userId, principal.id)
         verify(exactly = 0) { handlerExceptionResolver.resolveException(any(), any(), any(), any()) }
     }
 
@@ -101,7 +105,7 @@ class JwtAuthenticationFilterTest {
         val response = mockResponse()
         val filterChain = mockFilterChain()
         every { request.getHeader(HttpHeaders.AUTHORIZATION) } returns "Basic abcdefg"
-        val authToken = UsernamePasswordAuthenticationToken("username", null, listOf())
+        val authToken = UsernamePasswordAuthenticationToken(MyCvPrincipal("username", 1), null, listOf())
         authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
         SecurityContextHolder.getContext().authentication = authToken
 
@@ -110,7 +114,8 @@ class JwtAuthenticationFilterTest {
         val auth = SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken
         assertNotNull(auth)
         assertTrue { auth.isAuthenticated }
-        assertEquals("username", auth.principal)
+        val principal = auth.principal as MyCvPrincipal
+        assertEquals("username", principal.username)
         verify(exactly = 0) { userDetailsService.loadUserByUsername(any()) }
         verify(exactly = 0) { handlerExceptionResolver.resolveException(any(), any(), any(), any()) }
     }

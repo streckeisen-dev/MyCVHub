@@ -1,5 +1,6 @@
 package ch.streckeisen.mycv.backend.account
 
+import ch.streckeisen.mycv.backend.account.dto.AccountDto
 import ch.streckeisen.mycv.backend.cv.applicant.Applicant
 
 fun Applicant.toAccountDto(): AccountDto = AccountDto(
@@ -12,6 +13,5 @@ fun Applicant.toAccountDto(): AccountDto = AccountDto(
     houseNumber,
     postcode,
     city,
-    country,
-    hasPublicProfile
+    country
 )

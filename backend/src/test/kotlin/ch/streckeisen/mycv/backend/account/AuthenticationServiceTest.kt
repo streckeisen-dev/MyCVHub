@@ -1,14 +1,13 @@
 package ch.streckeisen.mycv.backend.account
 
+import ch.streckeisen.mycv.backend.account.dto.LoginRequestDto
+import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
 import ch.streckeisen.mycv.backend.cv.applicant.Applicant
-import ch.streckeisen.mycv.backend.cv.applicant.ApplicantManager
-import ch.streckeisen.mycv.backend.cv.applicant.ApplicantRepository
-import ch.streckeisen.mycv.backend.cv.applicant.ApplicantValidationService
+import ch.streckeisen.mycv.backend.cv.applicant.ApplicantService
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.security.JwtService
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.security.authentication.AuthenticationManager
@@ -16,7 +15,6 @@ import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -58,59 +56,48 @@ private const val ACCESS_TOKEN_EXPIRY_TIME = 123456L
 private const val REFRESH_TOKEN_EXPIRY_TIME = 123456789L
 
 class AuthenticationServiceTest {
-    private lateinit var applicantRepository: ApplicantRepository
-    private lateinit var applicantManager: ApplicantManager
+    private lateinit var applicantService: ApplicantService
     private lateinit var userDetailsService: UserDetailsService
-    private lateinit var passwordEncoder: PasswordEncoder
     private lateinit var authenticationManager: AuthenticationManager
     private lateinit var jwtService: JwtService
-    private lateinit var applicantValidationService: ApplicantValidationService
     private lateinit var authenticationService: AuthenticationService
 
     @BeforeEach
     fun setup() {
-        applicantRepository = mockk()
-        every { applicantRepository.save(any()) } returns Applicant(
-            "New",
-            "Applicant",
-            "new@example.com",
-            "+41 79 987 65 43",
-            LocalDate.of(1987, 1, 6),
-            "Newstreet",
-            null,
-            "123",
-            "NewCity",
-            "CH",
-            "12345678"
-        )
-
-        applicantManager = ApplicantManager(applicantRepository)
+        applicantService = mockk {
+            every { create(eq(VALID_SIGNUP_REQUEST)) } returns Result.success(
+                Applicant(
+                    "New",
+                    "Applicant",
+                    null,
+                    "new@example.com",
+                    "+41 79 987 65 43",
+                    LocalDate.of(1987, 1, 6),
+                    "Newstreet",
+                    null,
+                    "123",
+                    "NewCity",
+                    "CH",
+                    "12345678"
+                )
+            )
+            every { create(eq(INVALID_SIGNUP_REQUEST)) } returns Result.failure(mockk<ValidationException>())
+        }
         userDetailsService = mockk()
-
-        passwordEncoder = mockk()
-        every { passwordEncoder.encode(eq("a*c3efgH")) } returns "valid_encoded_pw"
-
         authenticationManager = mockk()
 
-        jwtService = mockk()
-        every { jwtService.generateAccessToken(any()) } returns GENERATED_ACCESS_TOKEN
-        every { jwtService.generateRefreshToken(any()) } returns GENERATED_REFRESH_TOKEN
-        every { jwtService.getAccessTokenExpirationTime() } returns ACCESS_TOKEN_EXPIRY_TIME
-        every { jwtService.getRefreshTokenExpirationTime() } returns REFRESH_TOKEN_EXPIRY_TIME
-
-        applicantValidationService = mockk()
-        every { applicantValidationService.validateSignupRequest(eq(VALID_SIGNUP_REQUEST)) } returns Result.success(Unit)
-        every { applicantValidationService.validateSignupRequest(eq(INVALID_SIGNUP_REQUEST)) } returns Result.failure(
-            IllegalArgumentException("Invalid signup request")
-        )
+        jwtService = mockk {
+            every { generateAccessToken(any()) } returns GENERATED_ACCESS_TOKEN
+            every { generateRefreshToken(any()) } returns GENERATED_REFRESH_TOKEN
+            every { getAccessTokenExpirationTime() } returns ACCESS_TOKEN_EXPIRY_TIME
+            every { getRefreshTokenExpirationTime() } returns REFRESH_TOKEN_EXPIRY_TIME
+        }
 
         authenticationService = AuthenticationService(
-            applicantManager,
+            applicantService,
             userDetailsService,
-            passwordEncoder,
             authenticationManager,
             jwtService,
-            applicantValidationService
         )
     }
 
@@ -124,7 +111,6 @@ class AuthenticationServiceTest {
         val signupResult = authenticationService.signUp(VALID_SIGNUP_REQUEST)
 
         assertTrue { signupResult.isSuccess }
-        verify(exactly = 1) { applicantRepository.save(any()) }
         assertNotNull(signupResult.getOrNull())
     }
 
@@ -133,7 +119,6 @@ class AuthenticationServiceTest {
         val signupResult = authenticationService.signUp(INVALID_SIGNUP_REQUEST)
 
         assertTrue { signupResult.isFailure }
-        verify(exactly = 0) { applicantRepository.save(any()) }
     }
 
     @Test

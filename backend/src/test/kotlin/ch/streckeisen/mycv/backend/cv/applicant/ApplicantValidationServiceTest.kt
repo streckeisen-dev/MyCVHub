@@ -1,6 +1,6 @@
 package ch.streckeisen.mycv.backend.cv.applicant
 
-import ch.streckeisen.mycv.backend.account.SignupRequestDto
+import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import io.mockk.every
 import io.mockk.mockk
@@ -50,6 +50,7 @@ class ApplicantValidationServiceTest {
     private fun existingApplicant(): Applicant = Applicant(
         "Existing",
         "Applicant",
+        null,
         EXISTING_USER_EMAIL,
         "+41 79 123 45 67",
         LocalDate.of(1985, 6, 25),

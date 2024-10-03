@@ -1,5 +1,8 @@
 package ch.streckeisen.mycv.backend.account
 
+import ch.streckeisen.mycv.backend.account.dto.LoginRequestDto
+import ch.streckeisen.mycv.backend.account.dto.LoginResponseDto
+import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpHeaders

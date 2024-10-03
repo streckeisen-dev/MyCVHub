@@ -1,4 +1,4 @@
-package ch.streckeisen.mycv.backend.publicapi
+package ch.streckeisen.mycv.backend.publicapi.country
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import org.springframework.http.ResponseEntity
@@ -26,7 +26,3 @@ class CountryResource {
     }
 }
 
-data class CountryDto(
-    val name: String,
-    val countryCode: String
-)

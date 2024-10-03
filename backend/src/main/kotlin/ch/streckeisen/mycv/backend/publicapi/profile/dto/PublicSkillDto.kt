@@ -1,4 +1,4 @@
-package ch.streckeisen.mycv.backend.publicapi
+package ch.streckeisen.mycv.backend.publicapi.profile.dto
 
 import ch.streckeisen.mycv.backend.cv.skill.SkillType
 

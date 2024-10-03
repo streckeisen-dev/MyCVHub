@@ -1,4 +1,4 @@
-package ch.streckeisen.mycv.backend.account
+package ch.streckeisen.mycv.backend.account.dto
 
 import java.time.LocalDate
 
@@ -12,6 +12,5 @@ data class AccountDto(
     val houseNumber: String?,
     val postcode: String,
     val city: String,
-    val country: String,
-    val hasPublicProfile: Boolean,
+    val country: String
 )

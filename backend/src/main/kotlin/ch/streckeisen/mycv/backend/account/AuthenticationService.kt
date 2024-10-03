@@ -1,54 +1,31 @@
 package ch.streckeisen.mycv.backend.account
 
-import ch.streckeisen.mycv.backend.cv.applicant.Applicant
-import ch.streckeisen.mycv.backend.cv.applicant.ApplicantManager
-import ch.streckeisen.mycv.backend.cv.applicant.ApplicantValidationService
-import ch.streckeisen.mycv.backend.cv.applicant.PASSWORD_MAX_LENGTH
+import ch.streckeisen.mycv.backend.account.dto.LoginRequestDto
+import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
+import ch.streckeisen.mycv.backend.cv.applicant.ApplicantService
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
+import ch.streckeisen.mycv.backend.privacy.PrivacySettingsService
 import ch.streckeisen.mycv.backend.security.JwtService
 import io.jsonwebtoken.JwtException
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AuthenticationService(
-    private val applicantManager: ApplicantManager,
+    private val applicantService: ApplicantService,
     private val userDetailsService: UserDetailsService,
-    private val passwordEncoder: PasswordEncoder,
     private val authenticationManager: AuthenticationManager,
-    private val jwtService: JwtService,
-    private val applicantValidationService: ApplicantValidationService,
+    private val jwtService: JwtService
 ) {
     fun signUp(signupRequest: SignupRequestDto): Result<AuthData> {
-        return applicantValidationService.validateSignupRequest(signupRequest)
+        return applicantService.create(signupRequest)
             .fold(
                 onSuccess = {
-                    val encodedPassword = passwordEncoder.encode(signupRequest.password)
-                    if (encodedPassword.length > PASSWORD_MAX_LENGTH) {
-                        val errors = ValidationException.ValidationErrorBuilder()
-                        errors.addError("password", "Encoded password exceeds number of allowed characters")
-                        Result.failure(errors.build("Password encoding failed"))
-                    } else {
-                        val applicant = Applicant(
-                            signupRequest.firstName!!,
-                            signupRequest.lastName!!,
-                            signupRequest.email!!,
-                            signupRequest.phone!!,
-                            signupRequest.birthday!!,
-                            signupRequest.street!!,
-                            signupRequest.houseNumber!!,
-                            signupRequest.postcode!!,
-                            signupRequest.city!!,
-                            signupRequest.country!!,
-                            encodedPassword
-                        )
-                        applicantManager.create(applicant)
-                        authenticate(LoginRequestDto(signupRequest.email, signupRequest.password))
-                    }
+                    authenticate(LoginRequestDto(signupRequest.email, signupRequest.password))
                 },
                 onFailure = {
                     Result.failure(it)

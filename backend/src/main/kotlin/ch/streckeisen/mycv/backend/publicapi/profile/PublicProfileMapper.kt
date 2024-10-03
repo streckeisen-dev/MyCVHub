@@ -1,20 +1,24 @@
-package ch.streckeisen.mycv.backend.publicapi
+package ch.streckeisen.mycv.backend.publicapi.profile
 
 import ch.streckeisen.mycv.backend.cv.applicant.Applicant
 import ch.streckeisen.mycv.backend.cv.education.Education
 import ch.streckeisen.mycv.backend.cv.experience.WorkExperience
 import ch.streckeisen.mycv.backend.cv.skill.Skill
+import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicEducationDto
+import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicProfileDto
+import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicSkillDto
+import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicWorkExperienceDto
 
 fun Applicant.toPublicDto(): PublicProfileDto = PublicProfileDto(
-    id,
+    id!!,
     firstName,
     lastName,
-    email,
-    phone,
-    birthday,
-    street,
-    houseNumber,
-    postcode,
+    email = if (privacySettings.isEmailPublic) email else null,
+    phone = if (privacySettings.isPhonePublic) phone else null,
+    birthday = if (privacySettings.isBirthdayPublic) birthday else null,
+    street = if (privacySettings.isAddressPublic) street else null,
+    houseNumber = if (privacySettings.isAddressPublic) houseNumber else null,
+    postcode = if (privacySettings.isAddressPublic) postcode else null,
     city,
     country,
     workExperiences.map { it.toPublicDto() }.toList(),

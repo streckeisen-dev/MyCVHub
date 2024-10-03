@@ -1,6 +1,8 @@
 package ch.streckeisen.mycv.backend.account
 
+import ch.streckeisen.mycv.backend.account.dto.AccountDto
 import ch.streckeisen.mycv.backend.cv.applicant.ApplicantRepository
+import ch.streckeisen.mycv.backend.security.MyCvPrincipal
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
@@ -18,7 +20,8 @@ class AccountResource(private val applicantRepository: ApplicantRepository) {
         if (auth == null || !auth.isAuthenticated) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
         }
-        val account = applicantRepository.findByEmail(auth.principal as String)
+        val principal = auth.principal as MyCvPrincipal
+        val account = applicantRepository.findById(principal.id)
             .map { it.toAccountDto() }
             .getOrElse {
                 return ResponseEntity.internalServerError().build()
