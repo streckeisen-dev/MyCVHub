@@ -1,6 +1,7 @@
 package ch.streckeisen.mycv.backend.cv.applicant
 
 import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
+import ch.streckeisen.mycv.backend.privacy.PrivacySettingsService
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -45,6 +46,7 @@ class ApplicantServiceTest {
     private lateinit var applicantRepository: ApplicantRepository
     private lateinit var applicantValidationService: ApplicantValidationService
     private lateinit var passwordEncoder: PasswordEncoder
+    private lateinit var privacySettingsService: PrivacySettingsService
     private lateinit var applicantService: ApplicantService
 
     @BeforeEach
@@ -62,7 +64,8 @@ class ApplicantServiceTest {
                 "123",
                 "NewCity",
                 "CH",
-                "12345678"
+                "12345678",
+                privacySettings = mockk()
             )
         }
         applicantValidationService = mockk {
@@ -76,8 +79,11 @@ class ApplicantServiceTest {
         passwordEncoder = mockk {
             every { encode(eq("a*c3efgH")) } returns "valid_encoded_pw"
         }
+        privacySettingsService = mockk {
+            every { getDefaultSettings(any()) } returns mockk()
+        }
 
-        applicantService = ApplicantService(applicantRepository, applicantValidationService, passwordEncoder)
+        applicantService = ApplicantService(applicantRepository, applicantValidationService, passwordEncoder, privacySettingsService)
     }
 
     @Test

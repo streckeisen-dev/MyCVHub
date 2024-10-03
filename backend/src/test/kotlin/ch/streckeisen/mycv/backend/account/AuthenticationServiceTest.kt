@@ -5,6 +5,7 @@ import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
 import ch.streckeisen.mycv.backend.cv.applicant.Applicant
 import ch.streckeisen.mycv.backend.cv.applicant.ApplicantService
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
+import ch.streckeisen.mycv.backend.privacy.PrivacySettings
 import ch.streckeisen.mycv.backend.security.JwtService
 import io.mockk.every
 import io.mockk.mockk
@@ -78,7 +79,8 @@ class AuthenticationServiceTest {
                     "123",
                     "NewCity",
                     "CH",
-                    "12345678"
+                    "12345678",
+                    privacySettings = mockk()
                 )
             )
             every { create(eq(INVALID_SIGNUP_REQUEST)) } returns Result.failure(mockk<ValidationException>())

@@ -60,7 +60,8 @@ class ApplicantValidationServiceTest {
         "Real City",
         "CH",
         "abc",
-        1
+        1,
+        mockk()
     )
 
     companion object {
