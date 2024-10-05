@@ -8,46 +8,25 @@
       <v-col>
         <h2>Personal Data</h2>
         <v-sheet class="account-details" rounded color="primary">
-          <dl class="formatted">
-            <dt>First Name</dt>
-            <dd>{{ account.firstName }}</dd>
-
-            <dt>Last Name</dt>
-            <dd>{{ account.lastName }}</dd>
-
-            <dt>E-Mail Address</dt>
-            <dd>{{ account.email }}</dd>
-
-            <dt>Phone</dt>
-            <dd>{{ account.phone }}</dd>
-
-            <dt>Birthday</dt>
-            <dd>{{ account.birthday }}</dd>
-
-            <dt>Public Profile</dt>
-            <dd>{{ account.hasPublicProfile ? 'Yes' : 'No' }}</dd>
-          </dl>
+          <attribute-list>
+            <attribute-value name="First Name" :value="account.firstName" />
+            <atribute-value name="Last Name" :value="account.lastName" />
+            <atribute-value name="E-Mail Address" :value="account.email" />
+            <attribute-value name="Phone" :value="account.phone" />
+            <attribute-value name="Birthday" :value="account.birthday" />
+          </attribute-list>
         </v-sheet>
       </v-col>
       <v-col>
         <h2>Address</h2>
         <v-sheet class="account-details" rounded color="primary">
-          <dl class="formatted">
-            <dt>Street</dt>
-            <dd>{{ account.street }}</dd>
-
-            <dt>House Number</dt>
-            <dd>{{ account.houseNumber }}</dd>
-
-            <dt>Postcode</dt>
-            <dd>{{ account.postcode }}</dd>
-
-            <dt>City</dt>
-            <dd>{{ account.city }}</dd>
-
-            <dt>Country</dt>
-            <dd>{{ account.country }}</dd>
-          </dl>
+          <attribute-list>
+            <attribute-value name="Street" :value="account.street" />
+            <attribute-value name="House Number" :value="account.houseNumber" />
+            <attribute-value name="Postcode" :value="account.postcode" />
+            <attribute-value name="City" :value="account.city" />
+            <attribute-value name="Country" :value="account.country" />
+          </attribute-list>
         </v-sheet>
       </v-col>
     </v-row>
@@ -65,6 +44,9 @@ import accountApi from '@/api/account-api'
 import type { AccountDto } from '@/dto/AccountDto'
 import { ref } from 'vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import AttributeList from '@/components/AttributeList.vue'
+import AttributeValue from '@/components/AtributeValue.vue'
+import AtributeValue from '@/components/AtributeValue.vue'
 
 const account = ref<AccountDto>()
 const isAccountLoading = ref<boolean>(true)
