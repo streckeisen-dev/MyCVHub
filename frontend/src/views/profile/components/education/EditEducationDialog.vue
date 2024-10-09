@@ -1,31 +1,35 @@
 <template>
   <v-dialog :model-value="true" @update:model-value="cancel">
-    <v-sheet class="work-experience-sheet">
-      <h2 v-if="isEdit">Edit Work Experience</h2>
-      <h2 v-else>Add Work Experience</h2>
+    <v-sheet class="education-sheet">
+      <h2 v-if="isEdit">Edit Education Entry</h2>
+      <h2 v-else>Add Education Entry</h2>
 
       <v-form @submit.prevent>
         <v-text-field
-          label="Job Title"
-          v-model="formState.jobTitle"
-          :error-messages="jobTitleErrors"
+          label="Institution"
+          v-model="formState.institution"
+          :error-messages="institutionErrors"
         />
         <v-text-field
           label="Location"
           v-model="formState.location"
           :error-messages="locationErrors"
         />
-        <v-text-field label="Company" v-model="formState.company" :error-messages="companyErrors" />
-        <v-date-input
-          label="Position Start"
-          v-model="formState.positionStart"
-          :error-messages="positionStartErrors"
+        <v-text-field
+          label="Degree Name"
+          v-model="formState.degreeName"
+          :error-messages="degreeNameErrors"
         />
         <v-date-input
-          label="Position End"
-          v-model="formState.positionEnd"
+          label="Education Start"
+          v-model="formState.educationStart"
+          :error-messages="educationStartErrors"
+        />
+        <v-date-input
+          label="Education End"
+          v-model="formState.educationEnd"
           clearable
-          :error-messages="positionEndErrors"
+          :error-messages="educationEndErrors"
         />
         <v-textarea
           label="Description"
@@ -44,7 +48,6 @@
 
 <script setup lang="ts">
 import { type ComputedRef, reactive, ref } from 'vue'
-import type { WorkExperienceDto } from '@/dto/WorkExperienceDto'
 import { VDateInput } from 'vuetify/labs/components'
 import { helpers, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
@@ -52,56 +55,58 @@ import profileApi from '@/api/ProfileApi'
 import { convertDateToString, convertStringToDate } from '@/services/DateHelper'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
 import type { ErrorDto } from '@/dto/ErrorDto'
+import type { EducationDto } from '@/dto/EducationDto'
+import type { EducationUpdateDto } from '@/dto/EducationUpdateDto'
 
 const props = defineProps<{
-  value: WorkExperienceDto | undefined
+  value: EducationDto | undefined
   isEdit: boolean
 }>()
 
 const emit = defineEmits(['saveNew', 'saveEdit', 'cancel'])
 
 type FormState = {
-  jobTitle?: string
+  institution?: string
   location?: string
-  company?: string
-  positionStart?: Date
-  positionEnd?: Date
+  degreeName?: string
+  educationStart?: Date
+  educationEnd?: Date
   description?: string
 }
 
 const formState = reactive<FormState>({
-  jobTitle: props.value?.jobTitle,
+  institution: props.value?.institution,
   location: props.value?.location,
-  company: props.value?.company,
-  positionStart: convertStringToDate(props.value?.positionStart),
-  positionEnd: convertStringToDate(props.value?.positionEnd),
+  degreeName: props.value?.degreeName,
+  educationStart: convertStringToDate(props.value?.educationStart),
+  educationEnd: convertStringToDate(props.value?.educationEnd),
   description: props.value?.description
 })
 
-const positionEndIsAfterStart = () => {
-  if (formState.positionEnd && formState.positionStart) {
-    return formState.positionEnd > formState.positionStart
+const educationEndIsAfterStart = () => {
+  if (formState.educationEnd && formState.educationStart) {
+    return formState.educationEnd > formState.educationStart
   }
   return true
 }
 
 const rules = {
-  jobTitle: {
-    required: helpers.withMessage('Job Title must not be blank', required)
+  institution: {
+    required: helpers.withMessage('Institution must not be blank', required)
   },
   location: {
     required: helpers.withMessage('Location must not be blank', required)
   },
-  company: {
-    required: helpers.withMessage('Company must not be blank', required)
+  degreeName: {
+    required: helpers.withMessage('Degree Name must not be blank', required)
   },
-  positionStart: {
-    required: helpers.withMessage('Position Start mut not be blank', required)
+  educationStart: {
+    required: helpers.withMessage('Education Start mut not be blank', required)
   },
-  positionEnd: {
-    positionEndIsAfterStart: helpers.withMessage(
-      'Position End must be after Position Start',
-      positionEndIsAfterStart
+  educationEnd: {
+    educationEndIsAfterStart: helpers.withMessage(
+      'Education End must be after Education Start',
+      educationEndIsAfterStart
     )
   },
   description: {
@@ -117,11 +122,11 @@ function getErrors(attributeName: string): ComputedRef {
   return getErrorMessages(errorMessages, form, attributeName)
 }
 
-const jobTitleErrors = getErrors('jobTitle')
+const institutionErrors = getErrors('institution')
 const locationErrors = getErrors('location')
-const companyErrors = getErrors('company')
-const positionStartErrors = getErrors('positionStart')
-const positionEndErrors = getErrors('positionEnd')
+const degreeNameErrors = getErrors('degreeName')
+const educationStartErrors = getErrors('educationStart')
+const educationEndErrors = getErrors('educationEnd')
 const descriptionErrors = getErrors('description')
 
 async function save() {
@@ -130,22 +135,22 @@ async function save() {
     return
   }
 
-  const workExperience: WorkExperienceDto = {
+  const educationUpdate: EducationUpdateDto = {
     id: props.isEdit ? props.value.id : null,
-    jobTitle: formState.jobTitle,
-    company: formState.company,
+    institution: formState.institution,
+    degreeName: formState.degreeName,
     location: formState.location,
-    positionStart: convertDateToString(formState.positionStart),
-    positionEnd: convertDateToString(formState.positionEnd),
+    educationStart: convertDateToString(formState.educationStart),
+    educationEnd: convertDateToString(formState.educationEnd),
     description: formState.description
   }
 
   try {
-    const savedExperience = await profileApi.saveWorkExperience(workExperience)
+    const savedEducation = await profileApi.saveEducation(educationUpdate)
     if (props.isEdit) {
-      emit('saveEdit', savedExperience)
+      emit('saveEdit', savedEducation)
     } else {
-      emit('saveNew', savedExperience)
+      emit('saveNew', savedEducation)
     }
     errorMessages.value = {}
   } catch (e) {
@@ -160,7 +165,7 @@ function cancel() {
 </script>
 
 <style lang="scss" scoped>
-.work-experience-sheet {
+.education-sheet {
   padding: 30px;
 
   h2 {

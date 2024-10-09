@@ -65,6 +65,9 @@
         <v-tabs-window-item value="work">
           <work-experiences-editor v-model="workExperiences" />
         </v-tabs-window-item>
+        <v-tabs-window-item value="edu">
+          <education-editor v-model="education" />
+        </v-tabs-window-item>
       </template>
     </v-tabs-window>
   </v-container>
@@ -75,6 +78,7 @@ import { ref } from 'vue'
 import type { ProfileDto } from '@/dto/ProfileDto'
 import profileApi from '@/api/ProfileApi'
 import WorkExperiencesEditor from '@/views/profile/components/work-experience/WorkExperiencesEditor.vue'
+import EducationEditor from '@/views/profile/components/education/EducationEditor.vue'
 
 const props = defineProps<{
   profile: ProfileDto,
@@ -91,6 +95,7 @@ const isEmailPublic = ref(props.profile.isEmailPublic)
 const isPhonePublic = ref(props.profile.isPhonePublic)
 const isAddressPublic = ref(props.profile.isAddressPublic)
 const workExperiences = ref(props.profile.workExperiences)
+const education = ref(props.profile.education)
 
 async function saveGeneralInformation() {
   try {

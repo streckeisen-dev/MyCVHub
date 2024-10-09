@@ -74,6 +74,7 @@ const commonHeaders: { [key: string]: string } = {
 export {
   fetchFromApi,
   getJSONIfResponseIsOk,
+  extractErrorIfResponseIsNotOk,
   refreshToken,
   processAuthResponse,
   commonHeaders

@@ -2,7 +2,7 @@ package ch.streckeisen.mycv.backend.cv.experience
 
 import java.time.LocalDate
 
-data class WorkExperienceUpdateRequestDto(
+data class WorkExperienceUpdateDto(
     val id: Long?,
     val jobTitle: String?,
     val location: String?,

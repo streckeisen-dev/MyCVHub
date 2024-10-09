@@ -1,6 +1,7 @@
 package ch.streckeisen.mycv.backend.cv.experience
 
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
+import ch.streckeisen.mycv.backend.exceptions.ResultNotFoundException
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -13,25 +14,26 @@ class WorkExperienceService(
     private val profileService: ProfileService
 ) {
     @Transactional
-    fun save(applicantId: Long, workExperience: WorkExperienceUpdateRequestDto): Result<WorkExperienceEntity> {
-        val validationResult = workExperienceValidationService.validateWorkExperience(workExperience)
-        validationResult.onFailure { return Result.failure(it) }
-
+    fun save(applicantId: Long, workExperience: WorkExperienceUpdateDto): Result<WorkExperienceEntity> {
         val existingWorkExperience = if (workExperience.id != null) {
-            workExperienceRepository.findById(workExperience.id).orElse(null)
+            workExperienceRepository.findById(workExperience.id)
+                .getOrElse { return Result.failure(ResultNotFoundException("This work experience does not exist")) }
         } else null
 
         if (existingWorkExperience != null && existingWorkExperience.profile.account.id != applicantId) {
-            return Result.failure(AccessDeniedException("You don't have permission to update this work experience"))
+            return Result.failure(AccessDeniedException("You don't have permission to modify this work experience"))
         }
 
         val profile = if (existingWorkExperience != null) {
             existingWorkExperience.profile
         } else {
-            val profileResult = profileService.findByAccountId(applicantId)
-            profileResult.onFailure { return Result.failure(it) }
-            profileResult.getOrNull()!!
+            profileService.findByAccountId(applicantId)
+                .onFailure { return Result.failure(it) }
+                .getOrNull()!!
         }
+
+        workExperienceValidationService.validateWorkExperience(workExperience)
+            .onFailure { return Result.failure(it) }
 
         return Result.success(
             workExperienceRepository.save(

@@ -1,4 +1,4 @@
-package ch.streckeisen.mycv.backend.cv.experience
+package ch.streckeisen.mycv.backend.cv.education
 
 import ch.streckeisen.mycv.backend.security.MyCvPrincipal
 import org.springframework.http.ResponseEntity
@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/profile/work-experience")
-class WorkExperienceResource(
-    private val workExperienceService: WorkExperienceService
+@RequestMapping("/api/profile/education")
+class EducationResource(
+    private val educationService: EducationService
 ) {
     @PostMapping
-    fun saveWorkExperience(@RequestBody updateRequest: WorkExperienceUpdateDto): ResponseEntity<WorkExperienceDto> {
+    fun saveEducation(@RequestBody educationUpdate: EducationUpdateDto): ResponseEntity<EducationDto> {
         val principal = SecurityContextHolder.getContext().authentication.principal as MyCvPrincipal
 
-        return workExperienceService.save(principal.id, updateRequest)
+        return educationService.save(principal.id, educationUpdate)
             .fold(
-                onSuccess = { workExperience ->
-                    ResponseEntity.ok(workExperience.toDto())
+                onSuccess = { education ->
+                    ResponseEntity.ok(education.toDto())
                 },
                 onFailure = {
                     throw it
@@ -31,10 +31,10 @@ class WorkExperienceResource(
     }
 
     @DeleteMapping("{id}")
-    fun deleteWorkExperience(@PathVariable("id") id: Long): ResponseEntity<Void> {
+    fun deleteEducation(@PathVariable("id") id: Long): ResponseEntity<Void> {
         val principal = SecurityContextHolder.getContext().authentication.principal as MyCvPrincipal
 
-        return workExperienceService.delete(principal.id, id)
+        return educationService.delete(principal.id, id)
             .fold(
                 onSuccess = {
                     ResponseEntity.ok().build()
@@ -42,7 +42,6 @@ class WorkExperienceResource(
                 onFailure = {
                     throw it
                 }
-
             )
     }
 }

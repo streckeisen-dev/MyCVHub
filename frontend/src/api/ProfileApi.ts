@@ -1,9 +1,11 @@
 import type { PublicProfileDto } from '@/dto/PublicProfileDto'
-import { commonHeaders, fetchFromApi, getJSONIfResponseIsOk } from '@/api/ApiHelper'
+import { commonHeaders, extractErrorIfResponseIsNotOk, fetchFromApi, getJSONIfResponseIsOk } from '@/api/ApiHelper'
 import type { ProfileDto } from '@/dto/ProfileDto'
 import type { ProfileUpdateRequestDto } from '@/dto/ProfileUpdateRequestDto'
 import type { WorkExperienceUpdateDto } from '@/dto/WorkExperienceUpdateDto'
 import type { WorkExperienceDto } from '@/dto/WorkExperienceDto'
+import type { EducationUpdateDto } from '@/dto/EducationUpdateDto'
+import type { EducationDto } from '@/dto/EducationDto'
 
 async function getPublicProfile(alias: string): Promise<PublicProfileDto> {
   try {
@@ -55,9 +57,36 @@ async function saveWorkExperience(workExperienceUpdate: WorkExperienceUpdateDto)
 
 async function deleteWorkExperience(id: number): Promise<void> {
   try {
-    await fetchFromApi(`/api/profile/work-experience/${id}`, {
+    const response = await fetchFromApi(`/api/profile/work-experience/${id}`, {
       method: 'DELETE'
     })
+    await extractErrorIfResponseIsNotOk(response)
+    return Promise.resolve()
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+async function saveEducation(educationUpdate: EducationUpdateDto): Promise<EducationDto> {
+  try {
+    const response = await fetchFromApi('/api/profile/education', {
+      method: 'POST',
+      body: JSON.stringify(educationUpdate),
+      headers: commonHeaders
+    })
+    const education = await getJSONIfResponseIsOk<EducationDto>(response)
+    return Promise.resolve(education)
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+async function deleteEducation(id: number): Promise<void> {
+  try {
+    const response = await fetchFromApi(`/api/profile/education/${id}`, {
+      method: 'DELETE'
+    })
+    await extractErrorIfResponseIsNotOk(response)
     return Promise.resolve()
   } catch (error) {
     return Promise.reject(error)
@@ -69,5 +98,7 @@ export default {
   getProfile,
   updateGeneralInformation,
   saveWorkExperience,
-  deleteWorkExperience
+  deleteWorkExperience,
+  saveEducation,
+  deleteEducation
 }

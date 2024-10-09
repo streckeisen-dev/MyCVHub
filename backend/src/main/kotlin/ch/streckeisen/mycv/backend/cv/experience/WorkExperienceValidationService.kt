@@ -6,7 +6,7 @@ import java.time.LocalDate
 
 @Service
 class WorkExperienceValidationService {
-    fun validateWorkExperience(workExperience: WorkExperienceUpdateRequestDto): Result<Unit> {
+    fun validateWorkExperience(workExperience: WorkExperienceUpdateDto): Result<Unit> {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
         if (workExperience.jobTitle.isNullOrBlank()) {

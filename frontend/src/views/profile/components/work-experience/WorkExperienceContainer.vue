@@ -43,7 +43,7 @@ const sortedWorkExperiences = computed(() => {
 
     const positionEndComparison = compareDatesByYearAndMonth(positionEndA, positionEndB)
     if (positionEndComparison === 0) {
-      return compareDatesByYearAndMonth(positionStartA, positionStartB) // negate so
+      return compareDatesByYearAndMonth(positionStartA, positionStartB)
     }
     return positionEndComparison
   })
