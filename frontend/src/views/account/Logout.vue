@@ -4,7 +4,7 @@
 </template>
 
 <script setup lang="ts">
-import accountApi from '@/api/account-api'
+import accountApi from '@/api/AccountApi'
 import router from '@/router'
 
 if (accountApi.isUserLoggedIn()) {

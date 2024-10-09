@@ -12,5 +12,6 @@ data class AccountDto(
     val houseNumber: String?,
     val postcode: String,
     val city: String,
-    val country: String
+    val country: String,
+    val profile: String?
 )

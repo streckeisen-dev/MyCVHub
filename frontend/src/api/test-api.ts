@@ -1,4 +1,4 @@
-import { fetchFromApi, getJSONIfResponseIsOk } from '@/api/api-helper'
+import { fetchFromApi, getJSONIfResponseIsOk } from '@/api/ApiHelper'
 
 async function testConnection(): Promise<TestResponse> {
   try {

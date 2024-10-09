@@ -74,4 +74,10 @@ class ControllerAdvice : ResponseEntityExceptionHandler() {
         return ResponseEntity.internalServerError()
             .body(ErrorDto("Error during data processing"))
     }
+
+    @ExceptionHandler
+    fun handleException(ex: Exception): ResponseEntity<ErrorDto> {
+        logger.error(ex.message, ex)
+        return ResponseEntity.internalServerError().body(ErrorDto("An unknown error occurred"))
+    }
 }

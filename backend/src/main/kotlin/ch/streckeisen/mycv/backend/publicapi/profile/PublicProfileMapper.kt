@@ -1,34 +1,36 @@
 package ch.streckeisen.mycv.backend.publicapi.profile
 
-import ch.streckeisen.mycv.backend.cv.applicant.Applicant
-import ch.streckeisen.mycv.backend.cv.education.Education
-import ch.streckeisen.mycv.backend.cv.experience.WorkExperience
-import ch.streckeisen.mycv.backend.cv.skill.Skill
+import ch.streckeisen.mycv.backend.cv.education.EducationEntity
+import ch.streckeisen.mycv.backend.cv.experience.WorkExperienceEntity
+import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
+import ch.streckeisen.mycv.backend.cv.skill.SkillEntity
+import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicAddressDto
 import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicEducationDto
 import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicProfileDto
 import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicSkillDto
 import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicWorkExperienceDto
 
-fun Applicant.toPublicDto(): PublicProfileDto = PublicProfileDto(
-    id!!,
-    firstName,
-    lastName,
-    email = if (privacySettings.isEmailPublic) email else null,
-    phone = if (privacySettings.isPhonePublic) phone else null,
-    birthday = if (privacySettings.isBirthdayPublic) birthday else null,
-    street = if (privacySettings.isAddressPublic) street else null,
-    houseNumber = if (privacySettings.isAddressPublic) houseNumber else null,
-    postcode = if (privacySettings.isAddressPublic) postcode else null,
-    city,
-    country,
+fun ProfileEntity.toPublicDto(): PublicProfileDto = PublicProfileDto(
+    account.firstName,
+    account.lastName,
+    jobTitle,
+    aboutMe,
+    email = if (isEmailPublic) account.email else null,
+    phone = if (isPhonePublic) account.phone else null,
+    address = if (isAddressPublic) PublicAddressDto(
+        account.street,
+        account.houseNumber,
+        account.postcode,
+        account.city,
+        account.country
+    ) else null,
     workExperiences.map { it.toPublicDto() }.toList(),
     skills.map { it.toPublicDto() }.toList(),
     education.map { it.toPublicDto() }.toList()
 )
 
-fun Education.toPublicDto() = PublicEducationDto(
-    id,
-    school,
+fun EducationEntity.toPublicDto() = PublicEducationDto(
+    institution,
     location,
     educationStart,
     educationEnd,
@@ -36,8 +38,8 @@ fun Education.toPublicDto() = PublicEducationDto(
     description
 )
 
-fun WorkExperience.toPublicDto() = PublicWorkExperienceDto(
-    id,
+fun WorkExperienceEntity.toPublicDto() = PublicWorkExperienceDto(
+    jobTitle,
     company,
     positionStart,
     positionEnd,
@@ -45,8 +47,7 @@ fun WorkExperience.toPublicDto() = PublicWorkExperienceDto(
     description
 )
 
-fun Skill.toPublicDto() = PublicSkillDto(
-    id,
+fun SkillEntity.toPublicDto() = PublicSkillDto(
     name,
     type,
     level

@@ -20,35 +20,35 @@
                   <v-text-field
                     v-model="formState.firstName"
                     label="First Name"
-                    :error-messages="getErrorMessages('firstName').value"
+                    :error-messages="firstNameErrors"
                   />
                 </v-col>
                 <v-col cols="12">
                   <v-text-field
                     v-model="formState.lastName"
                     label="Last Name"
-                    :error-messages="getErrorMessages('lastName').value"
+                    :error-messages="lastNameErrors"
                   />
                 </v-col>
                 <v-col cols="12">
                   <v-text-field
                     v-model="formState.email"
                     label="E-Mail"
-                    :error-messages="getErrorMessages('email').value"
+                    :error-messages="emailErrors"
                   />
                 </v-col>
                 <v-col cols="12">
                   <v-text-field
                     v-model="formState.phone"
                     label="Phone"
-                    :error-messages="getErrorMessages('phone').value"
+                    :error-messages="phoneErrors"
                   />
                 </v-col>
                 <v-col cols="12">
                   <v-date-input
                     v-model="formState.birthday"
                     label="Birthday"
-                    :error-messages="getErrorMessages('birthday').value"
+                    :error-messages="birthdayErrors"
                   />
                 </v-col>
               </v-row>
@@ -65,28 +65,28 @@
                   <v-text-field
                     v-model="formState.street"
                     label="Street"
-                    :error-messages="getErrorMessages('street').value"
+                    :error-messages="streetErrors"
                   />
                 </v-col>
                 <v-col cols="12" sm="3">
                   <v-text-field
                     v-model="formState.houseNumber"
                     label="Number"
-                    :error-messages="getErrorMessages('houseNumber').value"
+                    :error-messages="houseNumberErrors"
                   />
                 </v-col>
                 <v-col cols="12" sm="3">
                   <v-text-field
                     v-model="formState.postcode"
                     label="Postcode"
-                    :error-messages="getErrorMessages('postcode').value"
+                    :error-messages="postcodeErrors"
                   />
                 </v-col>
                 <v-col cols="12" sm="9">
                   <v-text-field
                     v-model="formState.city"
                     label="City"
-                    :error-messages="getErrorMessages('city').value"
+                    :error-messages="cityErrors"
                   />
                 </v-col>
                 <v-col cols="12" sm="12">
@@ -95,6 +95,7 @@
                                   :items="countries"
                                   item-title="name"
                                   item-value="countryCode"
+                                  :error-messages="countryErrors"
                   />
                 </v-col>
               </v-row>
@@ -112,14 +113,14 @@
                   <password-input
                     v-model="formState.password"
                     label="Password"
-                    :error-messages="getErrorMessages('password').value"
+                    :error-messages="passwordErrors"
                   />
                 </v-col>
                 <v-col cols="12">
                   <password-input
                     v-model="formState.confirmedPassword"
                     label="Confirm Password"
-                    :error-messages="getErrorMessages('confirmedPassword').value"
+                    :error-messages="confirmedPasswordErrors"
                   />
                 </v-col>
               </v-row>
@@ -164,7 +165,7 @@
 </template>
 
 <script setup lang="ts">
-import accountApi from '@/api/account-api'
+import accountApi from '@/api/AccountApi'
 import router from '@/router'
 import { VDateInput } from 'vuetify/labs/components'
 import { computed, type ComputedRef, reactive, ref } from 'vue'
@@ -174,8 +175,9 @@ import type { ErrorDto } from '@/dto/ErrorDto'
 import { email, helpers, required } from '@vuelidate/validators'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import type { CountryDto } from '@/dto/CountryDto'
-import countryApi from '@/api/country-api'
+import countryApi from '@/api/CountryApi'
 import Notification from '@/components/Notification.vue'
+import { getErrorMessages } from '@/services/FormHelper'
 
 if (accountApi.isUserLoggedIn()) {
   await router.push({ name: 'home' })
@@ -335,19 +337,27 @@ async function signUp() {
     await router.push({ name: 'home' }) // TODO: change to profile
   } catch (e) {
     const error = e as ErrorDto
-    errorMessages.value = error.errors
+    errorMessages.value = error.errors || {}
   }
 }
 
-function getErrorMessages(attributeName: string): ComputedRef {
-  return computed(() => {
-    const backendError = errorMessages.value[attributeName]
-    if (backendError) {
-      return [backendError]
-    }
-    return form.value[attributeName].$errors.map((e: ErrorObject) => e.$message)
-  })
+function getErrors(attributeName: string): ComputedRef {
+  return getErrorMessages(errorMessages, form, attributeName)
 }
+
+const firstNameErrors = getErrors('firstName')
+const lastNameErrors = getErrors('lastName')
+const emailErrors = getErrors('email')
+const phoneErrors = getErrors('phone')
+const birthdayErrors = getErrors('birthday')
+const streetErrors = getErrors('street')
+const houseNumberErrors = getErrors('houseNumber')
+const postcodeErrors = getErrors('postcode')
+const cityErrors = getErrors('city')
+const countryErrors = getErrors('country')
+const passwordErrors = getErrors('password')
+const confirmedPasswordErrors = getErrors('confirmedPassword')
+
 </script>
 
 <style lang="scss" scoped>

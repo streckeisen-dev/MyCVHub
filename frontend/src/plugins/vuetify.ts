@@ -41,6 +41,14 @@ const vuetify = createVuetify({
           background: '#ffffff',
           border: '#d1d9e0'
         }
+      },
+      profile: {
+        dark: false,
+        colors: {
+          nav: '#f6f8fa',
+          background: '#ffffff',
+          border: '#d1d9e0'
+        }
       }
     }
   }

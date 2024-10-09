@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { computed, type ComputedRef, reactive, ref } from 'vue'
-import accountApi from '@/api/account-api'
+import accountApi from '@/api/AccountApi'
 import router from '@/router'
 import type { ErrorDto } from '@/dto/ErrorDto'
 import Notification from '@/components/Notification.vue'

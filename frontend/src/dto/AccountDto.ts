@@ -10,5 +10,6 @@ export type AccountDto = {
   city: string
   country: string
   hasPublicProfile: boolean
-  password: string
+  password: string,
+  profile?: string
 }
