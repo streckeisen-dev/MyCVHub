@@ -1,5 +1,7 @@
 <template>
-  <profile-editor :profile="emptyProfile" :exists="false" />
+  <v-main>
+    <profile-editor :profile="emptyProfile" :exists="false" />
+  </v-main>
 </template>
 
 <script setup lang="ts">
@@ -27,9 +29,6 @@ try {
 } catch (e) {
   console.log(e)
 }
-
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

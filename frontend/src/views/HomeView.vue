@@ -1,8 +1,8 @@
 <template>
-  <main>
+  <v-main>
     <p>REST Connection: {{ restConnection }}</p>
     <p>Welcome</p>
-  </main>
+  </v-main>
 </template>
 
 <script setup lang="ts">

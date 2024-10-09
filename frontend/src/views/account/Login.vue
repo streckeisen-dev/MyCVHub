@@ -1,31 +1,33 @@
 <template>
-  <v-container id="login-container">
-    <v-row justify="center">
-      <h1>Login to MyCV</h1>
-    </v-row>
-    <v-row justify="center">
-      <v-sheet id="login-sheet" elevation="12" border rounded color="primary">
-        <v-form @submit.prevent>
-          <v-text-field
-            v-model="formState.email"
-            label="E-Mail Address"
-            :error-messages="getErrorMessages('email').value"
-          />
-          <password-input
-            v-model="formState.password"
-            label="Password"
-            :error-messages="getErrorMessages('password').value"
-          />
-          <v-btn type="submit" block color="btn-primary" @click="login">Login</v-btn>
-        </v-form>
-        <p>
-          Don't have an account yet?
-          <router-link :to="{ name: 'signup' }">Sign up now</router-link>
-        </p>
-      </v-sheet>
-    </v-row>
-    <notification v-if="errorMessage" title="Login failed" :message="errorMessage" />
-  </v-container>
+  <v-main>
+    <v-container id="login-container">
+      <v-row justify="center">
+        <h1>Login to MyCV</h1>
+      </v-row>
+      <v-row justify="center">
+        <v-sheet id="login-sheet" elevation="12" border rounded color="primary">
+          <v-form @submit.prevent>
+            <v-text-field
+              v-model="formState.email"
+              label="E-Mail Address"
+              :error-messages="getErrorMessages('email').value"
+            />
+            <password-input
+              v-model="formState.password"
+              label="Password"
+              :error-messages="getErrorMessages('password').value"
+            />
+            <v-btn type="submit" block color="btn-primary" @click="login">Login</v-btn>
+          </v-form>
+          <p>
+            Don't have an account yet?
+            <router-link :to="{ name: 'signup' }">Sign up now</router-link>
+          </p>
+        </v-sheet>
+      </v-row>
+      <notification v-if="errorMessage" title="Login failed" :message="errorMessage" />
+    </v-container>
+  </v-main>
 </template>
 
 <script setup lang="ts">
@@ -49,10 +51,10 @@ const formState = reactive({
 
 const rules = {
   email: {
-    required: helpers.withMessage("Password must not be blank", required)
+    required: helpers.withMessage('Password must not be blank', required)
   },
   password: {
-    required: helpers.withMessage("Password must not be blank", required)
+    required: helpers.withMessage('Password must not be blank', required)
   }
 }
 

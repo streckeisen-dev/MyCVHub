@@ -53,7 +53,7 @@ const router = createRouter({
     },
     {
       path: '/ui/profile/:alias',
-      name: 'profile',
+      name: 'public-profile',
       component: () => import('@/views/profile/ProfileView.vue'),
       props: true,
       meta: {

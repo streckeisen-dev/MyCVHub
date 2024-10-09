@@ -1,12 +1,14 @@
 <template>
-  <profile-editor v-if="profile" :profile="profile" :exists="true" />
-  <loading-spinner v-else-if="isLoadingProfile" />
-  <v-empty-state
-    v-else
-    headline="Oops, something went wrong"
-    title="Failed to load profile"
-    :text="loadingError"
-  />
+  <v-main>
+    <profile-editor v-if="profile" :profile="profile" :exists="true" />
+    <loading-spinner v-else-if="isLoadingProfile" />
+    <v-empty-state
+      v-else
+      headline="Oops, something went wrong"
+      title="Failed to load profile"
+      :text="loadingError"
+    />
+  </v-main>
 </template>
 
 <script setup lang="ts">

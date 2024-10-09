@@ -75,13 +75,18 @@ import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import type { ErrorDto } from '@/dto/ErrorDto'
 import ProfileSection from '@/views/profile/components/ProfileSection.vue'
 import vuetify from '@/plugins/vuetify'
-import router from '@/router'
 import type { PublicEducationDto } from '@/dto/PublicEducationDto'
 import EducationEntry from '@/views/profile/components/EducationEntry.vue'
 import { type PublicSkillDto, SkillType } from '@/dto/PublicSkillDto'
 import SkillEntry from '@/views/profile/components/SkillEntry.vue'
 import SkillSection from '@/views/profile/components/SkillSection.vue'
 import WorkExperienceContainer from '@/views/profile/components/work-experience/WorkExperienceContainer.vue'
+import {
+  type NavigationGuardNext,
+  onBeforeRouteLeave,
+  type RouteLocationNormalized,
+  type RouteLocationNormalizedLoaded
+} from 'vue-router'
 
 const eD = ref<PublicEducationDto>({
   institution: 'Institution',
@@ -136,9 +141,12 @@ try {
   isProfileLoading.value = false
 }
 
-router.afterEach(() => {
-  vuetify.theme.global.name.value = originalTheme
-})
+onBeforeRouteLeave(
+  (to: RouteLocationNormalized, from: RouteLocationNormalizedLoaded, next: NavigationGuardNext) => {
+    vuetify.theme.global.name.value = originalTheme
+    next()
+  }
+)
 </script>
 
 <style scoped>

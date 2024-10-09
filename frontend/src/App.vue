@@ -30,13 +30,15 @@
       </v-navigation-drawer>
     </template>
 
-    <suspense v-if="!isTokenRefreshPending">
-      <v-main v-if="showNavigation">
-        <router-view />
-      </v-main>
-      <router-view v-else />
+    <suspense>
+      <router-view />
     </suspense>
-    <loading-spinner v-else />
+
+    <v-overlay class="refresh-overlay" :model-value="isTokenRefreshPending" persistent absolute>
+      <div class="refresh-overlay-content">
+        <loading-spinner />
+      </div>
+    </v-overlay>
 
     <v-footer></v-footer>
   </v-app>
@@ -88,8 +90,18 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 #side-nav button {
   justify-self: center;
+}
+
+.refresh-overlay {
+  background-color: rgb(var(--v-theme-surface));
+  justify-content: center;
+
+  .refresh-overlay-content {
+    position: absolute;
+    margin-top: 45vh;
+  }
 }
 </style>

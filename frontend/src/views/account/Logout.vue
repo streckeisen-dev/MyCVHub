@@ -1,6 +1,7 @@
 <template>
-  <v-empty-state headline="Goodbye" title="Logout" text="You are being logged out...">
-  </v-empty-state>
+  <v-main>
+    <v-empty-state headline="Goodbye" title="Logout" text="You are being logged out..." />
+  </v-main>
 </template>
 
 <script setup lang="ts">
