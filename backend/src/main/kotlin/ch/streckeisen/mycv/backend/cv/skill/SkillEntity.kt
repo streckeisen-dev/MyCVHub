@@ -17,8 +17,7 @@ class SkillEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
     val name: String,
-    @Enumerated(EnumType.STRING)
-    val type: SkillType,
+    val type: String,
     val level: Short,
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,8 +1,8 @@
 <template>
   <v-row class="skill-entry">
-    <v-col cols="2" class="skill-name">{{ skill.name }}</v-col>
-    <v-col cols="10" class="skill-level">
-      <v-progress-linear :model-value="skill.level" />
+    <v-col cols="4" md="2" class="skill-name">{{ skill.name }}</v-col>
+    <v-col cols="8" md="10" class="skill-level">
+      <v-progress-linear :model-value="skill.level" color="btn-primary" bg-color="btn-background" :max="100" />
     </v-col>
   </v-row>
 </template>

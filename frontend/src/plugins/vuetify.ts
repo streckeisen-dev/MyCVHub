@@ -26,6 +26,7 @@ const vuetify = createVuetify({
         colors: {
           primary: '#151b23',
           'btn-primary': '#56aff5',
+          'btn-background': '#ffffff',
           surface: '#010409',
           background: '#010409'
         },
@@ -47,7 +48,9 @@ const vuetify = createVuetify({
         colors: {
           nav: '#f6f8fa',
           background: '#ffffff',
-          border: '#d1d9e0'
+          border: '#d1d9e0',
+          'btn-primary': '#56aff5',
+          'btn-background': '#5660f5',
         }
       }
     }

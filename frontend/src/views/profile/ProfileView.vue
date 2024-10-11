@@ -43,16 +43,10 @@
             <work-experience-container :values="profile.workExperiences" />
           </profile-section>
           <profile-section title="Education" h2>
-            <education-entry :education="eD" />
+            <education-container :values="profile.education" />
           </profile-section>
           <profile-section title="Skills" h2>
-            <skill-section skill-type="Programming Languages">
-              <skill-entry :skill="skill" />
-              <skill-entry :skill="skill" />
-            </skill-section>
-            <skill-section skill-type="Tools">
-              <skill-entry :skill="skill" />
-            </skill-section>
+            <skills-container :values="profile.skills" />
           </profile-section>
         </v-col>
       </v-row>
@@ -76,10 +70,7 @@ import type { ErrorDto } from '@/dto/ErrorDto'
 import ProfileSection from '@/views/profile/components/ProfileSection.vue'
 import vuetify from '@/plugins/vuetify'
 import type { PublicEducationDto } from '@/dto/PublicEducationDto'
-import EducationEntry from '@/views/profile/components/education/EducationEntry.vue'
 import { type PublicSkillDto, SkillType } from '@/dto/PublicSkillDto'
-import SkillEntry from '@/views/profile/components/SkillEntry.vue'
-import SkillSection from '@/views/profile/components/SkillSection.vue'
 import WorkExperienceContainer from '@/views/profile/components/work-experience/WorkExperienceContainer.vue'
 import {
   type NavigationGuardNext,
@@ -87,6 +78,8 @@ import {
   type RouteLocationNormalized,
   type RouteLocationNormalizedLoaded
 } from 'vue-router'
+import SkillsContainer from '@/views/profile/components/skill/SkillsContainer.vue'
+import EducationContainer from '@/views/profile/components/education/EducationContainer.vue'
 
 const eD = ref<PublicEducationDto>({
   institution: 'Institution',
