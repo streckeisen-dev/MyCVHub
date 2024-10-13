@@ -4,7 +4,7 @@ data class PublicProfileDto(
     val firstName: String,
     val lastName: String,
     val jobTitle: String,
-    val aboutMe: String,
+    val bio: String?,
     val email: String?,
     val phone: String?,
     val address: PublicAddressDto?,

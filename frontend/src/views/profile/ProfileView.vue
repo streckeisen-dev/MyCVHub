@@ -14,22 +14,28 @@
     <v-container v-if="profile">
       <v-row>
         <v-col cols="12" md="6" class="person-column">
-          <img :src="profileImageSrc" alt="Default Profile Picture" class="profile-picture" />
+          <img
+            :src="ProfileApi.getProfilePicture(alias)"
+            class="profile-picture"
+            alt="Profile Picture"
+          />
           <profile-section :title="displayName" h2>
             <p>{{ profile.jobTitle }}</p>
           </profile-section>
 
-          <profile-section title="About Me">
-            <p>{{ profile.aboutMe }}</p>
+          <profile-section v-if="profile.bio" title="About Me">
+            <p>{{ profile.bio }}</p>
           </profile-section>
 
           <profile-section v-if="hasContactInformation" title="Contact">
-            <template v-if="profile.street">
+            <template v-if="profile.address">
               <p>{{ displayName }}</p>
-              <p>{{ profile.street }} {{ profile.houseNumber }}</p>
-              <p>{{ profile.country }}-{{ profile.postcode }} {{ profile.city }}</p>
+              <p>{{ profile.address.street }} {{ profile.address.houseNumber }}</p>
+              <p>
+                {{ profile.address.country }}-{{ profile.address.postcode }}
+                {{ profile.address.city }}
+              </p>
             </template>
-            <p v-else>{{ profile.city }}, {{ profile.country }}</p>
             <p v-if="profile.email">
               <a :href="profileEmailLink">{{ profile.email }}</a>
             </p>
@@ -65,6 +71,7 @@
 import { computed, ref } from 'vue'
 import type { PublicProfileDto } from '@/dto/PublicProfileDto'
 import profileApi from '@/api/ProfileApi'
+import ProfileApi from '@/api/ProfileApi'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import type { ErrorDto } from '@/dto/ErrorDto'
 import ProfileSection from '@/views/profile/components/ProfileSection.vue'
@@ -105,9 +112,6 @@ const profile = ref<PublicProfileDto>()
 const isProfileLoading = ref(false)
 const loadingError = ref<string>()
 
-const profileImageSrc = computed(() => {
-  return new URL('@/assets/default_profile_picture.png', import.meta.url)
-})
 const displayName = computed(() => {
   if (profile.value) {
     return `${profile.value?.firstName} ${profile.value?.lastName}`
@@ -116,7 +120,7 @@ const displayName = computed(() => {
 })
 
 const hasContactInformation = computed(
-  () => profile.value.street || profile.value.phone || profile.value.email
+  () => profile.value.address || profile.value.phone || profile.value.email
 )
 const profileEmailLink = computed(() => `mailto:${profile.value.email}`)
 const profilePhoneLink = computed(() => `tel:${profile.value.phone}`)
@@ -144,7 +148,7 @@ onBeforeRouteLeave(
 
 <style scoped>
 .profile-picture {
-  max-width: min(100%, 512px);
+  max-width: min(100%, 400px);
   height: auto;
 }
 </style>

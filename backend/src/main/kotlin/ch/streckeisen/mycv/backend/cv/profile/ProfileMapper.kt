@@ -7,11 +7,12 @@ import ch.streckeisen.mycv.backend.cv.skill.toDto
 fun ProfileEntity.toDto() = ProfileDto(
     alias,
     jobTitle,
-    aboutMe,
+    bio,
     isProfilePublic,
     isEmailPublic,
     isPhonePublic,
     isAddressPublic,
+    profilePicture,
     workExperiences.map { it.toDto() }.toList(),
     education.map { it.toDto() }.toList(),
     skills.map { it.toDto() }.toList()

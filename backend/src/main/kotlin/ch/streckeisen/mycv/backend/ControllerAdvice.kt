@@ -2,10 +2,10 @@ package ch.streckeisen.mycv.backend
 
 import ch.streckeisen.mycv.backend.exceptions.ResultNotFoundException
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
+import com.fasterxml.jackson.core.JacksonException
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.security.SignatureException
 import org.postgresql.util.PSQLException
-import org.slf4j.LoggerFactory
 import org.springframework.dao.DataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -73,6 +73,22 @@ class ControllerAdvice : ResponseEntityExceptionHandler() {
         logger.error(ex.message, ex)
         return ResponseEntity.internalServerError()
             .body(ErrorDto("Error during data processing"))
+    }
+
+    @ExceptionHandler
+    fun handleJacksonException(ex: JacksonException): ResponseEntity<ErrorDto> {
+        logger.error(ex.message, ex)
+        return ResponseEntity.badRequest().body(ErrorDto(ex.message!!))
+    }
+
+    @ExceptionHandler
+    fun handleIllegalArgumentException(ex: IllegalArgumentException): ResponseEntity<ErrorDto> {
+        return ResponseEntity.badRequest().body(ErrorDto(ex.message!!))
+    }
+
+    @ExceptionHandler
+    fun handleIllegalStateException(ex: IllegalStateException): ResponseEntity<ErrorDto> {
+        return ResponseEntity.internalServerError().body(ErrorDto(ex.message!!))
     }
 
     @ExceptionHandler

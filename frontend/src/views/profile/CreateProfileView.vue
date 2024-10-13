@@ -13,7 +13,7 @@ import router from '@/router'
 const emptyProfile: ProfileDto = {
   alias: '',
   jobTitle: '',
-  aboutMe: '',
+  bio: '',
   isProfilePublic: true,
   isEmailPublic: false,
   isPhonePublic: false,

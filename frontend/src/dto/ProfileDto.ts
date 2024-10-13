@@ -5,7 +5,7 @@ import type { SkillDto } from '@/dto/SkillDto'
 export type ProfileDto = {
   alias: string,
   jobTitle: string,
-  aboutMe: string,
+  bio: string,
   isProfilePublic: boolean,
   isEmailPublic: boolean,
   isPhonePublic: boolean,

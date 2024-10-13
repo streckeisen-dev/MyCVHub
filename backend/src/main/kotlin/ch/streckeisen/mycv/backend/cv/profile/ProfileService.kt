@@ -1,22 +1,32 @@
 package ch.streckeisen.mycv.backend.cv.profile
 
 import ch.streckeisen.mycv.backend.account.ApplicantAccountService
+import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
 import ch.streckeisen.mycv.backend.exceptions.ResultNotFoundException
-import org.springframework.data.crossstore.ChangeSetPersister
+import ch.streckeisen.mycv.backend.publicapi.profile.toPublicDto
+import org.springframework.http.ResponseEntity
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
+import kotlin.jvm.optionals.getOrElse
 
 @Service
 class ProfileService(
     private val profileRepository: ProfileRepository,
     private val profileValidationService: ProfileValidationService,
-    private val applicantAccountService: ApplicantAccountService
+    private val applicantAccountService: ApplicantAccountService,
+    private val profilePictureService: ProfilePictureService
 ) {
     @Transactional(readOnly = true)
-    fun findByAlias(alias: String): Result<ProfileEntity> {
-        return profileRepository.findByAlias(alias)
-            .map { Result.success(it) }
-            .orElse(Result.failure(ResultNotFoundException("Profile not found")))
+    fun findByAlias(accountId: Long?, alias: String): Result<ProfileEntity> {
+        val profile = profileRepository.findByAlias(alias)
+            .getOrElse { return Result.failure(ResultNotFoundException("Profile not found")) }
+
+        if (!profile.isProfilePublic && profile.account.id != accountId) {
+            return Result.failure(AccessDeniedException("You don't have permission to view this profile"))
+        }
+        return Result.success(profile)
     }
 
     @Transactional
@@ -27,32 +37,46 @@ class ProfileService(
     }
 
     @Transactional
-    fun updateGeneralInformation(accountId: Long, profileInformationUpdate: GeneralProfileInformationUpdateDto): Result<ProfileEntity> {
-        profileValidationService.validateProfileInformation(accountId, profileInformationUpdate)
-            .onFailure { return Result.failure(it) }
-
+    fun updateGeneralInformation(
+        accountId: Long,
+        profileInformationUpdate: GeneralProfileInformationUpdateDto,
+        profilePictureUpdate: MultipartFile?
+    ): Result<ProfileEntity> {
         val account = applicantAccountService.findById(accountId).getOrNull()
         if (account == null) {
             return Result.failure(IllegalArgumentException("Account is invalid"))
         }
 
-        val existingProfile = findByAccountId(accountId).getOrElse { null }
+        val existingProfile = account.profile
+        profileValidationService.validateProfileInformation(
+            accountId,
+            profileInformationUpdate,
+            profilePictureUpdate,
+            existingProfile == null
+        ).onFailure { return Result.failure(it) }
+
+        val profilePicture = if (profilePictureUpdate != null) {
+            profilePictureService.store(accountId, profilePictureUpdate, existingProfile?.profilePicture)
+                .getOrElse { return Result.failure(it) }
+        } else {
+            existingProfile!!.profilePicture
+        }
 
         val profile = ProfileEntity(
             id = existingProfile?.id,
             alias = profileInformationUpdate.alias!!,
             jobTitle = profileInformationUpdate.jobTitle!!,
-            aboutMe = profileInformationUpdate.aboutMe!!,
+            bio = profileInformationUpdate.bio,
             isProfilePublic = profileInformationUpdate.isProfilePublic ?: true,
             isEmailPublic = profileInformationUpdate.isEmailPublic ?: false,
             isPhonePublic = profileInformationUpdate.isPhonePublic ?: false,
             isAddressPublic = profileInformationUpdate.isAddressPublic ?: false,
+            profilePicture = profilePicture,
             workExperiences = existingProfile?.workExperiences ?: emptyList(),
             education = existingProfile?.education ?: emptyList(),
             skills = existingProfile?.skills ?: emptyList(),
             account = account
         )
-
         return Result.success(profileRepository.save(profile))
     }
 }

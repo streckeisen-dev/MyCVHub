@@ -29,11 +29,12 @@ CREATE TABLE profile_entity
     id                bigserial    NOT NULL,
     alias             varchar(40)  NOT NULL,
     job_title         varchar(100) NOT NULL,
-    about_me          text,
+    bio               text,
     is_profile_public BOOLEAN      NOT NULL,
     is_email_public   BOOLEAN      NOT NULL,
     is_phone_public   BOOLEAN      NOT NULL,
     is_address_public BOOLEAN      NOT NULL,
+    profile_picture   varchar(30)  NOT NULL,
     account_id        bigint       NOT NULL
 );
 ALTER TABLE profile_entity
@@ -41,7 +42,7 @@ ALTER TABLE profile_entity
 ALTER TABLE profile_entity
     ADD CONSTRAINT unique_profile_alias UNIQUE (alias);
 ALTER TABLE profile_entity
-    ADD CONSTRAINT fk_profile_account FOREIGN KEY (account_id) REFERENCES applicant_account_entity(id);
+    ADD CONSTRAINT fk_profile_account FOREIGN KEY (account_id) REFERENCES applicant_account_entity (id);
 
 CREATE TABLE work_experience_entity
 (

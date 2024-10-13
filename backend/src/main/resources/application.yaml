@@ -11,6 +11,10 @@ spring:
 
   liquibase.change-log: db/changelog/db.changelog-master.xml
 
+  servlet.multipart:
+    max-request-size: 2MB
+    max-file-size: 2MB
+
 security.jwt:
   secret: ${JWT_SECRET}
   access.expiration-time: 3600000
@@ -23,3 +27,5 @@ logging:
     rollingpolicy:
       max-history: 5
       max-file-size: 5MB
+
+PROFILE_PICTURE_FOLDER: /app/static/profile/

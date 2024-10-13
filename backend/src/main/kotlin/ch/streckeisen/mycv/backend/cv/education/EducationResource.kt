@@ -1,6 +1,6 @@
 package ch.streckeisen.mycv.backend.cv.education
 
-import ch.streckeisen.mycv.backend.security.MyCvPrincipal
+import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -17,7 +17,7 @@ class EducationResource(
 ) {
     @PostMapping
     fun saveEducation(@RequestBody educationUpdate: EducationUpdateDto): ResponseEntity<EducationDto> {
-        val principal = SecurityContextHolder.getContext().authentication.principal as MyCvPrincipal
+        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
 
         return educationService.save(principal.id, educationUpdate)
             .fold(
@@ -32,7 +32,7 @@ class EducationResource(
 
     @DeleteMapping("{id}")
     fun deleteEducation(@PathVariable("id") id: Long): ResponseEntity<Void> {
-        val principal = SecurityContextHolder.getContext().authentication.principal as MyCvPrincipal
+        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
 
         return educationService.delete(principal.id, id)
             .fold(

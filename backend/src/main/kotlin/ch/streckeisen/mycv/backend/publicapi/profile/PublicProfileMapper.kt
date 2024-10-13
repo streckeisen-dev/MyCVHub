@@ -14,7 +14,7 @@ fun ProfileEntity.toPublicDto(): PublicProfileDto = PublicProfileDto(
     account.firstName,
     account.lastName,
     jobTitle,
-    aboutMe,
+    bio,
     email = if (isEmailPublic) account.email else null,
     phone = if (isPhonePublic) account.phone else null,
     address = if (isAddressPublic) PublicAddressDto(

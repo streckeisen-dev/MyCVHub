@@ -2,6 +2,7 @@ package ch.streckeisen.mycv.backend.cv.profile
 
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 
 @Service
 class ProfileValidationService(
@@ -9,9 +10,15 @@ class ProfileValidationService(
 ) {
     fun validateProfileInformation(
         updateAccountId: Long,
-        profileInformationUpdate: GeneralProfileInformationUpdateDto
+        profileInformationUpdate: GeneralProfileInformationUpdateDto,
+        profilePicture: MultipartFile?,
+        isProfileNew: Boolean
     ): Result<Unit> {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
+
+        if (isProfileNew && profilePicture == null) {
+            validationErrorBuilder.addError("profilePicture", "Profile Picture is required")
+        }
 
         if (profileInformationUpdate.alias.isNullOrBlank()) {
             validationErrorBuilder.addError("alias", "Alias must not be blank")

@@ -24,6 +24,13 @@ async function getPublicProfile(alias: string): Promise<PublicProfileDto> {
   }
 }
 
+function getProfilePicture(alias: string): string {
+  if (alias) {
+    return `/api/public/profile/${alias}/picture`
+  }
+  return new URL('@/assets/default_profile_picture.png', import.meta.url).toString()
+}
+
 async function getProfile(): Promise<ProfileDto> {
   try {
     const response = await fetchFromApi('/api/profile')
@@ -37,11 +44,13 @@ async function getProfile(): Promise<ProfileDto> {
 async function updateGeneralInformation(
   profileUpdate: ProfileUpdateRequestDto
 ): Promise<ProfileDto> {
+  const formData = new FormData()
+  formData.append('data', JSON.stringify(profileUpdate))
+  formData.append('profilePicture', profileUpdate.profilePicture)
   try {
     const response = await fetchFromApi('/api/profile', {
       method: 'POST',
-      body: JSON.stringify(profileUpdate),
-      headers: commonHeaders
+      body: formData
     })
     const profile = await getJSONIfResponseIsOk<ProfileDto>(response)
     return Promise.resolve(profile)
@@ -132,6 +141,7 @@ async function deleteSkill(id: number): Promise<void> {
 
 export default {
   getPublicProfile,
+  getProfilePicture,
   getProfile,
   updateGeneralInformation,
   saveWorkExperience,

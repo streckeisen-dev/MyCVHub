@@ -16,11 +16,12 @@ import jakarta.persistence.OneToOne
 class ProfileEntity(
     val alias: String,
     val jobTitle: String,
-    val aboutMe: String,
+    val bio: String?,
     val isProfilePublic: Boolean,
     val isEmailPublic: Boolean,
     val isPhonePublic: Boolean,
     val isAddressPublic: Boolean,
+    val profilePicture: String,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

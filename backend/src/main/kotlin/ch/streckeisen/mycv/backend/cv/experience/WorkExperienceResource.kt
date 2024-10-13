@@ -1,6 +1,6 @@
 package ch.streckeisen.mycv.backend.cv.experience
 
-import ch.streckeisen.mycv.backend.security.MyCvPrincipal
+import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -17,7 +17,7 @@ class WorkExperienceResource(
 ) {
     @PostMapping
     fun saveWorkExperience(@RequestBody updateRequest: WorkExperienceUpdateDto): ResponseEntity<WorkExperienceDto> {
-        val principal = SecurityContextHolder.getContext().authentication.principal as MyCvPrincipal
+        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
 
         return workExperienceService.save(principal.id, updateRequest)
             .fold(
@@ -32,7 +32,7 @@ class WorkExperienceResource(
 
     @DeleteMapping("{id}")
     fun deleteWorkExperience(@PathVariable("id") id: Long): ResponseEntity<Void> {
-        val principal = SecurityContextHolder.getContext().authentication.principal as MyCvPrincipal
+        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
 
         return workExperienceService.delete(principal.id, id)
             .fold(

@@ -6,7 +6,7 @@ export type PublicProfileDto = {
   firstName: string,
   lastName: string,
   jobTitle: string,
-  aboutMe: string,
+  bio: string,
   email?: string,
   phone?: string,
   address?: PublicAddressDto
