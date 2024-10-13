@@ -32,11 +32,20 @@ jobs:
         yarn install --frozen-lockfile
         yarn build
 
-    - name: Upload frontend artifact
+    - name: Upload frontend artifact (non-main)
+      if: github.ref != 'refs/heads/main'
       uses: actions/upload-artifact@v4
       with:
         name: frontend-artifact
         path: frontend/dist/
+        retention-days: 2
+    - name: Upload frontend artifact (main)
+      if: github.ref == 'refs/heads/main'
+      uses: actions/upload-artifact@v4
+      with:
+        name: frontend-artifact
+        path: frontend/dist/
+        retention-days: 30
   
   build-backend:
     runs-on: ubuntu-latest
@@ -73,11 +82,20 @@ jobs:
       working-directory: backend
       run: ./mvnw clean package -DskipTests
     
-    - name: Upload backend artifact
+    - name: Upload backend artifact (non-main)
+      if: github.ref != 'refs/heads/main'
       uses: actions/upload-artifact@v4
       with:
         name: backend-artifact
         path: backend/target/mycv.jar
+        retention-days: 2
+    - name: Upload backend artifact (main)
+      if: github.ref == 'refs/heads/main'
+      uses: actions/upload-artifact@v4
+      with:
+        name: backend-artifact
+        path: backend/target/mycv.jar
+        retention-days: 30
   
   docker-build:
     name: Docker Build
