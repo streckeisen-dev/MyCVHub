@@ -14,7 +14,7 @@ const emptyProfile: ProfileDto = {
   alias: '',
   jobTitle: '',
   bio: '',
-  isProfilePublic: true,
+  isProfilePublic: false,
   isEmailPublic: false,
   isPhonePublic: false,
   isAddressPublic: false,
