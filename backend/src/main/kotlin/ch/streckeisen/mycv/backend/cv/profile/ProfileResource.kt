@@ -41,7 +41,7 @@ class ProfileResource(
         val profileInformationUpdate = objectMapper.readValue(data, GeneralProfileInformationUpdateDto::class.java)
 
         val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
-        return profileService.updateGeneralInformation(principal.id, profileInformationUpdate, profilePicture)
+        return profileService.save(principal.id, profileInformationUpdate, profilePicture)
             .fold(
                 onSuccess = { profile ->
                     ResponseEntity.ok(profile.toDto())

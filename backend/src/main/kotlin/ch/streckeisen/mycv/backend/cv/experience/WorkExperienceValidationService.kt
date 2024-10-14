@@ -33,10 +33,14 @@ class WorkExperienceValidationService {
             validationErrorBuilder.addError("positionStart", "Position Start must not be in the future")
         }
 
-        if (workExperience.positionEnd != null && workExperience.positionEnd.isBefore(workExperience.positionStart)) {
-            validationErrorBuilder.addError("positionEnd", "Position End must be after Position Start")
-        } else if (workExperience.positionEnd != null && workExperience.positionEnd.isAfter(LocalDate.now())) {
+        if (workExperience.positionEnd != null && workExperience.positionEnd.isAfter(LocalDate.now())) {
             validationErrorBuilder.addError("positionEnd", "Position End must be in the future")
+        } else if (
+            workExperience.positionEnd != null
+            && workExperience.positionStart != null
+            && workExperience.positionEnd.isBefore(workExperience.positionStart)
+        ) {
+            validationErrorBuilder.addError("positionEnd", "Position End must be after Position Start")
         }
 
         if (workExperience.description.isNullOrBlank()) {

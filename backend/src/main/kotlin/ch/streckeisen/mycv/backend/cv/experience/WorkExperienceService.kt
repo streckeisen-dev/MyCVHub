@@ -54,7 +54,7 @@ class WorkExperienceService(
     @Transactional
     fun delete(applicantId: Long, workExperienceId: Long): Result<Unit> {
         val workExperience = workExperienceRepository.findById(workExperienceId).getOrElse {
-            return Result.failure(IllegalArgumentException("This work experience does not exist"))
+            return Result.failure(ResultNotFoundException("This work experience does not exist"))
         }
 
         if (applicantId != workExperience.profile.account.id) {

@@ -3,8 +3,6 @@ package ch.streckeisen.mycv.backend.cv.profile
 import ch.streckeisen.mycv.backend.account.ApplicantAccountService
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
 import ch.streckeisen.mycv.backend.exceptions.ResultNotFoundException
-import ch.streckeisen.mycv.backend.publicapi.profile.toPublicDto
-import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -37,14 +35,14 @@ class ProfileService(
     }
 
     @Transactional
-    fun updateGeneralInformation(
+    fun save(
         accountId: Long,
         profileInformationUpdate: GeneralProfileInformationUpdateDto,
         profilePictureUpdate: MultipartFile?
     ): Result<ProfileEntity> {
         val account = applicantAccountService.findById(accountId).getOrNull()
         if (account == null) {
-            return Result.failure(IllegalArgumentException("Account is invalid"))
+            return Result.failure(ResultNotFoundException("Account is invalid"))
         }
 
         val existingProfile = account.profile
@@ -67,7 +65,7 @@ class ProfileService(
             alias = profileInformationUpdate.alias!!,
             jobTitle = profileInformationUpdate.jobTitle!!,
             bio = profileInformationUpdate.bio,
-            isProfilePublic = profileInformationUpdate.isProfilePublic ?: true,
+            isProfilePublic = profileInformationUpdate.isProfilePublic ?: false,
             isEmailPublic = profileInformationUpdate.isEmailPublic ?: false,
             isPhonePublic = profileInformationUpdate.isPhonePublic ?: false,
             isAddressPublic = profileInformationUpdate.isAddressPublic ?: false,

@@ -4,6 +4,8 @@ import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 
+val aliasRegex = "([a-zA-Z][a-zA-Z0-9-_]+[a-zA-Z0-9])".toRegex()
+
 @Service
 class ProfileValidationService(
     private val profileRepository: ProfileRepository
@@ -24,6 +26,8 @@ class ProfileValidationService(
             validationErrorBuilder.addError("alias", "Alias must not be blank")
         } else if (profileInformationUpdate.alias.length > ALIAS_MAX_LENGTH) {
             validationErrorBuilder.addError("alias", "Alias must not exceed $ALIAS_MAX_LENGTH characters")
+        } else if (!aliasRegex.matches(profileInformationUpdate.alias)) {
+            validationErrorBuilder.addError("alias", "Alias must only start with a letter and only contain letters, digits, - and _")
         } else {
             val profileWithSameAlias = profileRepository.findByAlias(profileInformationUpdate.alias).orElse(null)
             if (profileWithSameAlias != null && profileWithSameAlias.account.id != updateAccountId) {
