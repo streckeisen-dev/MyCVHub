@@ -1,9 +1,9 @@
 package ch.streckeisen.mycv.backend.security
 
+import ch.streckeisen.mycv.backend.account.auth.ACCESS_TOKEN_NAME
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
@@ -22,15 +22,22 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val authHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
+        //val authHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
+        val accessToken = request.cookies?.find { cookie -> cookie.name == ACCESS_TOKEN_NAME }?.value
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        /*if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response)
+            return
+        }*/
+
+        if (accessToken.isNullOrBlank()) {
             filterChain.doFilter(request, response)
             return
         }
 
         try {
-            val jwt = authHeader.substring(7)
+            //val jwt = authHeader.substring(7)
+            val jwt = accessToken
             val userEmail = jwtService.extractUsername(jwt)
 
             val authentication = SecurityContextHolder.getContext().authentication

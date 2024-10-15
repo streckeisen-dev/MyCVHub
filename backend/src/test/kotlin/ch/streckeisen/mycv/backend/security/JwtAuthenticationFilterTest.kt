@@ -1,5 +1,6 @@
 package ch.streckeisen.mycv.backend.security
 
+import ch.streckeisen.mycv.backend.account.auth.ACCESS_TOKEN_NAME
 import io.jsonwebtoken.ExpiredJwtException
 import io.mockk.every
 import io.mockk.mockk
@@ -15,7 +16,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.User
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.web.servlet.HandlerExceptionResolver
 import org.springframework.web.servlet.ModelAndView
@@ -47,7 +47,7 @@ class JwtAuthenticationFilterTest {
         val request = mockRequest()
         val response = mockResponse()
         val filterChain = mockFilterChain()
-        every { request.getHeader(any()) } returns null
+        every { request.cookies } returns emptyArray()
         assertNull(SecurityContextHolder.getContext().authentication)
 
         jwtAuthenticationFilter.doFilter(request, response, filterChain)
@@ -58,11 +58,11 @@ class JwtAuthenticationFilterTest {
     }
 
     @Test
-    fun testBasicAuthentication() {
+    fun testWrongCookieAuthentication() {
         val request = mockRequest()
         val response = mockResponse()
         val filterChain = mockFilterChain()
-        every { request.getHeader(eq(HttpHeaders.AUTHORIZATION)) } returns "Basic abcdefg"
+        every { request.cookies } returns arrayOf(mockk { every { name } returns "wrong-cookie" })
         assertNull(SecurityContextHolder.getContext().authentication)
 
         jwtAuthenticationFilter.doFilter(request, response, filterChain)
@@ -83,7 +83,10 @@ class JwtAuthenticationFilterTest {
         val user = User.withUsername(username).password("password").build()
         val userDetails = MyCvUserDetails(user, userId)
         assertNull(SecurityContextHolder.getContext().authentication)
-        every { request.getHeader(HttpHeaders.AUTHORIZATION) } returns "Bearer $token"
+        every { request.cookies } returns arrayOf(mockk {
+            every { name } returns ACCESS_TOKEN_NAME
+            every { value } returns token
+        })
         every { jwtService.extractUsername(eq(token)) } returns username
         every { jwtService.isTokenValid(any(), any()) } returns true
         every { userDetailsService.loadUserByUsername(eq(username)) } returns userDetails
@@ -104,7 +107,11 @@ class JwtAuthenticationFilterTest {
         val request = mockRequest()
         val response = mockResponse()
         val filterChain = mockFilterChain()
-        every { request.getHeader(HttpHeaders.AUTHORIZATION) } returns "Basic abcdefg"
+        every { request.cookies } returns arrayOf(mockk {
+            every { name } returns ACCESS_TOKEN_NAME
+            every { value } returns "abcdefg"
+        })
+        every { jwtService.extractUsername(eq("abcdefg")) } returns "username"
         val authToken = UsernamePasswordAuthenticationToken(MyCvPrincipal("username", 1), null, listOf())
         authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
         SecurityContextHolder.getContext().authentication = authToken
@@ -125,7 +132,10 @@ class JwtAuthenticationFilterTest {
         val request = mockRequest()
         val response = mockResponse()
         val filterChain = mockFilterChain()
-        every { request.getHeader(HttpHeaders.AUTHORIZATION) } returns "Bearer abcdefg"
+        every { request.cookies } returns arrayOf(mockk {
+            every { name } returns ACCESS_TOKEN_NAME
+            every { value } returns "abcdefg"
+        })
         every { jwtService.extractUsername(any()) } throws mockk<ExpiredJwtException>()
 
         jwtAuthenticationFilter.doFilter(request, response, filterChain)

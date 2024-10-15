@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 const val REFRESH_TOKEN_NAME = "refreshToken"
+const val ACCESS_TOKEN_NAME = "accessToken"
 
 @RestController
 @RequestMapping(("/api/auth"))
@@ -50,7 +51,8 @@ class AuthenticationResource(
     @PostMapping("/logout")
     fun logout(): ResponseEntity<Unit> {
         val headers = HttpHeaders()
-        headers.add(HttpHeaders.SET_COOKIE, createRefreshToken("", 0).toString())
+        headers.add(HttpHeaders.SET_COOKIE, createRefreshCookie("", 0).toString())
+        headers.add(HttpHeaders.SET_COOKIE, createAccessCookie("", 0).toString())
         return ResponseEntity.ok()
             .headers(headers)
             .build()
@@ -59,11 +61,12 @@ class AuthenticationResource(
     private fun handleLoginResult(loginResult: Result<AuthData>): ResponseEntity<LoginResponseDto> {
         return loginResult.fold(
             onSuccess = { authData ->
-                val refreshCookie =
-                    createRefreshToken(authData.refreshToken, authData.refreshTokenExpirationTime / 1000)
+                val refreshCookie = createRefreshCookie(authData.refreshToken, authData.refreshTokenExpirationTime / 1000)
+                val accessCookie = createAccessCookie(authData.accessToken, authData.accessTokenExpirationTime / 1000)
 
                 val headers = HttpHeaders()
                 headers.add(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                headers.add(HttpHeaders.SET_COOKIE, accessCookie.toString())
                 ResponseEntity.ok()
                     .headers(headers)
                     .body(LoginResponseDto(authData.accessToken, authData.accessTokenExpirationTime))
@@ -74,11 +77,14 @@ class AuthenticationResource(
         )
     }
 
-    private fun createRefreshToken(refreshToken: String, expiresIn: Long) =
-        ResponseCookie.from(REFRESH_TOKEN_NAME, refreshToken)
+    private fun createRefreshCookie(refreshToken: String, expiresIn: Long) = createCookie(REFRESH_TOKEN_NAME, refreshToken, "/api/auth/refresh", expiresIn)
+    private fun createAccessCookie(accessToken: String, expiresIn: Long) = createCookie(ACCESS_TOKEN_NAME, accessToken, "/", expiresIn)
+
+    private fun createCookie(name: String, value: String, path: String, expiresIn: Long) =
+        ResponseCookie.from(name, value)
             .httpOnly(true)
             .secure(true)
-            .path("/api/auth/refresh")
+            .path(path)
             .maxAge(expiresIn)
             .sameSite("Strict")
             .build()

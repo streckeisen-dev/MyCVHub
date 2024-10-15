@@ -66,10 +66,10 @@ class AuthenticationService(
             )
     }
 
-    fun refreshAccessToken(refreshToken: String): Result<AuthData> {
-        val username = jwtService.extractUsername(refreshToken)
+    fun refreshAccessToken(oldRefreshToken: String): Result<AuthData> {
+        val username = jwtService.extractUsername(oldRefreshToken)
         val userDetails = userDetailsService.loadUserByUsername(username)
-        if (userDetails == null || !jwtService.isTokenValid(refreshToken, userDetails)) {
+        if (userDetails == null || !jwtService.isTokenValid(oldRefreshToken, userDetails)) {
             return Result.failure(JwtException("Invalid refresh token"))
         }
 
