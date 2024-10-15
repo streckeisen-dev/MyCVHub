@@ -34,7 +34,7 @@
         />
 
         <div class="form-action-buttons">
-          <v-btn type="submit" text="Save" color="btn-primary" @click="save" />
+          <v-btn type="submit" text="Save" color="primary" @click="save" />
           <v-btn text="Cancel" @click="cancel" />
         </div>
       </v-form>

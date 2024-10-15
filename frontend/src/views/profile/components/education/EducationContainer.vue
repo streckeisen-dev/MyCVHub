@@ -5,7 +5,7 @@
     </v-col>
     <template v-if="actions">
       <v-col cols="3" sm="2" md="1" class="education-action">
-        <v-btn icon="mdi-pencil" color="btn-primary" @click="editEducation(education)" />
+        <v-btn icon="mdi-pencil" color="primary" @click="editEducation(education)" />
       </v-col>
       <v-col cols="3" sm="2" md="1" class="education-action">
         <v-btn icon="mdi-delete" color="red" @click="deleteEducation(education.id)" />

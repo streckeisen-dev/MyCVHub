@@ -12,7 +12,7 @@
             </v-col>
             <template v-if="actions">
               <v-col cols="3" sm="2" md="1" class="skill-action">
-                <v-btn icon="mdi-pencil" color="btn-primary" @click="editSkill(skill)" />
+                <v-btn icon="mdi-pencil" color="primary" @click="editSkill(skill)" />
               </v-col>
               <v-col cols="3" sm="2" md="1" class="skill-action">
                 <v-btn icon="mdi-delete" color="red" @click="deleteSkill(skill.id)" />

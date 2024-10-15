@@ -4,7 +4,7 @@
       <v-row class="account-section">
         <v-col cols="12" sm="6">
           <h2>Personal Data</h2>
-          <v-sheet rounded color="primary" class="account-sheet">
+          <v-sheet rounded class="account-sheet">
             <attribute-list>
               <attribute-value name="First Name" :value="account.firstName" />
               <attribute-value name="Last Name" :value="account.lastName" />
@@ -16,7 +16,7 @@
         </v-col>
         <v-col cols="12" sm="6">
           <h2>Address</h2>
-          <v-sheet rounded color="primary" class="account-sheet">
+          <v-sheet rounded class="account-sheet">
             <attribute-list>
               <attribute-value name="Street" :value="account.street" />
               <attribute-value name="House Number" :value="account.houseNumber" />
@@ -31,16 +31,16 @@
       <v-row class="account-section">
         <v-col cols="12" sm="6">
           <h2>Profile</h2>
-          <v-sheet rounded color="primary" class="account-sheet">
+          <v-sheet rounded class="account-sheet">
             <v-row v-if="account.profile">
               <v-col cols="12" md="5" lg="3">
                 <router-link :to="{ name: 'public-profile', params: { alias: account.profile } }">
-                  <v-btn text="View Profile" color="btn-primary" />
+                  <v-btn text="View Profile" color="primary" />
                 </router-link>
               </v-col>
               <v-col cols="12" md="5" lg="3">
                 <router-link :to="{ name: 'edit-profile' }">
-                  <v-btn text="Edit Profile" color="btn-primary" />
+                  <v-btn text="Edit Profile" color="primary" />
                 </router-link>
               </v-col>
             </v-row>
@@ -48,7 +48,7 @@
               <v-col cols="12" md="5" lg="3">You don't have a profile yet</v-col>
               <v-col cols="12" md="5" lg="3">
                 <router-link :to="{ name: 'create-profile' }">
-                  <v-btn text="Create Profile" color="btn-primary" />
+                  <v-btn text="Create Profile" color="primary" />
                 </router-link>
               </v-col>
             </v-row>

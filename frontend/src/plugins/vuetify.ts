@@ -24,11 +24,12 @@ const vuetify = createVuetify({
       dark: {
         dark: true,
         colors: {
-          primary: '#151b23',
-          'btn-primary': '#56aff5',
-          'btn-background': '#ffffff',
-          surface: '#010409',
-          background: '#010409'
+          primary: '#4169E1', // Blue accent from the logo
+          secondary: '#8A8A8A', // Lighter gray for softer contrast
+          background: '#010409', // Dark background from logo
+          surface: '#0D1117', // Dark gray for cards/surfaces
+          onPrimary: '#FFFFFF', // Text color on primary elements
+          onBackground: '#C9D1D9', // Light gray text on dark background
         },
         variables: {
           'border-color': '61,68,77',
@@ -38,9 +39,12 @@ const vuetify = createVuetify({
       light: {
         dark: false,
         colors: {
-          nav: '#f6f8fa',
-          background: '#ffffff',
-          border: '#d1d9e0'
+          primary: '#4169E1', // Blue accent from the logo
+          secondary: '#202020', // Neutral dark gray for contrast
+          background: '#FFFFFF', // Background color for light mode
+          surface: '#F4F4F4', // Slightly off-white for surfaces/cards
+          onPrimary: '#FFFFFF', // Text color on primary elements
+          onBackground: '#202020', // Text color for main content
         }
       },
       profile: {

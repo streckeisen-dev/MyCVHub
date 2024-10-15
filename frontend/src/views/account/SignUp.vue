@@ -158,7 +158,7 @@
             </v-row>
             <v-row>
               <v-col cols="12">
-                <v-btn color="btn-primary" @click.stop="signUp">Sign Up</v-btn>
+                <v-btn color="primary" @click.stop="signUp">Sign Up</v-btn>
               </v-col>
             </v-row>
           </v-container>

@@ -1,9 +1,9 @@
 <template>
   <v-row justify="center" class="work-experiences-editor">
-    <v-sheet class="editor-sheet" rounded color="primary">
+    <v-sheet class="editor-sheet" rounded>
       <v-col cols="12">
         <v-row justify="end">
-          <v-btn text="Add work experience" color="btn-primary" @click="addWorkExperience" />
+          <v-btn text="Add work experience" @click="addWorkExperience" />
         </v-row>
       </v-col>
       <work-experience-container

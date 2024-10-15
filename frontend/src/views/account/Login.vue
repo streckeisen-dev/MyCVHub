@@ -5,7 +5,7 @@
         <h1>Login to MyCV</h1>
       </v-row>
       <v-row justify="center">
-        <v-sheet id="login-sheet" elevation="12" border rounded color="primary">
+        <v-sheet id="login-sheet" elevation="12" border rounded>
           <v-form @submit.prevent>
             <v-text-field
               v-model="formState.email"
@@ -17,7 +17,7 @@
               label="Password"
               :error-messages="getErrorMessages('password').value"
             />
-            <v-btn type="submit" block color="btn-primary" @click="login">Login</v-btn>
+            <v-btn type="submit" block color="primary" @click="login">Login</v-btn>
           </v-form>
           <p>
             Don't have an account yet?
@@ -112,7 +112,7 @@ function getErrorMessages(attributeName: string): ComputedRef<[string]> {
     margin-top: 10px;
 
     a {
-      color: rgb(var(--v-theme-btn-primary));
+      color: rgb(var(--v-theme-primary));
     }
   }
 }

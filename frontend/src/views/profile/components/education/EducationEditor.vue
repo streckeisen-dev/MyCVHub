@@ -1,9 +1,9 @@
 <template>
   <v-row justify="center" class="education-editor">
-    <v-sheet class="editor-sheet" rounded color="primary">
+    <v-sheet class="editor-sheet" rounded>
       <v-col cols="12">
         <v-row justify="end">
-          <v-btn text="Add education entry" color="btn-primary" @click="addEducation" />
+          <v-btn text="Add education entry" color="primary" @click="addEducation" />
         </v-row>
       </v-col>
       <education-container

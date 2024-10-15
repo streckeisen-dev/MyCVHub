@@ -23,11 +23,11 @@
           step="1"
           :error-messages="levelErrors"
           class="level-slider"
-          color="btn-primary"
+          color="primary"
         />
 
         <div class="form-action-buttons">
-          <v-btn type="submit" text="Save" color="btn-primary" @click="save" />
+          <v-btn type="submit" text="Save" color="primary" @click="save" />
           <v-btn text="Cancel" @click="cancel" />
         </div>
       </v-form>

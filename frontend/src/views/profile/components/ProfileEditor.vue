@@ -23,7 +23,7 @@
     <v-tabs-window v-model="activeTab">
       <v-tabs-window-item value="general">
         <v-row justify="center">
-          <v-sheet class="form-sheet" rounded color="primary">
+          <v-sheet class="form-sheet" rounded>
             <v-form @submit.prevent>
               <v-row class="form-flex">
                 <v-col cols="12" md="4">
@@ -55,28 +55,28 @@
                     v-model="formState.isProfilePublic"
                     label="Public Profile"
                     hint="If enabled, your profile will be publicly accessible"
-                    color="btn-primary"
+                    color="primary"
                     :error-messages="isProfilePublicErrors"
                   />
                   <v-switch
                     v-model="formState.isEmailPublic"
                     label="Public E-Mail"
                     hint="If enabled, your E-Mail address will be shown in your profile"
-                    color="btn-primary"
+                    color="primary"
                     :error-messages="isEmailPublicErrors"
                   />
                   <v-switch
                     v-model="formState.isPhonePublic"
                     label="Public Phone"
                     hint="If enabled, your phone number will be shown in your profile"
-                    color="btn-primary"
+                    color="primary"
                     :error-messages="isPhonePublicErrors"
                   />
                   <v-switch
                     v-model="formState.isAddressPublic"
                     label="Public Address"
                     hint="If enabled, your address will be shown in your profile"
-                    color="btn-primary"
+                    color="primary"
                     :error-messages="isAddressPublicErrors"
                   />
                 </v-col>
@@ -85,7 +85,7 @@
               <v-btn
                 type="submit"
                 text="Save"
-                color="btn-primary"
+                color="primary"
                 @click="saveGeneralInformation"
               />
             </v-form>
@@ -149,7 +149,7 @@ const profilePicture = computed(() => {
 })
 
 type FormState = {
-  profilePicture: File
+  profilePicture?: File
   alias: string
   jobTitle: string
   bio: string
@@ -170,7 +170,7 @@ const formState = reactive<FormState>({
   isAddressPublic: props.profile.isAddressPublic
 })
 
-const profilePictureSizeValidator = () => formState.profilePicture?.size <= profilePictureMaxSize
+const profilePictureSizeValidator = () => formState.profilePicture == undefined || formState.profilePicture?.size <= profilePictureMaxSize
 
 const rules = {
   profilePicture: isCreated.value
@@ -221,8 +221,6 @@ async function saveGeneralInformation() {
   if (!isValid) {
     return
   }
-
-  console.log('picture size', formState.profilePicture?.size)
 
   try {
     const profileUpdate = {

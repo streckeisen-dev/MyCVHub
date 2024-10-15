@@ -1,9 +1,9 @@
 <template>
   <v-row justify="center" class="skills-editor">
-    <v-sheet class="editor-sheet" rounded color="primary">
+    <v-sheet class="editor-sheet" rounded>
       <v-col cols="12">
         <v-row justify="end">
-          <v-btn text="Add skill" color="btn-primary" @click="addSkill" />
+          <v-btn text="Add skill" color="primary" @click="addSkill" />
         </v-row>
       </v-col>
       <skills-container
