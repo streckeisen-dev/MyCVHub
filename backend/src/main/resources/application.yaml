@@ -28,4 +28,8 @@ logging:
       max-history: 5
       max-file-size: 5MB
 
-PROFILE_PICTURE_FOLDER: /app/static/profile/
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
+  url-expiration: 300

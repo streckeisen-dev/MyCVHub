@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import kotlin.io.path.name
 
 @RestController
 @RequestMapping("/api/public/profile")
@@ -46,7 +45,7 @@ class PublicProfileResource(
         return profilePictureService.get(principal?.id, profile)
             .fold(
                 onSuccess = { profilePicture ->
-                    val resource = UrlResource(profilePicture.toUri())
+                    val resource = UrlResource(profilePicture.uri)
                     ResponseEntity.ok()
                         .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"${profilePicture.name}\"")
                         .body(resource)

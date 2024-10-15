@@ -1,29 +1,26 @@
 package ch.streckeisen.mycv.backend.cv.profile.picture
 
-import ch.streckeisen.mycv.backend.files.FileService
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.apache.commons.io.FileUtils
 import org.apache.tika.mime.MediaType
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
 import java.io.IOException
-import java.nio.file.Paths
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class ProfilePictureServiceTest {
-    private lateinit var fileService: FileService
+    private lateinit var profilePictureStorageService: ProfilePictureStorageService
     private lateinit var profilePictureService: ProfilePictureService
 
     @BeforeEach
     fun setup() {
-        fileService = mockk()
-        profilePictureService = ProfilePictureService(FileUtils.getTempDirectoryPath(), fileService)
+        profilePictureStorageService = mockk()
+        profilePictureService = ProfilePictureService(profilePictureStorageService)
     }
 
     @Test
@@ -38,7 +35,7 @@ class ProfilePictureServiceTest {
         val ex = result.exceptionOrNull()
         assertNotNull(ex)
         assertTrue { ex is IllegalArgumentException }
-        verify(exactly = 0) { fileService.copyFile(any(), any()) }
+        verify(exactly = 0) { profilePictureStorageService.store(any(), any()) }
     }
 
     @Test
@@ -47,7 +44,7 @@ class ProfilePictureServiceTest {
             every { isEmpty } returns false
             every { inputStream } returns ByteArrayInputStream(ByteArray(1))
         }
-        every { fileService.detectContentType(any()) } returns MediaType.OCTET_STREAM
+        every { profilePictureStorageService.detectContentType(any()) } returns MediaType.OCTET_STREAM
 
         val result = profilePictureService.store(1, file, null)
 
@@ -55,7 +52,7 @@ class ProfilePictureServiceTest {
         val ex = result.exceptionOrNull()
         assertNotNull(ex)
         assertTrue { ex is IllegalArgumentException }
-        verify(exactly = 0) { fileService.copyFile(any(), any()) }
+        verify(exactly = 0) { profilePictureStorageService.store(any(), any()) }
     }
 
     @Test
@@ -64,17 +61,16 @@ class ProfilePictureServiceTest {
             every { isEmpty } returns false
             every { inputStream } returns ByteArrayInputStream(ByteArray(1))
         }
-        every { fileService.detectContentType(any()) } returns MediaType.image("jpg")
-        val newPicture = Paths.get(FileUtils.getTempDirectoryPath()).resolve("1.jpg")
-        every { fileService.copyFile(eq(file), eq(newPicture)) } returns Result.success(Unit)
+        every { profilePictureStorageService.detectContentType(any()) } returns MediaType.image("jpg")
+        every { profilePictureStorageService.store(eq("1.jpg"), eq(file)) } returns Result.success("1.jpg")
 
         val result = profilePictureService.store(1, file, null)
 
         assertTrue { result.isSuccess }
         val pictureName = result.getOrNull()
         assertEquals("1.jpg", pictureName)
-        verify(exactly = 1) { fileService.copyFile(eq(file), eq(newPicture)) }
-        verify(exactly = 0) { fileService.deleteFile(any()) }
+        verify(exactly = 1) { profilePictureStorageService.store(eq("1.jpg"), eq(file)) }
+        verify(exactly = 0) { profilePictureStorageService.delete(any()) }
     }
 
     @Test
@@ -83,9 +79,8 @@ class ProfilePictureServiceTest {
             every { isEmpty } returns false
             every { inputStream } returns ByteArrayInputStream(ByteArray(1))
         }
-        every { fileService.detectContentType(any()) } returns MediaType.image("jpg")
-        val newPicture = Paths.get(FileUtils.getTempDirectoryPath()).resolve("1.jpg")
-        every { fileService.copyFile(eq(file), eq(newPicture)) } returns Result.failure(IOException("Error"))
+        every { profilePictureStorageService.detectContentType(any()) } returns MediaType.image("jpg")
+        every { profilePictureStorageService.store(eq("1.jpg"), eq(file)) } returns Result.failure(IOException("Error"))
 
         val result = profilePictureService.store(1, file, null)
 
@@ -93,8 +88,8 @@ class ProfilePictureServiceTest {
         val ex = result.exceptionOrNull()
         assertNotNull(ex)
         assertTrue { ex is IOException }
-        verify(exactly = 1) { fileService.copyFile(eq(file), eq(newPicture)) }
-        verify(exactly = 0) { fileService.deleteFile(any()) }
+        verify(exactly = 1) { profilePictureStorageService.store(eq("1.jpg"), eq(file)) }
+        verify(exactly = 0) { profilePictureStorageService.delete(any()) }
     }
 
     @Test
@@ -103,19 +98,17 @@ class ProfilePictureServiceTest {
             every { isEmpty } returns false
             every { inputStream } returns ByteArrayInputStream(ByteArray(1))
         }
-        val newPicture = Paths.get(FileUtils.getTempDirectoryPath()).resolve("1.jpg")
-        val oldPicture = Paths.get(FileUtils.getTempDirectoryPath()).resolve("1.png")
-        every { fileService.detectContentType(any()) } returns MediaType.image("jpg")
-        every { fileService.copyFile(eq(file), eq(newPicture)) } returns Result.success(Unit)
-        every { fileService.deleteFile(eq(oldPicture)) } returns Result.success(Unit)
+        every { profilePictureStorageService.detectContentType(any()) } returns MediaType.image("jpg")
+        every { profilePictureStorageService.store(eq("1.jpg"), eq(file)) } returns Result.success("1.jpg")
+        every { profilePictureStorageService.delete(eq("1.png")) } returns Result.success(Unit)
 
         val result = profilePictureService.store(1, file, "1.png")
 
         assertTrue { result.isSuccess }
         val pictureName = result.getOrNull()
         assertEquals("1.jpg", pictureName)
-        verify(exactly = 1) { fileService.copyFile(eq(file), eq(newPicture)) }
-        verify(exactly = 1) { fileService.deleteFile(eq(oldPicture)) }
+        verify(exactly = 1) { profilePictureStorageService.store(eq("1.jpg"), eq(file)) }
+        verify(exactly = 1) { profilePictureStorageService.delete(eq("1.png")) }
     }
 
     @Test
@@ -124,18 +117,16 @@ class ProfilePictureServiceTest {
             every { isEmpty } returns false
             every { inputStream } returns ByteArrayInputStream(ByteArray(1))
         }
-        val newPicture = Paths.get(FileUtils.getTempDirectoryPath()).resolve("1.jpg")
-        val oldPicture = Paths.get(FileUtils.getTempDirectoryPath()).resolve("1.png")
-        every { fileService.detectContentType(any()) } returns MediaType.image("jpg")
-        every { fileService.copyFile(eq(file), eq(newPicture)) } returns Result.success(Unit)
-        every { fileService.deleteFile(eq(oldPicture)) } returns Result.failure(IOException("Error"))
+        every { profilePictureStorageService.detectContentType(any()) } returns MediaType.image("jpg")
+        every { profilePictureStorageService.store(eq("1.jpg"), eq(file)) } returns Result.success("1.jpg")
+        every { profilePictureStorageService.delete(eq("1.png")) } returns Result.failure(IOException("Error"))
 
         val result = profilePictureService.store(1, file, "1.png")
 
         assertTrue { result.isSuccess }
         val pictureName = result.getOrNull()
         assertEquals("1.jpg", pictureName)
-        verify(exactly = 1) { fileService.copyFile(eq(file), eq(newPicture)) }
-        verify(exactly = 1) { fileService.deleteFile(eq(oldPicture)) }
+        verify(exactly = 1) { profilePictureStorageService.store(eq("1.jpg"), eq(file)) }
+        verify(exactly = 1) { profilePictureStorageService.delete(eq("1.png")) }
     }
 }

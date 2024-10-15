@@ -7,5 +7,3 @@ security.jwt.secret: wHqRTjE8tXtgm/zhvn1qmmxLkcA+MvjnbX0aLkNhLm4=
 
 logging:
   file.name: ./logs/mycv.log
-
-PROFILE_PICTURE_FOLDER: ./profile/
