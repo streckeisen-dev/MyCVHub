@@ -149,6 +149,9 @@ jobs:
     - name: Update DigitalOcean specs with docker image tag
       run: |
         sed -i 's/latest/${{ github.sha }}/' .do/my-cv-app.yaml
+        sed -i 's/{{ DO_DB_PASSWORD }}/${{ secrets.DO_DB_PASSWORD }}/g' .do/my-cv-app.yaml
+        sed -i 's/{{ DO_JWT_SECRET }}/${{ secrets.DO_JWT_SECRET }}/g' .do/my-cv-app.yaml
+        sed -i 's/{{ DO_DOCKER_CREDENTIALS }}/${{ secrets.DO_DOCKER_CREDENTIALS }}/g' .do/my-cv-app.yaml
     
     - name: DigitalOcean App Platform deployment
       uses: digitalocean/app_action/deploy@v2
@@ -156,5 +159,5 @@ jobs:
         project_id: 36885f94-3294-46d5-abe9-48952ce7bbfd
         token: ${{ secrets.DO_ACCESS_TOKEN }}
         app_spec_location: .do/my-cv-app.yaml
-        print_build_logs: true
-        print_deploy_logs: true
+        print_build_logs: false
+        print_deploy_logs: false

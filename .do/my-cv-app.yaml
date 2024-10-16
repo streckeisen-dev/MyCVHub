@@ -14,11 +14,11 @@ envs:
 - key: MYCV_DB_PASSWORD
   scope: RUN_AND_BUILD_TIME
   type: SECRET
-  value: EV[1:XfVrZtXk+F/+8j4Y4bzdyZAbWHfwszzF:d3h+e+h3czmG8Pi87plPuXRGpIYA0Z3iEck06xuZkvGj2cl+PGwaLw==]
+  value: EV[{{ DO_DB_PASSWORD }}]
 - key: JWT_SECRET
   scope: RUN_AND_BUILD_TIME
   type: SECRET
-  value: EV[1:C2s3gQWvi70wQyeRj6EtAukHE8m3Avro:0OHRHTOYzMXlKSl6DelI4RWK4CQrWy7MP+ooJutFTIA7cLEA0+YoaqA5Oqct223AwT/G9lUjEpUhTufFEi0ECV0USpElOG6MdrsFGTIRLcEEYRPCITGyGzRnzf/fE7uMPMqhe9S5TobH+ohDjDYisNYsmQ/o6y8GE82bK1i7D7fA+kcf+EsPRbwhIYGIrOpku9GfB6yCW/ZLNhwvxQ9Vcbognj2jJZ12ERNxNMuAa70Aj9WSuqf5FK5e36A=]
+  value: EV[{{ DO_JWT_SECRET }}]
 features:
 - buildpack-stack=ubuntu-22
 ingress:
@@ -33,7 +33,7 @@ region: fra
 services:
 - image:
     registry: lstreckeisen
-    registry_credentials: EV[1:SZtHlCRh25xCY3lgXqdDKGg+1Uf2qOT5:xUH8j/qTcMTJHA8bxhgPo7mUCZvxZKIUasaVApbs2qcRz/miKM2eKET3FlwDagScTgdj4HgC]
+    registry_credentials: EV[{{ DO_DOCKER_CREDENTIALS }}]
     registry_type: DOCKER_HUB
     repository: my-cv
     tag: latest
