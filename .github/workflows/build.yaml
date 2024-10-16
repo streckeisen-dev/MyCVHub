@@ -147,12 +147,13 @@ jobs:
       uses: actions/checkout@v4
     
     - name: Update DigitalOcean specs
+      env: 
+        DB_PW: ${{ secrets.DO_DB_PASSWORD }} | sed 's/[&/\]/\\&/g'
+        JWT_SEC: ${{ secrets.DO_JWT_SECRET }} | sed 's/[&/\]/\\&/g'
+        DOCK_SEC: ${{ secrets.DO_DOCKER_CREDENTIALS }} | sed 's/[&/\]/\\&/g'
       run: |
         cd .do/
         sed -i 's/latest/${{ github.sha }}/' my-cv-app.yaml
-        DB_PW=$(printf '%s\n' "${{ secrets.DO_DB_PASSWORD }}" | sed 's/[&/\]/\\&/g')
-        JWT_SEC=$(printf '%s\n' "${{ secrets.DO_JWT_SECRET }}" | sed 's/[&/\]/\\&/g')
-        DOCK_SEC=$(printf '%s\n' "${{ secrets.DO_DOCKER_CREDENTIALS }}" | sed 's/[&/\]/\\&/g')
         sed -i 's/{{ DO_DB_PASSWORD }}/${{ DB_PW }}/g' my-cv-app.yaml
         sed -i 's/{{ DO_JWT_SECRET }}/${{ JWT_SEC }}/g' my-cv-app.yaml
         sed -i 's/{{ DO_DOCKER_CREDENTIALS }}/${{ DOCK_SEC }}/g' my-cv-app.yaml
