@@ -154,8 +154,8 @@ jobs:
       run: |
         cd .do/
         sed -i 's|latest|${{ github.sha }}|' my-cv-app.yaml
-        sed -i 's|{{ DO_DB_PASSWORD }}|{{ secrets.DO_DB_PASSWORD }}|g' my-cv-app.yaml
-        sed -i 's|{{ DO_JWT_SECRET }}|{{ secrets.DO_JWT_SECRET }}|g' my-cv-app.yaml
+#        sed -i 's|{{ DO_DB_PASSWORD }}|{{ secrets.DO_DB_PASSWORD }}|g' my-cv-app.yaml
+#        sed -i 's|{{ DO_JWT_SECRET }}|{{ secrets.DO_JWT_SECRET }}|g' my-cv-app.yaml
     
     - name: DigitalOcean App Platform deployment
       uses: digitalocean/app_action/deploy@v2

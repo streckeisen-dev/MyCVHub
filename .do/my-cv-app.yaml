@@ -11,17 +11,28 @@ envs:
 - key: MYCV_DB_USERNAME
   scope: RUN_AND_BUILD_TIME
   value: mycv-db-user
-- key: MYCV_DB_PASSWORD
-  scope: RUN_AND_BUILD_TIME
-  type: SECRET
-  value: EV[1:SZtHlCRh25xCY3lgXqdDKGg+1Uf2qOT5:xUH8j/qTcMTJHA8bxhgPo7mUCZvxZKIUasaVApbs2qcRz/miKM2eKET3FlwDagScTgdj4HgC]
-- key: JWT_SECRET
-  scope: RUN_AND_BUILD_TIME
-  type: SECRET
-  value: EV[1:C2s3gQWvi70wQyeRj6EtAukHE8m3Avro:0OHRHTOYzMXlKSl6DelI4RWK4CQrWy7MP+ooJutFTIA7cLEA0+YoaqA5Oqct223AwT/G9lUjEpUhTufFEi0ECV0USpElOG6MdrsFGTIRLcEEYRPCITGyGzRnzf/fE7uMPMqhe9S5TobH+ohDjDYisNYsmQ/o6y8GE82bK1i7D7fA+kcf+EsPRbwhIYGIrOpku9GfB6yCW/ZLNhwvxQ9Vcbognj2jJZ12ERNxNMuAa70Aj9WSuqf5FK5e36A=]
 - key: SPRING_PROFILES_ACTIVE
   scope: RUN_AND_BUILD_TIME
   value: prod
+- key: MYCV_DB_PASSWORD
+  scope: RUN_AND_BUILD_TIME
+  type: SECRET
+  value: EV[1:UbY5XDYo6af2b+9ZIC9vbOJsfBtZZBwH:zGJDGQSEVu3wYQ0fYcGvShp7FlFgus11rNk67BPRGxjYlt3myMm74Q==]
+- key: JWT_SECRET
+  scope: RUN_AND_BUILD_TIME
+  type: SECRET
+  value: EV[1:d5xmFomXzftP2JpRHetK32NPNewjolOl:Va+iT2DVqm8e9wN0Gp9ECoBWFE6uPWXnjZP5sOLH1d2rdINw2r/PDzYyMPcRGc7efQxXkaEHSTcyIlf1Kjvo6gG3wY3DP7OwnEXYv7Q8tSYOiGtYwxYhjrlk4uYjE5eUVyvfTdf5rs0/M7By43fJaVpx84v9YJG90MCXOQfs4B8C7kXl7au2BwYSLW4ICVsslfhjCaJTobQWQXNGebG5ocFrA4ii9pS3qWqz6yAuCBOITRpI/rXnpQKM548=]
+- key: CLOUDINARY_API_KEY
+  scope: RUN_AND_BUILD_TIME
+  type: SECRET
+  value: EV[1:a3nTAuqZucFrMYZb/piT/KtgcUCYw1Zd:wiExGQaOyv1tdhql7s9ZFn6DytMzgzqmZFpMSjrj8g==]
+- key: CLOUDINARY_API_SECRET
+  scope: RUN_AND_BUILD_TIME
+  type: SECRET
+  value: EV[1:qHyw/zL5wv+MkGb2sfkzND3OoDM5S1QR:4300euPfLFNM0TIbZ0SbqnwYyjT1lQxCjig+K1iTbAsuwaiTeCSkit9VDg==]
+- key: CLOUDINARY_CLOUD_NAME
+  scope: RUN_AND_BUILD_TIME
+  value: dd2kbqj6y
 features:
 - buildpack-stack=ubuntu-22
 ingress:
@@ -34,13 +45,13 @@ ingress:
 name: my-cv-app
 region: fra
 services:
-- image:
+- http_port: 8080
+  image:
     registry: lstreckeisen
     registry_credentials: EV[1:SZtHlCRh25xCY3lgXqdDKGg+1Uf2qOT5:xUH8j/qTcMTJHA8bxhgPo7mUCZvxZKIUasaVApbs2qcRz/miKM2eKET3FlwDagScTgdj4HgC]
     registry_type: DOCKER_HUB
     repository: my-cv
     tag: latest
-  http_port: 8080
   instance_count: 2
   instance_size_slug: apps-s-1vcpu-1gb
   name: my-cv
