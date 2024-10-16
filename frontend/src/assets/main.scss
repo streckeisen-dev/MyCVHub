@@ -1,14 +1,12 @@
+html {
+  font-family: Helvetica, sans-serif !important;
+}
+
 a {
   text-decoration: none;
   color: inherit;
 }
 
-dl.formatted {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: auto auto;
-
-  & > dt {
-    font-weight: bold;
-  }
+main.router-view {
+  flex: 1;
 }
