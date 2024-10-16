@@ -146,12 +146,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Update DigitalOcean specs with docker image tag
+    - name: Update DigitalOcean specs
       run: |
-        sed -i 's/latest/${{ github.sha }}/' .do/my-cv-app.yaml
-        sed -i 's/{{ DO_DB_PASSWORD }}/${{ secrets.DO_DB_PASSWORD }}/g' .do/my-cv-app.yaml
-        sed -i 's/{{ DO_JWT_SECRET }}/${{ secrets.DO_JWT_SECRET }}/g' .do/my-cv-app.yaml
-        sed -i 's/{{ DO_DOCKER_CREDENTIALS }}/${{ secrets.DO_DOCKER_CREDENTIALS }}/g' .do/my-cv-app.yaml
+        cd .do/
+        sed -i 's/latest/${{ github.sha }}/' my-cv-app.yaml
+        DB_PW=$(printf '%s\n' "${{ secrets.DO_DB_PASSWORD }}" | sed 's/[&/\]/\\&/g')
+        JWT_SEC=$(printf '%s\n' "${{ secrets.DO_JWT_SECRET }}" | sed 's/[&/\]/\\&/g')
+        DOCK_SEC=$(printf '%s\n' "${{ secrets.DO_DOCKER_CREDENTIALS }}" | sed 's/[&/\]/\\&/g')
+        sed -i 's/{{ DO_DB_PASSWORD }}/${{ DB_PW }}/g' my-cv-app.yaml
+        sed -i 's/{{ DO_JWT_SECRET }}/${{ JWT_SEC }}/g' my-cv-app.yaml
+        sed -i 's/{{ DO_DOCKER_CREDENTIALS }}/${{ DOCK_SEC }}/g' my-cv-app.yaml
     
     - name: DigitalOcean App Platform deployment
       uses: digitalocean/app_action/deploy@v2
