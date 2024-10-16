@@ -2,8 +2,9 @@ alerts:
 - rule: DEPLOYMENT_FAILED
 - rule: DOMAIN_FAILED
 domains:
-- domain: cv.streckeisen.dev
+- domain: mycvhub.ch
   type: PRIMARY
+  zone: mycvhub.ch
 envs:
 - key: MYCV_DATASOURCE
   scope: RUN_AND_BUILD_TIME
