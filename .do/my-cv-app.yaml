@@ -22,6 +22,17 @@ envs:
   scope: RUN_AND_BUILD_TIME
   type: SECRET
   value: EV[1:d5xmFomXzftP2JpRHetK32NPNewjolOl:Va+iT2DVqm8e9wN0Gp9ECoBWFE6uPWXnjZP5sOLH1d2rdINw2r/PDzYyMPcRGc7efQxXkaEHSTcyIlf1Kjvo6gG3wY3DP7OwnEXYv7Q8tSYOiGtYwxYhjrlk4uYjE5eUVyvfTdf5rs0/M7By43fJaVpx84v9YJG90MCXOQfs4B8C7kXl7au2BwYSLW4ICVsslfhjCaJTobQWQXNGebG5ocFrA4ii9pS3qWqz6yAuCBOITRpI/rXnpQKM548=]
+- key: CLOUDINARY_API_KEY
+  scope: RUN_AND_BUILD_TIME
+  type: SECRET
+  value: EV[1:a3nTAuqZucFrMYZb/piT/KtgcUCYw1Zd:wiExGQaOyv1tdhql7s9ZFn6DytMzgzqmZFpMSjrj8g==]
+- key: CLOUDINARY_API_SECRET
+  scope: RUN_AND_BUILD_TIME
+  type: SECRET
+  value: EV[1:qHyw/zL5wv+MkGb2sfkzND3OoDM5S1QR:4300euPfLFNM0TIbZ0SbqnwYyjT1lQxCjig+K1iTbAsuwaiTeCSkit9VDg==]
+- key: CLOUDINARY_CLOUD_NAME
+  scope: RUN_AND_BUILD_TIME
+  value: dd2kbqj6y
 features:
 - buildpack-stack=ubuntu-22
 ingress:
