@@ -1,170 +1,180 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        <h1>Create an account</h1>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-form>
-        <v-container>
-          <v-row>
-            <v-col cols="12" md="6">
-              <v-row>
-                <v-col cols="12">
-                  <h2>Personal Data</h2>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="formState.firstName"
-                    label="First Name"
-                    :error-messages="getErrorMessages('firstName').value"
-                  />
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="formState.lastName"
-                    label="Last Name"
-                    :error-messages="getErrorMessages('lastName').value"
-                  />
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="formState.email"
-                    label="E-Mail"
-                    :error-messages="getErrorMessages('email').value"
-                  />
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="formState.phone"
-                    label="Phone"
-                    :error-messages="getErrorMessages('phone').value"
-                  />
-                </v-col>
-                <v-col cols="12">
-                  <v-date-input
-                    v-model="formState.birthday"
-                    label="Birthday"
-                    :error-messages="getErrorMessages('birthday').value"
-                  />
-                </v-col>
-              </v-row>
-            </v-col>
-            <v-spacer />
-            <v-col cols="12" md="6">
-              <v-row>
-                <v-col cols="12">
-                  <h2>Address</h2>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12" sm="9">
-                  <v-text-field
-                    v-model="formState.street"
-                    label="Street"
-                    :error-messages="getErrorMessages('street').value"
-                  />
-                </v-col>
-                <v-col cols="12" sm="3">
-                  <v-text-field
-                    v-model="formState.houseNumber"
-                    label="Number"
-                    :error-messages="getErrorMessages('houseNumber').value"
-                  />
-                </v-col>
-                <v-col cols="12" sm="3">
-                  <v-text-field
-                    v-model="formState.postcode"
-                    label="Postcode"
-                    :error-messages="getErrorMessages('postcode').value"
-                  />
-                </v-col>
-                <v-col cols="12" sm="9">
-                  <v-text-field
-                    v-model="formState.city"
-                    label="City"
-                    :error-messages="getErrorMessages('city').value"
-                  />
-                </v-col>
-                <v-col cols="12" sm="12">
-                  <v-autocomplete v-model="formState.country"
-                                  label="Country"
-                                  :items="countries"
-                                  item-title="name"
-                                  item-value="countryCode"
-                  />
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12" md="6">
-              <v-row>
-                <v-col cols="12">
-                  <h2>Password</h2>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12">
-                  <password-input
-                    v-model="formState.password"
-                    label="Password"
-                    :error-messages="getErrorMessages('password').value"
-                  />
-                </v-col>
-                <v-col cols="12">
-                  <password-input
-                    v-model="formState.confirmedPassword"
-                    label="Confirm Password"
-                    :error-messages="getErrorMessages('confirmedPassword').value"
-                  />
-                </v-col>
-              </v-row>
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-row>
-                <v-col cols="12">
-                  <h3>Password Requirements</h3>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-list density="comfortable">
-                  <v-list-item
-                    v-for="requirement in passwordRequirements"
-                    :key="requirement.name"
-                    :title="requirement.name"
-                    :class="
-                      requirement.predicate() ? 'pw-requirement-fulfilled' : 'pw-requirement-error'
-                    "
-                  />
-                </v-list>
-              </v-row>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-switch v-model="formState.hasPublicProfile" color="secondary">
-                <template v-slot:label> Public Profile: Anyone can look at your CV.</template>
-              </v-switch>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <v-btn color="btn-primary" @click.stop="signUp">Sign Up</v-btn>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-form>
-    </v-row>
-    <notification v-if="didCountryLoadFail" title="Failed to load countries" message="Try again later or contact the administrator if the problem isn't resolved" />
-  </v-container>
+  <v-main>
+    <v-container>
+      <v-row>
+        <v-col cols="12">
+          <h1>Create an account</h1>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-form>
+          <v-container>
+            <v-row>
+              <v-col cols="12" md="6">
+                <v-row>
+                  <v-col cols="12">
+                    <h2>Personal Data</h2>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="formState.firstName"
+                      label="First Name"
+                      :error-messages="firstNameErrors"
+                    />
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="formState.lastName"
+                      label="Last Name"
+                      :error-messages="lastNameErrors"
+                    />
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="formState.email"
+                      label="E-Mail"
+                      :error-messages="emailErrors"
+                    />
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="formState.phone"
+                      label="Phone"
+                      :error-messages="phoneErrors"
+                    />
+                  </v-col>
+                  <v-col cols="12">
+                    <v-date-input
+                      v-model="formState.birthday"
+                      label="Birthday"
+                      :error-messages="birthdayErrors"
+                    />
+                  </v-col>
+                </v-row>
+              </v-col>
+              <v-spacer />
+              <v-col cols="12" md="6">
+                <v-row>
+                  <v-col cols="12">
+                    <h2>Address</h2>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" sm="9">
+                    <v-text-field
+                      v-model="formState.street"
+                      label="Street"
+                      :error-messages="streetErrors"
+                    />
+                  </v-col>
+                  <v-col cols="12" sm="3">
+                    <v-text-field
+                      v-model="formState.houseNumber"
+                      label="Number"
+                      :error-messages="houseNumberErrors"
+                    />
+                  </v-col>
+                  <v-col cols="12" sm="3">
+                    <v-text-field
+                      v-model="formState.postcode"
+                      label="Postcode"
+                      :error-messages="postcodeErrors"
+                    />
+                  </v-col>
+                  <v-col cols="12" sm="9">
+                    <v-text-field
+                      v-model="formState.city"
+                      label="City"
+                      :error-messages="cityErrors"
+                    />
+                  </v-col>
+                  <v-col cols="12" sm="12">
+                    <v-autocomplete
+                      v-model="formState.country"
+                      label="Country"
+                      :items="countries"
+                      item-title="name"
+                      item-value="countryCode"
+                      :error-messages="countryErrors"
+                    />
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" md="6">
+                <v-row>
+                  <v-col cols="12">
+                    <h2>Password</h2>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <password-input
+                      v-model="formState.password"
+                      label="Password"
+                      :error-messages="passwordErrors"
+                    />
+                  </v-col>
+                  <v-col cols="12">
+                    <password-input
+                      v-model="formState.confirmedPassword"
+                      label="Confirm Password"
+                      :error-messages="confirmedPasswordErrors"
+                    />
+                  </v-col>
+                </v-row>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-row>
+                  <v-col cols="12">
+                    <h3>Password Requirements</h3>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-list density="comfortable">
+                    <v-list-item
+                      v-for="requirement in passwordRequirements"
+                      :key="requirement.name"
+                      :title="requirement.name"
+                      :class="
+                        requirement.predicate()
+                          ? 'pw-requirement-fulfilled'
+                          : 'pw-requirement-error'
+                      "
+                    />
+                  </v-list>
+                </v-row>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12">
+                <v-switch v-model="formState.hasPublicProfile" color="secondary">
+                  <template v-slot:label> Public Profile: Anyone can look at your CV.</template>
+                </v-switch>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12">
+                <v-btn color="primary" @click.stop="signUp">Sign Up</v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-form>
+      </v-row>
+      <notification
+        v-if="didCountryLoadFail"
+        title="Failed to load countries"
+        message="Try again later or contact the administrator if the problem isn't resolved"
+      />
+    </v-container>
+  </v-main>
 </template>
 
 <script setup lang="ts">
-import accountApi from '@/api/account-api'
+import accountApi from '@/api/AccountApi'
 import router from '@/router'
 import { VDateInput } from 'vuetify/labs/components'
 import { computed, type ComputedRef, reactive, ref } from 'vue'
@@ -172,14 +182,14 @@ import PasswordInput from '@/components/PasswordInput.vue'
 import type { AccountDto } from '@/dto/AccountDto'
 import type { ErrorDto } from '@/dto/ErrorDto'
 import { email, helpers, required } from '@vuelidate/validators'
-import useVuelidate, { type ErrorObject } from '@vuelidate/core'
+import useVuelidate from '@vuelidate/core'
 import type { CountryDto } from '@/dto/CountryDto'
-import countryApi from '@/api/country-api'
+import countryApi from '@/api/CountryApi'
 import Notification from '@/components/Notification.vue'
+import { getErrorMessages } from '@/services/FormHelper'
 
 if (accountApi.isUserLoggedIn()) {
   await router.push({ name: 'home' })
-
 }
 
 const countries = ref<Array<CountryDto>>([])
@@ -335,19 +345,26 @@ async function signUp() {
     await router.push({ name: 'home' }) // TODO: change to profile
   } catch (e) {
     const error = e as ErrorDto
-    errorMessages.value = error.errors
+    errorMessages.value = error.errors || {}
   }
 }
 
-function getErrorMessages(attributeName: string): ComputedRef {
-  return computed(() => {
-    const backendError = errorMessages.value[attributeName]
-    if (backendError) {
-      return [backendError]
-    }
-    return form.value[attributeName].$errors.map((e: ErrorObject) => e.$message)
-  })
+function getErrors(attributeName: string): ComputedRef {
+  return getErrorMessages(errorMessages, form, attributeName)
 }
+
+const firstNameErrors = getErrors('firstName')
+const lastNameErrors = getErrors('lastName')
+const emailErrors = getErrors('email')
+const phoneErrors = getErrors('phone')
+const birthdayErrors = getErrors('birthday')
+const streetErrors = getErrors('street')
+const houseNumberErrors = getErrors('houseNumber')
+const postcodeErrors = getErrors('postcode')
+const cityErrors = getErrors('city')
+const countryErrors = getErrors('country')
+const passwordErrors = getErrors('password')
+const confirmedPasswordErrors = getErrors('confirmedPassword')
 </script>
 
 <style lang="scss" scoped>

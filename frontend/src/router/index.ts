@@ -1,13 +1,4 @@
-import {
-  createRouter,
-  createWebHistory
-} from 'vue-router'
-import type {
-  NavigationGuardNext,
-  RouteLocationNormalized,
-  RouteLocationNormalizedLoaded
-} from 'vue-router'
-import accountApi from '@/api/account-api'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,10 +30,40 @@ const router = createRouter({
     {
       path: '/ui/account',
       name: 'account',
-      component: () => import('@/views/account/ShowAccount.vue'),
+      component: () => import('@/views/account/AccountView.vue'),
       meta: {
         authRequired: true
       }
+    },
+    {
+      path: '/ui/account/profile/create',
+      name: 'create-profile',
+      component: () => import('@/views/profile/CreateProfileView.vue'),
+      meta: {
+        authRequired: true
+      }
+    },
+    {
+      path: '/ui/account/profile/edit',
+      name: 'edit-profile',
+      component: () => import('@/views/profile/EditProfileView.vue'),
+      meta: {
+        authRequired: true
+      }
+    },
+    {
+      path: '/ui/profile/:alias',
+      name: 'public-profile',
+      component: () => import('@/views/profile/ProfileView.vue'),
+      props: true,
+      meta: {
+        hideNavigation: true
+      }
+    },
+    {
+      path: '/ui/privacy',
+      name: 'privacy-policy',
+      component: () => import('@/views/PrivacyPolicy.vue')
     },
     {
       path: '/ui/:pathMatch(.*)*',

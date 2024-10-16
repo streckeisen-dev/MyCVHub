@@ -3,7 +3,7 @@ export type AccountDto = {
   lastName: string
   email: string
   phone: string
-  birthday: Date
+  birthday: string
   street: string
   houseNumber?: string
   postcode: string
@@ -11,4 +11,5 @@ export type AccountDto = {
   country: string
   hasPublicProfile: boolean
   password: string
+  profile?: string
 }

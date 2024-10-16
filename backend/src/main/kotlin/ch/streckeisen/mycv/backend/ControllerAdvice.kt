@@ -2,6 +2,7 @@ package ch.streckeisen.mycv.backend
 
 import ch.streckeisen.mycv.backend.exceptions.ResultNotFoundException
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
+import com.fasterxml.jackson.core.JacksonException
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.security.SignatureException
 import org.postgresql.util.PSQLException
@@ -17,6 +18,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 class ControllerAdvice : ResponseEntityExceptionHandler() {
+    //private val logger = LoggerFactory.getLogger(ControllerAdvice::class.java)
+
     @ExceptionHandler
     fun handleValidationError(ex: ValidationException): ResponseEntity<ErrorDto> {
         return ResponseEntity.badRequest().body(ErrorDto(ex.message!!, ex.errors))
@@ -24,6 +27,7 @@ class ControllerAdvice : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler
     fun handleDatabaseError(ex: DataAccessException): ResponseEntity<ErrorDto> {
+        logger.error(ex.message, ex)
         return ResponseEntity.badRequest()
             .body(ErrorDto("A database error occurred. Please contact the administrator"))
     }
@@ -66,7 +70,30 @@ class ControllerAdvice : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler
     fun handlePsqlException(ex: PSQLException): ResponseEntity<ErrorDto> {
+        logger.error(ex.message, ex)
         return ResponseEntity.internalServerError()
             .body(ErrorDto("Error during data processing"))
+    }
+
+    @ExceptionHandler
+    fun handleJacksonException(ex: JacksonException): ResponseEntity<ErrorDto> {
+        logger.error(ex.message, ex)
+        return ResponseEntity.badRequest().body(ErrorDto(ex.message!!))
+    }
+
+    @ExceptionHandler
+    fun handleIllegalArgumentException(ex: IllegalArgumentException): ResponseEntity<ErrorDto> {
+        return ResponseEntity.badRequest().body(ErrorDto(ex.message!!))
+    }
+
+    @ExceptionHandler
+    fun handleIllegalStateException(ex: IllegalStateException): ResponseEntity<ErrorDto> {
+        return ResponseEntity.internalServerError().body(ErrorDto(ex.message!!))
+    }
+
+    @ExceptionHandler
+    fun handleException(ex: Exception): ResponseEntity<ErrorDto> {
+        logger.error(ex.message, ex)
+        return ResponseEntity.internalServerError().body(ErrorDto("An unknown error occurred"))
     }
 }
