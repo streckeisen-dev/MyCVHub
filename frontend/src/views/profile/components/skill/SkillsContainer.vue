@@ -6,16 +6,16 @@
           <h3>{{ skillType }}</h3>
         </v-col>
         <v-col cols="12" class="skills">
-          <v-row v-for="skill in sortSkills(skills)" :key="skill.id" class="skill" justify="end">
+          <v-row v-for="(skill, index) in sortSkills(skills)" :key="(skill as SkillDto).id || index" class="skill" justify="end">
             <v-col cols="12" :md="actions ? 10 : 12">
               <skill-entry :skill="skill" />
             </v-col>
             <template v-if="actions">
               <v-col cols="3" sm="2" md="1" class="skill-action">
-                <v-btn icon="mdi-pencil" color="primary" @click="editSkill(skill)" />
+                <v-btn icon="mdi-pencil" color="primary" @click="editSkill(skill as SkillDto)" />
               </v-col>
               <v-col cols="3" sm="2" md="1" class="skill-action">
-                <v-btn icon="mdi-delete" color="red" @click="deleteSkill(skill.id)" />
+                <v-btn icon="mdi-delete" color="red" @click="deleteSkill((skill as SkillDto).id)" />
               </v-col>
             </template>
           </v-row>
@@ -40,7 +40,7 @@ const props = defineProps<{
 const emit = defineEmits(['edit', 'delete'])
 
 const groupedSkills = computed(() => {
-  return props.values.reduce((groups, skill) => {
+  return props.values.reduce((groups: { [key: string]: Array<SkillDto | PublicSkillDto> }, skill: SkillDto | PublicSkillDto) => {
     const group = groups[skill.type] || []
     group.push(skill)
     groups[skill.type] = group
@@ -49,8 +49,8 @@ const groupedSkills = computed(() => {
 })
 
 function sortSkills(
-  skills: Array<SkillDto> | Array<PublicSkillDto>
-): Array<SkillDto> | Array<PublicSkillDto> {
+  skills: Array<SkillDto | PublicSkillDto>
+): Array<SkillDto | PublicSkillDto> {
   return skills.sort((a, b) => {
     if (a.level > b.level) {
       return -1

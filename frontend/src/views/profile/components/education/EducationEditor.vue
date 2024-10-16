@@ -11,17 +11,17 @@
         actions
         @edit="editEducation"
         @delete="deleteEducation"
-        />
+      />
     </v-sheet>
   </v-row>
   <edit-education-dialog
     v-if="showEditDialog"
     :value="educationToEdit"
-    :is-edit="isEdit"
+    :is-edit="isEdit!!"
     @saveNew="onSaveNew"
     @saveEdit="onSaveEdit"
     @cancel="onEditCancel"
-    />
+  />
 
   <notification
     v-if="deleteErrorMessage"
@@ -31,13 +31,10 @@
 </template>
 
 <script setup lang="ts">
-import type { WorkExperienceDto } from '@/dto/WorkExperienceDto'
 import { type PropType, ref } from 'vue'
-import EditWorkExperienceDialog from '@/views/profile/components/work-experience/EditWorkExperienceDialog.vue'
 import profileApi from '@/api/ProfileApi'
 import type { ErrorDto } from '@/dto/ErrorDto'
 import Notification from '@/components/Notification.vue'
-import WorkExperienceContainer from '@/views/profile/components/work-experience/WorkExperienceContainer.vue'
 import EducationContainer from '@/views/profile/components/education/EducationContainer.vue'
 import EditEducationDialog from '@/views/profile/components/education/EditEducationDialog.vue'
 import type { EducationDto } from '@/dto/EducationDto'
@@ -55,7 +52,7 @@ const deleteErrorMessage = ref<string>()
 function addEducation() {
   isEdit.value = false
   showEditDialog.value = true
-  educationToEdit.value = null
+  educationToEdit.value = undefined
 }
 
 function editEducation(education: EducationDto) {
@@ -64,25 +61,25 @@ function editEducation(education: EducationDto) {
   educationToEdit.value = education
 }
 
-function onSaveNew(newEntry: WorkExperienceDto) {
+function onSaveNew(newEntry: EducationDto) {
   showEditDialog.value = false
-  educationToEdit.value = null
-  isEdit.value = null
+  educationToEdit.value = undefined
+  isEdit.value = undefined
   education.value.push(newEntry)
 }
 
-function onSaveEdit(updatedEntry: WorkExperienceDto) {
+function onSaveEdit(updatedEntry: EducationDto) {
   showEditDialog.value = false
-  educationToEdit.value = null
-  isEdit.value = null
+  educationToEdit.value = undefined
+  isEdit.value = undefined
   const updateIndex = education.value.findIndex((e) => e.id === updatedEntry.id)
   education.value[updateIndex] = updatedEntry
 }
 
 function onEditCancel() {
   showEditDialog.value = false
-  educationToEdit.value = null
-  isEdit.value = null
+  educationToEdit.value = undefined
+  isEdit.value = undefined
 }
 
 async function deleteEducation(id: number) {
@@ -90,7 +87,7 @@ async function deleteEducation(id: number) {
     await profileApi.deleteEducation(id)
     const index = education.value.findIndex((e) => e.id === id)
     education.value.splice(index, 1)
-    deleteErrorMessage.value = null
+    deleteErrorMessage.value = undefined
   } catch (e) {
     const error = e as ErrorDto
     deleteErrorMessage.value = error.message

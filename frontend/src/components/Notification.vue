@@ -1,7 +1,5 @@
 <template>
-  <v-snackbar v-model="shouldShowSnackbar"
-              location="top right"
-              multi-line>
+  <v-snackbar v-model="shouldShowSnackbar" location="top right" multi-line>
     <h3>{{ title }}</h3>
     <p>{{ message }}</p>
     <template v-slot:actions>
@@ -14,7 +12,7 @@
 import { ref } from 'vue'
 
 const props = defineProps<{
-  title: string,
+  title: string
   message: string
 }>()
 const shouldShowSnackbar = ref<boolean>(true)
@@ -22,6 +20,4 @@ const title = ref<string>(props.title)
 const message = ref<string>(props.message)
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

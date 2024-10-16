@@ -12,8 +12,8 @@ const props = defineProps<{
 </script>
 
 <style scoped>
-h3, .skill-section {
+h3,
+.skill-section {
   margin-bottom: 10px;
 }
-
 </style>

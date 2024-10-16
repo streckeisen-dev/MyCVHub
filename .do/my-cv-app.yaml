@@ -19,6 +19,9 @@ envs:
   scope: RUN_AND_BUILD_TIME
   type: SECRET
   value: EV[{{ DO_JWT_SECRET }}]
+- key: SPRING_PROFILES_ACTIVE
+  scope: RUN_AND_BUILD_TIME
+  value: prod
 features:
 - buildpack-stack=ubuntu-22
 ingress:

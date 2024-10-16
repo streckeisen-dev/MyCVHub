@@ -18,6 +18,7 @@ const emptyProfile: ProfileDto = {
   isEmailPublic: false,
   isPhonePublic: false,
   isAddressPublic: false,
+  profilePicture: '',
   workExperiences: [],
   education: [],
   skills: []
@@ -26,8 +27,8 @@ const emptyProfile: ProfileDto = {
 try {
   await profileApi.getProfile()
   router.push({ name: 'edit-profile' })
-} catch (e) {
-  console.log(e)
+} catch (ignore) {
+  // profile does not exist, therefore continue with creation
 }
 </script>
 

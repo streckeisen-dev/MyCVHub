@@ -52,6 +52,7 @@ import profileApi from '@/api/ProfileApi'
 import { convertDateToString, convertStringToDate } from '@/services/DateHelper'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
 import type { ErrorDto } from '@/dto/ErrorDto'
+import type { WorkExperienceUpdateDto } from '@/dto/WorkExperienceUpdateDto'
 
 const props = defineProps<{
   value: WorkExperienceDto | undefined
@@ -109,10 +110,9 @@ const rules = {
   }
 }
 
-const form = useVuelidate(rules, formState)
+const form = useVuelidate<FormState>(rules, formState)
 
 const errorMessages = ref<ErrorMessages>({})
-
 function getErrors(attributeName: string): ComputedRef {
   return getErrorMessages(errorMessages, form, attributeName)
 }
@@ -130,8 +130,8 @@ async function save() {
     return
   }
 
-  const workExperience: WorkExperienceDto = {
-    id: props.isEdit ? props.value.id : null,
+  const workExperience: WorkExperienceUpdateDto = {
+    id: props.isEdit ? props.value!!.id : undefined,
     jobTitle: formState.jobTitle,
     company: formState.company,
     location: formState.location,

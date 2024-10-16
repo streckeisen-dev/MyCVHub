@@ -14,11 +14,17 @@
     <v-container v-if="profile">
       <v-row>
         <v-col cols="12" md="6" class="person-column">
-          <img
-            :src="ProfileApi.getProfilePicture(alias)"
+          <v-img
+            :src="profile.profilePicture"
+            :lazy-src="defaultProfilePicture"
             class="profile-picture"
-            alt="Profile Picture"
-          />
+          >
+            <template #placeholder>
+              <v-row class="fill-height" align="center" justify="center">
+                <v-progress-circular indeterminate />
+              </v-row>
+            </template>
+          </v-img>
           <profile-section :title="displayName" h2>
             <p>{{ profile.jobTitle }}</p>
           </profile-section>
@@ -76,8 +82,6 @@ import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import type { ErrorDto } from '@/dto/ErrorDto'
 import ProfileSection from '@/views/profile/components/ProfileSection.vue'
 import vuetify from '@/plugins/vuetify'
-import type { PublicEducationDto } from '@/dto/PublicEducationDto'
-import { type PublicSkillDto, SkillType } from '@/dto/PublicSkillDto'
 import WorkExperienceContainer from '@/views/profile/components/work-experience/WorkExperienceContainer.vue'
 import {
   type NavigationGuardNext,
@@ -88,29 +92,14 @@ import {
 import SkillsContainer from '@/views/profile/components/skill/SkillsContainer.vue'
 import EducationContainer from '@/views/profile/components/education/EducationContainer.vue'
 
-const eD = ref<PublicEducationDto>({
-  institution: 'Institution',
-  location: 'Location',
-  degreeName: 'Degree Name',
-  educationStart: '2020-09-12',
-  educationEnd: null,
-  description: '- def\n- deg'
-})
-
-const skill = ref<PublicSkillDto>({
-  name: 'Java',
-  level: 80,
-  type: SkillType.ProgrammingLanguage
-})
-
 const props = defineProps<{ alias: string }>()
-
 const originalTheme = vuetify.theme.global.name.value
 vuetify.theme.global.name.value = 'profile'
 
 const profile = ref<PublicProfileDto>()
 const isProfileLoading = ref(false)
 const loadingError = ref<string>()
+const defaultProfilePicture = ProfileApi.getDefaultProfilePicture()
 
 const displayName = computed(() => {
   if (profile.value) {
@@ -120,10 +109,10 @@ const displayName = computed(() => {
 })
 
 const hasContactInformation = computed(
-  () => profile.value.address || profile.value.phone || profile.value.email
+  () => profile.value ? profile.value.address || profile.value.phone || profile.value.email : false
 )
-const profileEmailLink = computed(() => `mailto:${profile.value.email}`)
-const profilePhoneLink = computed(() => `tel:${profile.value.phone}`)
+const profileEmailLink = computed(() => `mailto:${profile.value!!.email}`)
+const profilePhoneLink = computed(() => `tel:${profile.value!!.phone}`)
 
 isProfileLoading.value = true
 try {

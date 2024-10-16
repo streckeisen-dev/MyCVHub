@@ -4,7 +4,7 @@ import ch.streckeisen.mycv.backend.cv.education.toDto
 import ch.streckeisen.mycv.backend.cv.experience.toDto
 import ch.streckeisen.mycv.backend.cv.skill.toDto
 
-fun ProfileEntity.toDto() = ProfileDto(
+fun ProfileEntity.toDto(profilePicture: String) = ProfileDto(
     alias,
     jobTitle,
     bio,

@@ -1,19 +1,14 @@
 import type { ErrorDto } from '@/dto/ErrorDto'
-import { getAccessToken, hasAccessToken, setAccessToken } from '@/services/TokenService'
-import type { LoginResultDto } from '@/dto/LoginResultDto'
+import LoginStateService from '@/services/LoginStateService'
 
-async function fetchFromApi<T>(path: string, options?: RequestInit, retry: boolean = true): Promise<Response> {
-  const uri = path.startsWith('/api') ? path :`/api${path}`
+async function fetchFromApi<T>(
+  path: string,
+  options?: RequestInit,
+  retry: boolean = true
+): Promise<Response> {
+  const uri = path.startsWith('/api') ? path : `/api${path}`
   const opt: RequestInit = {
     ...options
-  }
-
-  if (hasAccessToken()) {
-    const headers = opt.headers || {}
-    opt.headers = {
-      ...headers,
-      'Authorization': `Bearer ${getAccessToken()}`
-    }
   }
 
   try {
@@ -59,10 +54,11 @@ async function extractErrorIfResponseIsNotOk(response: Response): Promise<void> 
 
 async function processAuthResponse(response: Response): Promise<void> {
   try {
-    const loginResponse = await getJSONIfResponseIsOk<LoginResultDto>(response)
-    setAccessToken(loginResponse.token)
+    await extractErrorIfResponseIsNotOk(response)
+    LoginStateService.successfulLogin()
     return Promise.resolve()
   } catch (error) {
+    LoginStateService.loggedOut()
     return Promise.reject(error)
   }
 }

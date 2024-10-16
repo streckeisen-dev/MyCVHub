@@ -6,7 +6,7 @@
           <h1>Welcome to MyCVHub</h1>
           <p>Create and share your professional CV online with ease!</p>
           <router-link :to="{ name: 'signup' }">
-            <v-btn color="primary" large @click="navigateTo('create')">Get Started</v-btn>
+            <v-btn color="primary" large :to="{ name: 'login' }">Get Started</v-btn>
           </router-link>
         </v-col>
       </v-row>

@@ -114,7 +114,7 @@ const rules = {
   }
 }
 
-const form = useVuelidate(rules, formState)
+const form = useVuelidate<FormState>(rules, formState)
 
 const errorMessages = ref<ErrorMessages>({})
 
@@ -136,7 +136,7 @@ async function save() {
   }
 
   const educationUpdate: EducationUpdateDto = {
-    id: props.isEdit ? props.value.id : null,
+    id: props.isEdit ? props.value!!.id : undefined,
     institution: formState.institution,
     degreeName: formState.degreeName,
     location: formState.location,

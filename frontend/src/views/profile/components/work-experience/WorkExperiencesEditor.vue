@@ -17,7 +17,7 @@
   <edit-work-experience-dialog
     v-if="showEditDialog"
     :value="workExperienceToEdit"
-    :is-edit="isEdit"
+    :is-edit="isEdit!!"
     @saveNew="onSaveNew"
     @saveEdit="onSaveEdit"
     @cancel="onEditCancel"
@@ -52,7 +52,7 @@ const deleteErrorMessage = ref<string>()
 function addWorkExperience() {
   isEdit.value = false
   showEditDialog.value = true
-  workExperienceToEdit.value = null
+  workExperienceToEdit.value = undefined
 }
 
 function editWorkExperience(workExperience: WorkExperienceDto) {
@@ -63,20 +63,20 @@ function editWorkExperience(workExperience: WorkExperienceDto) {
 
 function onSaveNew(newEntry: WorkExperienceDto) {
   showEditDialog.value = false
-  workExperienceToEdit.value = null
+  workExperienceToEdit.value = undefined
   workExperiences.value.push(newEntry)
 }
 
 function onSaveEdit(updatedEntry: WorkExperienceDto) {
   showEditDialog.value = false
-  workExperienceToEdit.value = null
+  workExperienceToEdit.value = undefined
   const updateIndex = workExperiences.value.findIndex((e) => e.id === updatedEntry.id)
   workExperiences.value[updateIndex] = updatedEntry
 }
 
 function onEditCancel() {
   showEditDialog.value = false
-  workExperienceToEdit.value = null
+  workExperienceToEdit.value = undefined
 }
 
 async function deleteWorkExperience(id: number) {
@@ -84,7 +84,7 @@ async function deleteWorkExperience(id: number) {
     await profileApi.deleteWorkExperience(id)
     const index = workExperiences.value.findIndex((e) => e.id === id)
     workExperiences.value.splice(index, 1)
-    deleteErrorMessage.value = null
+    deleteErrorMessage.value = undefined
   } catch (e) {
     const error = e as ErrorDto
     deleteErrorMessage.value = error.message

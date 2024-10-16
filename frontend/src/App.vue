@@ -7,7 +7,12 @@
         </template>
         <v-app-bar-title class="home-link-container">
           <router-link :to="{ name: 'home' }">
-            <img v-if="isDarkMode" src="@/assets/mycvhub_logo_dark.png" alt="MyCVHub Logo" class="logo" />
+            <img
+              v-if="isDarkMode"
+              src="@/assets/mycvhub_logo_dark.png"
+              alt="MyCVHub Logo"
+              class="logo"
+            />
             <img v-else src="@/assets/mycvhub_logo_light.png" alt="MyCVHub Logo" class="logo" />
           </router-link>
         </v-app-bar-title>
@@ -45,15 +50,15 @@
 
     <v-footer v-if="showNavigation">
       <div class="footer-content">
-      <v-row justify="center">
-        <v-col cols="12" class="text-center">&copy; 2024 MyCVHub. All Rights Reserved.</v-col>
-      </v-row>
-      <v-row justify="center" align="center" class="links">
-        <router-link :to="{ name: 'privacy-policy' }">Privacy Policy</router-link>
+        <v-row justify="center">
+          <v-col cols="12" class="text-center">&copy; 2024 MyCVHub. All Rights Reserved.</v-col>
+        </v-row>
+        <v-row justify="center" align="center" class="links">
+          <router-link :to="{ name: 'privacy-policy' }">Privacy Policy</router-link>
           <v-btn href="https://github.com/lstreckeisen/my-cv" target="_blank" size="32">
             <v-icon slot="prepend" icon="mdi-github" size="32" />
           </v-btn>
-      </v-row>
+        </v-row>
       </div>
     </v-footer>
   </v-app>

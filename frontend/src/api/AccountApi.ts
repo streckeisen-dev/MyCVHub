@@ -5,7 +5,7 @@ import {
   processAuthResponse
 } from '@/api/ApiHelper'
 import type { AccountDto } from '@/dto/AccountDto'
-import { clearAccessToken, hasAccessToken } from '@/services/TokenService'
+import LoginStateService from '@/services/LoginStateService'
 
 async function login(email: string, password: string): Promise<void> {
   try {
@@ -47,7 +47,7 @@ async function getAccountInfo(): Promise<AccountDto> {
 }
 
 function isUserLoggedIn(): boolean {
-  return hasAccessToken()
+  return LoginStateService.isLoggedIn()
 }
 
 async function logout(): Promise<void> {
@@ -56,9 +56,9 @@ async function logout(): Promise<void> {
       method: 'POST'
     })
     if (!response.ok) {
-      return Promise.reject("Failed to perform logout")
+      return Promise.reject('Failed to perform logout')
     }
-    clearAccessToken()
+    LoginStateService.loggedOut()
     return Promise.resolve()
   } catch (error) {
     return Promise.reject(error)

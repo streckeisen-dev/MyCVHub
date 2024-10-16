@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  title: string,
+  title: string
   h2?: boolean
 }>()
 </script>

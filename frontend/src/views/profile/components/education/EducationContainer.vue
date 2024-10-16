@@ -1,14 +1,19 @@
 <template>
-  <v-row v-for="education in sortedEducation" :key="education.id" class="education" justify="end">
+  <v-row
+    v-for="(education, index) in sortedEducation"
+    :key="(education as EducationDto).id || index"
+    class="education"
+    justify="end"
+  >
     <v-col cols="12" :md="actions ? 10 : 12">
       <education-entry :education="education" />
     </v-col>
     <template v-if="actions">
       <v-col cols="3" sm="2" md="1" class="education-action">
-        <v-btn icon="mdi-pencil" color="primary" @click="editEducation(education)" />
+        <v-btn icon="mdi-pencil" color="primary" @click="editEducation(education as EducationDto)" />
       </v-col>
       <v-col cols="3" sm="2" md="1" class="education-action">
-        <v-btn icon="mdi-delete" color="red" @click="deleteEducation(education.id)" />
+        <v-btn icon="mdi-delete" color="red" @click="deleteEducation((education as EducationDto).id)" />
       </v-col>
     </template>
   </v-row>

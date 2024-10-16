@@ -80,8 +80,7 @@ const account = ref<AccountDto>()
 const isAccountLoading = ref<boolean>(true)
 try {
   account.value = await accountApi.getAccountInfo()
-} catch (error) {
-  console.log('account error', error)
+} catch (ignore) {
 } finally {
   isAccountLoading.value = false
 }

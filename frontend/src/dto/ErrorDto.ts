@@ -1,4 +1,4 @@
 export type ErrorDto = {
-  message: string,
+  message: string
   errors: { [key: string]: string }
 }

@@ -15,9 +15,10 @@
 <script setup lang="ts">
 import type { PublicEducationDto } from '@/dto/PublicEducationDto'
 import { toShortDate } from '@/services/DateHelper'
+import type { EducationDto } from '@/dto/EducationDto'
 
 const props = defineProps<{
-  education: PublicEducationDto
+  education: EducationDto | PublicEducationDto
 }>()
 </script>
 

@@ -5,11 +5,7 @@
       <h2 v-else>Add Skill</h2>
 
       <v-form @submit.prevent>
-        <v-text-field
-          label="Name"
-          v-model="formState.name"
-          :error-messages="nameErrors"
-        />
+        <v-text-field label="Name" v-model="formState.name" :error-messages="nameErrors" />
         <v-text-field
           label="Type"
           hint="Skills will be grouped by their type in your CV. Use something like 'Programming Languages', 'Communication', etc."
@@ -67,7 +63,7 @@ const formState = reactive<FormState>({
   level: props.value?.level
 })
 
-const levelWithinRange = () => formState.level >= 0 && formState.level <= 100
+const levelWithinRange = () => formState.level == null || formState.level >= 0 && formState.level <= 100
 
 const rules = {
   name: {
@@ -79,10 +75,10 @@ const rules = {
   level: {
     required: helpers.withMessage('Level must not be blank', required),
     levelWithinRange: helpers.withMessage('Level must be between 0 and 100', levelWithinRange)
-  },
+  }
 }
 
-const form = useVuelidate(rules, formState)
+const form = useVuelidate<FormState>(rules, formState)
 
 const errorMessages = ref<ErrorMessages>({})
 
@@ -101,7 +97,7 @@ async function save() {
   }
 
   const skillUpdate: SkillUpdateDto = {
-    id: props.isEdit ? props.value.id : null,
+    id: props.isEdit ? props.value!!.id : undefined,
     name: formState.name,
     type: formState.type,
     level: formState.level
@@ -109,7 +105,6 @@ async function save() {
 
   try {
     const savedSkill = await profileApi.saveSkill(skillUpdate)
-    console.log(savedSkill)
     if (props.isEdit) {
       emit('saveEdit', savedSkill)
     } else {
@@ -140,7 +135,7 @@ function cancel() {
   }
 
   .level-slider {
-    margin: 15px 0
+    margin: 15px 0;
   }
 }
 </style>

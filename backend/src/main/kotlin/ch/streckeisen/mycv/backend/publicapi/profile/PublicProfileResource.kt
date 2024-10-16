@@ -4,9 +4,6 @@ import ch.streckeisen.mycv.backend.cv.profile.ProfileService
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
 import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicProfileDto
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipalOrNull
-import org.springframework.core.io.Resource
-import org.springframework.core.io.UrlResource
-import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
@@ -27,28 +24,9 @@ class PublicProfileResource(
         return profileService.findByAlias(principal?.id, alias)
             .fold(
                 onSuccess = { profile ->
-                    ResponseEntity.ok(profile.toPublicDto())
-                },
-                onFailure = {
-                    throw it
-                }
-            )
-    }
-
-    @GetMapping("/{alias}/picture")
-    fun getPicture(@PathVariable("alias") alias: String): ResponseEntity<Resource> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipalOrNull()
-
-        val profile = profileService.findByAlias(principal?.id, alias)
-            .getOrThrow()
-
-        return profilePictureService.get(principal?.id, profile)
-            .fold(
-                onSuccess = { profilePicture ->
-                    val resource = UrlResource(profilePicture.uri)
-                    ResponseEntity.ok()
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"${profilePicture.name}\"")
-                        .body(resource)
+                    val profilePicture = profilePictureService.get(profile.account.id, profile)
+                        .getOrThrow()
+                    ResponseEntity.ok(profile.toPublicDto(profilePicture.uri.toString()))
                 },
                 onFailure = {
                     throw it

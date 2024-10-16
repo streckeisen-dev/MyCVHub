@@ -3,7 +3,7 @@ import { fetchFromApi, getJSONIfResponseIsOk } from '@/api/ApiHelper'
 
 async function getCountries(): Promise<Array<CountryDto>> {
   try {
-    const response = await fetchFromApi("/public/countries")
+    const response = await fetchFromApi('/public/countries')
     const countries = await getJSONIfResponseIsOk<Array<CountryDto>>(response)
     return Promise.resolve(countries)
   } catch (error) {

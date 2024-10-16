@@ -20,6 +20,9 @@ services:
       - MYCV_DB_USERNAME=postgres
       - MYCV_DB_PASSWORD=postgres
       - JWT_SECRET=wHqRTjE8tXtgm/zhvn1qmmxLkcA+MvjnbX0aLkNhLm4=
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
     ports:
       - "8080:8080"
     depends_on:

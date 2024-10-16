@@ -10,7 +10,7 @@ import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicProfileDto
 import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicSkillDto
 import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicWorkExperienceDto
 
-fun ProfileEntity.toPublicDto(): PublicProfileDto = PublicProfileDto(
+fun ProfileEntity.toPublicDto(profilePicture: String): PublicProfileDto = PublicProfileDto(
     account.firstName,
     account.lastName,
     jobTitle,
@@ -24,6 +24,7 @@ fun ProfileEntity.toPublicDto(): PublicProfileDto = PublicProfileDto(
         account.city,
         account.country
     ) else null,
+    profilePicture = profilePicture,
     workExperiences.map { it.toPublicDto() }.toList(),
     skills.map { it.toPublicDto() }.toList(),
     education.map { it.toPublicDto() }.toList()

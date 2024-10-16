@@ -27,7 +27,17 @@
             <v-form @submit.prevent>
               <v-row class="form-flex">
                 <v-col cols="12" md="4">
-                  <img :src="profilePicture" class="profile-picture" alt="Profile Picture" />
+                  <v-img
+                    :key="profilePictureKey"
+                    :src="profilePicture"
+                    :lazy-src="defaultProfilePicture"
+                    class="profile-picture">
+                    <template #placeholder>
+                      <v-row class="fill-height" justify="center" align="center">
+                        <v-progress-circular indeterminate />
+                      </v-row>
+                    </template>
+                  </v-img>
                   <v-file-input
                     v-model="formState.profilePicture"
                     label="Profile Picture"
@@ -82,12 +92,7 @@
                 </v-col>
               </v-row>
 
-              <v-btn
-                type="submit"
-                text="Save"
-                color="primary"
-                @click="saveGeneralInformation"
-              />
+              <v-btn type="submit" text="Save" color="primary" @click="saveGeneralInformation" />
             </v-form>
           </v-sheet>
         </v-row>
@@ -140,12 +145,15 @@ const workExperiences = ref(props.profile.workExperiences)
 const education = ref(props.profile.education)
 const skills = ref(props.profile.skills)
 const savingError = ref<string>()
-const profilePictureAlias = ref(props.profile.alias)
+const profilePictureUrl = ref(props.profile.profilePicture)
 const profilePictureKey = ref(Date.now())
 
+const defaultProfilePicture = ProfileApi.getDefaultProfilePicture()
 const profilePicture = computed(() => {
+  const url = profilePictureUrl.value || defaultProfilePicture
   // appending a query parameter to the image url ensures that the image re-renders after a profile picture change
-  return `${ProfileApi.getProfilePicture(profilePictureAlias.value)}?v=${profilePictureKey.value}`
+  //return `${url}?v=${profilePictureKey.value}`
+  return url
 })
 
 type FormState = {
@@ -160,7 +168,7 @@ type FormState = {
 }
 
 const formState = reactive<FormState>({
-  profilePicture: props.profile.picture,
+  profilePicture: undefined,
   alias: props.profile.alias,
   jobTitle: props.profile.jobTitle,
   bio: props.profile.bio,
@@ -170,7 +178,8 @@ const formState = reactive<FormState>({
   isAddressPublic: props.profile.isAddressPublic
 })
 
-const profilePictureSizeValidator = () => formState.profilePicture == undefined || formState.profilePicture?.size <= profilePictureMaxSize
+const profilePictureSizeValidator = () =>
+  formState.profilePicture == undefined || formState.profilePicture?.size <= profilePictureMaxSize
 
 const rules = {
   profilePicture: isCreated.value
@@ -200,7 +209,7 @@ const rules = {
   isAddressPublic: {}
 }
 
-const form = useVuelidate(rules, formState)
+const form = useVuelidate<FormState>(rules, formState)
 const errorMessages = ref<ErrorMessages>({})
 
 function getErrors(attributeName: string): ComputedRef {
@@ -248,16 +257,16 @@ async function saveGeneralInformation() {
       formState.isEmailPublic = savedProfile.isEmailPublic
       formState.isPhonePublic = savedProfile.isPhonePublic
       formState.isAddressPublic = savedProfile.isAddressPublic
-      formState.profilePicture = null
+      formState.profilePicture = undefined
 
-      profilePictureAlias.value = savedProfile.alias
+      profilePictureUrl.value = savedProfile.profilePicture
       profilePictureKey.value = Date.now()
     }
   } catch (e) {
     const error = e as ErrorDto
     if (error.errors) {
       errorMessages.value = error.errors
-      savingError.value = null
+      savingError.value = undefined
     } else {
       errorMessages.value = {}
       savingError.value = error.message || ' '
@@ -287,6 +296,8 @@ h2 {
       .profile-picture {
         max-width: min(100%, 400px);
         height: auto;
+        margin-bottom: 10px;
+        margin-left: 40px;
       }
     }
   }
