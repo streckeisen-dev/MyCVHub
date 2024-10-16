@@ -36,7 +36,7 @@ region: fra
 services:
 - image:
     registry: lstreckeisen
-    registry_credentials: {{ DO_DOCKER_CREDENTIALS }}
+    registry_credentials: EV[1:SZtHlCRh25xCY3lgXqdDKGg+1Uf2qOT5:xUH8j/qTcMTJHA8bxhgPo7mUCZvxZKIUasaVApbs2qcRz/miKM2eKET3FlwDagScTgdj4HgC]
     registry_type: DOCKER_HUB
     repository: my-cv
     tag: latest
