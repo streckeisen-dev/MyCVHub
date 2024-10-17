@@ -13,6 +13,5 @@ data class SignupRequestDto(
     val postcode: String?,
     val city: String?,
     val country: String?,
-    val hasPublicProfile: Boolean?,
     val password: String?
 )

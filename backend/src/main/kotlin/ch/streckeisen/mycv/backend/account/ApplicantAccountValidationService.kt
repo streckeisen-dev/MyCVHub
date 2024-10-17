@@ -81,7 +81,7 @@ class ApplicantAccountValidationService(
         if (birthday == null) {
             validationErrorBuilder.addError("birthday", "Birthday must not be blank")
         } else if (birthday.isAfter(LocalDate.now())) {
-            validationErrorBuilder.addError("birthday", "Birthday must be in the past")
+            validationErrorBuilder.addError("birthday", "Birthday must not be in the future")
         }
     }
 

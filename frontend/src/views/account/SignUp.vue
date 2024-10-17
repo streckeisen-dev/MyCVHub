@@ -151,13 +151,6 @@
             </v-row>
             <v-row>
               <v-col cols="12">
-                <v-switch v-model="formState.hasPublicProfile" color="secondary">
-                  <template v-slot:label> Public Profile: Anyone can look at your CV.</template>
-                </v-switch>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12">
                 <v-btn color="primary" @click.stop="signUp">Sign Up</v-btn>
               </v-col>
             </v-row>
@@ -213,7 +206,6 @@ const formState = reactive({
   postcode: undefined,
   city: undefined,
   country: undefined,
-  hasPublicProfile: true,
   password: undefined,
   confirmedPassword: undefined
 })
@@ -306,7 +298,6 @@ const rules = {
   postcode: { required: helpers.withMessage('Postcode must not be blank', required) },
   city: { required: helpers.withMessage('City must not be blank', required) },
   country: { required: helpers.withMessage('Country must not be blank', required) },
-  hasPublicProfile: { required },
   password: {
     required: helpers.withMessage('Password must not be blank', required),
     passwordValidator: helpers.withMessage('Password must fulfill requirements', passwordValidator)
@@ -335,7 +326,6 @@ async function signUp() {
     postcode: formState.postcode!,
     city: formState.city!,
     country: formState.country!,
-    hasPublicProfile: formState.hasPublicProfile!,
     password: formState.password!
   }
 
