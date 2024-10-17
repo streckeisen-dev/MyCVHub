@@ -22,12 +22,10 @@ private val VALID_SIGNUP_REQUEST = SignupRequestDto(
     "3287",
     "City",
     "CH",
-    true,
     "a*c3efgH"
 )
 
 private val INVALID_SIGNUP_REQUEST = SignupRequestDto(
-    null,
     null,
     null,
     null,

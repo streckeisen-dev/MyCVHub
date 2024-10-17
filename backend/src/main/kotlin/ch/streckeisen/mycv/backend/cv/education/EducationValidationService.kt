@@ -49,10 +49,6 @@ class EducationValidationService {
             validationErrorBuilder.addError("educationEnd", "Education End must not be before Education Start")
         }
 
-        if (educationUpdate.description.isNullOrBlank()) {
-            validationErrorBuilder.addError("description", "Description must not be blank")
-        }
-
         if (validationErrorBuilder.hasErrors()) {
             return Result.failure(validationErrorBuilder.build("Eduction validation failed"))
         }

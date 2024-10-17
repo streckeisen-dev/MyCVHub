@@ -8,5 +8,5 @@ data class PublicEducationDto (
     val educationStart: LocalDate,
     val educationEnd: LocalDate?,
     val degreeName: String,
-    val description: String
+    val description: String?
 )
