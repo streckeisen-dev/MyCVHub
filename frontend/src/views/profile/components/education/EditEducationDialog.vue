@@ -110,9 +110,7 @@ const rules = {
       educationEndIsAfterStart
     )
   },
-  description: {
-    required: helpers.withMessage('Description must not be blank', required)
-  }
+  description: {}
 }
 
 const form = useVuelidate<FormState>(rules, formState)

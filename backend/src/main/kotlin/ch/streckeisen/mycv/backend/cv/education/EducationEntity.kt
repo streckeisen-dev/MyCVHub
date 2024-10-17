@@ -19,7 +19,7 @@ class EducationEntity(
     val educationStart: LocalDate,
     val educationEnd: LocalDate?,
     val degreeName: String,
-    val description: String,
+    val description: String?,
 
     @ManyToOne(fetch = FetchType.LAZY)
     val profile: ProfileEntity
