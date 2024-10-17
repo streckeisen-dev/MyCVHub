@@ -25,6 +25,7 @@
           label="Position End"
           v-model="formState.positionEnd"
           clearable
+          @click:clear="() => formState.positionEnd = undefined"
           :error-messages="positionEndErrors"
         />
         <v-textarea
