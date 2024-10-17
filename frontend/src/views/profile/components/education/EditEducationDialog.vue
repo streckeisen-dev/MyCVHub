@@ -29,6 +29,7 @@
           label="Education End"
           v-model="formState.educationEnd"
           clearable
+          @click:clear="() => formState.educationEnd = undefined"
           :error-messages="educationEndErrors"
         />
         <v-textarea
