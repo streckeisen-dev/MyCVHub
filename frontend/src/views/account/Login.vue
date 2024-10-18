@@ -10,12 +10,12 @@
             <v-text-field
               v-model="formState.email"
               label="E-Mail Address"
-              :error-messages="getErrorMessages('email').value"
+              :error-messages="emailErrors"
             />
             <password-input
               v-model="formState.password"
               label="Password"
-              :error-messages="getErrorMessages('password').value"
+              :error-messages="passwordErrors"
             />
             <v-btn type="submit" block color="primary" @click="login">Login</v-btn>
           </v-form>
@@ -39,12 +39,33 @@ import Notification from '@/components/Notification.vue'
 import PasswordInput from '@/components/PasswordInput.vue'
 import { helpers, required } from '@vuelidate/validators'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
+import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
+import { refreshToken } from '@/api/ApiHelper'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
 
-if (accountApi.isUserLoggedIn()) {
-  await router.push({ name: 'home' })
+const props = defineProps<{
+  redirect?: string
+}>()
+
+async function forwardAfterSuccessfulLogin() {
+  console.log('previousRoute', props.redirect)
+  if (props.redirect) {
+    await router.push({ path: props.redirect })
+  } else {
+    await router.push({ name: 'account' })
+  }
 }
 
-const formState = reactive({
+if (accountApi.isUserLoggedIn()) {
+  await forwardAfterSuccessfulLogin()
+}
+
+type FormState = {
+  email?: string,
+  password?: string
+}
+
+const formState = reactive<FormState>({
   email: undefined,
   password: undefined
 })
@@ -58,10 +79,17 @@ const rules = {
   }
 }
 
-const form = useVuelidate(rules, formState)
+const form = useVuelidate<FormState>(rules, formState)
 
-const errorMessages = ref<{ [key: string]: string }>({})
+const errorMessages = ref<ErrorMessages>({})
 const errorMessage = ref<string>()
+
+function getErrors(attributeName: string): ComputedRef {
+  return getErrorMessages(errorMessages, form, attributeName)
+}
+
+const emailErrors = getErrors('email')
+const passwordErrors = getErrors('password')
 
 async function login() {
   const isValid = await form.value.$validate()
@@ -72,32 +100,28 @@ async function login() {
   try {
     await accountApi.login(formState.email!, formState.password!)
     errorMessage.value = ''
-    if (router.options.history.state['back']) {
-      router.back()
-    } else {
-      await router.push({ name: 'home' })
-    }
+    await forwardAfterSuccessfulLogin()
   } catch (e) {
     const error = e as ErrorDto
-    errorMessages.value = error.errors
+    errorMessages.value = error.errors || {}
     if (Object.keys(errorMessages.value).length === 0) {
       errorMessage.value = error.message
     }
   }
 }
-
-function getErrorMessages(attributeName: string): ComputedRef<[string]> {
-  return computed(() => {
-    const backendError = errorMessages.value[attributeName]
-    if (backendError) {
-      return [backendError]
-    }
-    return form.value[attributeName].$errors.map((e: ErrorObject) => e.$message)
-  })
-}
 </script>
 
 <style lang="scss" scoped>
+.refresh-overlay {
+  background-color: rgb(var(--v-theme-surface));
+  justify-content: center;
+
+  .refresh-overlay-content {
+    position: absolute;
+    margin-top: 45vh;
+  }
+}
+
 #login-container {
   margin-top: 50px;
 }
