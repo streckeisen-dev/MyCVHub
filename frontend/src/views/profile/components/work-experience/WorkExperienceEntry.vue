@@ -46,7 +46,10 @@ const props = defineProps<{
   > .description {
     padding-top: 5px;
     padding-bottom: 10px;
-    white-space: pre-wrap;
+
+    pre {
+      white-space: break-spaces;
+    }
   }
 }
 </style>
