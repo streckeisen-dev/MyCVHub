@@ -33,7 +33,10 @@ class ApplicationSecurityConfig(
             }
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
-            .logout { logout -> logout.permitAll() }
+            .exceptionHandling { authenticationException ->
+                authenticationException.authenticationEntryPoint(AuthenticationExceptionHandler())
+                authenticationException.accessDeniedHandler(MyCVAccessDeniedHandler())
+            }
         return http.build()
     }
 

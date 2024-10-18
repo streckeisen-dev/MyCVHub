@@ -44,6 +44,7 @@ async function extractErrorIfResponseIsNotOk(response: Response): Promise<void> 
   if (!response.ok) {
     try {
       const error: ErrorDto = await response.json()
+      error.status = response.status
       return Promise.reject(error)
     } catch (error) {
       return Promise.reject()

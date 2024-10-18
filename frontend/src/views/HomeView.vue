@@ -42,6 +42,9 @@
 </template>
 
 <script setup lang="ts">
+import accountApi from '@/api/AccountApi'
+import router from '@/router'
+
 const features = [
   {
     title: 'Create Your CV',
@@ -56,6 +59,10 @@ const features = [
     description: 'Keep track of your job applications and their status all in one place.'
   }*/
 ]
+
+if (accountApi.isUserLoggedIn()) {
+  await router.push({ name: 'account' })
+}
 </script>
 
 <style lang="scss" scoped>

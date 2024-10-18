@@ -12,14 +12,13 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.AccountStatusException
 import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.core.AuthenticationException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
 @ControllerAdvice
 class ControllerAdvice : ResponseEntityExceptionHandler() {
-    //private val logger = LoggerFactory.getLogger(ControllerAdvice::class.java)
-
     @ExceptionHandler
     fun handleValidationError(ex: ValidationException): ResponseEntity<ErrorDto> {
         return ResponseEntity.badRequest().body(ErrorDto(ex.message!!, ex.errors))
@@ -48,12 +47,6 @@ class ControllerAdvice : ResponseEntityExceptionHandler() {
     fun handleAccountStatusException(ex: AccountStatusException): ResponseEntity<ErrorDto> {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
             .body(ErrorDto("Account is locked"))
-    }
-
-    @ExceptionHandler
-    fun handleAccessDeniedException(ex: AccessDeniedException): ResponseEntity<ErrorDto> {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-            .body(ErrorDto("You are not authorized to access this resource"))
     }
 
     @ExceptionHandler
