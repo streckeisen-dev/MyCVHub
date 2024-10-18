@@ -48,7 +48,6 @@ const props = defineProps<{
 }>()
 
 async function forwardAfterSuccessfulLogin() {
-  console.log('previousRoute', props.redirect)
   if (props.redirect) {
     await router.push({ path: props.redirect })
   } else {

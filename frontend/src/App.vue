@@ -78,7 +78,7 @@ import {
   RouterLink,
   RouterView
 } from 'vue-router'
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useTheme } from 'vuetify'
 import accountApi from '@/api/AccountApi'
 import router from '@/router'
@@ -102,7 +102,6 @@ router.beforeEach(
     next: NavigationGuardNext
   ) => {
     if (to.meta.authRequired && !accountApi.isUserLoggedIn()) {
-      console.log('redirect to login, save route ', to.name)
       next({ name: 'login', query: { redirect: to.fullPath } })
     } else {
       showNavigation.value = !(to.meta.hideNavigation || false)
@@ -111,8 +110,6 @@ router.beforeEach(
     }
   }
 )
-
-onMounted(async () => {})
 </script>
 
 <style lang="scss" scoped>

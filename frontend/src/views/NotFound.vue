@@ -7,9 +7,3 @@
     />
   </v-main>
 </template>
-
-<script setup lang="ts">
-console.log('not found')
-</script>
-
-<style scoped></style>
