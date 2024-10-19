@@ -1,7 +1,7 @@
 const AUTH_STATE_KEY = 'my-cv-login-state'
 
 function successfulLogin() {
-  localStorage.setItem(AUTH_STATE_KEY, true)
+  localStorage.setItem(AUTH_STATE_KEY, "true")
 }
 
 function loggedOut() {
@@ -9,7 +9,7 @@ function loggedOut() {
 }
 
 function isLoggedIn(): boolean {
-  return localStorage.getItem(AUTH_STATE_KEY) || false
+  return Boolean(localStorage.getItem(AUTH_STATE_KEY)) || false
 }
 
 export default {
