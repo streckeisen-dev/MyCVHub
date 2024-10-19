@@ -97,7 +97,6 @@
                     :disabled="!formState.isProfilePublic"
                     label="Hide descriptions from public profile"
                     hint="If enabled, detailed descriptions of your CV entries won't be shown in your profile"
-
                     color="primary"
                     :error-messages="hideDescriptionsErrors"
                   />
