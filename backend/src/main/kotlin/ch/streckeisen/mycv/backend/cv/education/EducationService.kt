@@ -37,14 +37,14 @@ class EducationService(
         return Result.success(
             educationRepository.save(
                 EducationEntity(
-                    existingEducation?.id,
-                    educationUpdate.institution!!,
-                    educationUpdate.location!!,
-                    educationUpdate.educationStart!!,
-                    educationUpdate.educationEnd,
-                    educationUpdate.degreeName!!,
-                    educationUpdate.description!!,
-                    profile
+                    id = existingEducation?.id,
+                    institution = educationUpdate.institution!!,
+                    location = educationUpdate.location!!,
+                    educationStart = educationUpdate.educationStart!!,
+                    educationEnd = educationUpdate.educationEnd,
+                    degreeName = educationUpdate.degreeName!!,
+                    description = if (educationUpdate.description == "") null else educationUpdate.description,
+                    profile = profile
                 )
             )
         )

@@ -60,15 +60,22 @@ class ProfileService(
             existingProfile!!.profilePicture
         }
 
+        val isProfilePublic = profileInformationUpdate.isProfilePublic ?: existingProfile?.isProfilePublic ?: false
+        val isEmailPublic = profileInformationUpdate.isEmailPublic ?: existingProfile?.isEmailPublic ?: false
+        val isPhonePublic = profileInformationUpdate.isPhonePublic ?: existingProfile?.isPhonePublic ?: false
+        val isAddressPublic = profileInformationUpdate.isAddressPublic ?: existingProfile?.isAddressPublic ?: false
+        val hideDescriptions = profileInformationUpdate.hideDescriptions ?: existingProfile?.hideDescriptions ?: true
+
         val profile = ProfileEntity(
             id = existingProfile?.id,
             alias = profileInformationUpdate.alias!!,
             jobTitle = profileInformationUpdate.jobTitle!!,
-            bio = profileInformationUpdate.bio,
-            isProfilePublic = profileInformationUpdate.isProfilePublic ?: false,
-            isEmailPublic = profileInformationUpdate.isEmailPublic ?: false,
-            isPhonePublic = profileInformationUpdate.isPhonePublic ?: false,
-            isAddressPublic = profileInformationUpdate.isAddressPublic ?: false,
+            bio = if (profileInformationUpdate.bio == "") null else profileInformationUpdate.bio,
+            isProfilePublic = isProfilePublic,
+            isEmailPublic = isEmailPublic,
+            isPhonePublic = isPhonePublic,
+            isAddressPublic = isAddressPublic,
+            hideDescriptions = hideDescriptions,
             profilePicture = profilePicture,
             workExperiences = existingProfile?.workExperiences ?: emptyList(),
             education = existingProfile?.education ?: emptyList(),

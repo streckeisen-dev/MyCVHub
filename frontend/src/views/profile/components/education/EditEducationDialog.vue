@@ -29,6 +29,7 @@
           label="Education End"
           v-model="formState.educationEnd"
           clearable
+          @click:clear="() => formState.educationEnd = undefined"
           :error-messages="educationEndErrors"
         />
         <v-textarea
@@ -109,9 +110,7 @@ const rules = {
       educationEndIsAfterStart
     )
   },
-  description: {
-    required: helpers.withMessage('Description must not be blank', required)
-  }
+  description: {}
 }
 
 const form = useVuelidate<FormState>(rules, formState)

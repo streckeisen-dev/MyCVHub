@@ -8,5 +8,5 @@ data class PublicWorkExperienceDto(
     val positionStart: LocalDate,
     val positionEnd: LocalDate?,
     val location: String,
-    val description: String
+    val description: String?
 )

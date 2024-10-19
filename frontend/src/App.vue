@@ -6,7 +6,7 @@
           <v-app-bar-nav-icon @click="isNavMenuOpen = !isNavMenuOpen"></v-app-bar-nav-icon>
         </template>
         <v-app-bar-title class="home-link-container">
-          <router-link :to="{ name: 'home' }">
+          <router-link :to="{ name: accountApi.isUserLoggedIn() ? 'account' : 'home' }">
             <img
               v-if="isDarkMode"
               src="@/assets/mycvhub_logo_dark.png"
@@ -19,18 +19,30 @@
       </v-app-bar>
 
       <v-navigation-drawer id="side-nav" v-model="isNavMenuOpen" disable-resize-watcher>
-        <v-list-item v-if="accountApi.isUserLoggedIn()" prepend-icon="mdi-account-circle" link>
-          <router-link :to="{ name: 'account' }">Account</router-link>
-        </v-list-item>
-        <v-list-item v-else prepend-icon="mdi-account-circle" link>
-          <router-link :to="{ name: 'login' }">Login / Sign up</router-link>
-        </v-list-item>
+        <v-list-item
+          v-if="accountApi.isUserLoggedIn()"
+          prepend-icon="mdi-account-circle"
+          link
+          :to="{ name: 'account' }"
+          title="Account"
+        />
+        <v-list-item
+          v-else
+          prepend-icon="mdi-account-circle"
+          link
+          :to="{ name: 'login' }"
+          title="Login / Sign up"
+        />
 
         <v-divider />
 
-        <v-list-item link prepend-icon="mdi-home">
-          <router-link :to="{ name: 'home' }">Home</router-link>
-        </v-list-item>
+        <v-list-item
+          v-if="!accountApi.isUserLoggedIn()"
+          link
+          prepend-icon="mdi-home"
+          :to="{ name: 'home' }"
+          title="Home"
+        />
 
         <v-list-item v-if="accountApi.isUserLoggedIn()" class="flex-wrap">
           <v-btn color="primary" :to="{ name: 'logout' }">Logout</v-btn>
@@ -41,12 +53,6 @@
     <suspense>
       <router-view class="router-view" />
     </suspense>
-
-    <v-overlay class="refresh-overlay" :model-value="isTokenRefreshPending" persistent absolute>
-      <div class="refresh-overlay-content">
-        <loading-spinner />
-      </div>
-    </v-overlay>
 
     <v-footer v-if="showNavigation">
       <div class="footer-content">
@@ -72,15 +78,12 @@ import {
   RouterLink,
   RouterView
 } from 'vue-router'
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useTheme } from 'vuetify'
 import accountApi from '@/api/AccountApi'
 import router from '@/router'
-import { refreshToken } from '@/api/ApiHelper'
-import LoadingSpinner from '@/components/LoadingSpinner.vue'
 
 const isNavMenuOpen = ref(false)
-const isTokenRefreshPending = ref(true)
 
 const showNavigation = ref(true)
 
@@ -93,39 +96,25 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ({ 
 })
 
 router.beforeEach(
-  (to: RouteLocationNormalized, from: RouteLocationNormalizedLoaded, next: NavigationGuardNext) => {
-    next()
-    showNavigation.value = !(to.meta.hideNavigation || false)
-    isNavMenuOpen.value = false
+  async (
+    to: RouteLocationNormalized,
+    from: RouteLocationNormalizedLoaded,
+    next: NavigationGuardNext
+  ) => {
+    if (to.meta.authRequired && !accountApi.isUserLoggedIn()) {
+      next({ name: 'login', query: { redirect: to.fullPath } })
+    } else {
+      showNavigation.value = !(to.meta.hideNavigation || false)
+      isNavMenuOpen.value = false
+      next()
+    }
   }
 )
-
-onMounted(async () => {
-  try {
-    await refreshToken()
-  } catch (error) {
-    if (router.currentRoute.value.meta.authRequired) {
-      await router.push({ name: 'login' })
-    }
-  } finally {
-    isTokenRefreshPending.value = false
-  }
-})
 </script>
 
 <style lang="scss" scoped>
 #side-nav button {
   justify-self: center;
-}
-
-.refresh-overlay {
-  background-color: rgb(var(--v-theme-surface));
-  justify-content: center;
-
-  .refresh-overlay-content {
-    position: absolute;
-    margin-top: 45vh;
-  }
 }
 
 .home-link-container {
@@ -144,6 +133,7 @@ footer {
 
   .footer-content {
     width: 100%;
+
     div {
       padding: 0;
     }

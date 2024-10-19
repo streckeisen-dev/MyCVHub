@@ -5,8 +5,8 @@
     </v-app-bar-title>
     <template v-slot:append>
       <!-- TODO: load & display socials -->
-      <v-btn icon="mdi-linkedin" href="https://www.linkedin.com/in/lukas-streckeisen" />
-      <v-btn icon="mdi-github" href="https://github.com/lstreckeisen" />
+      <!--<v-btn icon="mdi-linkedin" href="https://www.linkedin.com/in/lukas-streckeisen" />
+      <v-btn icon="mdi-github" href="https://github.com/lstreckeisen" />-->
     </template>
   </v-app-bar>
 

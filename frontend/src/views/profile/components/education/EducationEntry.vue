@@ -6,7 +6,7 @@
     <v-col class="duration" cols="4" md="2">
       {{ toShortDate(education.educationStart) }} - {{ toShortDate(education.educationEnd) }}
     </v-col>
-    <v-col class="description" cols="12">
+    <v-col v-if="education.description" class="description" cols="12">
       <pre>{{ education.description }}</pre>
     </v-col>
   </v-row>
@@ -45,7 +45,10 @@ const props = defineProps<{
   > .description {
     padding-top: 5px;
     padding-bottom: 10px;
-    white-space: pre-wrap;
+
+    pre {
+      white-space: break-spaces;
+    }
   }
 }
 </style>

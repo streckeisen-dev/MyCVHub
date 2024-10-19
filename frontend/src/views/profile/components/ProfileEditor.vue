@@ -28,10 +28,10 @@
               <v-row class="form-flex">
                 <v-col cols="12" md="4">
                   <v-img
-                    :key="profilePictureKey"
                     :src="profilePicture"
                     :lazy-src="defaultProfilePicture"
-                    class="profile-picture">
+                    class="profile-picture"
+                  >
                     <template #placeholder>
                       <v-row class="fill-height" justify="center" align="center">
                         <v-progress-circular indeterminate />
@@ -63,31 +63,42 @@
                   <v-textarea v-model="formState.bio" label="Bio" :error-messages="bioErrors" />
                   <v-switch
                     v-model="formState.isProfilePublic"
-                    label="Public Profile"
+                    label="Public Profile Access"
                     hint="If enabled, your profile will be publicly accessible"
                     color="primary"
                     :error-messages="isProfilePublicErrors"
                   />
                   <v-switch
                     v-model="formState.isEmailPublic"
-                    label="Public E-Mail"
+                    :disabled="!formState.isProfilePublic"
+                    label="Show E-Mail in public profile"
                     hint="If enabled, your E-Mail address will be shown in your profile"
                     color="primary"
                     :error-messages="isEmailPublicErrors"
                   />
                   <v-switch
                     v-model="formState.isPhonePublic"
-                    label="Public Phone"
+                    :disabled="!formState.isProfilePublic"
+                    label="Show phone in public profile"
                     hint="If enabled, your phone number will be shown in your profile"
                     color="primary"
                     :error-messages="isPhonePublicErrors"
                   />
                   <v-switch
                     v-model="formState.isAddressPublic"
-                    label="Public Address"
+                    :disabled="!formState.isProfilePublic"
+                    label="Show address in public profile"
                     hint="If enabled, your address will be shown in your profile"
                     color="primary"
                     :error-messages="isAddressPublicErrors"
+                  />
+                  <v-switch
+                    v-model="formState.hideDescriptions"
+                    :disabled="!formState.isProfilePublic"
+                    label="Hide descriptions from public profile"
+                    hint="If enabled, detailed descriptions of your CV entries won't be shown in your profile"
+                    color="primary"
+                    :error-messages="hideDescriptionsErrors"
                   />
                 </v-col>
               </v-row>
@@ -132,6 +143,7 @@ import type { ErrorDto } from '@/dto/ErrorDto'
 import router from '@/router'
 import Notification from '@/components/Notification.vue'
 import round from 'lodash/round'
+import type { ProfileUpdateRequestDto } from '@/dto/ProfileUpdateRequestDto'
 
 const props = defineProps<{
   profile: ProfileDto
@@ -146,25 +158,22 @@ const education = ref(props.profile.education)
 const skills = ref(props.profile.skills)
 const savingError = ref<string>()
 const profilePictureUrl = ref(props.profile.profilePicture)
-const profilePictureKey = ref(Date.now())
 
 const defaultProfilePicture = ProfileApi.getDefaultProfilePicture()
 const profilePicture = computed(() => {
-  const url = profilePictureUrl.value || defaultProfilePicture
-  // appending a query parameter to the image url ensures that the image re-renders after a profile picture change
-  //return `${url}?v=${profilePictureKey.value}`
-  return url
+  return profilePictureUrl.value || defaultProfilePicture
 })
 
 type FormState = {
   profilePicture?: File
-  alias: string
-  jobTitle: string
-  bio: string
-  isProfilePublic: boolean
-  isEmailPublic: boolean
-  isPhonePublic: boolean
-  isAddressPublic: boolean
+  alias?: string
+  jobTitle?: string
+  bio?: string
+  isProfilePublic?: boolean
+  isEmailPublic?: boolean
+  isPhonePublic?: boolean
+  isAddressPublic?: boolean
+  hideDescriptions?: boolean
 }
 
 const formState = reactive<FormState>({
@@ -175,7 +184,8 @@ const formState = reactive<FormState>({
   isProfilePublic: props.profile.isProfilePublic,
   isEmailPublic: props.profile.isEmailPublic,
   isPhonePublic: props.profile.isPhonePublic,
-  isAddressPublic: props.profile.isAddressPublic
+  isAddressPublic: props.profile.isAddressPublic,
+  hideDescriptions: props.profile.hideDescriptions
 })
 
 const profilePictureSizeValidator = () =>
@@ -206,7 +216,8 @@ const rules = {
   isProfilePublic: {},
   isEmailPublic: {},
   isPhonePublic: {},
-  isAddressPublic: {}
+  isAddressPublic: {},
+  hideDescriptions: {}
 }
 
 const form = useVuelidate<FormState>(rules, formState)
@@ -224,6 +235,7 @@ const isProfilePublicErrors = getErrors('isProfilePublic')
 const isEmailPublicErrors = getErrors('isEmailPublic')
 const isPhonePublicErrors = getErrors('isPhonePublic')
 const isAddressPublicErrors = getErrors('isAddressPublic')
+const hideDescriptionsErrors = getErrors('hideDescriptions')
 
 async function saveGeneralInformation() {
   const isValid = await form.value.$validate()
@@ -232,7 +244,7 @@ async function saveGeneralInformation() {
   }
 
   try {
-    const profileUpdate = {
+    const profileUpdate: ProfileUpdateRequestDto = {
       profilePicture: formState.profilePicture,
       alias: formState.alias,
       jobTitle: formState.jobTitle,
@@ -240,7 +252,8 @@ async function saveGeneralInformation() {
       isProfilePublic: formState.isProfilePublic,
       isEmailPublic: formState.isEmailPublic,
       isPhonePublic: formState.isPhonePublic,
-      isAddressPublic: formState.isAddressPublic
+      isAddressPublic: formState.isAddressPublic,
+      hideDescriptions: formState.hideDescriptions
     }
 
     const savedProfile = await profileApi.updateGeneralInformation(profileUpdate)
@@ -257,10 +270,10 @@ async function saveGeneralInformation() {
       formState.isEmailPublic = savedProfile.isEmailPublic
       formState.isPhonePublic = savedProfile.isPhonePublic
       formState.isAddressPublic = savedProfile.isAddressPublic
+      formState.hideDescriptions = savedProfile.hideDescriptions
       formState.profilePicture = undefined
 
       profilePictureUrl.value = savedProfile.profilePicture
-      profilePictureKey.value = Date.now()
     }
   } catch (e) {
     const error = e as ErrorDto

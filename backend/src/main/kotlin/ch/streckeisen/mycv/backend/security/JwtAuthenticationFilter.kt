@@ -22,13 +22,7 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        //val authHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
         val accessToken = request.cookies?.find { cookie -> cookie.name == ACCESS_TOKEN_NAME }?.value
-
-        /*if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response)
-            return
-        }*/
 
         if (accessToken.isNullOrBlank()) {
             filterChain.doFilter(request, response)

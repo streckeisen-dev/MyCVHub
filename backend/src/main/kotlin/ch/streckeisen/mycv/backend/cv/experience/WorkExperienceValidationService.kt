@@ -34,7 +34,7 @@ class WorkExperienceValidationService {
         }
 
         if (workExperience.positionEnd != null && workExperience.positionEnd.isAfter(LocalDate.now())) {
-            validationErrorBuilder.addError("positionEnd", "Position End must be in the future")
+            validationErrorBuilder.addError("positionEnd", "Position End must not be in the future")
         } else if (
             workExperience.positionEnd != null
             && workExperience.positionStart != null

@@ -38,14 +38,14 @@ class WorkExperienceService(
         return Result.success(
             workExperienceRepository.save(
                 WorkExperienceEntity(
-                    existingWorkExperience?.id,
-                    workExperience.jobTitle!!,
-                    workExperience.company!!,
-                    workExperience.positionStart!!,
-                    workExperience.positionEnd,
-                    workExperience.location!!,
-                    workExperience.description!!,
-                    profile
+                    id = existingWorkExperience?.id,
+                    jobTitle = workExperience.jobTitle!!,
+                    company = workExperience.company!!,
+                    positionStart = workExperience.positionStart!!,
+                    positionEnd = workExperience.positionEnd,
+                    location = workExperience.location!!,
+                    description = workExperience.description!!,
+                    profile = profile
                 )
             )
         )

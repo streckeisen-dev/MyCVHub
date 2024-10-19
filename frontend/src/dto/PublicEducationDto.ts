@@ -4,5 +4,5 @@ export type PublicEducationDto = {
   educationStart: string
   educationEnd: string
   degreeName: string
-  description: string
+  description?: string
 }

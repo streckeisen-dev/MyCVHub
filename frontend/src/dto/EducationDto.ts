@@ -5,5 +5,5 @@ export type EducationDto = {
   educationStart: string
   educationEnd?: string
   degreeName: string
-  description: string
+  description?: string
 }

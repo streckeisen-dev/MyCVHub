@@ -15,7 +15,8 @@ const router = createRouter({
     {
       path: '/ui/login',
       name: 'login',
-      component: () => import('@/views/account/Login.vue')
+      component: () => import('@/views/account/Login.vue'),
+      props: route => ({ redirect: route.query.redirect })
     },
     {
       path: '/ui/signup',
@@ -66,7 +67,7 @@ const router = createRouter({
       component: () => import('@/views/PrivacyPolicy.vue')
     },
     {
-      path: '/ui/:pathMatch(.*)*',
+      path: '/:pathMatch(.*)*',
       component: () => import('@/views/NotFound.vue')
     }
   ]

@@ -12,6 +12,7 @@ fun ProfileEntity.toDto(profilePicture: String) = ProfileDto(
     isEmailPublic,
     isPhonePublic,
     isAddressPublic,
+    hideDescriptions,
     profilePicture,
     workExperiences.map { it.toDto() }.toList(),
     education.map { it.toDto() }.toList(),

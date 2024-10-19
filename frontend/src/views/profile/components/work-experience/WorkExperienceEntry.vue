@@ -7,7 +7,7 @@
       {{ toShortDate(workExperience.positionStart) }} -
       {{ toShortDate(workExperience.positionEnd) }}
     </v-col>
-    <v-col class="description" cols="12">
+    <v-col v-if="workExperience.description" class="description" cols="12">
       <pre>{{ workExperience.description }}</pre>
     </v-col>
   </v-row>
@@ -46,7 +46,10 @@ const props = defineProps<{
   > .description {
     padding-top: 5px;
     padding-bottom: 10px;
-    white-space: pre-wrap;
+
+    pre {
+      white-space: break-spaces;
+    }
   }
 }
 </style>

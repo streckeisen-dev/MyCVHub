@@ -3,7 +3,7 @@
     <v-sheet class="editor-sheet" rounded>
       <v-col cols="12">
         <v-row justify="end">
-          <v-btn text="Add work experience" @click="addWorkExperience" />
+          <v-btn text="Add work experience" @click="addWorkExperience" color="primary" />
         </v-row>
       </v-col>
       <work-experience-container

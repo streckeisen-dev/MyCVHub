@@ -146,6 +146,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
+    - name: Create git version tag
+      run: |
+        VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        echo "VERSION=$VERSION"
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git tag -a "v$VERSION" -m "v$VERSION"
+        git push origin "v$VERSION"
+    
     - name: Update DigitalOcean specs
       env: 
         DB_PW: ${{ secrets.DO_DB_PASSWORD }} | sed 's/[&/\]/\\&/g'
