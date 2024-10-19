@@ -7,5 +7,6 @@ data class GeneralProfileInformationUpdateDto(
     val isProfilePublic: Boolean?,
     val isEmailPublic: Boolean?,
     val isPhonePublic: Boolean?,
-    val isAddressPublic: Boolean?
+    val isAddressPublic: Boolean?,
+    val hideDescriptions: Boolean?
 )

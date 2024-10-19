@@ -13,6 +13,7 @@ data class ProfileDto(
     @get:JsonProperty(value = "isEmailPublic") val isEmailPublic: Boolean,
     @get:JsonProperty(value = "isPhonePublic") val isPhonePublic: Boolean,
     @get:JsonProperty(value = "isAddressPublic") val isAddressPublic: Boolean,
+    val hideDescriptions: Boolean,
     val profilePicture: String,
     val workExperiences: List<WorkExperienceDto>,
     val education: List<EducationDto>,

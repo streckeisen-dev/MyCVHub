@@ -25,27 +25,27 @@ fun ProfileEntity.toPublicDto(profilePicture: String): PublicProfileDto = Public
         account.country
     ) else null,
     profilePicture = profilePicture,
-    workExperiences.map { it.toPublicDto() }.toList(),
+    workExperiences.map { it.toPublicDto(hideDescriptions) }.toList(),
     skills.map { it.toPublicDto() }.toList(),
-    education.map { it.toPublicDto() }.toList()
+    education.map { it.toPublicDto(hideDescriptions) }.toList()
 )
 
-fun EducationEntity.toPublicDto() = PublicEducationDto(
+fun EducationEntity.toPublicDto(hideDescription: Boolean) = PublicEducationDto(
     institution,
     location,
     educationStart,
     educationEnd,
     degreeName,
-    description
+    description = if (hideDescription) null else description
 )
 
-fun WorkExperienceEntity.toPublicDto() = PublicWorkExperienceDto(
+fun WorkExperienceEntity.toPublicDto(hideDescription: Boolean) = PublicWorkExperienceDto(
     jobTitle,
     company,
     positionStart,
     positionEnd,
     location,
-    description
+    description = if (hideDescription) null else description
 )
 
 fun SkillEntity.toPublicDto() = PublicSkillDto(

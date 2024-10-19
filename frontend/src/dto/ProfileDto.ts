@@ -9,7 +9,8 @@ export type ProfileDto = {
   isProfilePublic: boolean
   isEmailPublic: boolean
   isPhonePublic: boolean
-  isAddressPublic: boolean
+  isAddressPublic: boolean,
+  hideDescriptions: boolean,
   profilePicture: string,
   workExperiences: Array<WorkExperienceDto>
   education: Array<EducationDto>
