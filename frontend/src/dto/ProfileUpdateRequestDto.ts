@@ -6,5 +6,6 @@ export type ProfileUpdateRequestDto = {
   isProfilePublic?: boolean
   isEmailPublic?: boolean
   isPhonePublic?: boolean
-  isAddressPublic?: boolean
+  isAddressPublic?: boolean,
+  hideDescriptions?: boolean
 }

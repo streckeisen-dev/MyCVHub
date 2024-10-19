@@ -6,11 +6,13 @@ import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
 import ch.streckeisen.mycv.backend.exceptions.ResultNotFoundException
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.IOException
 import java.time.LocalDate
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -32,14 +34,31 @@ private val existingAccount =
             "alias",
             "job",
             "bio",
-            isProfilePublic = false,
-            isEmailPublic = false,
-            isPhonePublic = false,
-            isAddressPublic = false,
+            isProfilePublic = true,
+            isEmailPublic = true,
+            isPhonePublic = true,
+            isAddressPublic = true,
+            hideDescriptions = false,
             profilePicture = "picture.jpg",
             id = 1,
             account = mockk()
         )
+    )
+private val existingAccountWithoutProfile =
+    ApplicantAccountEntity(
+        "f",
+        "l",
+        "email",
+        "phone",
+        LocalDate.now(),
+        "street",
+        null,
+        "code",
+        "city",
+        "CH",
+        "abc",
+        3,
+        profile = null
     )
 private val existingProfile =
     ProfileEntity(
@@ -50,6 +69,7 @@ private val existingProfile =
         isEmailPublic = false,
         isPhonePublic = false,
         isAddressPublic = false,
+        hideDescriptions = true,
         profilePicture = "picture.jpg",
         id = 1,
         account = existingAccount
@@ -71,6 +91,7 @@ class ProfileServiceTest {
         applicantAccountService = mockk {
             every { findById(eq(1)) } returns Result.success(existingAccount)
             every { findById(eq(2)) } returns Result.failure(ResultNotFoundException("Not found"))
+            every { findById(eq(3)) } returns Result.success(existingAccountWithoutProfile)
         }
         profilePictureService = mockk()
         profileService =
@@ -96,7 +117,8 @@ class ProfileServiceTest {
             isProfilePublic = true,
             isEmailPublic = false,
             isPhonePublic = false,
-            isAddressPublic = false
+            isAddressPublic = false,
+            hideDescriptions = true
         )
 
         val saveResult = profileService.save(1, update, mockk())
@@ -128,7 +150,8 @@ class ProfileServiceTest {
             isProfilePublic = true,
             isEmailPublic = false,
             isPhonePublic = false,
-            isAddressPublic = false
+            isAddressPublic = false,
+            hideDescriptions = false
         )
 
         val saveResult = profileService.save(1, update, null)
@@ -202,5 +225,77 @@ class ProfileServiceTest {
         verify(exactly = 1) { profileValidationService.validateProfileInformation(any(), any(), any(), any()) }
         verify(exactly = 1) { profilePictureService.store(any(), any(), any()) }
         verify(exactly = 0) { profileRepository.save(any()) }
+    }
+
+    @Test
+    fun testProfileSaveDefaultValues() {
+        val profileEntitySlot = slot<ProfileEntity>()
+        every {
+            profileValidationService.validateProfileInformation(
+                eq(3),
+                any(),
+                any(),
+                any()
+            )
+        } returns Result.success(Unit)
+        every { profilePictureService.store(eq(3), any(), any()) } returns Result.success("test.png")
+        every { profileRepository.save(capture(profileEntitySlot)) } returns existingProfile
+
+        val update = GeneralProfileInformationUpdateDto(
+            "test",
+            "Job",
+            null,
+            isProfilePublic = null,
+            isEmailPublic = null,
+            isPhonePublic = null,
+            isAddressPublic = null,
+            hideDescriptions = null
+        )
+
+        val saveResult = profileService.save(3, update, mockk())
+
+        assertTrue { saveResult.isSuccess }
+        assertNotNull(profileEntitySlot.captured)
+        assertEquals(false, profileEntitySlot.captured.isProfilePublic)
+        assertEquals(false, profileEntitySlot.captured.isEmailPublic)
+        assertEquals(false, profileEntitySlot.captured.isPhonePublic)
+        assertEquals(false, profileEntitySlot.captured.isAddressPublic)
+        assertEquals(true, profileEntitySlot.captured.hideDescriptions)
+    }
+
+    @Test
+    fun testProfileSaveKeepingExistingValues() {
+        val profileEntitySlot = slot<ProfileEntity>()
+        every {
+            profileValidationService.validateProfileInformation(
+                eq(1),
+                any(),
+                any(),
+                any()
+            )
+        } returns Result.success(Unit)
+        every { profilePictureService.store(eq(1), any(), any()) } returns Result.success("test.png")
+        every { profileRepository.save(capture(profileEntitySlot)) } returns existingProfile
+
+        val update = GeneralProfileInformationUpdateDto(
+            "test",
+            "Job",
+            null,
+            isProfilePublic = null,
+            isEmailPublic = null,
+            isPhonePublic = null,
+            isAddressPublic = null,
+            hideDescriptions = null
+        )
+
+        val saveResult = profileService.save(1, update, mockk())
+
+        assertTrue { saveResult.isSuccess }
+        assertNotNull(profileEntitySlot.captured)
+        assertEquals(true, profileEntitySlot.captured.isProfilePublic)
+        assertEquals(true, profileEntitySlot.captured.isEmailPublic)
+        assertEquals(true, profileEntitySlot.captured.isPhonePublic)
+        assertEquals(true, profileEntitySlot.captured.isAddressPublic)
+        assertEquals(false, profileEntitySlot.captured.hideDescriptions)
     }
 }

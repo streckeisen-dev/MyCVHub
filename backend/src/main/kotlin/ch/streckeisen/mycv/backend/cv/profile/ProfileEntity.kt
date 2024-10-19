@@ -21,6 +21,7 @@ class ProfileEntity(
     val isEmailPublic: Boolean,
     val isPhonePublic: Boolean,
     val isAddressPublic: Boolean,
+    val hideDescriptions: Boolean,
     val profilePicture: String,
 
     @Id

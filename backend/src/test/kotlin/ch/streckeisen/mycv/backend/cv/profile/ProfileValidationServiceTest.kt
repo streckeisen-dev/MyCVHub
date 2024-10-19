@@ -22,6 +22,7 @@ private val existingProfile =
         isEmailPublic = false,
         isPhonePublic = false,
         isAddressPublic = false,
+        hideDescriptions = true,
         profilePicture = "picture.jpg",
         id = 1,
         account = mockk {
@@ -89,7 +90,7 @@ class ProfileValidationServiceTest {
         fun profileValidationDataProvider() = listOf(
             Arguments.of(
                 1,
-                GeneralProfileInformationUpdateDto(null, null, null, null, null, null, null),
+                GeneralProfileInformationUpdateDto(null, null, null, null, null, null, null, null),
                 null,
                 true,
                 false,
@@ -97,7 +98,7 @@ class ProfileValidationServiceTest {
             ),
             Arguments.of(
                 1,
-                GeneralProfileInformationUpdateDto(null, null, null, null, null, null, null),
+                GeneralProfileInformationUpdateDto(null, null, null, null, null, null, null, null),
                 mockk<MultipartFile>(),
                 true,
                 false,
@@ -105,7 +106,7 @@ class ProfileValidationServiceTest {
             ),
             Arguments.of(
                 1,
-                GeneralProfileInformationUpdateDto(null, null, null, null, null, null, null),
+                GeneralProfileInformationUpdateDto(null, null, null, null, null, null, null, null),
                 null,
                 false,
                 false,
@@ -120,6 +121,7 @@ class ProfileValidationServiceTest {
                     null,
                     null,
                     null,
+                    null,
                     null
                 ),
                 null,
@@ -129,7 +131,7 @@ class ProfileValidationServiceTest {
             ),
             Arguments.of(
                 1,
-                GeneralProfileInformationUpdateDto("a b", null, null, null, null, null, null),
+                GeneralProfileInformationUpdateDto("a b", null, null, null, null, null, null, null),
                 null,
                 false,
                 false,
@@ -137,7 +139,7 @@ class ProfileValidationServiceTest {
             ),
             Arguments.of(
                 2,
-                GeneralProfileInformationUpdateDto("existing", null, null, null, null, null, null),
+                GeneralProfileInformationUpdateDto("existing", null, null, null, null, null, null, null),
                 null,
                 false,
                 false,
@@ -145,7 +147,7 @@ class ProfileValidationServiceTest {
             ),
             Arguments.of(
                 1,
-                GeneralProfileInformationUpdateDto("alias", null, null, null, null, null, null),
+                GeneralProfileInformationUpdateDto("alias", null, null, null, null, null, null, null),
                 null,
                 false,
                 false,
@@ -153,7 +155,7 @@ class ProfileValidationServiceTest {
             ),
             Arguments.of(
                 1,
-                GeneralProfileInformationUpdateDto("existing", null, null, null, null, null, null),
+                GeneralProfileInformationUpdateDto("existing", null, null, null, null, null, null, null),
                 null,
                 false,
                 false,
@@ -168,6 +170,7 @@ class ProfileValidationServiceTest {
                     null,
                     null,
                     null,
+                    null,
                     null
                 ),
                 null,
@@ -177,7 +180,7 @@ class ProfileValidationServiceTest {
             ),
             Arguments.of(
                 1,
-                GeneralProfileInformationUpdateDto(null, "jobTitle", null, null, null, null, null),
+                GeneralProfileInformationUpdateDto(null, "jobTitle", null, null, null, null, null, null),
                 null,
                 false,
                 false,
@@ -192,7 +195,8 @@ class ProfileValidationServiceTest {
                     isProfilePublic = false,
                     isEmailPublic = false,
                     isPhonePublic = true,
-                    isAddressPublic = false
+                    isAddressPublic = false,
+                    hideDescriptions = true
                 ),
                 null,
                 false,
@@ -208,7 +212,8 @@ class ProfileValidationServiceTest {
                     isProfilePublic = false,
                     isEmailPublic = false,
                     isPhonePublic = true,
-                    isAddressPublic = false
+                    isAddressPublic = false,
+                    hideDescriptions = true
                 ),
                 null,
                 false,

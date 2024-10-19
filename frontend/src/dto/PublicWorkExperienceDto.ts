@@ -4,6 +4,6 @@ export type PublicWorkExperienceDto = {
   positionStart: string
   positionEnd?: string
   location: string
-  description: string
+  description?: string
   workExperiences: Array<PublicWorkExperienceDto>
 }
