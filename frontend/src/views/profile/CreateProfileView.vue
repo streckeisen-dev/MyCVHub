@@ -19,6 +19,7 @@ const emptyProfile: ProfileDto = {
   isEmailPublic: false,
   isPhonePublic: false,
   isAddressPublic: false,
+  hideDescriptions: true,
   profilePicture: '',
   workExperiences: [],
   education: [],
