@@ -148,8 +148,10 @@ jobs:
     
     - name: Create git version tag
       run: |
-        VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        cd backend/
+        VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
         echo "VERSION=$VERSION"
+        cd ..
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
         git tag -a "v$VERSION" -m "v$VERSION"
