@@ -2,7 +2,7 @@ name: MyCV CI/CD pipeline
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
   checks: write
 
 on:
