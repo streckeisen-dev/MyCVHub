@@ -3,7 +3,7 @@
     <v-sheet class="editor-sheet" rounded>
       <v-col cols="12">
         <v-row justify="end">
-          <v-btn text="Add work experience" @click="addWorkExperience" color="primary" />
+          <v-btn :text="t('workExperienceEditor.add')" @click="addWorkExperience" color="primary" />
         </v-row>
       </v-col>
       <work-experience-container
@@ -25,7 +25,7 @@
 
   <notification
     v-if="deleteErrorMessage"
-    title="Failed to delete work experience"
+    :title="t('workExperienceEditor.deleteError')"
     :message="deleteErrorMessage"
   />
 </template>
@@ -38,6 +38,9 @@ import profileApi from '@/api/ProfileApi'
 import type { ErrorDto } from '@/dto/ErrorDto'
 import Notification from '@/components/Notification.vue'
 import WorkExperienceContainer from '@/views/profile/components/work-experience/WorkExperienceContainer.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const workExperiences = defineModel({
   required: true,
@@ -91,6 +94,23 @@ async function deleteWorkExperience(id: number) {
   }
 }
 </script>
+
+<i18n>
+{
+  "de": {
+    "workExperienceEditor": {
+      "add": "Arbeitserfahrung hinzufügen",
+      "deleteError": "Arbeitserfahrung konnte nicht gelöscht werden"
+    }
+  },
+  "en": {
+    "workExperienceEditor": {
+      "add": "Add work experience",
+      "deleteError": "Failed to delete work experience"
+    }
+  }
+}
+</i18n>
 
 <style scoped>
 .editor-sheet {

@@ -17,7 +17,7 @@
       </v-col>
     </template>
   </v-row>
-  <v-col v-if="values.length === 0" cols="12">No education entries yet.</v-col>
+  <v-col v-if="values.length === 0" cols="12">{{ t('education.noEntries') }}</v-col>
 </template>
 
 <script setup lang="ts">
@@ -26,6 +26,9 @@ import { compareDatesByYearAndMonth, convertStringToDate } from '@/services/Date
 import type { PublicEducationDto } from '@/dto/PublicEducationDto'
 import type { EducationDto } from '@/dto/EducationDto'
 import EducationEntry from '@/views/profile/components/education/EducationEntry.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   values: Array<EducationDto> | Array<PublicEducationDto>
@@ -57,6 +60,21 @@ function deleteEducation(id: number) {
   emit('delete', id)
 }
 </script>
+
+<i18n>
+{
+  "de": {
+    "education": {
+      "noEntries": "Noch keine Ausbildungen."
+    }
+  },
+  "en": {
+    "education": {
+      "noEntries": "No education entries yet."
+    }
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 .education {

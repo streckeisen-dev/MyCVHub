@@ -4,8 +4,8 @@
     <loading-spinner v-else-if="isLoadingProfile" />
     <v-empty-state
       v-else
-      headline="Oops, something went wrong"
-      title="Failed to load profile"
+      :headline="t('error.genericMessage')"
+      :title="t('editProfile.error')"
       :text="loadingError"
     />
   </v-main>
@@ -18,6 +18,9 @@ import type { ProfileDto } from '@/dto/ProfileDto'
 import { ref } from 'vue'
 import type { ErrorDto } from '@/dto/ErrorDto'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const profile = ref<ProfileDto>()
 const isLoadingProfile = ref(true)
@@ -33,4 +36,17 @@ try {
 }
 </script>
 
-<style scoped></style>
+<i18n>
+{
+  "de": {
+    "editProfile": {
+      "error": "Das Profil konnte nicht geladen werden"
+    }
+  },
+  "en": {
+    "editProfile": {
+      "error": "Failed to load profile"
+    }
+  }
+}
+</i18n>

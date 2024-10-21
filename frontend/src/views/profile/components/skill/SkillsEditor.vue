@@ -3,7 +3,7 @@
     <v-sheet class="editor-sheet" rounded>
       <v-col cols="12">
         <v-row justify="end">
-          <v-btn text="Add skill" color="primary" @click="addSkill" />
+          <v-btn :text="t('skillsEditor.add')" color="primary" @click="addSkill" />
         </v-row>
       </v-col>
       <skills-container :values="skills" actions @edit="editSkill" @delete="deleteSkill" />
@@ -20,7 +20,7 @@
 
   <notification
     v-if="deleteErrorMessage"
-    title="Failed to delete skill"
+    :title="t('skillsEditor.deleteError')"
     :message="deleteErrorMessage"
   />
 </template>
@@ -33,6 +33,9 @@ import Notification from '@/components/Notification.vue'
 import SkillsContainer from '@/views/profile/components/skill/SkillsContainer.vue'
 import EditSkillDialog from '@/views/profile/components/skill/EditSkillDialog.vue'
 import type { SkillDto } from '@/dto/SkillDto'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const skills = defineModel({
   required: true,
@@ -86,6 +89,23 @@ async function deleteSkill(id: number) {
   }
 }
 </script>
+
+<i18n>
+{
+  "de": {
+    "skillsEditor": {
+      "add": "Fähigkeit hinzufügen",
+      "deleteError": "Fähigkeit konnte nicht gelöscht werden"
+    }
+  },
+  "en": {
+    "skillsEditor": {
+      "add": "Add skill",
+      "deleteError": "Failed to delete skill"
+    }
+  }
+}
+</i18n>
 
 <style scoped>
 .editor-sheet {

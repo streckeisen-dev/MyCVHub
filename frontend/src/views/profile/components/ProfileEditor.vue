@@ -4,19 +4,19 @@
       <v-col cols="12" class="back-button">
         <router-link :to="{ name: 'account' }">
           <v-btn icon="mdi-arrow-left" />
-          <span>Back to account</span>
+          <span>{{ t('profileEditor.back') }}</span>
         </router-link>
       </v-col>
       <v-col cols="12">
-        <h2>Profile</h2>
+        <h2>{{ t('profile.title') }}</h2>
       </v-col>
     </v-row>
     <v-tabs v-model="activeTab" color="secondary">
-      <v-tab value="general">General</v-tab>
+      <v-tab value="general">{{ t('profileEditor.general') }}</v-tab>
       <template v-if="isCreated">
-        <v-tab value="work">Work Experience</v-tab>
-        <v-tab value="edu">Education</v-tab>
-        <v-tab value="skills">Skills</v-tab>
+        <v-tab value="work">{{ t('profile.workExperiences') }}</v-tab>
+        <v-tab value="edu">{{ t('profile.education') }}</v-tab>
+        <v-tab value="skills">{{ t('profile.skills') }}</v-tab>
       </template>
     </v-tabs>
 
@@ -40,8 +40,8 @@
                   </v-img>
                   <v-file-input
                     v-model="formState.profilePicture"
-                    label="Profile Picture"
-                    hint="Your profile picture must not exceed 2MB."
+                    :label="t('fields.profilePicture')"
+                    :hint="t('profileEditor.pictureHint')"
                     prepend-icon="mdi-camera"
                     accept=".png, .jpeg, .jpg"
                     :error-messages="profilePictureErrors"
@@ -51,59 +51,63 @@
                 <v-col cols="12" md="8">
                   <v-text-field
                     v-model="formState.alias"
-                    label="Alias"
-                    hint="Name that will be used in the URL of your profile"
+                    :label="t('fields.alias')"
+                    :hint="t('profileEditor.aliasHint')"
                     :error-messages="aliasErrors"
                   />
                   <v-text-field
                     v-model="formState.jobTitle"
-                    label="Job Title"
+                    :label="t('fields.jobTitle')"
                     :error-messages="jobTitleErrors"
                   />
-                  <v-textarea v-model="formState.bio" label="Bio" :error-messages="bioErrors" />
+                  <v-textarea
+                    v-model="formState.bio"
+                    :label="t('fields.bio')"
+                    :error-messages="bioErrors"
+                  />
                   <v-switch
                     v-model="formState.isProfilePublic"
-                    label="Public Profile Access"
-                    hint="If enabled, your profile will be publicly accessible"
+                    :label="t('profileEditor.publicProfile')"
+                    :hint="t('profileEditor.publicProfileHint')"
                     color="primary"
-                    :error-messages="isProfilePublicErrors"
                   />
                   <v-switch
                     v-model="formState.isEmailPublic"
                     :disabled="!formState.isProfilePublic"
-                    label="Show E-Mail in public profile"
-                    hint="If enabled, your E-Mail address will be shown in your profile"
+                    :label="t('profileEditor.publicEmail')"
+                    :hint="t('profileEditor.publicEmailHint')"
                     color="primary"
-                    :error-messages="isEmailPublicErrors"
                   />
                   <v-switch
                     v-model="formState.isPhonePublic"
                     :disabled="!formState.isProfilePublic"
-                    label="Show phone in public profile"
-                    hint="If enabled, your phone number will be shown in your profile"
+                    :label="t('profileEditor.publicPhone')"
+                    :hint="t('profileEditor.publicPhoneHint')"
                     color="primary"
-                    :error-messages="isPhonePublicErrors"
                   />
                   <v-switch
                     v-model="formState.isAddressPublic"
                     :disabled="!formState.isProfilePublic"
-                    label="Show address in public profile"
-                    hint="If enabled, your address will be shown in your profile"
+                    :label="t('profileEditor.publicAddress')"
+                    :hint="t('profileEditor.publicAddressHint')"
                     color="primary"
-                    :error-messages="isAddressPublicErrors"
                   />
                   <v-switch
                     v-model="formState.hideDescriptions"
                     :disabled="!formState.isProfilePublic"
-                    label="Hide descriptions from public profile"
-                    hint="If enabled, detailed descriptions of your CV entries won't be shown in your profile"
+                    :label="t('profileEditor.hideDescriptions')"
+                    :hint="t('profileEditor.hideDescriptionsHint')"
                     color="primary"
-                    :error-messages="hideDescriptionsErrors"
                   />
                 </v-col>
               </v-row>
 
-              <v-btn type="submit" text="Save" color="primary" @click="saveGeneralInformation" />
+              <v-btn
+                type="submit"
+                :text="t('forms.save')"
+                color="primary"
+                @click.prevent="saveGeneralInformation"
+              />
             </v-form>
           </v-sheet>
         </v-row>
@@ -123,8 +127,8 @@
   </v-container>
   <notification
     v-if="savingError"
-    title="Failed to save profile"
-    :message="`An error occurred while trying to save your profile. ${savingError}`"
+    :title="t('profileEditor.saveErrorTitle')"
+    :message="`${t('profileEditor.saveErrorMessage')}. ${savingError}`"
   />
 </template>
 
@@ -144,6 +148,13 @@ import router from '@/router'
 import Notification from '@/components/Notification.vue'
 import round from 'lodash/round'
 import type { ProfileUpdateRequestDto } from '@/dto/ProfileUpdateRequestDto'
+import { useI18n } from 'vue-i18n'
+import i18n from '@/plugins/i18n'
+import profileLocale from '@/locales/ProfileLocale'
+import { withI18nMessage } from '@/validation/validators'
+
+const { t, mergeLocaleMessage } = useI18n()
+i18n.global.availableLocales.forEach((lang) => mergeLocaleMessage(lang, profileLocale[lang]))
 
 const props = defineProps<{
   profile: ProfileDto
@@ -188,36 +199,31 @@ const formState = reactive<FormState>({
   hideDescriptions: props.profile.hideDescriptions
 })
 
-const profilePictureSizeValidator = () =>
-  formState.profilePicture == undefined || formState.profilePicture?.size <= profilePictureMaxSize
+const fileSizeValidator = withI18nMessage(
+  () =>
+    formState.profilePicture == undefined || formState.profilePicture?.size <= profilePictureMaxSize
+)
+const profilePictureSizeValidator = helpers.withParams(
+  { maxSize: round(profilePictureMaxSize * Math.pow(2, -20), 1) },
+  fileSizeValidator
+)
 
 const rules = {
   profilePicture: isCreated.value
     ? {
-        profilePictureSizeValidator: helpers.withMessage(
-          `Profile Picture must be less than ${round(profilePictureMaxSize * Math.pow(2, -20), 1)} MB`,
-          profilePictureSizeValidator
-        )
+        fileSizeValidator: profilePictureSizeValidator
       }
     : {
-        required: helpers.withMessage('Profile Picture is required', required),
-        profilePictureSizeValidator: helpers.withMessage(
-          `Profile Picture must be less than ${round(profilePictureMaxSize * Math.pow(2, -20), 1)} MB`,
-          profilePictureSizeValidator
-        )
+        required,
+        fileSizeValidator: profilePictureSizeValidator
       },
   alias: {
-    required: helpers.withMessage('Alias is required', required)
+    required
   },
   jobTitle: {
-    required: helpers.withMessage('Job Title is required', required)
+    required
   },
-  bio: {},
-  isProfilePublic: {},
-  isEmailPublic: {},
-  isPhonePublic: {},
-  isAddressPublic: {},
-  hideDescriptions: {}
+  bio: {}
 }
 
 const form = useVuelidate<FormState>(rules, formState)
@@ -231,11 +237,6 @@ const profilePictureErrors = getErrors('profilePicture')
 const aliasErrors = getErrors('alias')
 const jobTitleErrors = getErrors('jobTitle')
 const bioErrors = getErrors('bio')
-const isProfilePublicErrors = getErrors('isProfilePublic')
-const isEmailPublicErrors = getErrors('isEmailPublic')
-const isPhonePublicErrors = getErrors('isPhonePublic')
-const isAddressPublicErrors = getErrors('isAddressPublic')
-const hideDescriptionsErrors = getErrors('hideDescriptions')
 
 async function saveGeneralInformation() {
   const isValid = await form.value.$validate()
@@ -287,6 +288,51 @@ async function saveGeneralInformation() {
   }
 }
 </script>
+
+<i18n>
+{
+  "de": {
+    "profileEditor": {
+      "back": "Zurück zum Account",
+      "general": "Allgemein",
+      "pictureHint": "Dein Profilbild darf nicht grösser als 2MB sein.",
+      "aliasHint": "Name, der in der URL deines Profils verwendet werden soll",
+      "publicProfile": "Öffentlicher Profilzugriff",
+      "publicProfileHint": "Falls aktiviert, ist dein Profil öffentlich zugänglich",
+      "publicEmail": "E-Mail im öffentlichen Profil anzeigen",
+      "publicEmailHint": "Falls aktiviert, wird deine E-Mail-Adresse in deinem Profil angezeigt",
+      "publicPhone": "Telefon im öffentlichen Profil anzeigen",
+      "publicPhoneHint": "Falls aktiviert, wird deine Telefonnummer in deinem Profil angezeigt",
+      "publicAddress": "Adresse im öffentlichen Profil anzeigen",
+      "publicAddressHint": "Falls aktiviert, wird deine Adresse in deinem Profil angezeigt",
+      "hideDescriptions": "Beschreibungen aus dem öffentlichen Profil ausblenden",
+      "hideDescriptionsHint": "Falls aktiviert, werden detaillierte Beschreibungen deiner Lebenslaufeinträge nicht in deinem Profil angezeigt",
+      "saveErrorTitle": "Das Profil konnte nicht gespeichert werden",
+      "saveErrorMessage": "Beim Versuch, dein Profil zu speichern, ist ein Fehler aufgetreten"
+    }
+  },
+  "en": {
+    "profileEditor": {
+      "back": "Back to account",
+      "general": "General",
+      "pictureHint": "Your profile picture must not exceed 2MB.",
+      "aliasHint": "Name that will be used in the URL of your profile",
+      "publicProfile": "Public Profile Access",
+      "publicProfileHint": "If enabled, your profile will be publicly accessible",
+      "publicEmail": "Show E-Mail in public profile",
+      "publicEmailHint": "If enabled, your E-Mail address will be shown in your profile",
+      "publicPhone": "Show phone in public profile",
+      "publicPhoneHint": "If enabled, your phone number will be shown in your profile",
+      "publicAddress": "Show address in public profile",
+      "publicAddressHint": "If enabled, your address will be shown in your profile",
+      "hideDescriptions": "Hide descriptions from public profile",
+      "hideDescriptionsHint": "If enabled, detailed descriptions of your CV entries won't be shown in your profile",
+      "saveErrorTitle": "Failed to save profile",
+      "saveErrorMessage": "An error occurred while trying to save your profile"
+    }
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 .back-button {
