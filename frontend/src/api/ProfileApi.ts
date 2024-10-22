@@ -65,7 +65,7 @@ async function saveWorkExperience(
     const response = await fetchFromApi('/api/profile/work-experience', {
       method: 'POST',
       body: JSON.stringify(workExperienceUpdate),
-      headers: commonHeaders
+      headers: commonHeaders()
     })
     const workExperience = await getJSONIfResponseIsOk<WorkExperienceDto>(response)
     return Promise.resolve(workExperience)
@@ -91,7 +91,7 @@ async function saveEducation(educationUpdate: EducationUpdateDto): Promise<Educa
     const response = await fetchFromApi('/api/profile/education', {
       method: 'POST',
       body: JSON.stringify(educationUpdate),
-      headers: commonHeaders
+      headers: commonHeaders()
     })
     const education = await getJSONIfResponseIsOk<EducationDto>(response)
     return Promise.resolve(education)
@@ -117,7 +117,7 @@ async function saveSkill(skillUpdate: SkillUpdateDto): Promise<SkillDto> {
     const response = await fetchFromApi('/api/profile/skill', {
       method: 'POST',
       body: JSON.stringify(skillUpdate),
-      headers: commonHeaders
+      headers: commonHeaders()
     })
     const skill = await getJSONIfResponseIsOk<SkillDto>(response)
     return Promise.resolve(skill)

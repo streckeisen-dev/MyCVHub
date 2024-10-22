@@ -16,7 +16,7 @@ async function login(email: string, password: string): Promise<void> {
         username: email,
         password: password
       }),
-      headers: commonHeaders
+      headers: commonHeaders()
     })
     return processAuthResponse(response)
   } catch (error) {
@@ -29,7 +29,7 @@ async function signUp(account: SignupRequestDto): Promise<void> {
     const response = await fetch('/api/auth/signUp', {
       method: 'POST',
       body: JSON.stringify(account),
-      headers: commonHeaders
+      headers: commonHeaders()
     })
     return processAuthResponse(response)
   } catch (error) {

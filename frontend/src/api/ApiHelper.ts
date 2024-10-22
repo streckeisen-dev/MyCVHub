@@ -1,5 +1,6 @@
 import type { ErrorDto } from '@/dto/ErrorDto'
 import LoginStateService from '@/services/LoginStateService'
+import i18n from '@/plugins/i18n'
 
 async function fetchFromApi<T>(
   path: string,
@@ -10,6 +11,11 @@ async function fetchFromApi<T>(
   const opt: RequestInit = {
     ...options
   }
+
+  if (!opt.headers) {
+    opt.headers = {}
+  }
+  opt.headers['Accept-Language'] = i18n.global.locale.value
 
   try {
     const response = await fetch(uri, opt)
@@ -64,8 +70,11 @@ async function processAuthResponse(response: Response): Promise<void> {
   }
 }
 
-const commonHeaders: { [key: string]: string } = {
-  'Content-Type': 'application/json'
+function commonHeaders(): { [key: string]: string } {
+  return {
+    'Content-Type': 'application/json',
+    'Accept-Language': i18n.global.locale.value
+  }
 }
 
 export {
