@@ -1,7 +1,7 @@
 package ch.streckeisen.mycv.backend.cv.experience
 
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
-import ch.streckeisen.mycv.backend.exceptions.ResultNotFoundException
+import ch.streckeisen.mycv.backend.exceptions.EntityNotFoundException
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,7 +17,7 @@ class WorkExperienceService(
     fun save(applicantId: Long, workExperience: WorkExperienceUpdateDto): Result<WorkExperienceEntity> {
         val existingWorkExperience = if (workExperience.id != null) {
             workExperienceRepository.findById(workExperience.id)
-                .getOrElse { return Result.failure(ResultNotFoundException("This work experience does not exist")) }
+                .getOrElse { return Result.failure(EntityNotFoundException("This work experience does not exist")) }
         } else null
 
         if (existingWorkExperience != null && existingWorkExperience.profile.account.id != applicantId) {
@@ -54,7 +54,7 @@ class WorkExperienceService(
     @Transactional
     fun delete(applicantId: Long, workExperienceId: Long): Result<Unit> {
         val workExperience = workExperienceRepository.findById(workExperienceId).getOrElse {
-            return Result.failure(ResultNotFoundException("This work experience does not exist"))
+            return Result.failure(EntityNotFoundException("This work experience does not exist"))
         }
 
         if (applicantId != workExperience.profile.account.id) {
