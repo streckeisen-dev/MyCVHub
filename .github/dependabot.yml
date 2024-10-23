@@ -15,7 +15,6 @@ updates:
         update-types:
           - "minor"
           - "patch"
-        versioning-strategy: increase
 
   - package-ecosystem: "npm"
     directory: "/frontend"
@@ -27,4 +26,3 @@ updates:
         update-types:
           - "minor"
           - "patch"
-        versioning-strategy: increase
