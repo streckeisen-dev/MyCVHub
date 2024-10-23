@@ -12,10 +12,9 @@ async function fetchFromApi<T>(
     ...options
   }
 
-  if (!opt.headers) {
-    opt.headers = {}
-  }
-  opt.headers['Accept-Language'] = i18n.global.locale.value
+  const headers = (options?.headers as Headers) || new Headers()
+  headers.append('Accept-Language', i18n.global.locale.value)
+  opt.headers = headers
 
   try {
     const response = await fetch(uri, opt)
@@ -70,11 +69,11 @@ async function processAuthResponse(response: Response): Promise<void> {
   }
 }
 
-function commonHeaders(): { [key: string]: string } {
-  return {
-    'Content-Type': 'application/json',
-    'Accept-Language': i18n.global.locale.value
-  }
+function commonHeaders(): Headers {
+  const headers = new Headers()
+  headers.append('Content-Type', 'application/json')
+  headers.append('Accept-Language', i18n.global.locale.value)
+  return headers
 }
 
 export {
