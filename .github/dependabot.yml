@@ -8,8 +8,20 @@ updates:
   - package-ecosystem: "maven" # See documentation for possible values
     directory: "/backend" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: "monthly"
+    target-branch: "dev"
+    groups:
+      all-non-major-updates:
+        - "minor"
+        - "patch"
+    versioning-strategy: increase
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
+    target-branch: "dev"
+    groups:
+      all-non-major-updates:
+        - "minor"
+        - "patch"
+    versioning-strategy: increase
