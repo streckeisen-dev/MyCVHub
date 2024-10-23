@@ -3,6 +3,7 @@ import json
 import os
 import re
 import glob
+import argparse
 
 # Error for handling duplicate keys
 class DuplicateKeyError(Exception):
@@ -85,7 +86,7 @@ def write_backend_properties(locales, output_dir, key_prefix, fallback_locale):
                 f.write(f"{prefixed_key}={escaped_value}\n")
 
 # Main function
-def generate_i18n_files(yaml_file, frontend_output_dir, backend_output_dir, key_prefix, fallback_locale):
+def generate_i18n_files(gen_type, frontend_output_dir, backend_output_dir, key_prefix, fallback_locale):
     locales = {}
 
     # Find and load all YAML files
@@ -103,18 +104,30 @@ def generate_i18n_files(yaml_file, frontend_output_dir, backend_output_dir, key_
         raise KeyError("No valid locales found in the YAML files.")
 
     # Write frontend (JSON) and backend (.properties) files
-    write_frontend_json(locales, frontend_output_dir)
-    write_backend_properties(locales, backend_output_dir, key_prefix, fallback_locale)
+    if gen_type in ("all", "frontend"):
+        write_frontend_json(locales, frontend_output_dir)
+        print("Generated frontend locales")
+    if gen_type in ("all", "backend"):
+        write_backend_properties(locales, backend_output_dir, key_prefix, fallback_locale)
+        print("Generated backend locales")
 
-# Example usage
+parser = argparse.ArgumentParser(description="Generate i18n files for frontend and backend.")
+parser.add_argument(
+    "--type", 
+    choices=["all", "frontend", "backend"], 
+    default="all",
+    help="Specify which files to generate: 'all', 'frontend', or 'backend'."
+)
+args = parser.parse_args()
+
 try:
-    yaml_file = 'messages.yaml'  # Path to your input YAML file
+    generate_type = args.type  # Command-line parameter for generating files
     frontend_output_dir = '../frontend/src/locales/'  # Path to output JSON for frontend
     backend_output_dir = '../backend/src/main/resources/'  # Relative output directory for backend .properties files
     key_prefix = 'ch.streckeisen.mycv'  # Prefix for backend keys
     fallback_locale = 'en'
 
-    generate_i18n_files(yaml_file, frontend_output_dir, backend_output_dir, key_prefix, fallback_locale)
+    generate_i18n_files(generate_type, frontend_output_dir, backend_output_dir, key_prefix, fallback_locale)
     print("Files generated successfully!")
 except DuplicateKeyError as e:
     print(f"Error: {e}")
