@@ -20,7 +20,7 @@ class ProfilePictureServiceTest {
     @BeforeEach
     fun setup() {
         profilePictureStorageService = mockk()
-        profilePictureService = ProfilePictureService(profilePictureStorageService)
+        profilePictureService = ProfilePictureService(profilePictureStorageService, mockk(relaxed = true))
     }
 
     @Test

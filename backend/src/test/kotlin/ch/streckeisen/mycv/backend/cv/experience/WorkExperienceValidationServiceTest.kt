@@ -1,6 +1,7 @@
 package ch.streckeisen.mycv.backend.cv.experience
 
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
+import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -15,7 +16,7 @@ class WorkExperienceValidationServiceTest {
 
     @BeforeEach
     fun setup() {
-        workExperienceValidationService = WorkExperienceValidationService()
+        workExperienceValidationService = WorkExperienceValidationService(mockk(relaxed = true))
     }
 
     @ParameterizedTest
