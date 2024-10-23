@@ -14,13 +14,13 @@ import java.util.Locale
 private const val MIN_PASSWORD_LENGTH = 8
 
 private const val ACCOUNT_VALIDATION_KEY_PREFIX = "${MYCV_KEY_PREFIX}.account.validation"
-private const val EMAIL_INVALID_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.emailInvalid"
+private const val EMAIL_INVALID_KEY = "${MYCV_KEY_PREFIX}.validations.email"
 private const val EMAIL_TAKEN_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.emailAlreadyTaken"
 private const val PHONE_INVALID_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.phoneInvalid"
 private const val EMPTY_HOUSE_NUMBER_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.houseNumberEmpty"
 private const val COUNTRY_LENGTH_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.countryLengthError"
 private const val COUNTRY_INVALID_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.countryInvalid"
-private const val PASSWORD_KEY_PREFIX = "${ACCOUNT_VALIDATION_KEY_PREFIX}.password"
+private const val PASSWORD_KEY_PREFIX = "${MYCV_KEY_PREFIX}.passwordRequirements"
 private const val PASSWORD_LENGTH_KEY = "${PASSWORD_KEY_PREFIX}.length"
 private const val PASSWORD_WHITESPACE_KEY = "${PASSWORD_KEY_PREFIX}.whitespaces"
 private const val PASSWORD_DIGITS_KEY = "${PASSWORD_KEY_PREFIX}.digits"
