@@ -212,6 +212,11 @@ frontend:
       content: "Bei Fragen oder Anliegen kontaktieren Sie uns bitte unter"
 
 backend:
+  validations:
+    maxLengthExceeded: "{0} darf nicht länger als {1} Zeichen sein"
+    dateInFuture: "{0} darf nicht in der Zukunft liegen"
+    numberTooSmall: "{0} muss grösser als {1} sein"
+    numberTooBig: "{0} muss kleiner als {1} sein"
   workExperience:
     validationError: "Validierung der Arbeitserfahrung ist fehlgeschlagen"
   skill:
@@ -236,9 +241,9 @@ backend:
         encodingTooLong: "Verschlüsseltes Passwort überschreitet die Anzahl der erlaubten Zeichen"
         encodingError: "Passwortverschlüsselung fehlgeschlagen"
       error: "Account-Validierung fehlgeschlagen"
-    auth:
-      login:
-        error: "Authentifizierung ist fehlgeschlagen"
+  auth:
+    login:
+      error: "Authentifizierung ist fehlgeschlagen"
   exceptions:
     db: "Ein Datenbank-Fehler ist aufgetreten. Bitte kontaktiere den Administrator"
     expiredJwt: "Abgelaufenes JWT-Token"

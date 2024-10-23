@@ -14,8 +14,22 @@ on:
       - '**'
 
 jobs:
+  i18n:
+    runs-on: ubuntu-latest
+    container:
+      image: lstreckeisen/my-cv-github-image:latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Check I18n files
+      working-directory: locales
+      run: python check_keys.py
+
   build-frontend:
     runs-on: ubuntu-latest
+    needs:
+      - i18n
 
     steps:
     - name: Checkout code
@@ -49,6 +63,8 @@ jobs:
   
   build-backend:
     runs-on: ubuntu-latest
+    needs:
+      - i18n
 
     steps:
     - name: Checkout code

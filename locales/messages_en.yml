@@ -90,7 +90,7 @@ frontend:
       submit: "Sign Up"
     login:
       title: "Login to MyCVHub"
-      btn: "Login"
+      action: "Login"
       noAccount: "Don't have an account yet?"
       signup: "Sign up now"
       error: "Login failed"
@@ -179,12 +179,12 @@ frontend:
     collection:
       title: "Data Collection"
       content: "MyCVHub collects the following personal information:"
-    profileInfo:
-      title: "Profile Information"
-      content: "Name, address, phone number, and CV content, as provided by users."
-    profilePicture:
-      title: "Profile Picture"
-      content: "The profile picture is stored securely with our third-party provider, Cloudinary."
+      profileInfo:
+        title: "Profile Information"
+        content: "Name, address, phone number, and CV content, as provided by users."
+      profilePicture:
+        title: "Profile Picture"
+        content: "The profile picture is stored securely with our third-party provider, Cloudinary."
     usage:
       title: "Data Usage"
       content: "Collected data is used to:"
