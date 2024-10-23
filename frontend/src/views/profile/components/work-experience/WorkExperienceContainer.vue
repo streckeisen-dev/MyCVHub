@@ -17,7 +17,7 @@
       </v-col>
     </template>
   </v-row>
-  <v-col v-if="values.length === 0" cols="12">{{ t('workExperiences.noEntries') }}</v-col>
+  <v-col v-if="values.length === 0" cols="12">{{ t('workExperience.noEntries') }}</v-col>
 </template>
 
 <script setup lang="ts">
@@ -28,7 +28,9 @@ import { computed } from 'vue'
 import { compareDatesByYearAndMonth, convertStringToDate } from '@/services/DateHelper'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const props = defineProps<{
   values: Array<WorkExperienceDto> | Array<PublicWorkExperienceDto>
@@ -60,21 +62,6 @@ function deleteWorkExperience(id: number) {
   emit('delete', id)
 }
 </script>
-
-<i18n>
-{
-  "de": {
-    "workExperiences": {
-      "noEntries": "Noch keine Arbeitserfahrung."
-    }
-  },
-  "en": {
-    "workExperiences": {
-      "noEntries": "No work experiences yet."
-    }
-  }
-}
-</i18n>
 
 <style lang="scss" scoped>
 .work-experiences {

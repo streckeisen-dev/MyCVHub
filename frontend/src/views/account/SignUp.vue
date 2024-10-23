@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col cols="12">
-          <h1>{{ t('signup.createAccount') }}</h1>
+          <h1>{{ t('account.create.title') }}</h1>
         </v-col>
       </v-row>
       <v-row>
@@ -121,7 +121,7 @@
                   <v-col cols="12">
                     <password-input
                       v-model="formState.confirmedPassword"
-                      :label="t('account.confirmPassword')"
+                      :label="t('fields.confirmPassword')"
                       :error-messages="confirmedPasswordErrors"
                     />
                   </v-col>
@@ -130,7 +130,7 @@
               <v-col cols="12" md="6">
                 <v-row>
                   <v-col cols="12">
-                    <h3>{{ t('account.passwordRequirements.title') }}</h3>
+                    <h3>{{ t('account.passwordRequirements') }}</h3>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -155,7 +155,7 @@
                   color="primary"
                   type="submit"
                   @click.prevent="signUp"
-                  :text="t('signup.submit')"
+                  :text="t('account.create.submit')"
                 />
               </v-col>
             </v-row>
@@ -164,8 +164,8 @@
       </v-row>
       <notification
         v-if="didCountryLoadFail"
-        :title="t('signup.countryLoadError.title')"
-        :message="t('signup.countryLoadError.message')"
+        :title="t('country.loadingError.title')"
+        :message="t('country.loadingError.message')"
       />
     </v-container>
   </v-main>
@@ -184,8 +184,6 @@ import countryApi from '@/api/CountryApi'
 import Notification from '@/components/Notification.vue'
 import { getErrorMessages } from '@/services/FormHelper'
 import { useI18n } from 'vue-i18n'
-import i18n from '@/plugins/i18n'
-import accountLocales from '@/locales/AccountLocales'
 import { email, required, withI18nMessage } from '@/validation/validators'
 import type { SignupRequestDto } from '@/dto/SignUpRequestDto'
 import { convertDateToString } from '@/services/DateHelper'
@@ -194,8 +192,9 @@ if (accountApi.isUserLoggedIn()) {
   await router.push({ name: 'home' })
 }
 
-const { t, mergeLocaleMessage } = useI18n()
-i18n.global.availableLocales.forEach((lang) => mergeLocaleMessage(lang, accountLocales[lang]))
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const countries = ref<Array<CountryDto>>([])
 const errorMessages = ref<{ [key: string]: string }>({})
@@ -239,7 +238,7 @@ const formState = reactive<FormState>({
 
 const passwordRequirements = computed(() => [
   {
-    name: t('account.passwordRequirements.length', { length: '8' }),
+    name: t('passwordRequirements.length', { length: '8' }),
     predicate: () => {
       if (formState.password == null) {
         return false
@@ -249,7 +248,7 @@ const passwordRequirements = computed(() => [
     }
   },
   {
-    name: t('account.passwordRequirements.whitespaces'),
+    name: t('passwordRequirements.whitespaces'),
     predicate: () => {
       if (formState.password == null) {
         return false
@@ -259,7 +258,7 @@ const passwordRequirements = computed(() => [
     }
   },
   {
-    name: t('account.passwordRequirements.digits'),
+    name: t('passwordRequirements.digits'),
     predicate: () => {
       if (formState.password == null) {
         return false
@@ -269,7 +268,7 @@ const passwordRequirements = computed(() => [
     }
   },
   {
-    name: t('account.passwordRequirements.specialChars'),
+    name: t('passwordRequirements.specialChars'),
     predicate: () => {
       if (formState.password == null) {
         return false
@@ -279,7 +278,7 @@ const passwordRequirements = computed(() => [
     }
   },
   {
-    name: t('account.passwordRequirements.uppercase'),
+    name: t('passwordRequirements.uppercase'),
     predicate: () => {
       if (formState.password == null) {
         return false
@@ -289,7 +288,7 @@ const passwordRequirements = computed(() => [
     }
   },
   {
-    name: t('account.passwordRequirements.lowercase'),
+    name: t('passwordRequirements.lowercase'),
     predicate: () => {
       if (formState.password == null) {
         return false
@@ -299,7 +298,7 @@ const passwordRequirements = computed(() => [
     }
   },
   {
-    name: t('account.passwordRequirements.match'),
+    name: t('passwordRequirements.match'),
     predicate: () => {
       if (formState.password == null) {
         return false
@@ -383,33 +382,8 @@ const postcodeErrors = getErrors('postcode')
 const cityErrors = getErrors('city')
 const countryErrors = getErrors('country')
 const passwordErrors = getErrors('password')
-const confirmedPasswordErrors = getErrors('confirmedPassword')
+const confirmedPasswordErrors = getErrors('confirmPassword')
 </script>
-
-<i18n>
-{
-  "de": {
-    "signup": {
-      "createAccount": "Account erstellen",
-      "submit": "Registrieren",
-      "countryLoadError": {
-        "title": "Länder konnten nicht geladen werden",
-        "message": "Versuchen Sie es später noch einmal oder wenden Sie sich an den Administrator, wenn das Problem nicht behoben ist."
-      }
-    }
-  },
-  "en": {
-    "signup": {
-      "createAccount": "Create an account",
-      "submit": "Sign Up",
-      "countryLoadError": {
-        "title": "Failed to load countries",
-        "message": "Try again later or contact the administrator if the problem isn't resolved"
-      }
-    }
-  }
-}
-</i18n>
 
 <style lang="scss" scoped>
 form {

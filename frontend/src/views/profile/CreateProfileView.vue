@@ -37,5 +37,3 @@ try {
   // profile does not exist, therefore continue with creation
 }
 </script>
-
-<style scoped></style>

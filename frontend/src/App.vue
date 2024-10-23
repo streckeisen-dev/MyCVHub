@@ -24,14 +24,14 @@
           prepend-icon="mdi-account-circle"
           link
           :to="{ name: 'account' }"
-          :title="t('app.account')"
+          :title="t('account.title')"
         />
         <v-list-item
           v-else
           prepend-icon="mdi-account-circle"
           link
           :to="{ name: 'login' }"
-          :title="t('app.login')"
+          :title="t('account.login.action')"
         />
 
         <v-divider />
@@ -45,7 +45,7 @@
         />
 
         <v-list-item v-if="accountApi.isUserLoggedIn()" class="flex-wrap">
-          <v-btn color="primary" :to="{ name: 'logout' }">{{ t('app.logout') }}</v-btn>
+          <v-btn color="primary" :to="{ name: 'logout' }">{{ t('account.logout.action') }}</v-btn>
         </v-list-item>
 
         <v-list-item>
@@ -72,7 +72,7 @@
           <v-col cols="12" class="text-center">&copy; 2024 MyCVHub. All Rights Reserved.</v-col>
         </v-row>
         <v-row justify="center" align="center" class="links">
-          <router-link :to="{ name: 'privacy-policy' }">{{ t('app.privacy-policy') }}</router-link>
+          <router-link :to="{ name: 'privacy-policy' }">{{ t('privacy.title') }}</router-link>
           <v-btn href="https://github.com/lstreckeisen/my-cv" target="_blank" size="32">
             <v-icon slot="prepend" icon="mdi-github" size="32" />
           </v-btn>
@@ -142,29 +142,6 @@ router.beforeEach(
   }
 )
 </script>
-
-<i18n>
-{
-  "de": {
-    "app": {
-      "home": "Start",
-      "account": "Account",
-      "login": "Anmelden",
-      "logout": "Abmelden",
-      "privacy-policy": "Datenschutzerklärung"
-    }
-  },
-  "en": {
-    "app": {
-      "home": "Home",
-      "account": "Account",
-      "login": "Login",
-      "logout": "Logout",
-      "privacy-policy": "Privacy Policy"
-    }
-  }
-}
-</i18n>
 
 <style lang="scss" scoped>
 header.navigation-bar {

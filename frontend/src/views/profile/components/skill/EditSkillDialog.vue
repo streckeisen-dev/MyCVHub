@@ -1,8 +1,8 @@
 <template>
   <v-dialog :model-value="true" @update:model-value="cancel">
     <v-sheet class="skill-sheet">
-      <h2 v-if="isEdit">{{ t('editSkill.edit') }}</h2>
-      <h2 v-else>{{ t('editSkill.add') }}</h2>
+      <h2 v-if="isEdit">{{ t('skills.editor.edit') }}</h2>
+      <h2 v-else>{{ t('skills.editor.add') }}</h2>
 
       <v-form @submit.prevent>
         <v-text-field
@@ -12,7 +12,7 @@
         />
         <v-text-field
           :label="t('fields.type')"
-          :hint="t('editSkill.typeHint')"
+          :hint="t('skills.editor.typeHint')"
           v-model="formState.type"
           :error-messages="typeErrors"
         />
@@ -47,7 +47,9 @@ import { useI18n } from 'vue-i18n'
 import { required, withI18nMessage } from '@/validation/validators'
 import { helpers } from '@vuelidate/validators'
 
-const { t } = useI18n()
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const props = defineProps<{
   value: SkillDto | undefined
@@ -131,25 +133,6 @@ function cancel() {
   emit('cancel')
 }
 </script>
-
-<i18n>
-{
-  "de": {
-    "editSkill": {
-      "add": "Fähigkeit erstellen",
-      "edit": "Fähigkeit bearbeiten",
-      "typeHint": "Die Fähigkeiten werden in deinem Lebenslauf nach ihrem Typ gruppiert. Verwende etwas wie 'Programmiersprachen', 'Kommunikation' etc."
-    }
-  },
-  "en": {
-    "editSkill": {
-      "add": "Add Skill",
-      "edit": "Edit Skill",
-      "typeHint": "Skills will be grouped by their type in your CV. Use something like 'Programming Languages', 'Communication', etc."
-    }
-  }
-}
-</i18n>
 
 <style lang="scss" scoped>
 .skill-sheet {

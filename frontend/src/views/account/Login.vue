@@ -2,7 +2,7 @@
   <v-main>
     <v-container id="login-container">
       <v-row justify="center">
-        <h1>{{ t('login.title') }}</h1>
+        <h1>{{ t('account.login.title') }}</h1>
       </v-row>
       <v-row justify="center">
         <v-sheet id="login-sheet" elevation="12" border rounded>
@@ -17,15 +17,17 @@
               :label="t('fields.password')"
               :error-messages="passwordErrors"
             />
-            <v-btn type="submit" block color="primary" @click="login">{{ t('login.btn') }}</v-btn>
+            <v-btn type="submit" block color="primary" @click="login">{{
+              t('account.login.action')
+            }}</v-btn>
           </v-form>
           <p>
-            {{ t('login.noAccount') }}
-            <router-link :to="{ name: 'signup' }">{{ t('login.signup') }}</router-link>
+            {{ t('account.login.noAccount') }}
+            <router-link :to="{ name: 'signup' }">{{ t('account.login.signup') }}</router-link>
           </p>
         </v-sheet>
       </v-row>
-      <notification v-if="errorMessage" :title="t('login.error')" :message="errorMessage" />
+      <notification v-if="errorMessage" :title="t('account.login.error')" :message="errorMessage" />
     </v-container>
   </v-main>
 </template>
@@ -40,10 +42,11 @@ import PasswordInput from '@/components/PasswordInput.vue'
 import useVuelidate from '@vuelidate/core'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
 import { useI18n } from 'vue-i18n'
-import i18n from '@/plugins/i18n'
 import { required } from '@/validation/validators'
 
-const { t } = useI18n()
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const props = defineProps<{
   redirect?: string
@@ -111,29 +114,6 @@ async function login() {
   }
 }
 </script>
-
-<i18n>
-{
-  "de": {
-    "login": {
-      "title": "Bei MyCVHub einloggen",
-      "btn": "Anmelden",
-      "noAccount": "Noch keinen Account?",
-      "signup": "Jetzt registrieren",
-      "error": "Anmeldung fehlgeschlagen"
-    }
-  },
-  "en": {
-    "login": {
-      "title": "Login to MyCVHub",
-      "btn": "Login",
-      "noAccount": "Don't have an account yet?",
-      "signup": "Sign up now",
-      "error": "Login failed"
-    }
-  }
-}
-</i18n>
 
 <style lang="scss" scoped>
 .refresh-overlay {

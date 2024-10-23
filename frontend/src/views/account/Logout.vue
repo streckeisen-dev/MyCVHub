@@ -1,7 +1,7 @@
 <template>
   <v-main>
-    <v-empty-state :headline="t('logout.headline')" :title="t('logout.title')" :text="t('logout.message')" />
-    <notification v-if="logoutError" :title="t('logout.errorTitle')" :message="t('logout.errorMessage')" />
+    <v-empty-state :headline="t('account.logout.headline')" :title="t('account.logout.action')" :text="t('account.logout.message')" />
+    <notification v-if="logoutError" :title="t('account.logout.errorTitle')" :message="t('account.logout.errorMessage')" />
   </v-main>
 </template>
 
@@ -12,7 +12,9 @@ import Notification from '@/components/Notification.vue'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const logoutError = ref(false)
 
@@ -31,26 +33,3 @@ if (accountApi.isUserLoggedIn()) {
   await router.push({ name: 'home' })
 }
 </script>
-
-<i18n>
-{
-  "de": {
-    "logout": {
-      "headline": "Auf Wiedersehen",
-      "title": "Abmelden",
-      "message": "Du wirst abgemeldet...",
-      "errorTitle": "Fehler beim Abmelden",
-      "errorMessage": "Etwas ist beim Abmelden schiefgelaufen"
-    }
-  },
-  "en": {
-    "logout": {
-      "headline": "Goodbye",
-      "title": "Logout",
-      "message": "You are being logged out...",
-      "errorTitle": "Failed to logout",
-      "errorMessage": "Something went wrong during your logout"
-    }
-  }
-}
-</i18n>

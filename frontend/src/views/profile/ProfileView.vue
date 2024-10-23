@@ -52,13 +52,13 @@
           </profile-section>
         </v-col>
         <v-col cols="12" md="6">
-          <profile-section :title="t('profile.workExperiences')" h2>
+          <profile-section :title="t('workExperience.title')" h2>
             <work-experience-container :values="profile.workExperiences" />
           </profile-section>
-          <profile-section :title="t('profile.education')" h2>
+          <profile-section :title="t('education.title')" h2>
             <education-container :values="profile.education" />
           </profile-section>
-          <profile-section :title="t('profile.skills')" h2>
+          <profile-section :title="t('skills.title')" h2>
             <skills-container :values="profile.skills" />
           </profile-section>
         </v-col>
@@ -93,11 +93,10 @@ import {
 import SkillsContainer from '@/views/profile/components/skill/SkillsContainer.vue'
 import EducationContainer from '@/views/profile/components/education/EducationContainer.vue'
 import { useI18n } from 'vue-i18n'
-import i18n from '@/plugins/i18n'
-import profileLocale from '@/locales/ProfileLocale'
 
-const { t, mergeLocaleMessage } = useI18n()
-i18n.global.availableLocales.forEach((lang) => mergeLocaleMessage(lang, profileLocale[lang]))
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const props = defineProps<{ alias: string }>()
 const originalTheme = vuetify.theme.global.name.value
@@ -141,27 +140,6 @@ onBeforeRouteLeave(
   }
 )
 </script>
-
-<i18n>
-{
-  "de": {
-    "profile": {
-      "notFound": {
-        "headline": "Nicht gefunden",
-        "title": "Wir konnten das von dir gesuchte Profil nicht finden."
-      }
-    }
-  },
-  "en": {
-    "profile": {
-      "notFound": {
-        "headline": "Not Found",
-        "title": "We could not find the profile you are looking for."
-      }
-    }
-  }
-}
-</i18n>
 
 <style scoped>
 .profile-picture {

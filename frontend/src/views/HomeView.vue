@@ -44,7 +44,9 @@ import accountApi from '@/api/AccountApi'
 import router from '@/router'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const features = [
   {
@@ -65,59 +67,6 @@ if (accountApi.isUserLoggedIn()) {
   await router.push({ name: 'account' })
 }
 </script>
-
-<i18n>
-{
-  "de": {
-    "home": {
-      "welcome": {
-        "title": "Willkommen bei MyCVHub",
-        "message": "Erstellen und teile deinen professionellen Lebenslauf ganz einfach online!"
-      },
-      "getStarted": "Los geht's",
-      "features": {
-        "title": "Funktionen",
-        "create": {
-          "title": "Erstelle deinen Lebenslauf",
-          "description": "Erstelle mit einer benutzerfreundlichen Oberfläche ganz einfach einen professionellen Lebenslauf."
-        },
-        "share": {
-          "title": "Mit Link teilen",
-          "description": "Gib deinen Lebenslauf über einen Link an potenzielle Arbeitgeber weiter."
-        }
-      },
-      "callToAction": {
-        "title": "Bereit deinen Online-Lebenslauf zu erstellen?",
-        "btn": "Jetzt anmelden"
-      }
-    }
-  },
-  "en": {
-    "home": {
-      "welcome": {
-        "title": "Welcome to MyCVHub",
-        "message": "Create and share your professional CV online with ease!"
-      },
-      "getStarted": "Get Started",
-      "features": {
-        "title": "Features",
-        "create": {
-          "title": "Create Your CV",
-          "description": "Easily create a professional CV using a user-friendly interface."
-        },
-        "share": {
-          "title": "Share with a Link",
-          "description": "Share your CV with potential employers using a unique link."
-        }
-      },
-      "callToAction": {
-        "title": "Ready to create your online CV?",
-        "btn": "Sign up now"
-      }
-    }
-  }
-}
-</i18n>
 
 <style lang="scss" scoped>
 .home-view {

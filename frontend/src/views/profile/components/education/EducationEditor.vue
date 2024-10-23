@@ -3,7 +3,7 @@
     <v-sheet class="editor-sheet" rounded>
       <v-col cols="12">
         <v-row justify="end">
-          <v-btn :text="t('educationEditor.add')" color="primary" @click="addEducation" />
+          <v-btn :text="t('education.editor.add')" color="primary" @click="addEducation" />
         </v-row>
       </v-col>
       <education-container
@@ -25,7 +25,7 @@
 
   <notification
     v-if="deleteErrorMessage"
-    :title="t('educationEditor.deleteError')"
+    :title="t('education.editor.deleteError')"
     :message="deleteErrorMessage"
   />
 </template>
@@ -40,7 +40,9 @@ import EditEducationDialog from '@/views/profile/components/education/EditEducat
 import type { EducationDto } from '@/dto/EducationDto'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const education = defineModel({
   required: true,
@@ -97,23 +99,6 @@ async function deleteEducation(id: number) {
   }
 }
 </script>
-
-<i18n>
-{
-  "de": {
-    "educationEditor": {
-      "add": "Ausbildung hinzufügen",
-      "deleteError": "Ausbildung konnte nicht gelöscht werden"
-    }
-  },
-  "en": {
-    "educationEditor": {
-      "add": "Add education",
-      "deleteError": "Failed to delete education"
-    }
-  }
-}
-</i18n>
 
 <style scoped>
 .editor-sheet {

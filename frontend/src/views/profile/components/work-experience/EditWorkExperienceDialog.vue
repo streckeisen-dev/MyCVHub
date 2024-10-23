@@ -1,8 +1,8 @@
 <template>
   <v-dialog :model-value="true" @update:model-value="cancel">
     <v-sheet class="work-experience-sheet">
-      <h2 v-if="isEdit">{{ t('editWorkExperience.edit') }}</h2>
-      <h2 v-else>{{ t('editWorkExperience.add') }}</h2>
+      <h2 v-if="isEdit">{{ t('workExperience.editor.edit') }}</h2>
+      <h2 v-else>{{ t('workExperience.editor.add') }}</h2>
 
       <v-form @submit.prevent>
         <v-text-field
@@ -61,7 +61,9 @@ import { useI18n } from 'vue-i18n'
 import { required, withI18nMessage } from '@/validation/validators'
 import { helpers } from '@vuelidate/validators'
 
-const { t } = useI18n()
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const props = defineProps<{
   value: WorkExperienceDto | undefined
@@ -168,23 +170,6 @@ function cancel() {
   emit('cancel')
 }
 </script>
-
-<i18n>
-{
-  "de": {
-    "editWorkExperience": {
-      "add": "Arbeitserfahrung erstellen",
-      "edit": "Arbeitserfahrung bearbeiten"
-    }
-  },
-  "en": {
-    "editWorkExperience": {
-      "add": "Add Work Experience",
-      "edit": "Edit Work Experience"
-    }
-  }
-}
-</i18n>
 
 <style lang="scss" scoped>
 .work-experience-sheet {

@@ -1,8 +1,8 @@
 <template>
   <v-dialog :model-value="true" @update:model-value="cancel">
     <v-sheet class="education-sheet">
-      <h2 v-if="isEdit">{{ t('editEducation.edit') }}</h2>
-      <h2 v-else>{{ t('editEducation.add') }}</h2>
+      <h2 v-if="isEdit">{{ t('education.editor.edit') }}</h2>
+      <h2 v-else>{{ t('education.editor.add') }}</h2>
 
       <v-form @submit.prevent>
         <v-text-field
@@ -61,7 +61,9 @@ import { useI18n } from 'vue-i18n'
 import { required, withI18nMessage } from '@/validation/validators'
 import { helpers } from '@vuelidate/validators'
 
-const { t } = useI18n()
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const props = defineProps<{
   value: EducationDto | undefined
@@ -169,23 +171,6 @@ function cancel() {
   emit('cancel')
 }
 </script>
-
-<i18n>
-{
-  "de": {
-    "editEducation": {
-      "add": "Ausbildung erstellen",
-      "edit": "Ausbildung bearbeiten"
-    }
-  },
-  "en": {
-    "editEducation": {
-      "add": "Add Education Entry",
-      "edit": "Edit Education"
-    }
-  }
-}
-</i18n>
 
 <style lang="scss" scoped>
 .education-sheet {

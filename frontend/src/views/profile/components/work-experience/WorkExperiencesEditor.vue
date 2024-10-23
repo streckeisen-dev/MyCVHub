@@ -3,7 +3,7 @@
     <v-sheet class="editor-sheet" rounded>
       <v-col cols="12">
         <v-row justify="end">
-          <v-btn :text="t('workExperienceEditor.add')" @click="addWorkExperience" color="primary" />
+          <v-btn :text="t('workExperience.editor.add')" @click="addWorkExperience" color="primary" />
         </v-row>
       </v-col>
       <work-experience-container
@@ -25,7 +25,7 @@
 
   <notification
     v-if="deleteErrorMessage"
-    :title="t('workExperienceEditor.deleteError')"
+    :title="t('workExperience.editor.deleteError')"
     :message="deleteErrorMessage"
   />
 </template>
@@ -40,7 +40,9 @@ import Notification from '@/components/Notification.vue'
 import WorkExperienceContainer from '@/views/profile/components/work-experience/WorkExperienceContainer.vue'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const workExperiences = defineModel({
   required: true,
@@ -94,23 +96,6 @@ async function deleteWorkExperience(id: number) {
   }
 }
 </script>
-
-<i18n>
-{
-  "de": {
-    "workExperienceEditor": {
-      "add": "Arbeitserfahrung hinzufügen",
-      "deleteError": "Arbeitserfahrung konnte nicht gelöscht werden"
-    }
-  },
-  "en": {
-    "workExperienceEditor": {
-      "add": "Add work experience",
-      "deleteError": "Failed to delete work experience"
-    }
-  }
-}
-</i18n>
 
 <style scoped>
 .editor-sheet {

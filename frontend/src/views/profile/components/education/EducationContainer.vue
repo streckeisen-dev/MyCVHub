@@ -28,7 +28,9 @@ import type { EducationDto } from '@/dto/EducationDto'
 import EducationEntry from '@/views/profile/components/education/EducationEntry.vue'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const props = defineProps<{
   values: Array<EducationDto> | Array<PublicEducationDto>
@@ -60,21 +62,6 @@ function deleteEducation(id: number) {
   emit('delete', id)
 }
 </script>
-
-<i18n>
-{
-  "de": {
-    "education": {
-      "noEntries": "Noch keine Ausbildungen."
-    }
-  },
-  "en": {
-    "education": {
-      "noEntries": "No education entries yet."
-    }
-  }
-}
-</i18n>
 
 <style lang="scss" scoped>
 .education {

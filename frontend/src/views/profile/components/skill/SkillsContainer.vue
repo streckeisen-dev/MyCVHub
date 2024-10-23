@@ -33,7 +33,9 @@ import SkillEntry from '@/views/profile/components/skill/SkillEntry.vue'
 import type { PublicSkillDto } from '@/dto/PublicSkillDto'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const props = defineProps<{
   values: Array<SkillDto> | Array<PublicSkillDto>
@@ -73,21 +75,6 @@ function deleteSkill(id: number) {
   emit('delete', id)
 }
 </script>
-
-<i18n>
-{
-  "de": {
-    "skills": {
-      "noEntries": "Noch keine Fähigkeiten."
-    }
-  },
-  "en": {
-    "skills": {
-      "noEntries": "No skills yet."
-    }
-  }
-}
-</i18n>
 
 <style lang="scss" scoped>
 .skills-container {
