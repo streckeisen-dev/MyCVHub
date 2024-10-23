@@ -12,8 +12,9 @@ updates:
     target-branch: "dev"
     groups:
       all-non-major-updates:
-        - "minor"
-        - "patch"
+        update-types:
+          - "minor"
+          - "patch"
     versioning-strategy: increase
   - package-ecosystem: "npm"
     directory: "/frontend"
@@ -22,6 +23,7 @@ updates:
     target-branch: "dev"
     groups:
       all-non-major-updates:
-        - "minor"
-        - "patch"
+        update-types:
+          - "minor"
+          - "patch"
     versioning-strategy: increase
