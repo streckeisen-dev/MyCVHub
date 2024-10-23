@@ -1,0 +1,260 @@
+shared:
+  fields:
+    username: "Username"
+    password: "Password"
+    firstName: "First Name"
+    lastName: "Last Name"
+    email: "E-Mail Address"
+    phone: "Phone"
+    birthday: "Birthday"
+    street: "Street"
+    houseNumber: "House Number"
+    postcode: "Postcode"
+    city: "City"
+    country: "Country"
+    confirmPassword: "Confirm Password"
+    profilePicture: "Profile Picture"
+    alias: "Alias"
+    jobTitle: "Job Title"
+    bio: "Bio"
+    location: "Location"
+    company: "Company"
+    positionStart: "Position Start"
+    positionEnd: "Position End"
+    description: "Description"
+    name: "Name"
+    type: "Type"
+    level: "Level"
+    institution: "Institution"
+    degreeName: "Degree Name"
+    educationStart: "Education Start"
+    educationEnd: "Education End"
+  
+  validations: 
+    required: "{label} must not be blank"
+    email: "E-Mail is not valid"
+    passwordValidator: "Password must fulfill requirements"
+    dateIsBeforeValidator: "{laterDate} must be after {earlierDate}"
+  
+  passwordRequirements:
+    length: "Must have at least {length} characters"
+    whitespaces: "Must not contain whitespaces"
+    digits: "Must contain at least one digit"
+    specialChars: "Must contain at least one special character"
+    uppercase: "Must contain at least one uppercase letter"
+    lowercase: "Must contain at least one lowercase letter"
+    match: "Passwords must match"
+
+frontend:
+  error: 
+    genericMessage: "Oops, something went wrong"
+
+  date: 
+    today: "Today"
+  
+  forms: 
+    save: "Save"
+    cancel: "Cancel"
+  
+  validations:
+    fileSizeValidator: "File must be less than {maxSize} MB"
+    numberWithinRange: "{name} must be between {min} and {max}"
+  
+  app:
+    home: "Home"
+  
+  home: 
+    welcome: 
+      title: "Welcome to MyCVHub"
+      message: "Create and share your professional CV online with ease!"
+    getStarted: "Get Started"
+    features: 
+      title: "Features"
+      create: 
+        title: "Create Your CV"
+        description: "Easily create a professional CV using a user-friendly interface."
+      share: 
+        title: "Share with a Link"
+        description: "Share your CV with potential employers using a unique link."
+    callToAction: 
+      title: "Ready to create your online CV?"
+      btn: "Sign up now"
+  
+  account:
+    title: "Account"
+    personalData: "Personal Data"
+    address: "Address"
+    passwordRequirements: "Password Requirements"
+    create:
+      title: "Create an account"
+      submit: "Sign Up"
+    login:
+      title: "Login to MyCVHub"
+      btn: "Login"
+      noAccount: "Don't have an account yet?"
+      signup: "Sign up now"
+      error: "Login failed"
+    logout:
+      headline: "Goodbye"
+      action: "Logout"
+      message: "You are being logged out..."
+      errorTitle: "Failed to logout"
+      errorMessage: "Something went wrong during your logout"
+    profile:
+      view: "View Profile"
+      edit: "Edit Profile"
+      create: "Create Profile"
+      notFound: "You don't have a profile yet"
+    loadingError:
+      title: "Failed to load your account"
+      text: "Make sure you're logged in and try again"
+  
+  profile:
+    title: "Profile"
+    aboutMe: "About Me"
+    contact: "Contact"
+    notFound:
+      headline: "Not Found"
+      title: "We could not find the profile you are looking for."
+    loadingError: "Failed to load profile"
+    editor:
+      back: "Back to account"
+      general: "General"
+      pictureHint: "Your profile picture must not exceed 2MB."
+      aliasHint: "Name that will be used in the URL of your profile"
+      publicProfile: "Public Profile Access"
+      publicProfileHint: "If enabled, your profile will be publicly accessible"
+      publicEmail: "Show E-Mail in public profile"
+      publicEmailHint: "If enabled, your E-Mail address will be shown in your profile"
+      publicPhone: "Show phone in public profile"
+      publicPhoneHint: "If enabled, your phone number will be shown in your profile"
+      publicAddress: "Show address in public profile"
+      publicAddressHint: "If enabled, your address will be shown in your profile"
+      hideDescriptions: "Hide descriptions from public profile"
+      hideDescriptionsHint: "If enabled, detailed descriptions of your CV entries won't be shown in your profile"
+      saveErrorTitle: "Failed to save profile"
+      saveErrorMessage: "An error occurred while trying to save your profile"
+  
+  workExperience:
+    title: "Work Experience"
+    noEntries: "No work experiences yet."
+    editor:
+      add: "Add Work Experience"
+      edit: "Edit Work Experience"
+      deleteError: "Failed to delete work experience"
+  
+  skills:
+    title: "Skills"
+    noEntries: "No skills yet."
+    editor:
+      add: "Add skill"
+      edit: "Edit Skill"
+      typeHint: "Skills will be grouped by their type in your CV. Use something like 'Programming Languages', 'Communication', etc."
+      deleteError: "Failed to delete skill"
+  
+  education:
+    title: "Education"
+    noEntries: "No education entries yet."
+    editor:
+      add: "Add education"
+      edit: "Edit Education"
+      deleteError: "Failed to delete education"
+  
+  country:
+    loadingError:
+      title: "Failed to load countries"
+      message: "Try again later or contact the administrator if the problem isn't resolved"
+  
+  notFound:
+    headline: "Where are you going?"
+    title: "404, Page not found"
+    text: "The page you're looking for doesn't exist"
+  
+  privacy:
+    title: "Privacy Policy"
+    description: "This Privacy Policy explains how MyCVHub collects, uses, and manages personal data."
+    intro:
+      title: "Introduction"
+      content: "This Privacy Policy explains how MyCVHub collects, uses, and manages personal data for registered users."
+    collection:
+      title: "Data Collection"
+      content: "MyCVHub collects the following personal information:"
+    profileInfo:
+      title: "Profile Information"
+      content: "Name, address, phone number, and CV content, as provided by users."
+    profilePicture:
+      title: "Profile Picture"
+      content: "The profile picture is stored securely with our third-party provider, Cloudinary."
+    usage:
+      title: "Data Usage"
+      content: "Collected data is used to:"
+      usage1: "Enable users to create, edit, and share their CVs."
+      usage2: "Allow users to make their CV publicly accessible, with controls over which data fields (email, phone, address) appear on the public CV."
+    storage:
+      title: "Data Storage and Security"
+      userData:
+        title: "User Data"
+        content: "Personal information is stored securely in our database. By default, only the user has access to this data, unless they opt to make specific information public. The developer has limited database access for maintenance purposes only."
+      pictures:
+        title: "Profile Pictures"
+        content: "Profile pictures are stored and managed through Cloudinary, a secure third-party storage provider, with restricted access to ensure privacy."
+    access:
+      title: "Data Access and User Control"
+      content: "MyCVHub provides users with direct access to their data. Users can view, edit, and delete any information, including their account and profile picture, directly within the app. No external data access requests are required."
+    sharing:
+      title: "Data Sharing"
+      content: "MyCVHub does not share any user data with third parties, except as required for media storage. Publicly shared CVs are accessible only by the shared link and contain only the information the user has designated as public."
+    thirdParty:
+      title: "Use of Third-Party Services"
+      content: "MyCVHub uses Cloudinary solely for the storage and retrieval of profile pictures. Cloudinary adheres to strict security standards to ensure the privacy and security of stored images."
+    contact:
+      title: "Contact Information"
+      content: "For questions or concerns, please contact us at"
+
+backend:
+  validations:
+    maxLengthExceeded: "{0} must not exceed {1} characters"
+    dateInFuture: "{0} must not be in the future"
+    numberTooSmall: "{0} must be greater than {1}"
+    numberTooBig: "{0} must be less than {1}"
+  
+  workExperience:
+    validationError: "Work experience validation failed"
+  skill:
+    validationError: "Skill validation failed"
+  profile:
+    validation:
+      aliasWithInvalidChars: "Alias must start with a letter and only contain letters, digits, - and _"
+      aliasAlreadyTaken: "Alias is already taken"
+      pictureIllegalMediaType: "Profile picture media type is not allowed"
+      error: "Profile validation failed"
+  education:
+    validation:
+      error: "Education validation failed"
+  account:
+    validation:
+      emailAlreadyTaken: "Email is already taken"
+      phoneInvalid: "Phone number is not valid"
+      houseNumberEmpty: "House number must be null or have a value"
+      countryLengthError: "Country must be ISO {0} character country code"
+      countryInvalid: "Invalid country code"
+      password:
+        encodingTooLong: "Encoded password exceeds number of allowed characters"
+        encodingError: "Password encoding failed"
+      error: "Account validation failed"
+  auth:
+    login:
+      error: "Authentication failed with errors"
+  exceptions:
+    db: "A database error occurred. Please contact the administrator"
+    expiredJwt: "Expired JWT token"
+    badCredentials: "Username and/or password are incorrect"
+    lockedAccount: "Account is locked"
+    invalidJwtSignature: "Invalid JWT signature"
+    psql: "Error during data processing"
+    entityNotFound: "Entity not found"
+    accessDenied: "You don't have permission to access this resource"
+    unauthorized: "Unauthorized"
+    requestFormat: "Request format is invalid"
+    profilePictureStorage: "Failed to store profile picture"
+    generic: "An unknown error occurred"
