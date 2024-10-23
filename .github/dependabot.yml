@@ -10,21 +10,21 @@ updates:
     schedule:
       interval: "monthly"
     target-branch: "dev"
-    versioning-strategy: increase
     groups:
       all-non-major-updates:
         update-types:
           - "minor"
           - "patch"
+        versioning-strategy: increase
 
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
       interval: "monthly"
     target-branch: "dev"
-    versioning-strategy: increase
     groups:
       all-non-major-updates:
         update-types:
           - "minor"
           - "patch"
+        versioning-strategy: increase
