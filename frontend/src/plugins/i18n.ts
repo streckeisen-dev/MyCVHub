@@ -8,8 +8,13 @@ const i18n = createI18n({
   messages: {}
 })
 
-const availableLocales = Object.keys(import.meta.glob('../locales/*.json'))
-  .map(file => file.match(/\.\.\/locales\/(.*)\.json$/)[1])
+const availableLocales = Object.keys(import.meta.glob('../locales/*.json')).map((file) => {
+  const match = file.match(/\.\.\/locales\/(.*)\.json$/)
+  if (match) {
+    return match[1]
+  }
+  return null
+}).filter(l => l != null)
 console.log('availableLangs', availableLocales)
 
 for (let availableLocale of availableLocales) {
