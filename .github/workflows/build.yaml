@@ -28,17 +28,19 @@ jobs:
 
   build-frontend:
     runs-on: ubuntu-latest
+    container:
+      image: lstreckeisen/my-cv-github-image:latest
     needs:
       - i18n
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '21'
+    
+    - name: Prepare i18n files
+      working-directory: locales
+      run: |
+        python generate_messages.py --type frontend
 
     - name: Build frontend
       working-directory: frontend
@@ -63,6 +65,8 @@ jobs:
   
   build-backend:
     runs-on: ubuntu-latest
+    container:
+      image: lstreckeisen/my-cv-github-image:latest
     needs:
       - i18n
 
@@ -70,11 +74,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Setup JDK
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: temurin
+    - name: Prepare i18n files
+      working-directory: locales
+      run: |
+        python generate_messages.py --type backend
 
     - name: Cache maven dependencies
       uses: actions/cache@v4
