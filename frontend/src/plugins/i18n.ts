@@ -1,5 +1,6 @@
 import { createI18n } from 'vue-i18n'
 import LanguageService from '@/services/LanguageService'
+import * as vuetifyLocale from 'vuetify/locale'
 
 type NestedMessage = {
   [key: string]: string | NestedMessage
@@ -13,7 +14,11 @@ const messages: Messages = {}
 const langModules = import.meta.glob('../locales/*.json', { eager: true })
 Object.keys(langModules).forEach((filePath) => {
   const lang = filePath.replace('../locales/', '').replace('.json', '')
-  messages[lang] = langModules[filePath] as NestedMessage
+  const vuetifyMessages = vuetifyLocale[lang]
+  messages[lang] = {
+    ...langModules[filePath] as NestedMessage,
+    $vuetify: vuetifyMessages
+  }
 })
 
 const i18n = createI18n({
