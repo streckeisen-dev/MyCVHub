@@ -72,7 +72,7 @@ class ProfilePictureStorageService(
 
             val publicId = result["public_id"] as String?
             if (publicId == null) {
-                return Result.failure(StorageException("Public ID of uploaded file not found"))
+                return Result.failure(ProfilePictureStorageException("Public ID of uploaded file not found"))
             }
             return Result.success(publicId)
         } catch (ex: IOException) {
@@ -88,29 +88,8 @@ class ProfilePictureStorageService(
         val result = cloudinary.uploader().destroy(filename, destroyParams)
         val status = result["result"] as String?
         if (status != "ok") {
-            return Result.failure(StorageException("Failed to delete file $filename"))
+            return Result.failure(ProfilePictureStorageException("Failed to delete file $filename"))
         }
         return Result.success(Unit)
-    }
-
-    private fun buildUrl(base: String, params: Map<String, Any>): String {
-        val urlBuilder = StringBuilder()
-        urlBuilder.append(base)
-        if (params.isNotEmpty()) {
-            urlBuilder.append("?")
-        }
-
-        var isFirst = true
-        for (param in params) {
-            if (!isFirst) {
-                urlBuilder.append("&")
-            }
-
-            urlBuilder.append(param.key)
-                .append("=")
-                .append(param.value.toString())
-            isFirst = false
-        }
-        return urlBuilder.toString()
     }
 }

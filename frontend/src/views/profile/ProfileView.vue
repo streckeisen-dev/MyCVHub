@@ -18,6 +18,7 @@
             :src="profile.profilePicture"
             :lazy-src="defaultProfilePicture"
             class="profile-picture"
+            :alt="t('fields.profilePicture')"
           >
             <template #placeholder>
               <v-row class="fill-height" align="center" justify="center">
@@ -29,11 +30,11 @@
             <p>{{ profile.jobTitle }}</p>
           </profile-section>
 
-          <profile-section v-if="profile.bio" title="About Me">
+          <profile-section v-if="profile.bio" :title="t('profile.aboutMe')">
             <p>{{ profile.bio }}</p>
           </profile-section>
 
-          <profile-section v-if="hasContactInformation" title="Contact">
+          <profile-section v-if="hasContactInformation" :title="t('profile.contact')">
             <template v-if="profile.address">
               <p>{{ displayName }}</p>
               <p>{{ profile.address.street }} {{ profile.address.houseNumber }}</p>
@@ -51,13 +52,13 @@
           </profile-section>
         </v-col>
         <v-col cols="12" md="6">
-          <profile-section title="Work Experience" h2>
+          <profile-section :title="t('workExperience.title')" h2>
             <work-experience-container :values="profile.workExperiences" />
           </profile-section>
-          <profile-section title="Education" h2>
+          <profile-section :title="t('education.title')" h2>
             <education-container :values="profile.education" />
           </profile-section>
-          <profile-section title="Skills" h2>
+          <profile-section :title="t('skills.title')" h2>
             <skills-container :values="profile.skills" />
           </profile-section>
         </v-col>
@@ -66,8 +67,8 @@
     <loading-spinner v-else-if="isProfileLoading" />
     <v-empty-state
       v-else
-      headline="Not Found"
-      title="We could not find the profile you are looking for."
+      :headline="t('profile.notFound.headline')"
+      :title="t('profile.notFound.title')"
       :text="loadingError"
     />
   </v-main>
@@ -91,6 +92,11 @@ import {
 } from 'vue-router'
 import SkillsContainer from '@/views/profile/components/skill/SkillsContainer.vue'
 import EducationContainer from '@/views/profile/components/education/EducationContainer.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const props = defineProps<{ alias: string }>()
 const originalTheme = vuetify.theme.global.name.value
@@ -108,8 +114,8 @@ const displayName = computed(() => {
   return ''
 })
 
-const hasContactInformation = computed(
-  () => profile.value ? profile.value.address || profile.value.phone || profile.value.email : false
+const hasContactInformation = computed(() =>
+  profile.value ? profile.value.address || profile.value.phone || profile.value.email : false
 )
 const profileEmailLink = computed(() => `mailto:${profile.value!!.email}`)
 const profilePhoneLink = computed(() => `tel:${profile.value!!.phone}`)

@@ -1,7 +1,7 @@
 <template>
   <v-app id="mycv-app">
     <template v-if="showNavigation">
-      <v-app-bar role="navigation" aria-label="Header navigation" border>
+      <v-app-bar role="navigation" aria-label="Header navigation" class="navigation-bar">
         <template v-slot:prepend>
           <v-app-bar-nav-icon @click="isNavMenuOpen = !isNavMenuOpen"></v-app-bar-nav-icon>
         </template>
@@ -24,14 +24,14 @@
           prepend-icon="mdi-account-circle"
           link
           :to="{ name: 'account' }"
-          title="Account"
+          :title="t('account.title')"
         />
         <v-list-item
           v-else
           prepend-icon="mdi-account-circle"
           link
           :to="{ name: 'login' }"
-          title="Login / Sign up"
+          :title="t('account.login.action')"
         />
 
         <v-divider />
@@ -41,11 +41,23 @@
           link
           prepend-icon="mdi-home"
           :to="{ name: 'home' }"
-          title="Home"
+          :title="t('app.home')"
         />
 
         <v-list-item v-if="accountApi.isUserLoggedIn()" class="flex-wrap">
-          <v-btn color="primary" :to="{ name: 'logout' }">Logout</v-btn>
+          <v-btn color="primary" :to="{ name: 'logout' }">{{ t('account.logout.action') }}</v-btn>
+        </v-list-item>
+
+        <v-list-item>
+          <div class="language-selector">
+            <a
+              v-for="lang in i18n.global.availableLocales"
+              :key="lang"
+              @click="changeLocale(lang)"
+              :class="localeClass(lang).value"
+              >{{ lang.toUpperCase() }}</a
+            >
+          </div>
         </v-list-item>
       </v-navigation-drawer>
     </template>
@@ -60,7 +72,7 @@
           <v-col cols="12" class="text-center">&copy; 2024 MyCVHub. All Rights Reserved.</v-col>
         </v-row>
         <v-row justify="center" align="center" class="links">
-          <router-link :to="{ name: 'privacy-policy' }">Privacy Policy</router-link>
+          <router-link :to="{ name: 'privacy-policy' }">{{ t('privacy.title') }}</router-link>
           <v-btn href="https://github.com/lstreckeisen/my-cv" target="_blank" size="32">
             <v-icon slot="prepend" icon="mdi-github" size="32" />
           </v-btn>
@@ -78,10 +90,29 @@ import {
   RouterLink,
   RouterView
 } from 'vue-router'
-import { computed, ref } from 'vue'
-import { useTheme } from 'vuetify'
+import { computed, type ComputedRef, ref } from 'vue'
+import { useLocale, useTheme } from 'vuetify'
 import accountApi from '@/api/AccountApi'
 import router from '@/router'
+import { useI18n } from 'vue-i18n'
+import i18n from '@/plugins/i18n'
+import LanguageService from '@/services/LanguageService'
+
+const { t } = useI18n()
+const locale = useLocale().current
+
+function localeClass(lang: string): ComputedRef {
+  return computed(() => {
+    return {
+      'current-locale': locale.value === lang
+    }
+  })
+}
+
+function changeLocale(lang: string) {
+  locale.value = lang
+  LanguageService.setLanguage(lang)
+}
 
 const isNavMenuOpen = ref(false)
 
@@ -113,6 +144,10 @@ router.beforeEach(
 </script>
 
 <style lang="scss" scoped>
+header.navigation-bar {
+  border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+}
+
 #side-nav button {
   justify-self: center;
 }
@@ -123,6 +158,19 @@ router.beforeEach(
   .logo {
     vertical-align: middle;
     width: 220px;
+  }
+}
+
+.language-selector {
+  display: flex;
+  gap: 5px;
+
+  a {
+    cursor: pointer;
+
+    &.current-locale {
+      text-decoration: underline;
+    }
   }
 }
 

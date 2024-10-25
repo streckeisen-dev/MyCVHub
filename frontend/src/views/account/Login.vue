@@ -2,46 +2,51 @@
   <v-main>
     <v-container id="login-container">
       <v-row justify="center">
-        <h1>Login to MyCV</h1>
+        <h1>{{ t('account.login.title') }}</h1>
       </v-row>
       <v-row justify="center">
         <v-sheet id="login-sheet" elevation="12" border rounded>
           <v-form @submit.prevent>
             <v-text-field
               v-model="formState.email"
-              label="E-Mail Address"
+              :label="t('fields.email')"
               :error-messages="emailErrors"
             />
             <password-input
               v-model="formState.password"
-              label="Password"
+              :label="t('fields.password')"
               :error-messages="passwordErrors"
             />
-            <v-btn type="submit" block color="primary" @click="login">Login</v-btn>
+            <v-btn type="submit" block color="primary" @click="login">{{
+              t('account.login.action')
+            }}</v-btn>
           </v-form>
           <p>
-            Don't have an account yet?
-            <router-link :to="{ name: 'signup' }">Sign up now</router-link>
+            {{ t('account.login.noAccount') }}
+            <router-link :to="{ name: 'signup' }">{{ t('account.login.signup') }}</router-link>
           </p>
         </v-sheet>
       </v-row>
-      <notification v-if="errorMessage" title="Login failed" :message="errorMessage" />
+      <notification v-if="errorMessage" :title="t('account.login.error')" :message="errorMessage" />
     </v-container>
   </v-main>
 </template>
 
 <script setup lang="ts">
-import { computed, type ComputedRef, reactive, ref } from 'vue'
+import { type ComputedRef, reactive, ref } from 'vue'
 import accountApi from '@/api/AccountApi'
 import router from '@/router'
 import type { ErrorDto } from '@/dto/ErrorDto'
 import Notification from '@/components/Notification.vue'
 import PasswordInput from '@/components/PasswordInput.vue'
-import { helpers, required } from '@vuelidate/validators'
-import useVuelidate, { type ErrorObject } from '@vuelidate/core'
+import useVuelidate from '@vuelidate/core'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
-import { refreshToken } from '@/api/ApiHelper'
-import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import { useI18n } from 'vue-i18n'
+import { required } from '@/validation/validators'
+
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const props = defineProps<{
   redirect?: string
@@ -60,7 +65,7 @@ if (accountApi.isUserLoggedIn()) {
 }
 
 type FormState = {
-  email?: string,
+  email?: string
   password?: string
 }
 
@@ -71,10 +76,10 @@ const formState = reactive<FormState>({
 
 const rules = {
   email: {
-    required: helpers.withMessage('Password must not be blank', required)
+    required: required
   },
   password: {
-    required: helpers.withMessage('Password must not be blank', required)
+    required: required
   }
 }
 

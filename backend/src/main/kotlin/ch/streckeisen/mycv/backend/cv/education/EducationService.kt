@@ -1,7 +1,7 @@
 package ch.streckeisen.mycv.backend.cv.education
 
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
-import ch.streckeisen.mycv.backend.exceptions.ResultNotFoundException
+import ch.streckeisen.mycv.backend.exceptions.EntityNotFoundException
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,7 +17,7 @@ class EducationService(
     fun save(accountId: Long, educationUpdate: EducationUpdateDto): Result<EducationEntity> {
         val existingEducation = if (educationUpdate.id != null) {
             educationRepository.findById(educationUpdate.id)
-                .getOrElse { return Result.failure(ResultNotFoundException("This eduction entry does not exist")) }
+                .getOrElse { return Result.failure(EntityNotFoundException("This eduction entry does not exist")) }
         } else null
 
         if (existingEducation != null && existingEducation.profile.account.id != accountId) {
@@ -53,7 +53,7 @@ class EducationService(
     @Transactional
     fun delete(accountId: Long, id: Long): Result<Unit> {
         val education = educationRepository.findById(id)
-            .getOrElse { return Result.failure(ResultNotFoundException("This eduction entry does not exist")) }
+            .getOrElse { return Result.failure(EntityNotFoundException("This eduction entry does not exist")) }
 
         if (education.profile.account.id != accountId) {
             return Result.failure(AccessDeniedException("You don't have permission to delete this education entry"))

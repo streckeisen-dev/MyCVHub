@@ -1,5 +1,6 @@
 package ch.streckeisen.mycv.backend.security
 
+import ch.streckeisen.mycv.backend.locale.MessagesService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationProvider
@@ -16,7 +17,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @Configuration
 class ApplicationSecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
-    private val authenticationProvider: AuthenticationProvider
+    private val authenticationProvider: AuthenticationProvider,
+    private val messagesService: MessagesService
 ) {
 
     @Bean
@@ -34,8 +36,8 @@ class ApplicationSecurityConfig(
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .exceptionHandling { authenticationException ->
-                authenticationException.authenticationEntryPoint(AuthenticationExceptionHandler())
-                authenticationException.accessDeniedHandler(MyCVAccessDeniedHandler())
+                authenticationException.authenticationEntryPoint(AuthenticationExceptionHandler(messagesService))
+                authenticationException.accessDeniedHandler(MyCVAccessDeniedHandler(messagesService))
             }
         return http.build()
     }

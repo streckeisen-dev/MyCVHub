@@ -21,7 +21,7 @@
           </v-row>
         </v-col>
       </v-row>
-      <template v-if="values.length === 0">No skills yet.</template>
+      <template v-if="values.length === 0">{{ t('skills.noEntries') }}</template>
     </v-col>
   </v-row>
 </template>
@@ -31,6 +31,11 @@ import type { SkillDto } from '@/dto/SkillDto'
 import { computed } from 'vue'
 import SkillEntry from '@/views/profile/components/skill/SkillEntry.vue'
 import type { PublicSkillDto } from '@/dto/PublicSkillDto'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const props = defineProps<{
   values: Array<SkillDto> | Array<PublicSkillDto>

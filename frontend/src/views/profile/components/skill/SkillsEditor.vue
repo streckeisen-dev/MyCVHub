@@ -3,7 +3,7 @@
     <v-sheet class="editor-sheet" rounded>
       <v-col cols="12">
         <v-row justify="end">
-          <v-btn text="Add skill" color="primary" @click="addSkill" />
+          <v-btn :text="t('skills.editor.add')" color="primary" @click="addSkill" />
         </v-row>
       </v-col>
       <skills-container :values="skills" actions @edit="editSkill" @delete="deleteSkill" />
@@ -20,7 +20,7 @@
 
   <notification
     v-if="deleteErrorMessage"
-    title="Failed to delete skill"
+    :title="t('skills.editor.deleteError')"
     :message="deleteErrorMessage"
   />
 </template>
@@ -33,6 +33,11 @@ import Notification from '@/components/Notification.vue'
 import SkillsContainer from '@/views/profile/components/skill/SkillsContainer.vue'
 import EditSkillDialog from '@/views/profile/components/skill/EditSkillDialog.vue'
 import type { SkillDto } from '@/dto/SkillDto'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const skills = defineModel({
   required: true,

@@ -1,42 +1,46 @@
 <template>
   <v-dialog :model-value="true" @update:model-value="cancel">
     <v-sheet class="work-experience-sheet">
-      <h2 v-if="isEdit">Edit Work Experience</h2>
-      <h2 v-else>Add Work Experience</h2>
+      <h2 v-if="isEdit">{{ t('workExperience.editor.edit') }}</h2>
+      <h2 v-else>{{ t('workExperience.editor.add') }}</h2>
 
       <v-form @submit.prevent>
         <v-text-field
-          label="Job Title"
+          :label="t('fields.jobTitle')"
           v-model="formState.jobTitle"
           :error-messages="jobTitleErrors"
         />
         <v-text-field
-          label="Location"
+          :label="t('fields.location')"
           v-model="formState.location"
           :error-messages="locationErrors"
         />
-        <v-text-field label="Company" v-model="formState.company" :error-messages="companyErrors" />
+        <v-text-field
+          :label="t('fields.company')"
+          v-model="formState.company"
+          :error-messages="companyErrors"
+        />
         <v-date-input
-          label="Position Start"
+          :label="t('fields.positionStart')"
           v-model="formState.positionStart"
           :error-messages="positionStartErrors"
         />
         <v-date-input
-          label="Position End"
+          :label="t('fields.positionEnd')"
           v-model="formState.positionEnd"
           clearable
-          @click:clear="() => formState.positionEnd = undefined"
+          @click:clear="() => (formState.positionEnd = undefined)"
           :error-messages="positionEndErrors"
         />
         <v-textarea
-          label="Description"
+          :label="t('fields.description')"
           v-model="formState.description"
           :error-messages="descriptionErrors"
         />
 
         <div class="form-action-buttons">
-          <v-btn type="submit" text="Save" color="primary" @click="save" />
-          <v-btn text="Cancel" @click="cancel" />
+          <v-btn type="submit" :text="t('forms.save')" color="primary" @click="save" />
+          <v-btn :text="t('forms.cancel')" @click="cancel" />
         </div>
       </v-form>
     </v-sheet>
@@ -47,13 +51,19 @@
 import { type ComputedRef, reactive, ref } from 'vue'
 import type { WorkExperienceDto } from '@/dto/WorkExperienceDto'
 import { VDateInput } from 'vuetify/labs/components'
-import { helpers, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import profileApi from '@/api/ProfileApi'
 import { convertDateToString, convertStringToDate } from '@/services/DateHelper'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
 import type { ErrorDto } from '@/dto/ErrorDto'
 import type { WorkExperienceUpdateDto } from '@/dto/WorkExperienceUpdateDto'
+import { useI18n } from 'vue-i18n'
+import { required, withI18nMessage } from '@/validation/validators'
+import { helpers } from '@vuelidate/validators'
+
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const props = defineProps<{
   value: WorkExperienceDto | undefined
@@ -80,40 +90,41 @@ const formState = reactive<FormState>({
   description: props.value?.description
 })
 
-const positionEndIsAfterStart = () => {
+const positionEndIsAfterStart = withI18nMessage(() => {
   if (formState.positionEnd && formState.positionStart) {
     return formState.positionEnd > formState.positionStart
   }
   return true
-}
+})
 
 const rules = {
   jobTitle: {
-    required: helpers.withMessage('Job Title must not be blank', required)
+    required
   },
   location: {
-    required: helpers.withMessage('Location must not be blank', required)
+    required
   },
   company: {
-    required: helpers.withMessage('Company must not be blank', required)
+    required
   },
   positionStart: {
-    required: helpers.withMessage('Position Start mut not be blank', required)
+    required
   },
   positionEnd: {
-    positionEndIsAfterStart: helpers.withMessage(
-      'Position End must be after Position Start',
+    dateIsBeforeValidator: helpers.withParams(
+      { earlierDate: t('fields.positionStart'), laterDate: t('fields.positionEnd')},
       positionEndIsAfterStart
     )
   },
   description: {
-    required: helpers.withMessage('Description must not be blank', required)
+    required
   }
 }
 
 const form = useVuelidate<FormState>(rules, formState)
 
 const errorMessages = ref<ErrorMessages>({})
+
 function getErrors(attributeName: string): ComputedRef {
   return getErrorMessages(errorMessages, form, attributeName)
 }

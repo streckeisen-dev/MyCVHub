@@ -27,7 +27,7 @@ class ApplicantAccountValidationServiceTest {
         every { applicantAccountRepository.findByEmail(eq(EXISTING_USER_EMAIL)) } returns Optional.of(existingApplicant())
         every { applicantAccountRepository.findByEmail(not(eq(EXISTING_USER_EMAIL))) } returns Optional.empty()
 
-        applicantAccountValidationService = ApplicantAccountValidationService(applicantAccountRepository)
+        applicantAccountValidationService = ApplicantAccountValidationService(applicantAccountRepository, mockk(relaxed = true))
     }
 
     @ParameterizedTest

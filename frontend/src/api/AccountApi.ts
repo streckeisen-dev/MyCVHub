@@ -6,6 +6,7 @@ import {
 } from '@/api/ApiHelper'
 import type { AccountDto } from '@/dto/AccountDto'
 import LoginStateService from '@/services/LoginStateService'
+import type { SignupRequestDto } from '@/dto/SignUpRequestDto'
 
 async function login(email: string, password: string): Promise<void> {
   try {
@@ -15,7 +16,7 @@ async function login(email: string, password: string): Promise<void> {
         username: email,
         password: password
       }),
-      headers: commonHeaders
+      headers: commonHeaders()
     })
     return processAuthResponse(response)
   } catch (error) {
@@ -23,12 +24,12 @@ async function login(email: string, password: string): Promise<void> {
   }
 }
 
-async function signUp(account: AccountDto): Promise<void> {
+async function signUp(account: SignupRequestDto): Promise<void> {
   try {
     const response = await fetch('/api/auth/signUp', {
       method: 'POST',
       body: JSON.stringify(account),
-      headers: commonHeaders
+      headers: commonHeaders()
     })
     return processAuthResponse(response)
   } catch (error) {

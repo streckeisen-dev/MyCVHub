@@ -1,6 +1,7 @@
 package ch.streckeisen.mycv.backend.publicapi.country
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil
+import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -16,7 +17,7 @@ class CountryResource {
         return ResponseEntity.ok(
             PhoneNumberUtil.getInstance().supportedRegions.map { countryCode ->
                 val locale = Locale.Builder()
-                    .setLanguage("en")
+                    .setLanguage(LocaleContextHolder.getLocale().language)
                     .setRegion(countryCode)
                     .build()
                 CountryDto(locale.getDisplayCountry(locale), countryCode)

@@ -1,3 +1,5 @@
+src/locales/*.json
+
 # Logs
 logs
 *.log

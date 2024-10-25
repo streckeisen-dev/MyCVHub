@@ -95,6 +95,7 @@ class AuthenticationServiceTest {
             userDetailsService,
             authenticationManager,
             jwtService,
+            mockk(relaxed = true)
         )
     }
 

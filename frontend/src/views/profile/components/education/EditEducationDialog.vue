@@ -1,46 +1,46 @@
 <template>
   <v-dialog :model-value="true" @update:model-value="cancel">
     <v-sheet class="education-sheet">
-      <h2 v-if="isEdit">Edit Education Entry</h2>
-      <h2 v-else>Add Education Entry</h2>
+      <h2 v-if="isEdit">{{ t('education.editor.edit') }}</h2>
+      <h2 v-else>{{ t('education.editor.add') }}</h2>
 
       <v-form @submit.prevent>
         <v-text-field
-          label="Institution"
+          :label="t('fields.institution')"
           v-model="formState.institution"
           :error-messages="institutionErrors"
         />
         <v-text-field
-          label="Location"
+          :label="t('fields.location')"
           v-model="formState.location"
           :error-messages="locationErrors"
         />
         <v-text-field
-          label="Degree Name"
+          :label="t('fields.degreeName')"
           v-model="formState.degreeName"
           :error-messages="degreeNameErrors"
         />
         <v-date-input
-          label="Education Start"
+          :label="t('fields.educationStart')"
           v-model="formState.educationStart"
           :error-messages="educationStartErrors"
         />
         <v-date-input
-          label="Education End"
+          :label="t('fields.educationEnd')"
           v-model="formState.educationEnd"
           clearable
-          @click:clear="() => formState.educationEnd = undefined"
+          @click:clear="() => (formState.educationEnd = undefined)"
           :error-messages="educationEndErrors"
         />
         <v-textarea
-          label="Description"
+          :label="t('fields.description')"
           v-model="formState.description"
           :error-messages="descriptionErrors"
         />
 
         <div class="form-action-buttons">
-          <v-btn type="submit" text="Save" color="primary" @click="save" />
-          <v-btn text="Cancel" @click="cancel" />
+          <v-btn type="submit" :text="t('forms.save')" color="primary" @click="save" />
+          <v-btn :text="t('forms.cancel')" @click="cancel" />
         </div>
       </v-form>
     </v-sheet>
@@ -50,7 +50,6 @@
 <script setup lang="ts">
 import { type ComputedRef, reactive, ref } from 'vue'
 import { VDateInput } from 'vuetify/labs/components'
-import { helpers, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import profileApi from '@/api/ProfileApi'
 import { convertDateToString, convertStringToDate } from '@/services/DateHelper'
@@ -58,6 +57,13 @@ import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
 import type { ErrorDto } from '@/dto/ErrorDto'
 import type { EducationDto } from '@/dto/EducationDto'
 import type { EducationUpdateDto } from '@/dto/EducationUpdateDto'
+import { useI18n } from 'vue-i18n'
+import { required, withI18nMessage } from '@/validation/validators'
+import { helpers } from '@vuelidate/validators'
+
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const props = defineProps<{
   value: EducationDto | undefined
@@ -84,29 +90,32 @@ const formState = reactive<FormState>({
   description: props.value?.description
 })
 
-const educationEndIsAfterStart = () => {
+const educationEndIsAfterStart = withI18nMessage(() => {
   if (formState.educationEnd && formState.educationStart) {
     return formState.educationEnd > formState.educationStart
   }
   return true
-}
+})
 
 const rules = {
   institution: {
-    required: helpers.withMessage('Institution must not be blank', required)
+    required
   },
   location: {
-    required: helpers.withMessage('Location must not be blank', required)
+    required
   },
   degreeName: {
-    required: helpers.withMessage('Degree Name must not be blank', required)
+    required
   },
   educationStart: {
-    required: helpers.withMessage('Education Start mut not be blank', required)
+    required
   },
   educationEnd: {
-    educationEndIsAfterStart: helpers.withMessage(
-      'Education End must be after Education Start',
+    dateIsBeforeValidator: helpers.withParams(
+      {
+        earlierDate: t('fields.educationStart'),
+        laterDate: t('fields.educationEnd')
+      },
       educationEndIsAfterStart
     )
   },

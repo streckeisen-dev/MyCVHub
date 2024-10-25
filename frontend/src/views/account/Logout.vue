@@ -1,7 +1,7 @@
 <template>
   <v-main>
-    <v-empty-state headline="Goodbye" title="Logout" text="You are being logged out..." />
-    <notification v-if="logoutError" title="Failed to logout" message="Something went wrong during your logout" />
+    <v-empty-state :headline="t('account.logout.headline')" :title="t('account.logout.action')" :text="t('account.logout.message')" />
+    <notification v-if="logoutError" :title="t('account.logout.errorTitle')" :message="t('account.logout.errorMessage')" />
   </v-main>
 </template>
 
@@ -10,6 +10,11 @@ import accountApi from '@/api/AccountApi'
 import router from '@/router'
 import Notification from '@/components/Notification.vue'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const logoutError = ref(false)
 
@@ -28,5 +33,3 @@ if (accountApi.isUserLoggedIn()) {
   await router.push({ name: 'home' })
 }
 </script>
-
-<style scoped></style>

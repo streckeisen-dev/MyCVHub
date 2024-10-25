@@ -1,6 +1,6 @@
 package ch.streckeisen.mycv.backend.exceptions
 
-class ResultNotFoundException(
+class EntityNotFoundException(
     message: String,
     cause: Throwable? = null
 ): Exception(message, cause)

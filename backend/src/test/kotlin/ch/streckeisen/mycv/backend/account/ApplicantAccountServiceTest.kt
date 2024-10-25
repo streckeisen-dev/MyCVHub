@@ -77,7 +77,8 @@ class ApplicantAccountServiceTest {
         applicantAccountService = ApplicantAccountService(
             applicantAccountRepository,
             applicantAccountValidationService,
-            passwordEncoder
+            passwordEncoder,
+            mockk(relaxed = true)
         )
     }
 

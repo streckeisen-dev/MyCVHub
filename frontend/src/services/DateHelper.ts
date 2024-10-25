@@ -1,9 +1,13 @@
+import { useLocale } from 'vuetify'
+
 export function toShortDate(dateString: string | undefined): string {
+  const locale = useLocale()
+
   if (dateString == null) {
-    return 'Today'
+    return locale.t('date.today')
   }
   const date = new Date(dateString)
-  return date.toLocaleDateString(navigator.language, {
+  return date.toLocaleDateString(locale.current.value, {
     month: 'short',
     year: 'numeric'
   })

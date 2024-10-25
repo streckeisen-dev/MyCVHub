@@ -40,7 +40,7 @@ class ProfileValidationServiceTest {
             every { findByAlias(any()) } returns Optional.empty()
             every { findByAlias(eq("existing")) } returns Optional.of(existingProfile)
         }
-        profileValidationService = ProfileValidationService(profileRepository)
+        profileValidationService = ProfileValidationService(profileRepository, mockk(relaxed = true))
     }
 
     @ParameterizedTest

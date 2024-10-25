@@ -1,19 +1,23 @@
 <template>
   <v-dialog :model-value="true" @update:model-value="cancel">
     <v-sheet class="skill-sheet">
-      <h2 v-if="isEdit">Edit Skill</h2>
-      <h2 v-else>Add Skill</h2>
+      <h2 v-if="isEdit">{{ t('skills.editor.edit') }}</h2>
+      <h2 v-else>{{ t('skills.editor.add') }}</h2>
 
       <v-form @submit.prevent>
-        <v-text-field label="Name" v-model="formState.name" :error-messages="nameErrors" />
         <v-text-field
-          label="Type"
-          hint="Skills will be grouped by their type in your CV. Use something like 'Programming Languages', 'Communication', etc."
+          :label="t('fields.name')"
+          v-model="formState.name"
+          :error-messages="nameErrors"
+        />
+        <v-text-field
+          :label="t('fields.type')"
+          :hint="t('skills.editor.typeHint')"
           v-model="formState.type"
           :error-messages="typeErrors"
         />
         <v-slider
-          label="Level"
+          :label="t('fields.level')"
           v-model="formState.level"
           thumb-label="always"
           step="1"
@@ -23,8 +27,8 @@
         />
 
         <div class="form-action-buttons">
-          <v-btn type="submit" text="Save" color="primary" @click="save" />
-          <v-btn text="Cancel" @click="cancel" />
+          <v-btn type="submit" :text="t('forms.save')" color="primary" @click="save" />
+          <v-btn :text="t('forms.cancel')" @click="cancel" />
         </div>
       </v-form>
     </v-sheet>
@@ -33,16 +37,19 @@
 
 <script setup lang="ts">
 import { type ComputedRef, reactive, ref } from 'vue'
-import type { WorkExperienceDto } from '@/dto/WorkExperienceDto'
-import { VDateInput } from 'vuetify/labs/components'
-import { helpers, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import profileApi from '@/api/ProfileApi'
-import { convertDateToString, convertStringToDate } from '@/services/DateHelper'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
 import type { ErrorDto } from '@/dto/ErrorDto'
 import type { SkillDto } from '@/dto/SkillDto'
 import type { SkillUpdateDto } from '@/dto/SkillUpdateDto'
+import { useI18n } from 'vue-i18n'
+import { required, withI18nMessage } from '@/validation/validators'
+import { helpers } from '@vuelidate/validators'
+
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const props = defineProps<{
   value: SkillDto | undefined
@@ -63,18 +70,23 @@ const formState = reactive<FormState>({
   level: props.value?.level
 })
 
-const levelWithinRange = () => formState.level == null || formState.level >= 0 && formState.level <= 100
+const levelWithinRange = withI18nMessage(
+  () => formState.level == null || (formState.level >= 0 && formState.level <= 100)
+)
 
 const rules = {
   name: {
-    required: helpers.withMessage('Name must not be blank', required)
+    required
   },
   type: {
-    required: helpers.withMessage('Type must not be blank', required)
+    required
   },
   level: {
-    required: helpers.withMessage('Level must not be blank', required),
-    levelWithinRange: helpers.withMessage('Level must be between 0 and 100', levelWithinRange)
+    required,
+    numberWithinRange: helpers.withParams(
+      { name: t('fields.level'), min: '0', max: '100' },
+      levelWithinRange
+    )
   }
 }
 

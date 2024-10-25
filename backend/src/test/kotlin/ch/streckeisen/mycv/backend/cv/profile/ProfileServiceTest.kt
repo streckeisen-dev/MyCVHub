@@ -3,7 +3,7 @@ package ch.streckeisen.mycv.backend.cv.profile
 import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
 import ch.streckeisen.mycv.backend.account.ApplicantAccountService
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
-import ch.streckeisen.mycv.backend.exceptions.ResultNotFoundException
+import ch.streckeisen.mycv.backend.exceptions.EntityNotFoundException
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -90,7 +90,7 @@ class ProfileServiceTest {
         profileValidationService = mockk()
         applicantAccountService = mockk {
             every { findById(eq(1)) } returns Result.success(existingAccount)
-            every { findById(eq(2)) } returns Result.failure(ResultNotFoundException("Not found"))
+            every { findById(eq(2)) } returns Result.failure(EntityNotFoundException("Not found"))
             every { findById(eq(3)) } returns Result.success(existingAccountWithoutProfile)
         }
         profilePictureService = mockk()
@@ -172,7 +172,7 @@ class ProfileServiceTest {
         assertTrue { saveResult.isFailure }
         val ex = saveResult.exceptionOrNull()
         assertNotNull(ex)
-        assertTrue { ex is ResultNotFoundException }
+        assertTrue { ex is EntityNotFoundException }
         verify(exactly = 1) { applicantAccountService.findById(any()) }
         verify(exactly = 0) { profileValidationService.validateProfileInformation(any(), any(), any(), any()) }
         verify(exactly = 0) { profilePictureService.store(any(), any(), any()) }
