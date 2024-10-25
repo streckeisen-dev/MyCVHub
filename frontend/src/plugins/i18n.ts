@@ -14,7 +14,7 @@ const messages: Messages = {}
 const langModules = import.meta.glob('../locales/*.json', { eager: true })
 Object.keys(langModules).forEach((filePath) => {
   const lang = filePath.replace('../locales/', '').replace('.json', '')
-  const vuetifyMessages = vuetifyLocale[lang]
+  const vuetifyMessages = (vuetifyLocale as Messages)[lang]
   messages[lang] = {
     ...langModules[filePath] as NestedMessage,
     $vuetify: vuetifyMessages

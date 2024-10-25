@@ -29,6 +29,18 @@ private const val PASSWORD_LOWERCASE_KEY = "${PASSWORD_KEY_PREFIX}.lowercase"
 private const val PASSWORD_SPECIAL_CHARS_KEY = "${PASSWORD_KEY_PREFIX}.specialChars"
 private const val VALIDATION_ERROR_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.error"
 
+private const val FIRST_NAME_FIELD_KEY = "firstName"
+private const val LAST_NAME_FIELD_KEY = "lastName"
+private const val EMAIL_FIELD_KEY = "email"
+private const val BIRTHDAY_FIELD_KEY = "birthday"
+private const val PHONE_FIELD_KEY = "phone"
+private const val STREET_FIELD_KEY = "street"
+private const val HOUSE_NUMBER_FIELD_KEY = "houseNumber"
+private const val POSTCODE_FIELD_KEY = "postcode"
+private const val CITY_FIELD_KEY = "city"
+private const val COUNTRY_FIELD_KEY = "country"
+private const val PASSWORD_FIELD_KEY = "password"
+
 @Service
 class ApplicantAccountValidationService(
     private val applicantAccountRepository: ApplicantAccountRepository,
@@ -59,11 +71,11 @@ class ApplicantAccountValidationService(
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
         if (firstName.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError("firstName")
-            validationErrorBuilder.addError("firstName", error)
+            val error = messagesService.requiredFieldMissingError(FIRST_NAME_FIELD_KEY)
+            validationErrorBuilder.addError(FIRST_NAME_FIELD_KEY, error)
         } else if (firstName.length > FIRST_NAME_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError("firstName", FIRST_NAME_MAX_LENGTH)
-            validationErrorBuilder.addError("firstName", error)
+            val error = messagesService.fieldMaxLengthExceededError(FIRST_NAME_FIELD_KEY, FIRST_NAME_MAX_LENGTH)
+            validationErrorBuilder.addError(FIRST_NAME_FIELD_KEY, error)
         }
     }
 
@@ -72,11 +84,11 @@ class ApplicantAccountValidationService(
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
         if (lastName.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError("lastName")
-            validationErrorBuilder.addError("lastName", error)
+            val error = messagesService.requiredFieldMissingError(LAST_NAME_FIELD_KEY)
+            validationErrorBuilder.addError(LAST_NAME_FIELD_KEY, error)
         } else if (lastName.length > LAST_NAME_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError("lastName", LAST_NAME_MAX_LENGTH)
-            validationErrorBuilder.addError("lastName", error)
+            val error = messagesService.fieldMaxLengthExceededError(LAST_NAME_FIELD_KEY, LAST_NAME_MAX_LENGTH)
+            validationErrorBuilder.addError(LAST_NAME_FIELD_KEY, error)
         }
     }
 
@@ -86,19 +98,19 @@ class ApplicantAccountValidationService(
         validationErrorBuilder: ValidationException.ValidationErrorBuilder,
     ) {
         if (email.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError("email")
-            validationErrorBuilder.addError("email", error)
+            val error = messagesService.requiredFieldMissingError(EMAIL_FIELD_KEY)
+            validationErrorBuilder.addError(EMAIL_FIELD_KEY, error)
         } else if (!EmailValidator.getInstance().isValid(email)) {
             val error = messagesService.getMessage(EMAIL_INVALID_KEY)
-            validationErrorBuilder.addError("email", error)
+            validationErrorBuilder.addError(EMAIL_FIELD_KEY, error)
         } else if (email.length > EMAIL_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError("email", EMAIL_MAX_LENGTH)
-            validationErrorBuilder.addError("email", error)
+            val error = messagesService.fieldMaxLengthExceededError(EMAIL_FIELD_KEY, EMAIL_MAX_LENGTH)
+            validationErrorBuilder.addError(EMAIL_FIELD_KEY, error)
         } else {
             val applicant = applicantAccountRepository.findByEmail(email)
             if (applicant.isPresent && applicant.get().id != updateId) {
                 val error = messagesService.getMessage(EMAIL_TAKEN_KEY)
-                validationErrorBuilder.addError("email", error)
+                validationErrorBuilder.addError(EMAIL_FIELD_KEY, error)
             }
         }
     }
@@ -108,11 +120,11 @@ class ApplicantAccountValidationService(
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
         if (birthday == null) {
-            val error = messagesService.requiredFieldMissingError("birthday")
-            validationErrorBuilder.addError("birthday", error)
+            val error = messagesService.requiredFieldMissingError(BIRTHDAY_FIELD_KEY)
+            validationErrorBuilder.addError(BIRTHDAY_FIELD_KEY, error)
         } else if (birthday.isAfter(LocalDate.now())) {
-            val error = messagesService.dateIsInFutureError("birthday")
-            validationErrorBuilder.addError("birthday", error)
+            val error = messagesService.dateIsInFutureError(BIRTHDAY_FIELD_KEY)
+            validationErrorBuilder.addError(BIRTHDAY_FIELD_KEY, error)
         }
     }
 
@@ -122,22 +134,22 @@ class ApplicantAccountValidationService(
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
         if (phone.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError("phone")
-            validationErrorBuilder.addError("phone", error)
+            val error = messagesService.requiredFieldMissingError(PHONE_FIELD_KEY)
+            validationErrorBuilder.addError(PHONE_FIELD_KEY, error)
         } else if (phone.length > PHONE_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError("phone", PHONE_MAX_LENGTH)
-            validationErrorBuilder.addError("phone", error)
+            val error = messagesService.fieldMaxLengthExceededError(PHONE_FIELD_KEY, PHONE_MAX_LENGTH)
+            validationErrorBuilder.addError(PHONE_FIELD_KEY, error)
         } else {
             try {
                 val phoneNumber = phoneNumberUtil.parse(phone, country ?: Locale.getDefault().country)
                 val isValidNumber = phoneNumberUtil.isValidNumber(phoneNumber)
                 if (!isValidNumber) {
                     val error = messagesService.getMessage(PHONE_INVALID_KEY)
-                    validationErrorBuilder.addError("phone", error)
+                    validationErrorBuilder.addError(PHONE_FIELD_KEY, error)
                 }
             } catch (ex: NumberParseException) {
                 val error = messagesService.getMessage(PHONE_INVALID_KEY)
-                validationErrorBuilder.addError("phone", error)
+                validationErrorBuilder.addError(PHONE_FIELD_KEY, error)
             }
         }
     }
@@ -147,11 +159,11 @@ class ApplicantAccountValidationService(
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
         if (street.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError("street")
-            validationErrorBuilder.addError("street", error)
+            val error = messagesService.requiredFieldMissingError(STREET_FIELD_KEY)
+            validationErrorBuilder.addError(STREET_FIELD_KEY, error)
         } else if (street.length > STREET_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError("street", STREET_MAX_LENGTH)
-            validationErrorBuilder.addError("street", error)
+            val error = messagesService.fieldMaxLengthExceededError(STREET_FIELD_KEY, STREET_MAX_LENGTH)
+            validationErrorBuilder.addError(STREET_FIELD_KEY, error)
         }
     }
 
@@ -161,10 +173,10 @@ class ApplicantAccountValidationService(
     ) {
         if (houseNumber == "") {
             val error = messagesService.getMessage(EMPTY_HOUSE_NUMBER_KEY)
-            validationErrorBuilder.addError("houseNumber", error)
+            validationErrorBuilder.addError(HOUSE_NUMBER_FIELD_KEY, error)
         } else if (houseNumber != null && houseNumber.length > HOUSE_NUMBER_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError("houseNumber", HOUSE_NUMBER_MAX_LENGTH)
-            validationErrorBuilder.addError("houseNumber", error)
+            val error = messagesService.fieldMaxLengthExceededError(HOUSE_NUMBER_FIELD_KEY, HOUSE_NUMBER_MAX_LENGTH)
+            validationErrorBuilder.addError(HOUSE_NUMBER_FIELD_KEY, error)
         }
     }
 
@@ -173,11 +185,11 @@ class ApplicantAccountValidationService(
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
         if (postcode.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError("postcode")
-            validationErrorBuilder.addError("postcode", error)
+            val error = messagesService.requiredFieldMissingError(POSTCODE_FIELD_KEY)
+            validationErrorBuilder.addError(POSTCODE_FIELD_KEY, error)
         } else if (postcode.length > POSTCODE_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError("postcode", POSTCODE_MAX_LENGTH)
-            validationErrorBuilder.addError("postcode", error)
+            val error = messagesService.fieldMaxLengthExceededError(POSTCODE_FIELD_KEY, POSTCODE_MAX_LENGTH)
+            validationErrorBuilder.addError(POSTCODE_FIELD_KEY, error)
         }
     }
 
@@ -186,11 +198,11 @@ class ApplicantAccountValidationService(
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
         if (city.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError("city")
-            validationErrorBuilder.addError("city", error)
+            val error = messagesService.requiredFieldMissingError(CITY_FIELD_KEY)
+            validationErrorBuilder.addError(CITY_FIELD_KEY, error)
         } else if (city.length > CITY_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError("city", CITY_MAX_LENGTH)
-            validationErrorBuilder.addError("city", error)
+            val error = messagesService.fieldMaxLengthExceededError(CITY_FIELD_KEY, CITY_MAX_LENGTH)
+            validationErrorBuilder.addError(CITY_FIELD_KEY, error)
         }
     }
 
@@ -199,14 +211,14 @@ class ApplicantAccountValidationService(
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
         if (country.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError("country")
-            validationErrorBuilder.addError("country", error)
+            val error = messagesService.requiredFieldMissingError(COUNTRY_FIELD_KEY)
+            validationErrorBuilder.addError(COUNTRY_FIELD_KEY, error)
         } else if (country.length != COUNTRY_MAX_LENGTH) {
             val error = messagesService.getMessage(COUNTRY_LENGTH_KEY, COUNTRY_MAX_LENGTH.toString())
-            validationErrorBuilder.addError("country", error)
+            validationErrorBuilder.addError(COUNTRY_FIELD_KEY, error)
         } else if (!phoneNumberUtil.supportedRegions.contains(country)) {
             val error = messagesService.getMessage(COUNTRY_INVALID_KEY)
-            validationErrorBuilder.addError("country", error)
+            validationErrorBuilder.addError(COUNTRY_FIELD_KEY, error)
         }
     }
 
@@ -215,11 +227,11 @@ class ApplicantAccountValidationService(
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
         if (password.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError("password")
-            validationErrorBuilder.addError("password", error)
+            val error = messagesService.requiredFieldMissingError(PASSWORD_FIELD_KEY)
+            validationErrorBuilder.addError(PASSWORD_FIELD_KEY, error)
         } else {
             validatePassword(password)
-                .onFailure { validationErrorBuilder.addError("password", it.message!!) }
+                .onFailure { validationErrorBuilder.addError(PASSWORD_FIELD_KEY, it.message!!) }
         }
     }
 

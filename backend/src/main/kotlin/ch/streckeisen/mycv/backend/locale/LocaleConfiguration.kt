@@ -23,7 +23,6 @@ class LocaleConfiguration {
         val src = ResourceBundleMessageSource()
         src.setBasename("messages")
         src.setDefaultEncoding(StandardCharsets.UTF_8.name())
-
         return src
     }
 }

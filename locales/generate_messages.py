@@ -5,10 +5,6 @@ import re
 import glob
 import argparse
 
-# Error for handling duplicate keys
-class DuplicateKeyError(Exception):
-    pass
-
 # Load the YAML file
 def load_yaml(yaml_file):
     with open(yaml_file, 'r', encoding='utf-8') as file:
@@ -35,14 +31,9 @@ def merge_keys(shared, specific):
             if isinstance(combined[key], dict) and isinstance(value, dict):
                 combined[key] = merge_keys(combined[key], value)
             else:
-                # Otherwise, just keep the existing value (or you can choose to overwrite)
-                # Uncomment the next line to overwrite instead:
-                # combined[key] = value
                 pass  # Keeping the existing value
-
         else:
             combined[key] = value
-            
     return combined
 
 # Write frontend JSON format
@@ -60,7 +51,6 @@ def write_frontend_json(locales, output_dir):
 
 # Convert named parameters to indexed parameters for backend
 def convert_named_to_indexed(message):
-    # Convert {name} to {0}, {age} to {1}, etc.
     named_params = re.findall(r'\{(\w+)\}', message)
     for i, param in enumerate(named_params):
         message = message.replace(f'{{{param}}}', f'{{{i}}}')
@@ -129,7 +119,5 @@ try:
 
     generate_i18n_files(generate_type, frontend_output_dir, backend_output_dir, key_prefix, fallback_locale)
     print("Files generated successfully!")
-except DuplicateKeyError as e:
-    print(f"Error: {e}")
 except Exception as e:
     print(f"An unexpected error occurred: {e}")

@@ -7,6 +7,12 @@ import org.springframework.stereotype.Service
 import java.time.LocalDate
 
 private const val VALIDATION_ERROR_KEY = "${MYCV_KEY_PREFIX}.workExperience.validationError"
+private const val JOB_TITLE_FIELD_KEY = "jobTitle"
+private const val LOCATION_FIELD_KEY = "location"
+private const val COMPANY_FIELD_KEY = "company"
+private const val POSITION_START_FIELD_KEY = "positionStart"
+private const val POSITION_END_FIELD_KEY = "positionEnd"
+private const val DESCRIPTION_FIELD_KEY = "description"
 
 @Service
 class WorkExperienceValidationService(
@@ -16,52 +22,52 @@ class WorkExperienceValidationService(
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
         if (workExperience.jobTitle.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError("jobTitle")
-            validationErrorBuilder.addError("jobTitle", error)
+            val error = messagesService.requiredFieldMissingError(JOB_TITLE_FIELD_KEY)
+            validationErrorBuilder.addError(JOB_TITLE_FIELD_KEY, error)
         } else if (workExperience.jobTitle.length > JOB_TITLE_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError("jobTitle", JOB_TITLE_MAX_LENGTH)
-            validationErrorBuilder.addError("jobTitle", error)
+            val error = messagesService.fieldMaxLengthExceededError(JOB_TITLE_FIELD_KEY, JOB_TITLE_MAX_LENGTH)
+            validationErrorBuilder.addError(JOB_TITLE_FIELD_KEY, error)
         }
 
         if (workExperience.location.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError("location")
-            validationErrorBuilder.addError("location", error)
+            val error = messagesService.requiredFieldMissingError(LOCATION_FIELD_KEY)
+            validationErrorBuilder.addError(LOCATION_FIELD_KEY, error)
         } else if (workExperience.location.length > LOCATION_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError("location", LOCATION_MAX_LENGTH)
-            validationErrorBuilder.addError("location", error)
+            val error = messagesService.fieldMaxLengthExceededError(LOCATION_FIELD_KEY, LOCATION_MAX_LENGTH)
+            validationErrorBuilder.addError(LOCATION_FIELD_KEY, error)
         }
 
         if (workExperience.company.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError("company")
-            validationErrorBuilder.addError("company", error)
+            val error = messagesService.requiredFieldMissingError(COMPANY_FIELD_KEY)
+            validationErrorBuilder.addError(COMPANY_FIELD_KEY, error)
         } else if (workExperience.company.length > COMPANY_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError("location", LOCATION_MAX_LENGTH)
-            validationErrorBuilder.addError("company", error)
+            val error = messagesService.fieldMaxLengthExceededError(LOCATION_FIELD_KEY, LOCATION_MAX_LENGTH)
+            validationErrorBuilder.addError(COMPANY_FIELD_KEY, error)
         }
 
         if (workExperience.positionStart == null) {
-            val error = messagesService.requiredFieldMissingError("positionStart")
-            validationErrorBuilder.addError("positionStart", error)
+            val error = messagesService.requiredFieldMissingError(POSITION_START_FIELD_KEY)
+            validationErrorBuilder.addError(POSITION_START_FIELD_KEY, error)
         } else if (workExperience.positionStart.isAfter(LocalDate.now())) {
-            val error = messagesService.dateIsInFutureError("positionStart")
-            validationErrorBuilder.addError("positionStart", error)
+            val error = messagesService.dateIsInFutureError(POSITION_START_FIELD_KEY)
+            validationErrorBuilder.addError(POSITION_START_FIELD_KEY, error)
         }
 
         if (workExperience.positionEnd != null && workExperience.positionEnd.isAfter(LocalDate.now())) {
-            val error = messagesService.dateIsInFutureError("positionEnd")
-            validationErrorBuilder.addError("positionEnd", error)
+            val error = messagesService.dateIsInFutureError(POSITION_END_FIELD_KEY)
+            validationErrorBuilder.addError(POSITION_END_FIELD_KEY, error)
         } else if (
             workExperience.positionEnd != null
             && workExperience.positionStart != null
             && workExperience.positionEnd.isBefore(workExperience.positionStart)
         ) {
-            val error = messagesService.dateIsAfterError("positionStart", "positionEnd")
-            validationErrorBuilder.addError("positionEnd", error)
+            val error = messagesService.dateIsAfterError(POSITION_START_FIELD_KEY, POSITION_END_FIELD_KEY)
+            validationErrorBuilder.addError(POSITION_END_FIELD_KEY, error)
         }
 
         if (workExperience.description.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError("description")
-            validationErrorBuilder.addError("description", error)
+            val error = messagesService.requiredFieldMissingError(DESCRIPTION_FIELD_KEY)
+            validationErrorBuilder.addError(DESCRIPTION_FIELD_KEY, error)
         }
 
         if (validationErrorBuilder.hasErrors()) {

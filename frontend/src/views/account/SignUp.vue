@@ -120,9 +120,9 @@
                   </v-col>
                   <v-col cols="12">
                     <password-input
-                      v-model="formState.confirmedPassword"
+                      v-model="formState.confirmPassword"
                       :label="t('fields.confirmPassword')"
-                      :error-messages="confirmedPasswordErrors"
+                      :error-messages="confirmPasswordErrors"
                     />
                   </v-col>
                 </v-row>
@@ -175,7 +175,7 @@
 import accountApi from '@/api/AccountApi'
 import router from '@/router'
 import { VDateInput } from 'vuetify/labs/components'
-import { computed, type ComputedRef, reactive, ref } from 'vue'
+import { computed, type ComputedRef, reactive, ref, watch } from 'vue'
 import PasswordInput from '@/components/PasswordInput.vue'
 import type { ErrorDto } from '@/dto/ErrorDto'
 import useVuelidate from '@vuelidate/core'
@@ -187,6 +187,7 @@ import { useI18n } from 'vue-i18n'
 import { email, required, withI18nMessage } from '@/validation/validators'
 import type { SignupRequestDto } from '@/dto/SignUpRequestDto'
 import { convertDateToString } from '@/services/DateHelper'
+import { useLocale } from 'vuetify'
 
 if (accountApi.isUserLoggedIn()) {
   await router.push({ name: 'home' })
@@ -200,11 +201,19 @@ const countries = ref<Array<CountryDto>>([])
 const errorMessages = ref<{ [key: string]: string }>({})
 const didCountryLoadFail = ref<boolean>(false)
 
-try {
-  countries.value = await countryApi.getCountries()
-} catch (error) {
-  didCountryLoadFail.value = true
+async function loadCountries() {
+  try {
+    countries.value = await countryApi.getCountries()
+  } catch (error) {
+    didCountryLoadFail.value = true
+  }
 }
+await loadCountries()
+
+watch(useLocale().current, async () => {
+  didCountryLoadFail.value = false
+  await loadCountries()
+})
 
 type FormState = {
   firstName?: string
@@ -218,7 +227,7 @@ type FormState = {
   city?: string
   country?: string
   password?: string
-  confirmedPassword?: string
+  confirmPassword?: string
 }
 
 const formState = reactive<FormState>({
@@ -233,7 +242,7 @@ const formState = reactive<FormState>({
   city: undefined,
   country: undefined,
   password: undefined,
-  confirmedPassword: undefined
+  confirmPassword: undefined
 })
 
 const passwordRequirements = computed(() => [
@@ -304,7 +313,7 @@ const passwordRequirements = computed(() => [
         return false
       }
       const pw = formState.password as string
-      return pw === formState.confirmedPassword
+      return pw === formState.confirmPassword
     }
   }
 ])
@@ -330,7 +339,7 @@ const rules = {
     required,
     passwordValidator
   },
-  confirmedPassword: {
+  confirmPassword: {
     required
   }
 }
@@ -382,7 +391,7 @@ const postcodeErrors = getErrors('postcode')
 const cityErrors = getErrors('city')
 const countryErrors = getErrors('country')
 const passwordErrors = getErrors('password')
-const confirmedPasswordErrors = getErrors('confirmPassword')
+const confirmPasswordErrors = getErrors('confirmPassword')
 </script>
 
 <style lang="scss" scoped>
