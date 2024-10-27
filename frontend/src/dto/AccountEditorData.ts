@@ -1,14 +1,12 @@
-export type SignupRequestDto = {
+export type AccountEditorData = {
   firstName?: string,
   lastName?: string,
   email?: string,
   phone?: string,
-  birthday?: string,
+  birthday?: Date,
   street?: string,
   houseNumber?: string,
   postcode?: string,
   city?: string,
-  country?: string,
-  password?: string,
-  confirmPassword?: string
+  country?: string
 }

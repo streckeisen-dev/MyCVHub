@@ -34,22 +34,31 @@
           <v-sheet rounded class="account-sheet">
             <v-row v-if="account.profile">
               <v-col cols="12" md="5" lg="3">
-                <router-link :to="{ name: 'public-profile', params: { alias: account.profile } }">
-                  <v-btn :text="t('account.profile.view')" color="primary" />
-                </router-link>
+                <v-btn :text="t('account.profile.view')" color="primary" :to="{ name: 'public-profile', params: { alias: account.profile } }" />
               </v-col>
               <v-col cols="12" md="5" lg="3">
-                <router-link :to="{ name: 'edit-profile' }">
-                  <v-btn :text="t('account.profile.edit')" color="primary" />
-                </router-link>
+                <v-btn :text="t('account.profile.edit')" color="primary" :to="{ name: 'edit-profile' }" />
               </v-col>
             </v-row>
             <v-row v-else class="create-profile">
-              <v-col cols="12" md="5" lg="3">{{ t('account.profile.notFound') }}</v-col>
               <v-col cols="12" md="5" lg="3">
-                <router-link :to="{ name: 'create-profile' }">
-                  <v-btn :text="t('account.profile.create')" color="primary" />
-                </router-link>
+                {{ t('account.profile.notFound') }}
+              </v-col>
+              <v-col cols="12" md="5" lg="3">
+                <v-btn :text="t('account.profile.create')" color="primary" :to="{ name: 'create-profile' }" />
+              </v-col>
+            </v-row>
+          </v-sheet>
+        </v-col>
+        <v-col cols="12" sm="6">
+          <h2>{{ t('account.title') }}</h2>
+          <v-sheet rounded class="account-sheet">
+            <v-row>
+              <v-col cols="12" md="5" lg="3">
+                <v-btn :text="t('account.edit.title')" color="primary" :to="{ name: 'edit-account' }" />
+              </v-col>
+              <v-col cols="12" md="5" lg="3">
+                <v-btn :text="t('account.edit.changePassword')" color="primary" :to="{ name: 'change-password' }" />
               </v-col>
             </v-row>
           </v-sheet>
@@ -86,6 +95,7 @@ const isAccountLoading = ref<boolean>(true)
 try {
   account.value = await accountApi.getAccountInfo()
 } catch (ignore) {
+  // ignore
 } finally {
   isAccountLoading.value = false
 }

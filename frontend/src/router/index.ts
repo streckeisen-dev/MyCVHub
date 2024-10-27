@@ -15,7 +15,7 @@ const router = createRouter({
     {
       path: '/ui/login',
       name: 'login',
-      component: () => import('@/views/account/Login.vue'),
+      component: () => import('@/views/account/LoginView.vue'),
       props: route => ({ redirect: route.query.redirect })
     },
     {
@@ -26,12 +26,28 @@ const router = createRouter({
     {
       path: '/ui/logout',
       name: 'logout',
-      component: () => import('@/views/account/Logout.vue')
+      component: () => import('@/views/account/LogoutView.vue')
     },
     {
       path: '/ui/account',
       name: 'account',
       component: () => import('@/views/account/AccountView.vue'),
+      meta: {
+        authRequired: true
+      }
+    },
+    {
+      path: '/ui/account/edit',
+      name: 'edit-account',
+      component: () => import('@/views/account/EditAccountView.vue'),
+      meta: {
+        authRequired: true
+      }
+    },
+    {
+      path: '/ui/account/change-password',
+      name: 'change-password',
+      component: () => import('@/views/account/ChangePasswordView.vue'),
       meta: {
         authRequired: true
       }
