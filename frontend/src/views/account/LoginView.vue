@@ -5,7 +5,12 @@
         <h1>{{ t('account.login.title') }}</h1>
       </v-row>
       <v-row justify="center">
-        <v-sheet id="login-sheet" elevation="12" border rounded>
+        <v-sheet
+          id="login-sheet"
+          elevation="12"
+          border
+          rounded
+        >
           <v-form @submit.prevent>
             <v-text-field
               v-model="formState.email"
@@ -17,9 +22,13 @@
               :label="t('fields.password')"
               :error-messages="passwordErrors"
             />
-            <v-btn type="submit" block color="primary" @click="login">{{
-              t('account.login.action')
-            }}</v-btn>
+            <v-btn
+              type="submit"
+              block
+              color="primary"
+              @click="login"
+              >{{ t('account.login.action') }}
+            </v-btn>
           </v-form>
           <p>
             {{ t('account.login.noAccount') }}
@@ -27,7 +36,11 @@
           </p>
         </v-sheet>
       </v-row>
-      <notification v-if="errorMessage" :title="t('account.login.error')" :message="errorMessage" />
+      <notification-message
+        v-if="errorMessage"
+        :title="t('account.login.error')"
+        :message="errorMessage"
+      />
     </v-container>
   </v-main>
 </template>
@@ -37,7 +50,7 @@ import { type ComputedRef, reactive, ref } from 'vue'
 import accountApi from '@/api/AccountApi'
 import router from '@/router'
 import type { ErrorDto } from '@/dto/ErrorDto'
-import Notification from '@/components/Notification.vue'
+import NotificationMessage from '@/components/NotificationMessage.vue'
 import PasswordInput from '@/components/PasswordInput.vue'
 import useVuelidate from '@vuelidate/core'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'

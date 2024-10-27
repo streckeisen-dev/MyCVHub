@@ -1,5 +1,9 @@
 <template>
-  <v-progress-circular indeterminate color="secondary" class="loading-spinner" />
+  <v-progress-circular
+    indeterminate
+    color="secondary"
+    class="loading-spinner"
+  />
 </template>
 
 <style scoped>

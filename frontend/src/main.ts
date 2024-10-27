@@ -4,7 +4,6 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import vuetify from './plugins/vuetify'
-import { createI18n } from 'vue-i18n'
 import i18n from '@/plugins/i18n'
 
 const app = createApp(App)

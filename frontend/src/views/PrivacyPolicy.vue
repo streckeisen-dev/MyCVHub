@@ -2,7 +2,10 @@
   <v-main>
     <v-container fluid>
       <v-row justify="center">
-        <v-col cols="12" md="8">
+        <v-col
+          cols="12"
+          md="8"
+        >
           <v-card>
             <v-card-title>
               <h1>{{ t('privacy.title') }}</h1>
@@ -15,7 +18,10 @@
       </v-row>
 
       <v-row justify="center">
-        <v-col cols="12" md="8">
+        <v-col
+          cols="12"
+          md="8"
+        >
           <v-card>
             <v-card-text class="policy-content">
               <div class="policy-section">
@@ -28,11 +34,13 @@
                 <p>{{ t('privacy.collection.content') }}</p>
                 <ul>
                   <li>
-                    <strong>{{ t('privacy.collection.profileInfo.title') }}</strong>:
+                    <strong>{{ t('privacy.collection.profileInfo.title') }}</strong
+                    >:
                     {{ t('privacy.collection.profileInfo.content') }}
                   </li>
                   <li>
-                    <strong>{{ t('privacy.collection.profilePicture.title') }}</strong>:
+                    <strong>{{ t('privacy.collection.profilePicture.title') }}</strong
+                    >:
                     {{ t('privacy.collection.profilePicture.content') }}
                   </li>
                 </ul>
@@ -52,11 +60,13 @@
               <div class="policy-section">
                 <h2>4. {{ t('privacy.storage.title') }}</h2>
                 <p>
-                  <strong>{{ t('privacy.storage.userData.title') }}</strong>:
+                  <strong>{{ t('privacy.storage.userData.title') }}</strong
+                  >:
                   {{ t('privacy.storage.userData.content') }}
                 </p>
                 <p>
-                  <strong>{{ t('privacy.storage.pictures.title') }}</strong>:
+                  <strong>{{ t('privacy.storage.pictures.title') }}</strong
+                  >:
                   {{ t('privacy.storage.pictures.content') }}
                 </p>
               </div>
@@ -80,8 +90,10 @@
                 <h2>8. {{ t('privacy.contact.title') }}</h2>
                 <p>
                   {{ t('privacy.contact.content') }}
-                  <a :href="`mailto:${contactEmail}`">{{ contactEmail }}</a
-                  >.
+                  <a :href="`mailto:${contactEmail}`">
+                    {{ contactEmail }}
+                  </a>
+                  .
                 </p>
               </div>
             </v-card-text>

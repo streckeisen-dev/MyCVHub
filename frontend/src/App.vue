@@ -1,7 +1,11 @@
 <template>
   <v-app id="mycv-app">
     <template v-if="showNavigation">
-      <v-app-bar role="navigation" aria-label="Header navigation" class="navigation-bar">
+      <v-app-bar
+        role="navigation"
+        aria-label="Header navigation"
+        class="navigation-bar"
+      >
         <template v-slot:prepend>
           <v-app-bar-nav-icon @click="isNavMenuOpen = !isNavMenuOpen"></v-app-bar-nav-icon>
         </template>
@@ -13,12 +17,21 @@
               alt="MyCVHub Logo"
               class="logo"
             />
-            <img v-else src="@/assets/mycvhub_logo_light.png" alt="MyCVHub Logo" class="logo" />
+            <img
+              v-else
+              src="@/assets/mycvhub_logo_light.png"
+              alt="MyCVHub Logo"
+              class="logo"
+            />
           </router-link>
         </v-app-bar-title>
       </v-app-bar>
 
-      <v-navigation-drawer id="side-nav" v-model="isNavMenuOpen" disable-resize-watcher>
+      <v-navigation-drawer
+        id="side-nav"
+        v-model="isNavMenuOpen"
+        disable-resize-watcher
+      >
         <v-list-item
           v-if="accountApi.isUserLoggedIn()"
           prepend-icon="mdi-account-circle"
@@ -44,8 +57,16 @@
           :title="t('app.home')"
         />
 
-        <v-list-item v-if="accountApi.isUserLoggedIn()" class="flex-wrap">
-          <v-btn color="primary" :to="{ name: 'logout' }">{{ t('account.logout.action') }}</v-btn>
+        <v-list-item
+          v-if="accountApi.isUserLoggedIn()"
+          class="flex-wrap"
+        >
+          <v-btn
+            color="primary"
+            :to="{ name: 'logout' }"
+          >
+            {{ t('account.logout.action') }}
+          </v-btn>
         </v-list-item>
 
         <v-list-item>
@@ -69,12 +90,30 @@
     <v-footer v-if="showNavigation">
       <div class="footer-content">
         <v-row justify="center">
-          <v-col cols="12" class="text-center">&copy; 2024 MyCVHub. All Rights Reserved.</v-col>
+          <v-col
+            cols="12"
+            class="text-center"
+          >
+            &copy; 2024 MyCVHub. All Rights Reserved.
+          </v-col>
         </v-row>
-        <v-row justify="center" align="center" class="links">
+        <v-row
+          justify="center"
+          align="center"
+          class="links"
+        >
           <router-link :to="{ name: 'privacy-policy' }">{{ t('privacy.title') }}</router-link>
-          <v-btn href="https://github.com/lstreckeisen/my-cv" target="_blank" size="32">
-            <v-icon slot="prepend" icon="mdi-github" size="32" />
+          <v-btn
+            href="https://github.com/lstreckeisen/my-cv"
+            target="_blank"
+            size="32"
+          >
+            <template v-slot:prepend>
+              <v-icon
+                icon="mdi-github"
+                size="32"
+              />
+            </template>
           </v-btn>
         </v-row>
       </div>

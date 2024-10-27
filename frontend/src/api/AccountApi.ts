@@ -1,5 +1,6 @@
 import {
   commonHeaders,
+  extractErrorIfResponseIsNotOk,
   fetchFromApi,
   getJSONIfResponseIsOk,
   processAuthResponse
@@ -7,6 +8,8 @@ import {
 import type { AccountDto } from '@/dto/AccountDto'
 import LoginStateService from '@/services/LoginStateService'
 import type { SignupRequestDto } from '@/dto/SignUpRequestDto'
+import type { AccountUpdateDto } from '@/dto/AccountUpdateDto'
+import type { ChangePasswordRequestDto } from '@/dto/ChangePasswordRequestDto'
 
 async function login(email: string, password: string): Promise<void> {
   try {
@@ -32,6 +35,33 @@ async function signUp(account: SignupRequestDto): Promise<void> {
       headers: commonHeaders()
     })
     return processAuthResponse(response)
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+async function changePassword(changePasswordRequest: ChangePasswordRequestDto): Promise<void> {
+  try {
+    const response = await fetchFromApi('/account/change-password', {
+      method: 'POST',
+      body: JSON.stringify(changePasswordRequest),
+      headers: commonHeaders()
+    })
+    await extractErrorIfResponseIsNotOk(response)
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+async function update(accountUpdate: AccountUpdateDto): Promise<AccountDto> {
+  try {
+    const response = await fetchFromApi('/account', {
+      method: 'POST',
+      body: JSON.stringify(accountUpdate),
+      headers: commonHeaders()
+    })
+    const updatedAccount = await getJSONIfResponseIsOk<AccountDto>(response)
+    return Promise.resolve(updatedAccount)
   } catch (error) {
     return Promise.reject(error)
   }
@@ -69,6 +99,8 @@ async function logout(): Promise<void> {
 export default {
   login,
   signUp,
+  changePassword,
+  update,
   isUserLoggedIn,
   logout,
   getAccountInfo

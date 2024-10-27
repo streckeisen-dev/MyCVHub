@@ -1,7 +1,10 @@
 <template>
   <v-container class="profile-editor">
     <v-row>
-      <v-col cols="12" class="back-button">
+      <v-col
+        cols="12"
+        class="back-button"
+      >
         <router-link :to="{ name: 'account' }">
           <v-btn icon="mdi-arrow-left" />
           <span>{{ t('profile.editor.back') }}</span>
@@ -11,7 +14,10 @@
         <h2>{{ t('profile.title') }}</h2>
       </v-col>
     </v-row>
-    <v-tabs v-model="activeTab" color="secondary">
+    <v-tabs
+      v-model="activeTab"
+      color="secondary"
+    >
       <v-tab value="general">{{ t('profile.editor.general') }}</v-tab>
       <template v-if="isCreated">
         <v-tab value="work">{{ t('workExperience.title') }}</v-tab>
@@ -23,17 +29,27 @@
     <v-tabs-window v-model="activeTab">
       <v-tabs-window-item value="general">
         <v-row justify="center">
-          <v-sheet class="form-sheet" rounded>
+          <v-sheet
+            class="form-sheet"
+            rounded
+          >
             <v-form @submit.prevent>
               <v-row class="form-flex">
-                <v-col cols="12" md="4">
+                <v-col
+                  cols="12"
+                  md="4"
+                >
                   <v-img
                     :src="profilePicture"
                     :lazy-src="defaultProfilePicture"
                     class="profile-picture"
                   >
                     <template #placeholder>
-                      <v-row class="fill-height" justify="center" align="center">
+                      <v-row
+                        class="fill-height"
+                        justify="center"
+                        align="center"
+                      >
                         <v-progress-circular indeterminate />
                       </v-row>
                     </template>
@@ -48,7 +64,10 @@
                   />
                 </v-col>
 
-                <v-col cols="12" md="8">
+                <v-col
+                  cols="12"
+                  md="8"
+                >
                   <v-text-field
                     v-model="formState.alias"
                     :label="t('fields.alias')"
@@ -125,7 +144,7 @@
       </template>
     </v-tabs-window>
   </v-container>
-  <notification
+  <notification-message
     v-if="savingError"
     :title="t('profile.editor.saveErrorTitle')"
     :message="`${t('profile.editor.saveErrorMessage')}. ${savingError}`"
@@ -145,7 +164,7 @@ import useVuelidate from '@vuelidate/core'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
 import type { ErrorDto } from '@/dto/ErrorDto'
 import router from '@/router'
-import Notification from '@/components/Notification.vue'
+import NotificationMessage from '@/components/NotificationMessage.vue'
 import round from 'lodash/round'
 import type { ProfileUpdateRequestDto } from '@/dto/ProfileUpdateRequestDto'
 import { useI18n } from 'vue-i18n'

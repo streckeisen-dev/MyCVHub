@@ -5,19 +5,44 @@
     class="work-experiences"
     justify="end"
   >
-    <v-col cols="12" :md="actions ? 10 : 12">
+    <v-col
+      cols="12"
+      :md="actions ? 10 : 12"
+    >
       <work-experience-entry :work-experience="workExperience" />
     </v-col>
     <template v-if="actions">
-      <v-col cols="3" sm="2" md="1" class="work-experience-action">
-        <v-btn icon="mdi-pencil" color="primary" @click="editWorkExperience(workExperience as WorkExperienceDto)" />
+      <v-col
+        cols="3"
+        sm="2"
+        md="1"
+        class="work-experience-action"
+      >
+        <v-btn
+          icon="mdi-pencil"
+          color="primary"
+          @click="editWorkExperience(workExperience as WorkExperienceDto)"
+        />
       </v-col>
-      <v-col cols="3" sm="2" md="1" class="work-experience-action">
-        <v-btn icon="mdi-delete" color="red" @click="deleteWorkExperience((workExperience as WorkExperienceDto).id)" />
+      <v-col
+        cols="3"
+        sm="2"
+        md="1"
+        class="work-experience-action"
+      >
+        <v-btn
+          icon="mdi-delete"
+          color="red"
+          @click="deleteWorkExperience((workExperience as WorkExperienceDto).id)"
+        />
       </v-col>
     </template>
   </v-row>
-  <v-col v-if="values.length === 0" cols="12">{{ t('workExperience.noEntries') }}</v-col>
+  <v-col
+    v-if="values.length === 0"
+    cols="12"
+    >{{ t('workExperience.noEntries') }}</v-col
+  >
 </template>
 
 <script setup lang="ts">
@@ -40,7 +65,8 @@ const props = defineProps<{
 const emit = defineEmits(['edit', 'delete'])
 
 const sortedWorkExperiences = computed(() => {
-  return props.values.sort((a, b) => {
+  const workExperiences = props.values
+  return workExperiences.sort((a, b) => {
     const positionEndA = convertStringToDate(a.positionEnd)
     const positionEndB = convertStringToDate(b.positionEnd)
     const positionStartA = convertStringToDate(a.positionStart)!!

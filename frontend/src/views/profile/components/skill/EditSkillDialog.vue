@@ -1,5 +1,8 @@
 <template>
-  <v-dialog :model-value="true" @update:model-value="cancel">
+  <v-dialog
+    :model-value="true"
+    @update:model-value="cancel"
+  >
     <v-sheet class="skill-sheet">
       <h2 v-if="isEdit">{{ t('skills.editor.edit') }}</h2>
       <h2 v-else>{{ t('skills.editor.add') }}</h2>
@@ -26,10 +29,10 @@
           color="primary"
         />
 
-        <div class="form-action-buttons">
-          <v-btn type="submit" :text="t('forms.save')" color="primary" @click="save" />
-          <v-btn :text="t('forms.cancel')" @click="cancel" />
-        </div>
+        <form-buttons
+          @save="save"
+          @cancel="cancel"
+        />
       </v-form>
     </v-sheet>
   </v-dialog>
@@ -46,6 +49,7 @@ import type { SkillUpdateDto } from '@/dto/SkillUpdateDto'
 import { useI18n } from 'vue-i18n'
 import { required, withI18nMessage } from '@/validation/validators'
 import { helpers } from '@vuelidate/validators'
+import FormButtons from '@/components/FormButtons.vue'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -140,10 +144,6 @@ function cancel() {
 
   h2 {
     margin-bottom: 10px;
-  }
-
-  .form-action-buttons {
-    margin-top: 10px;
   }
 
   .level-slider {

@@ -1,13 +1,36 @@
 <template>
   <v-row class="work-experience-entry">
-    <v-col class="job-title" cols="8" md="10">{{ workExperience.jobTitle }}</v-col>
-    <v-col class="location" cols="4" md="2">{{ workExperience.location }}</v-col>
-    <v-col class="employer" cols="8" md="10">{{ workExperience.company }}</v-col>
-    <v-col class="employment-range" cols="4" md="2">
+    <v-col
+      class="job-title"
+      cols="8"
+      md="10"
+      >{{ workExperience.jobTitle }}</v-col
+    >
+    <v-col
+      class="location"
+      cols="4"
+      md="2"
+      >{{ workExperience.location }}</v-col
+    >
+    <v-col
+      class="employer"
+      cols="8"
+      md="10"
+      >{{ workExperience.company }}</v-col
+    >
+    <v-col
+      class="employment-range"
+      cols="4"
+      md="2"
+    >
       {{ toShortDate(workExperience.positionStart) }} -
       {{ toShortDate(workExperience.positionEnd) }}
     </v-col>
-    <v-col v-if="workExperience.description" class="description" cols="12">
+    <v-col
+      v-if="workExperience.description"
+      class="description"
+      cols="12"
+    >
       <pre>{{ workExperience.description }}</pre>
     </v-col>
   </v-row>
@@ -18,7 +41,7 @@ import type { PublicWorkExperienceDto } from '@/dto/PublicWorkExperienceDto'
 import { toShortDate } from '@/services/DateHelper'
 import type { WorkExperienceDto } from '@/dto/WorkExperienceDto'
 
-const props = defineProps<{
+defineProps<{
   workExperience: PublicWorkExperienceDto | WorkExperienceDto
 }>()
 </script>

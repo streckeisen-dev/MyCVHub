@@ -1,4 +1,4 @@
-export type SignupRequestDto = {
+export type AccountUpdateDto = {
   firstName?: string
   lastName?: string
   email?: string
@@ -9,6 +9,4 @@ export type SignupRequestDto = {
   postcode?: string
   city?: string
   country?: string
-  password?: string
-  confirmPassword?: string
 }

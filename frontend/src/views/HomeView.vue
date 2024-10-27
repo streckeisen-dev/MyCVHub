@@ -1,12 +1,24 @@
 <template>
   <v-main>
     <v-container class="home-view">
-      <v-row align="center" justify="center" class="headline">
-        <v-col cols="12" class="text-center">
+      <v-row
+        align="center"
+        justify="center"
+        class="headline"
+      >
+        <v-col
+          cols="12"
+          class="text-center"
+        >
           <h1>{{ t('home.welcome.title') }}</h1>
           <p>{{ t('home.welcome.message') }}</p>
           <router-link :to="{ name: 'signup' }">
-            <v-btn color="primary" large :to="{ name: 'login' }" :text="t('home.getStarted')" />
+            <v-btn
+              color="primary"
+              large
+              :to="{ name: 'login' }"
+              :text="t('home.getStarted')"
+            />
           </router-link>
         </v-col>
       </v-row>
@@ -17,7 +29,14 @@
         </v-col>
       </v-row>
       <v-row justify="center">
-        <v-col cols="12" sm="6" md="4" lg="3" v-for="(feature, index) in features" :key="index">
+        <v-col
+          cols="12"
+          sm="6"
+          md="4"
+          lg="3"
+          v-for="(feature, index) in features"
+          :key="index"
+        >
           <v-card>
             <v-card-title>{{ t(feature.title) }}</v-card-title>
             <v-card-text>
@@ -27,11 +46,23 @@
         </v-col>
       </v-row>
 
-      <v-row align="center" justify="center" class="call-to-action">
-        <v-col cols="12" md="8" class="text-center">
+      <v-row
+        align="center"
+        justify="center"
+        class="call-to-action"
+      >
+        <v-col
+          cols="12"
+          md="8"
+          class="text-center"
+        >
           <h2>{{ t('home.callToAction.title') }}</h2>
           <router-link :to="{ name: 'signup' }">
-            <v-btn color="primary" large>{{ t('home.callToAction.btn') }}</v-btn>
+            <v-btn
+              color="primary"
+              large
+              >{{ t('home.callToAction.btn') }}</v-btn
+            >
           </router-link>
         </v-col>
       </v-row>

@@ -1,6 +1,10 @@
 <template>
   <v-main>
-    <profile-editor v-if="profile" :profile="profile" :exists="true" />
+    <profile-editor
+      v-if="profile"
+      :profile="profile"
+      :exists="true"
+    />
     <loading-spinner v-else-if="isLoadingProfile" />
     <v-empty-state
       v-else

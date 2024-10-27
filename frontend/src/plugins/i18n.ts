@@ -16,7 +16,7 @@ Object.keys(langModules).forEach((filePath) => {
   const lang = filePath.replace('../locales/', '').replace('.json', '')
   const vuetifyMessages = (vuetifyLocale as Messages)[lang]
   messages[lang] = {
-    ...langModules[filePath] as NestedMessage,
+    ...(langModules[filePath] as NestedMessage),
     $vuetify: vuetifyMessages
   }
 })

@@ -2,7 +2,7 @@ import type { ErrorDto } from '@/dto/ErrorDto'
 import LoginStateService from '@/services/LoginStateService'
 import i18n from '@/plugins/i18n'
 
-async function fetchFromApi<T>(
+async function fetchFromApi(
   path: string,
   options?: RequestInit,
   retry: boolean = true

@@ -1,9 +1,16 @@
 <template>
-  <v-snackbar v-model="shouldShowSnackbar" location="top right" multi-line>
+  <v-snackbar
+    v-model="shouldShowSnackbar"
+    location="top right"
+    multi-line
+  >
     <h3>{{ title }}</h3>
     <p>{{ message }}</p>
     <template v-slot:actions>
-      <v-btn icon="mdi-close" @click="shouldShowSnackbar = false" />
+      <v-btn
+        icon="mdi-close"
+        @click="shouldShowSnackbar = false"
+      />
     </template>
   </v-snackbar>
 </template>

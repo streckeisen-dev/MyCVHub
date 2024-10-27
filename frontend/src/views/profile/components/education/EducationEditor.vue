@@ -1,9 +1,19 @@
 <template>
-  <v-row justify="center" class="education-editor">
-    <v-sheet class="editor-sheet" rounded>
+  <v-row
+    justify="center"
+    class="education-editor"
+  >
+    <v-sheet
+      class="editor-sheet"
+      rounded
+    >
       <v-col cols="12">
         <v-row justify="end">
-          <v-btn :text="t('education.editor.add')" color="primary" @click="addEducation" />
+          <v-btn
+            :text="t('education.editor.add')"
+            color="primary"
+            @click="addEducation"
+          />
         </v-row>
       </v-col>
       <education-container
@@ -23,7 +33,7 @@
     @cancel="onEditCancel"
   />
 
-  <notification
+  <notification-message
     v-if="deleteErrorMessage"
     :title="t('education.editor.deleteError')"
     :message="deleteErrorMessage"
@@ -34,7 +44,7 @@
 import { type PropType, ref } from 'vue'
 import profileApi from '@/api/ProfileApi'
 import type { ErrorDto } from '@/dto/ErrorDto'
-import Notification from '@/components/Notification.vue'
+import NotificationMessage from '@/components/NotificationMessage.vue'
 import EducationContainer from '@/views/profile/components/education/EducationContainer.vue'
 import EditEducationDialog from '@/views/profile/components/education/EditEducationDialog.vue'
 import type { EducationDto } from '@/dto/EducationDto'

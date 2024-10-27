@@ -1,5 +1,8 @@
 <template>
-  <v-dialog :model-value="true" @update:model-value="cancel">
+  <v-dialog
+    :model-value="true"
+    @update:model-value="cancel"
+  >
     <v-sheet class="work-experience-sheet">
       <h2 v-if="isEdit">{{ t('workExperience.editor.edit') }}</h2>
       <h2 v-else>{{ t('workExperience.editor.add') }}</h2>
@@ -38,10 +41,10 @@
           :error-messages="descriptionErrors"
         />
 
-        <div class="form-action-buttons">
-          <v-btn type="submit" :text="t('forms.save')" color="primary" @click="save" />
-          <v-btn :text="t('forms.cancel')" @click="cancel" />
-        </div>
+        <form-buttons
+          @save="save"
+          @cancel="cancel"
+        />
       </v-form>
     </v-sheet>
   </v-dialog>
@@ -60,6 +63,7 @@ import type { WorkExperienceUpdateDto } from '@/dto/WorkExperienceUpdateDto'
 import { useI18n } from 'vue-i18n'
 import { required, withI18nMessage } from '@/validation/validators'
 import { helpers } from '@vuelidate/validators'
+import FormButtons from '@/components/FormButtons.vue'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -112,7 +116,7 @@ const rules = {
   },
   positionEnd: {
     dateIsBeforeValidator: helpers.withParams(
-      { earlierDate: t('fields.positionStart'), laterDate: t('fields.positionEnd')},
+      { earlierDate: t('fields.positionStart'), laterDate: t('fields.positionEnd') },
       positionEndIsAfterStart
     )
   },
@@ -177,10 +181,6 @@ function cancel() {
 
   h2 {
     margin-bottom: 10px;
-  }
-
-  .form-action-buttons {
-    margin-top: 10px;
   }
 }
 </style>
