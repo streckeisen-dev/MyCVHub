@@ -1,103 +1,106 @@
 <template>
-  <v-row>
-    <v-col cols="12" md="6">
-      <v-row>
-        <v-col cols="12">
-          <h2>{{ t('account.personalData') }}</h2>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12">
-          <v-text-field
-            v-model="formState.firstName"
-            :label="t('fields.firstName')"
-            :error-messages="firstNameErrors"
-          />
-        </v-col>
-        <v-col cols="12">
-          <v-text-field
-            v-model="formState.lastName"
-            :label="t('fields.lastName')"
-            :error-messages="lastNameErrors"
-          />
-        </v-col>
-        <v-col cols="12">
-          <v-text-field
-            v-model="formState.email"
-            :label="t('fields.email')"
-            :error-messages="emailErrors"
-          />
-        </v-col>
-        <v-col cols="12">
-          <v-text-field
-            v-model="formState.phone"
-            :label="t('fields.phone')"
-            :error-messages="phoneErrors"
-          />
-        </v-col>
-        <v-col cols="12">
-          <v-date-input
-            v-model="formState.birthday"
-            :label="t('fields.birthday')"
-            :error-messages="birthdayErrors"
-          />
-        </v-col>
-      </v-row>
-    </v-col>
-    <v-spacer />
-    <v-col cols="12" md="6">
-      <v-row>
-        <v-col cols="12">
-          <h2>{{ t('account.address') }}</h2>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12" sm="9">
-          <v-text-field
-            v-model="formState.street"
-            :label="t('fields.street')"
-            :error-messages="streetErrors"
-          />
-        </v-col>
-        <v-col cols="12" sm="3">
-          <v-text-field
-            v-model="formState.houseNumber"
-            :label="t('fields.houseNumber')"
-            :error-messages="houseNumberErrors"
-          />
-        </v-col>
-        <v-col cols="12" sm="3">
-          <v-text-field
-            v-model="formState.postcode"
-            :label="t('fields.postcode')"
-            :error-messages="postcodeErrors"
-          />
-        </v-col>
-        <v-col cols="12" sm="9">
-          <v-text-field
-            v-model="formState.city"
-            :label="t('fields.city')"
-            :error-messages="cityErrors"
-          />
-        </v-col>
-        <v-col cols="12" sm="12">
-          <v-autocomplete
-            v-model="formState.country"
-            :label="t('fields.country')"
-            :items="countries"
-            item-title="name"
-            item-value="countryCode"
-            :error-messages="countryErrors"
-          />
-        </v-col>
-      </v-row>
-    </v-col>
-    <notification
-      v-if="didCountryLoadFail"
-      :title="t('country.loadingError.title')"
-      :message="t('country.loadingError.message')"
-    />
-  </v-row>
+	<v-row>
+		<v-col
+			cols="12"
+			md="6">
+			<v-row>
+				<v-col cols="12">
+					<h2>{{ t('account.personalData') }}</h2>
+				</v-col>
+			</v-row>
+			<v-row>
+				<v-col cols="12">
+					<v-text-field
+						v-model="formState.firstName"
+						:label="t('fields.firstName')"
+						:error-messages="firstNameErrors" />
+				</v-col>
+				<v-col cols="12">
+					<v-text-field
+						v-model="formState.lastName"
+						:label="t('fields.lastName')"
+						:error-messages="lastNameErrors" />
+				</v-col>
+				<v-col cols="12">
+					<v-text-field
+						v-model="formState.email"
+						:label="t('fields.email')"
+						:error-messages="emailErrors" />
+				</v-col>
+				<v-col cols="12">
+					<v-text-field
+						v-model="formState.phone"
+						:label="t('fields.phone')"
+						:error-messages="phoneErrors" />
+				</v-col>
+				<v-col cols="12">
+					<v-date-input
+						v-model="formState.birthday"
+						:label="t('fields.birthday')"
+						:error-messages="birthdayErrors" />
+				</v-col>
+			</v-row>
+		</v-col>
+		<v-spacer />
+		<v-col
+			cols="12"
+			md="6">
+			<v-row>
+				<v-col cols="12">
+					<h2>{{ t('account.address') }}</h2>
+				</v-col>
+			</v-row>
+			<v-row>
+				<v-col
+					cols="12"
+					sm="9">
+					<v-text-field
+						v-model="formState.street"
+						:label="t('fields.street')"
+						:error-messages="streetErrors" />
+				</v-col>
+				<v-col
+					cols="12"
+					sm="3">
+					<v-text-field
+						v-model="formState.houseNumber"
+						:label="t('fields.houseNumber')"
+						:error-messages="houseNumberErrors" />
+				</v-col>
+				<v-col
+					cols="12"
+					sm="3">
+					<v-text-field
+						v-model="formState.postcode"
+						:label="t('fields.postcode')"
+						:error-messages="postcodeErrors" />
+				</v-col>
+				<v-col
+					cols="12"
+					sm="9">
+					<v-text-field
+						v-model="formState.city"
+						:label="t('fields.city')"
+						:error-messages="cityErrors" />
+				</v-col>
+				<v-col
+					cols="12"
+					sm="12">
+					<v-autocomplete
+						v-model="formState.country"
+						:label="t('fields.country')"
+						:items="countries"
+						item-title="name"
+						item-value="countryCode"
+						:error-messages="countryErrors" />
+				</v-col>
+			</v-row>
+		</v-col>
+		<notification
+			v-if="didCountryLoadFail"
+			:title="t('country.loadingError.title')"
+			:message="t('country.loadingError.message')" />
+	</v-row>
 </template>
 
 <script setup lang="ts">
@@ -113,7 +116,7 @@ import { useLocale } from 'vuetify'
 import Notification from '@/components/NotificationMessage.vue'
 
 const { t } = useI18n({
-  useScope: 'global'
+	useScope: 'global'
 })
 
 const form = defineModel<Validation>('form', { required: true })
@@ -123,21 +126,21 @@ const errorMessages = defineModel<ErrorMessages>('errorMessages', { required: tr
 const didCountryLoadFail = ref<boolean>(false)
 const countries = ref<Array<CountryDto>>([])
 async function loadCountries() {
-  try {
-    countries.value = await countryApi.getCountries()
-  } catch (error) {
-    didCountryLoadFail.value = true
-  }
+	try {
+		countries.value = await countryApi.getCountries()
+	} catch (error) {
+		didCountryLoadFail.value = true
+	}
 }
 await loadCountries()
 
 watch(useLocale().current, async () => {
-  didCountryLoadFail.value = false
-  await loadCountries()
+	didCountryLoadFail.value = false
+	await loadCountries()
 })
 
 function getErrors(attributeName: string): ComputedRef {
-  return getErrorMessages(errorMessages, form, attributeName)
+	return getErrorMessages(errorMessages, form, attributeName)
 }
 
 const firstNameErrors = getErrors('firstName')

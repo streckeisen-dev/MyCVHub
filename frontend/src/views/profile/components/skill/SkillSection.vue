@@ -1,19 +1,19 @@
 <template>
-  <div class="skill-section">
-    <h3>{{ skillType }}</h3>
-    <slot />
-  </div>
+	<div class="skill-section">
+		<h3>{{ skillType }}</h3>
+		<slot />
+	</div>
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
-  skillType: string
+defineProps<{
+	skillType: string
 }>()
 </script>
 
 <style scoped>
 h3,
 .skill-section {
-  margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 </style>

@@ -1,11 +1,11 @@
 export type PublicSkillDto = {
-  name: string
-  type: SkillType
-  level: number
+	name: string
+	type: SkillType
+	level: number
 }
 
 export enum SkillType {
-  ProgrammingLanguage = 'PROGRAMMING_LANGUAGE',
-  Language = 'LANGUAGE',
-  Tool = 'Tool'
+	ProgrammingLanguage = 'PROGRAMMING_LANGUAGE',
+	Language = 'LANGUAGE',
+	Tool = 'Tool'
 }

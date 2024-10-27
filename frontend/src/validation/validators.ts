@@ -4,8 +4,8 @@ import { type MessageParams } from '@vuelidate/validators'
 
 const { createI18nMessage } = validators
 const messageParams = (params: MessageParams) => ({
-  ...params,
-    label: i18n.global.t(`fields.${params.property}`)
+	...params,
+	label: i18n.global.t(`fields.${params.property}`)
 })
 
 export const withI18nMessage = createI18nMessage({ t: i18n.global.t.bind(i18n), messageParams })

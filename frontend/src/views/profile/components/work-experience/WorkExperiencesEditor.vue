@@ -1,33 +1,37 @@
 <template>
-  <v-row justify="center" class="work-experiences-editor">
-    <v-sheet class="editor-sheet" rounded>
-      <v-col cols="12">
-        <v-row justify="end">
-          <v-btn :text="t('workExperience.editor.add')" @click="addWorkExperience" color="primary" />
-        </v-row>
-      </v-col>
-      <work-experience-container
-        :values="workExperiences"
-        actions
-        @edit="editWorkExperience"
-        @delete="deleteWorkExperience"
-      />
-    </v-sheet>
-  </v-row>
-  <edit-work-experience-dialog
-    v-if="showEditDialog"
-    :value="workExperienceToEdit"
-    :is-edit="isEdit!!"
-    @saveNew="onSaveNew"
-    @saveEdit="onSaveEdit"
-    @cancel="onEditCancel"
-  />
+	<v-row
+		justify="center"
+		class="work-experiences-editor">
+		<v-sheet
+			class="editor-sheet"
+			rounded>
+			<v-col cols="12">
+				<v-row justify="end">
+					<v-btn
+						:text="t('workExperience.editor.add')"
+						@click="addWorkExperience"
+						color="primary" />
+				</v-row>
+			</v-col>
+			<work-experience-container
+				:values="workExperiences"
+				actions
+				@edit="editWorkExperience"
+				@delete="deleteWorkExperience" />
+		</v-sheet>
+	</v-row>
+	<edit-work-experience-dialog
+		v-if="showEditDialog"
+		:value="workExperienceToEdit"
+		:is-edit="isEdit!!"
+		@saveNew="onSaveNew"
+		@saveEdit="onSaveEdit"
+		@cancel="onEditCancel" />
 
-  <notification
-    v-if="deleteErrorMessage"
-    :title="t('workExperience.editor.deleteError')"
-    :message="deleteErrorMessage"
-  />
+	<notification
+		v-if="deleteErrorMessage"
+		:title="t('workExperience.editor.deleteError')"
+		:message="deleteErrorMessage" />
 </template>
 
 <script setup lang="ts">
@@ -36,17 +40,17 @@ import { type PropType, ref } from 'vue'
 import EditWorkExperienceDialog from '@/views/profile/components/work-experience/EditWorkExperienceDialog.vue'
 import profileApi from '@/api/ProfileApi'
 import type { ErrorDto } from '@/dto/ErrorDto'
-import Notification from '@/components/Notification.vue'
+import Notification from '@/components/NotificationMessage.vue'
 import WorkExperienceContainer from '@/views/profile/components/work-experience/WorkExperienceContainer.vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n({
-  useScope: 'global'
+	useScope: 'global'
 })
 
 const workExperiences = defineModel({
-  required: true,
-  type: Object as PropType<Array<WorkExperienceDto>>
+	required: true,
+	type: Object as PropType<Array<WorkExperienceDto>>
 })
 
 const showEditDialog = ref(false)
@@ -55,52 +59,52 @@ const isEdit = ref<boolean>()
 const deleteErrorMessage = ref<string>()
 
 function addWorkExperience() {
-  isEdit.value = false
-  showEditDialog.value = true
-  workExperienceToEdit.value = undefined
+	isEdit.value = false
+	showEditDialog.value = true
+	workExperienceToEdit.value = undefined
 }
 
 function editWorkExperience(workExperience: WorkExperienceDto) {
-  isEdit.value = true
-  showEditDialog.value = true
-  workExperienceToEdit.value = workExperience
+	isEdit.value = true
+	showEditDialog.value = true
+	workExperienceToEdit.value = workExperience
 }
 
 function onSaveNew(newEntry: WorkExperienceDto) {
-  showEditDialog.value = false
-  workExperienceToEdit.value = undefined
-  workExperiences.value.push(newEntry)
+	showEditDialog.value = false
+	workExperienceToEdit.value = undefined
+	workExperiences.value.push(newEntry)
 }
 
 function onSaveEdit(updatedEntry: WorkExperienceDto) {
-  showEditDialog.value = false
-  workExperienceToEdit.value = undefined
-  const updateIndex = workExperiences.value.findIndex((e) => e.id === updatedEntry.id)
-  workExperiences.value[updateIndex] = updatedEntry
+	showEditDialog.value = false
+	workExperienceToEdit.value = undefined
+	const updateIndex = workExperiences.value.findIndex((e) => e.id === updatedEntry.id)
+	workExperiences.value[updateIndex] = updatedEntry
 }
 
 function onEditCancel() {
-  showEditDialog.value = false
-  workExperienceToEdit.value = undefined
+	showEditDialog.value = false
+	workExperienceToEdit.value = undefined
 }
 
 async function deleteWorkExperience(id: number) {
-  try {
-    await profileApi.deleteWorkExperience(id)
-    const index = workExperiences.value.findIndex((e) => e.id === id)
-    workExperiences.value.splice(index, 1)
-    deleteErrorMessage.value = undefined
-  } catch (e) {
-    const error = e as ErrorDto
-    deleteErrorMessage.value = error.message
-  }
+	try {
+		await profileApi.deleteWorkExperience(id)
+		const index = workExperiences.value.findIndex((e) => e.id === id)
+		workExperiences.value.splice(index, 1)
+		deleteErrorMessage.value = undefined
+	} catch (e) {
+		const error = e as ErrorDto
+		deleteErrorMessage.value = error.message
+	}
 }
 </script>
 
 <style scoped>
 .editor-sheet {
-  margin-top: 10px;
-  width: 100%;
-  padding: 30px;
+	margin-top: 10px;
+	width: 100%;
+	padding: 30px;
 }
 </style>

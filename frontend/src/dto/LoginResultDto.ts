@@ -1,4 +1,4 @@
 export type LoginResultDto = {
-  token: string
-  expiresIn: number
+	token: string
+	expiresIn: number
 }

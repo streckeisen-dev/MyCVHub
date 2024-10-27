@@ -1,14 +1,16 @@
 <template>
-  <v-main>
-    <profile-editor v-if="profile" :profile="profile" :exists="true" />
-    <loading-spinner v-else-if="isLoadingProfile" />
-    <v-empty-state
-      v-else
-      :headline="t('error.genericMessage')"
-      :title="t('profile.loadingError')"
-      :text="loadingError"
-    />
-  </v-main>
+	<v-main>
+		<profile-editor
+			v-if="profile"
+			:profile="profile"
+			:exists="true" />
+		<loading-spinner v-else-if="isLoadingProfile" />
+		<v-empty-state
+			v-else
+			:headline="t('error.genericMessage')"
+			:title="t('profile.loadingError')"
+			:text="loadingError" />
+	</v-main>
 </template>
 
 <script setup lang="ts">
@@ -21,7 +23,7 @@ import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n({
-  useScope: 'global'
+	useScope: 'global'
 })
 
 const profile = ref<ProfileDto>()
@@ -29,11 +31,11 @@ const isLoadingProfile = ref(true)
 const loadingError = ref<string>()
 
 try {
-  profile.value = await profileApi.getProfile()
+	profile.value = await profileApi.getProfile()
 } catch (e) {
-  const error = e as ErrorDto
-  loadingError.value = error.message
+	const error = e as ErrorDto
+	loadingError.value = error.message
 } finally {
-  isLoadingProfile.value = false
+	isLoadingProfile.value = false
 }
 </script>
