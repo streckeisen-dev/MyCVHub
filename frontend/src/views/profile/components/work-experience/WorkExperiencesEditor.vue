@@ -33,7 +33,7 @@
     @cancel="onEditCancel"
   />
 
-  <notification
+  <notification-message
     v-if="deleteErrorMessage"
     :title="t('workExperience.editor.deleteError')"
     :message="deleteErrorMessage"
@@ -46,7 +46,7 @@ import { type PropType, ref } from 'vue'
 import EditWorkExperienceDialog from '@/views/profile/components/work-experience/EditWorkExperienceDialog.vue'
 import profileApi from '@/api/ProfileApi'
 import type { ErrorDto } from '@/dto/ErrorDto'
-import Notification from '@/components/NotificationMessage.vue'
+import NotificationMessage from '@/components/NotificationMessage.vue'
 import WorkExperienceContainer from '@/views/profile/components/work-experience/WorkExperienceContainer.vue'
 import { useI18n } from 'vue-i18n'
 

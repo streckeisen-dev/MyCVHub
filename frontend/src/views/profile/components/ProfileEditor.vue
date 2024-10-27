@@ -144,7 +144,7 @@
       </template>
     </v-tabs-window>
   </v-container>
-  <notification
+  <notification-message
     v-if="savingError"
     :title="t('profile.editor.saveErrorTitle')"
     :message="`${t('profile.editor.saveErrorMessage')}. ${savingError}`"
@@ -164,7 +164,7 @@ import useVuelidate from '@vuelidate/core'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
 import type { ErrorDto } from '@/dto/ErrorDto'
 import router from '@/router'
-import Notification from '@/components/NotificationMessage.vue'
+import NotificationMessage from '@/components/NotificationMessage.vue'
 import round from 'lodash/round'
 import type { ProfileUpdateRequestDto } from '@/dto/ProfileUpdateRequestDto'
 import { useI18n } from 'vue-i18n'

@@ -113,7 +113,7 @@
         </v-col>
       </v-row>
     </v-col>
-    <notification
+    <notification-message
       v-if="didCountryLoadFail"
       :title="t('country.loadingError.title')"
       :message="t('country.loadingError.message')"
@@ -131,7 +131,7 @@ import { useI18n } from 'vue-i18n'
 import type { CountryDto } from '@/dto/CountryDto'
 import countryApi from '@/api/CountryApi'
 import { useLocale } from 'vuetify'
-import Notification from '@/components/NotificationMessage.vue'
+import NotificationMessage from '@/components/NotificationMessage.vue'
 
 const { t } = useI18n({
   useScope: 'global'

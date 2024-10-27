@@ -27,8 +27,8 @@
               block
               color="primary"
               @click="login"
-              >{{ t('account.login.action') }}</v-btn
-            >
+              >{{ t('account.login.action') }}
+            </v-btn>
           </v-form>
           <p>
             {{ t('account.login.noAccount') }}
@@ -36,7 +36,7 @@
           </p>
         </v-sheet>
       </v-row>
-      <notification
+      <notification-message
         v-if="errorMessage"
         :title="t('account.login.error')"
         :message="errorMessage"
@@ -50,7 +50,7 @@ import { type ComputedRef, reactive, ref } from 'vue'
 import accountApi from '@/api/AccountApi'
 import router from '@/router'
 import type { ErrorDto } from '@/dto/ErrorDto'
-import Notification from '@/components/NotificationMessage.vue'
+import NotificationMessage from '@/components/NotificationMessage.vue'
 import PasswordInput from '@/components/PasswordInput.vue'
 import useVuelidate from '@vuelidate/core'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'

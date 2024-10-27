@@ -33,7 +33,7 @@
     @cancel="onEditCancel"
   />
 
-  <notification
+  <notification-message
     v-if="deleteErrorMessage"
     :title="t('skills.editor.deleteError')"
     :message="deleteErrorMessage"
@@ -44,7 +44,7 @@
 import { type PropType, ref } from 'vue'
 import profileApi from '@/api/ProfileApi'
 import type { ErrorDto } from '@/dto/ErrorDto'
-import Notification from '@/components/NotificationMessage.vue'
+import NotificationMessage from '@/components/NotificationMessage.vue'
 import SkillsContainer from '@/views/profile/components/skill/SkillsContainer.vue'
 import EditSkillDialog from '@/views/profile/components/skill/EditSkillDialog.vue'
 import type { SkillDto } from '@/dto/SkillDto'

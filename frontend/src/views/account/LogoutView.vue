@@ -5,7 +5,7 @@
       :title="t('account.logout.action')"
       :text="t('account.logout.message')"
     />
-    <notification
+    <notification-message
       v-if="logoutError"
       :title="t('account.logout.errorTitle')"
       :message="t('account.logout.errorMessage')"
@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import accountApi from '@/api/AccountApi'
 import router from '@/router'
-import Notification from '@/components/NotificationMessage.vue'
+import NotificationMessage from '@/components/NotificationMessage.vue'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
