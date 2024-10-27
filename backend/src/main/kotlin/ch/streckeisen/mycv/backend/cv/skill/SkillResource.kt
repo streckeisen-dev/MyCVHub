@@ -1,6 +1,5 @@
 package ch.streckeisen.mycv.backend.cv.skill
 
-import ch.streckeisen.mycv.backend.security.MyCvPrincipal
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder

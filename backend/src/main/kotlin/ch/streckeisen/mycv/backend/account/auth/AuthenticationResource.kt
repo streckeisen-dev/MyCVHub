@@ -61,7 +61,8 @@ class AuthenticationResource(
     private fun handleLoginResult(loginResult: Result<AuthData>): ResponseEntity<LoginResponseDto> {
         return loginResult.fold(
             onSuccess = { authData ->
-                val refreshCookie = createRefreshCookie(authData.refreshToken, authData.refreshTokenExpirationTime / 1000)
+                val refreshCookie =
+                    createRefreshCookie(authData.refreshToken, authData.refreshTokenExpirationTime / 1000)
                 val accessCookie = createAccessCookie(authData.accessToken, authData.accessTokenExpirationTime / 1000)
 
                 val headers = HttpHeaders()
@@ -77,8 +78,11 @@ class AuthenticationResource(
         )
     }
 
-    private fun createRefreshCookie(refreshToken: String, expiresIn: Long) = createCookie(REFRESH_TOKEN_NAME, refreshToken, "/api/auth/refresh", expiresIn)
-    private fun createAccessCookie(accessToken: String, expiresIn: Long) = createCookie(ACCESS_TOKEN_NAME, accessToken, "/", expiresIn)
+    private fun createRefreshCookie(refreshToken: String, expiresIn: Long) =
+        createCookie(REFRESH_TOKEN_NAME, refreshToken, "/api/auth/refresh", expiresIn)
+
+    private fun createAccessCookie(accessToken: String, expiresIn: Long) =
+        createCookie(ACCESS_TOKEN_NAME, accessToken, "/", expiresIn)
 
     private fun createCookie(name: String, value: String, path: String, expiresIn: Long) =
         ResponseCookie.from(name, value)

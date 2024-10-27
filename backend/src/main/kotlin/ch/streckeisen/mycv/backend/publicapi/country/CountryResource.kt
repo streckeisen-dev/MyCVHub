@@ -23,7 +23,6 @@ class CountryResource {
                 CountryDto(locale.getDisplayCountry(locale), countryCode)
             }.sortedBy { it.name }
         )
-
     }
 }
 

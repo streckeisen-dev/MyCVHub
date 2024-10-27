@@ -82,32 +82,56 @@ class WorkExperienceValidationServiceTest {
                 4
             ),
             Arguments.of(
-                WorkExperienceUpdateDto(null, null, null, null,  null, LocalDate.now().plusDays(1), null),
+                WorkExperienceUpdateDto(null, null, null, null, null, LocalDate.now().plusDays(1), null),
                 false,
                 6
             ),
             Arguments.of(
-                WorkExperienceUpdateDto(null, null, null, null,  null, LocalDate.of(2024, 1, 1), null),
+                WorkExperienceUpdateDto(null, null, null, null, null, LocalDate.of(2024, 1, 1), null),
                 false,
                 5
             ),
             Arguments.of(
-                WorkExperienceUpdateDto(null, null, null, null,  LocalDate.of(2024, 1, 2), LocalDate.of(2024, 1, 1), null),
+                WorkExperienceUpdateDto(
+                    null,
+                    null,
+                    null,
+                    null,
+                    LocalDate.of(2024, 1, 2),
+                    LocalDate.of(2024, 1, 1),
+                    null
+                ),
                 false,
                 5
             ),
             Arguments.of(
-                WorkExperienceUpdateDto(null, null, null, null,  LocalDate.of(2024, 1, 2), LocalDate.of(2024, 1, 30), null),
+                WorkExperienceUpdateDto(
+                    null,
+                    null,
+                    null,
+                    null,
+                    LocalDate.of(2024, 1, 2),
+                    LocalDate.of(2024, 1, 30),
+                    null
+                ),
                 false,
                 4
             ),
             Arguments.of(
-                WorkExperienceUpdateDto(null, null, null, null,  null, null, "desc-\nription"),
+                WorkExperienceUpdateDto(null, null, null, null, null, null, "desc-\nription"),
                 false,
                 4
             ),
             Arguments.of(
-                WorkExperienceUpdateDto(null, "Job", "Location", "Company",  LocalDate.of(2024, 1, 2), null, "desc-\nription"),
+                WorkExperienceUpdateDto(
+                    null,
+                    "Job",
+                    "Location",
+                    "Company",
+                    LocalDate.of(2024, 1, 2),
+                    null,
+                    "desc-\nription"
+                ),
                 true,
                 0
             ),

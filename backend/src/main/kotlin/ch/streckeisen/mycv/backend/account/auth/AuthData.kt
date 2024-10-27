@@ -1,6 +1,6 @@
 package ch.streckeisen.mycv.backend.account.auth
 
-data class AuthData (
+data class AuthData(
     val accessToken: String,
     val accessTokenExpirationTime: Long,
     val refreshToken: String,
