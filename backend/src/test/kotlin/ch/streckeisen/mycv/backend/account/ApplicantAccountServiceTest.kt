@@ -63,8 +63,8 @@ class ApplicantAccountServiceTest {
             )
         }
         applicantAccountValidationService = mockk {
-            every { validateSignupRequest(eq(VALID_SIGNUP_REQUEST)) } returns Result.success(Unit)
-            every { validateSignupRequest(eq(INVALID_SIGNUP_REQUEST)) } returns Result.failure(
+            every { validateAccountUpdate(eq(VALID_SIGNUP_REQUEST)) } returns Result.success(Unit)
+            every { validateAccountUpdate(eq(INVALID_SIGNUP_REQUEST)) } returns Result.failure(
                 IllegalArgumentException(
                     "Invalid signup request"
                 )

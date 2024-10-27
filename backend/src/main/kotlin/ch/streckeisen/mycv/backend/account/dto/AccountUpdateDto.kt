@@ -2,7 +2,7 @@ package ch.streckeisen.mycv.backend.account.dto
 
 import java.time.LocalDate
 
-data class SignupRequestDto(
+data class AccountUpdateDto(
     val firstName: String?,
     val lastName: String?,
     val email: String?,
@@ -12,7 +12,5 @@ data class SignupRequestDto(
     val houseNumber: String?,
     val postcode: String?,
     val city: String?,
-    val country: String?,
-    val password: String?,
-    val confirmPassword: String?
+    val country: String?
 )

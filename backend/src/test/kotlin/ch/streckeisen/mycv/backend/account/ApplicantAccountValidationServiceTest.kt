@@ -33,7 +33,7 @@ class ApplicantAccountValidationServiceTest {
     @ParameterizedTest
     @MethodSource("applicantValidationServiceProvider")
     fun testApplicantValidation(signupRequest: SignupRequestDto, isValid: Boolean, numberOfErrors: Int?) {
-        val validationResult = applicantAccountValidationService.validateSignupRequest(signupRequest)
+        val validationResult = applicantAccountValidationService.validateAccountUpdate(signupRequest)
         if (isValid) {
             assertTrue { validationResult.isSuccess }
             assertNull(validationResult.exceptionOrNull())
