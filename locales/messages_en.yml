@@ -2,6 +2,8 @@ shared:
   fields:
     username: "Username"
     password: "Password"
+    confirmPassword: "Confirm Password"
+    oldPassword: "Old Password"
     firstName: "First Name"
     lastName: "Last Name"
     email: "E-Mail Address"
@@ -12,7 +14,6 @@ shared:
     postcode: "Postcode"
     city: "City"
     country: "Country"
-    confirmPassword: "Confirm Password"
     profilePicture: "Profile Picture"
     alias: "Alias"
     jobTitle: "Job Title"
@@ -88,6 +89,9 @@ frontend:
     create:
       title: "Create an account"
       submit: "Sign Up"
+    edit:
+      title: "Edit account"
+      changePassword: "Change password"
     login:
       title: "Login to MyCVHub"
       action: "Login"
@@ -241,6 +245,7 @@ backend:
       password:
         encodingTooLong: "Encoded password exceeds number of allowed characters"
         encodingError: "Password encoding failed"
+      oldPasswordInvalid: "Old password is incorrect"
       error: "Account validation failed"
   auth:
     login:
