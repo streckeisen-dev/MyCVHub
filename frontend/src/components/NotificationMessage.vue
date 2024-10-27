@@ -2,13 +2,15 @@
 	<v-snackbar
 		v-model="shouldShowSnackbar"
 		location="top right"
-		multi-line>
+		multi-line
+	>
 		<h3>{{ title }}</h3>
 		<p>{{ message }}</p>
 		<template v-slot:actions>
 			<v-btn
 				icon="mdi-close"
-				@click="shouldShowSnackbar = false" />
+				@click="shouldShowSnackbar = false"
+			/>
 		</template>
 	</v-snackbar>
 </template>

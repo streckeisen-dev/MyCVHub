@@ -9,12 +9,14 @@
 		<v-col
 			cols="8"
 			md="10"
-			class="skill-level">
+			class="skill-level"
+		>
 			<v-progress-linear
 				:model-value="skill.level"
 				color="primary"
 				bg-color="btn-background"
-				:max="100" />
+				:max="100"
+			/>
 		</v-col>
 	</v-row>
 </template>

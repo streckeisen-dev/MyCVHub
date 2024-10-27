@@ -1,7 +1,8 @@
 <template>
 	<v-app-bar
 		role="navigation"
-		aria-label="Header navigation">
+		aria-label="Header navigation"
+	>
 		<v-app-bar-title>
 			{{ displayName }}
 		</v-app-bar-title>
@@ -18,36 +19,42 @@
 				<v-col
 					cols="12"
 					md="6"
-					class="person-column">
+					class="person-column"
+				>
 					<v-img
 						:src="profile.profilePicture"
 						:lazy-src="defaultProfilePicture"
 						class="profile-picture"
-						:alt="t('fields.profilePicture')">
+						:alt="t('fields.profilePicture')"
+					>
 						<template #placeholder>
 							<v-row
 								class="fill-height"
 								align="center"
-								justify="center">
+								justify="center"
+							>
 								<v-progress-circular indeterminate />
 							</v-row>
 						</template>
 					</v-img>
 					<profile-section
 						:title="displayName"
-						h2>
+						h2
+					>
 						<p>{{ profile.jobTitle }}</p>
 					</profile-section>
 
 					<profile-section
 						v-if="profile.bio"
-						:title="t('profile.aboutMe')">
+						:title="t('profile.aboutMe')"
+					>
 						<p>{{ profile.bio }}</p>
 					</profile-section>
 
 					<profile-section
 						v-if="hasContactInformation"
-						:title="t('profile.contact')">
+						:title="t('profile.contact')"
+					>
 						<template v-if="profile.address">
 							<p>{{ displayName }}</p>
 							<p>{{ profile.address.street }} {{ profile.address.houseNumber }}</p>
@@ -66,20 +73,24 @@
 				</v-col>
 				<v-col
 					cols="12"
-					md="6">
+					md="6"
+				>
 					<profile-section
 						:title="t('workExperience.title')"
-						h2>
+						h2
+					>
 						<work-experience-container :values="profile.workExperiences" />
 					</profile-section>
 					<profile-section
 						:title="t('education.title')"
-						h2>
+						h2
+					>
 						<education-container :values="profile.education" />
 					</profile-section>
 					<profile-section
 						:title="t('skills.title')"
-						h2>
+						h2
+					>
 						<skills-container :values="profile.skills" />
 					</profile-section>
 				</v-col>
@@ -90,7 +101,8 @@
 			v-else
 			:headline="t('profile.notFound.headline')"
 			:title="t('profile.notFound.title')"
-			:text="loadingError" />
+			:text="loadingError"
+		/>
 	</v-main>
 </template>
 

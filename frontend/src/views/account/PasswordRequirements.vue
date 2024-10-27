@@ -10,7 +10,8 @@
 				v-for="requirement in passwordRequirements"
 				:key="requirement.name"
 				:title="requirement.name"
-				:class="requirement.predicate() ? 'pw-requirement-fulfilled' : 'pw-requirement-error'" />
+				:class="requirement.predicate() ? 'pw-requirement-fulfilled' : 'pw-requirement-error'"
+			/>
 		</v-list>
 	</v-row>
 </template>

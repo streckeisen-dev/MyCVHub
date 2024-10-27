@@ -21,14 +21,16 @@
 		<v-col
 			class="employment-range"
 			cols="4"
-			md="2">
+			md="2"
+		>
 			{{ toShortDate(workExperience.positionStart) }} -
 			{{ toShortDate(workExperience.positionEnd) }}
 		</v-col>
 		<v-col
 			v-if="workExperience.description"
 			class="description"
-			cols="12">
+			cols="12"
+		>
 			<pre>{{ workExperience.description }}</pre>
 		</v-col>
 	</v-row>

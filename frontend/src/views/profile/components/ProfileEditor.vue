@@ -3,7 +3,8 @@
 		<v-row>
 			<v-col
 				cols="12"
-				class="back-button">
+				class="back-button"
+			>
 				<router-link :to="{ name: 'account' }">
 					<v-btn icon="mdi-arrow-left" />
 					<span>{{ t('profile.editor.back') }}</span>
@@ -15,7 +16,8 @@
 		</v-row>
 		<v-tabs
 			v-model="activeTab"
-			color="secondary">
+			color="secondary"
+		>
 			<v-tab value="general">{{ t('profile.editor.general') }}</v-tab>
 			<template v-if="isCreated">
 				<v-tab value="work">{{ t('workExperience.title') }}</v-tab>
@@ -29,21 +31,25 @@
 				<v-row justify="center">
 					<v-sheet
 						class="form-sheet"
-						rounded>
+						rounded
+					>
 						<v-form @submit.prevent>
 							<v-row class="form-flex">
 								<v-col
 									cols="12"
-									md="4">
+									md="4"
+								>
 									<v-img
 										:src="profilePicture"
 										:lazy-src="defaultProfilePicture"
-										class="profile-picture">
+										class="profile-picture"
+									>
 										<template #placeholder>
 											<v-row
 												class="fill-height"
 												justify="center"
-												align="center">
+												align="center"
+											>
 												<v-progress-circular indeterminate />
 											</v-row>
 										</template>
@@ -54,54 +60,64 @@
 										:hint="t('profile.editor.pictureHint')"
 										prepend-icon="mdi-camera"
 										accept=".png, .jpeg, .jpg"
-										:error-messages="profilePictureErrors" />
+										:error-messages="profilePictureErrors"
+									/>
 								</v-col>
 
 								<v-col
 									cols="12"
-									md="8">
+									md="8"
+								>
 									<v-text-field
 										v-model="formState.alias"
 										:label="t('fields.alias')"
 										:hint="t('profile.editor.aliasHint')"
-										:error-messages="aliasErrors" />
+										:error-messages="aliasErrors"
+									/>
 									<v-text-field
 										v-model="formState.jobTitle"
 										:label="t('fields.jobTitle')"
-										:error-messages="jobTitleErrors" />
+										:error-messages="jobTitleErrors"
+									/>
 									<v-textarea
 										v-model="formState.bio"
 										:label="t('fields.bio')"
-										:error-messages="bioErrors" />
+										:error-messages="bioErrors"
+									/>
 									<v-switch
 										v-model="formState.isProfilePublic"
 										:label="t('profile.editor.publicProfile')"
 										:hint="t('profile.editor.publicProfileHint')"
-										color="primary" />
+										color="primary"
+									/>
 									<v-switch
 										v-model="formState.isEmailPublic"
 										:disabled="!formState.isProfilePublic"
 										:label="t('profile.editor.publicEmail')"
 										:hint="t('profile.editor.publicEmailHint')"
-										color="primary" />
+										color="primary"
+									/>
 									<v-switch
 										v-model="formState.isPhonePublic"
 										:disabled="!formState.isProfilePublic"
 										:label="t('profile.editor.publicPhone')"
 										:hint="t('profile.editor.publicPhoneHint')"
-										color="primary" />
+										color="primary"
+									/>
 									<v-switch
 										v-model="formState.isAddressPublic"
 										:disabled="!formState.isProfilePublic"
 										:label="t('profile.editor.publicAddress')"
 										:hint="t('profile.editor.publicAddressHint')"
-										color="primary" />
+										color="primary"
+									/>
 									<v-switch
 										v-model="formState.hideDescriptions"
 										:disabled="!formState.isProfilePublic"
 										:label="t('profile.editor.hideDescriptions')"
 										:hint="t('profile.editor.hideDescriptionsHint')"
-										color="primary" />
+										color="primary"
+									/>
 								</v-col>
 							</v-row>
 
@@ -109,7 +125,8 @@
 								type="submit"
 								:text="t('forms.save')"
 								color="primary"
-								@click.prevent="saveGeneralInformation" />
+								@click.prevent="saveGeneralInformation"
+							/>
 						</v-form>
 					</v-sheet>
 				</v-row>
@@ -130,7 +147,8 @@
 	<notification
 		v-if="savingError"
 		:title="t('profile.editor.saveErrorTitle')"
-		:message="`${t('profile.editor.saveErrorMessage')}. ${savingError}`" />
+		:message="`${t('profile.editor.saveErrorMessage')}. ${savingError}`"
+	/>
 </template>
 
 <script setup lang="ts">

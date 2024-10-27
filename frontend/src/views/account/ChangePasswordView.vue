@@ -9,33 +9,40 @@
 			<v-row>
 				<v-col
 					cols="12"
-					md="6">
+					md="6"
+				>
 					<v-form>
 						<password-input
 							v-model="formState.oldPassword"
 							:label="t('fields.oldPassword')"
-							:error-messages="oldPasswordErrors" />
+							:error-messages="oldPasswordErrors"
+						/>
 						<password-input
 							v-model="formState.password"
 							:label="t('fields.password')"
-							:error-messages="passwordErrors" />
+							:error-messages="passwordErrors"
+						/>
 						<password-input
 							v-model="formState.confirmPassword"
 							:label="t('fields.confirmPassword')"
-							:error-messages="confirmPasswordErrors" />
+							:error-messages="confirmPasswordErrors"
+						/>
 
 						<form-buttons
 							@save="save"
 							@cancel="cancel"
-							:is-saving="isSaving" />
+							:is-saving="isSaving"
+						/>
 					</v-form>
 				</v-col>
 				<v-col
 					cols="12"
-					md="6">
+					md="6"
+				>
 					<password-requirements
 						v-model:form-state="formState"
-						v-model:rules="rules" />
+						v-model:rules="rules"
+					/>
 				</v-col>
 			</v-row>
 		</v-container>

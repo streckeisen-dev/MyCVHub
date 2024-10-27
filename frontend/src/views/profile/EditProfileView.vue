@@ -3,13 +3,15 @@
 		<profile-editor
 			v-if="profile"
 			:profile="profile"
-			:exists="true" />
+			:exists="true"
+		/>
 		<loading-spinner v-else-if="isLoadingProfile" />
 		<v-empty-state
 			v-else
 			:headline="t('error.genericMessage')"
 			:title="t('profile.loadingError')"
-			:text="loadingError" />
+			:text="loadingError"
+		/>
 	</v-main>
 </template>
 

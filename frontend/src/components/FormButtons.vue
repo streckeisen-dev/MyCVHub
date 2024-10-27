@@ -5,10 +5,12 @@
 			:text="t('forms.save')"
 			color="primary"
 			@click.prevent="save"
-			:loading="isSaving" />
+			:loading="isSaving"
+		/>
 		<v-btn
 			:text="t('forms.cancel')"
-			@click="cancel" />
+			@click="cancel"
+		/>
 	</div>
 </template>
 

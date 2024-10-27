@@ -1,23 +1,27 @@
 <template>
 	<v-row
 		justify="center"
-		class="education-editor">
+		class="education-editor"
+	>
 		<v-sheet
 			class="editor-sheet"
-			rounded>
+			rounded
+		>
 			<v-col cols="12">
 				<v-row justify="end">
 					<v-btn
 						:text="t('education.editor.add')"
 						color="primary"
-						@click="addEducation" />
+						@click="addEducation"
+					/>
 				</v-row>
 			</v-col>
 			<education-container
 				:values="education"
 				actions
 				@edit="editEducation"
-				@delete="deleteEducation" />
+				@delete="deleteEducation"
+			/>
 		</v-sheet>
 	</v-row>
 	<edit-education-dialog
@@ -26,12 +30,14 @@
 		:is-edit="isEdit!!"
 		@saveNew="onSaveNew"
 		@saveEdit="onSaveEdit"
-		@cancel="onEditCancel" />
+		@cancel="onEditCancel"
+	/>
 
 	<notification
 		v-if="deleteErrorMessage"
 		:title="t('education.editor.deleteError')"
-		:message="deleteErrorMessage" />
+		:message="deleteErrorMessage"
+	/>
 </template>
 
 <script setup lang="ts">

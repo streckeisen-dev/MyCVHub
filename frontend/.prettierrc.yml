@@ -5,4 +5,3 @@ singleQuote: true
 printWidth: 100
 trailingComma: none
 singleAttributePerLine: true
-bracketSameLine: true

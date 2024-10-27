@@ -12,11 +12,13 @@
 						<account-editor
 							v-model:form="form"
 							v-model:form-state="formState"
-							v-model:error-messages="errorMessages" />
+							v-model:error-messages="errorMessages"
+						/>
 						<v-row>
 							<v-col
 								cols="12"
-								md="6">
+								md="6"
+							>
 								<v-row>
 									<v-col cols="12">
 										<h2>{{ t('fields.password') }}</h2>
@@ -27,22 +29,26 @@
 										<password-input
 											v-model="formState.password"
 											:label="t('fields.password')"
-											:error-messages="passwordErrors" />
+											:error-messages="passwordErrors"
+										/>
 									</v-col>
 									<v-col cols="12">
 										<password-input
 											v-model="formState.confirmPassword"
 											:label="t('fields.confirmPassword')"
-											:error-messages="confirmPasswordErrors" />
+											:error-messages="confirmPasswordErrors"
+										/>
 									</v-col>
 								</v-row>
 							</v-col>
 							<v-col
 								cols="12"
-								md="6">
+								md="6"
+							>
 								<password-requirements
 									v-model:form-state="formState"
-									v-model:rules="rules" />
+									v-model:rules="rules"
+								/>
 							</v-col>
 						</v-row>
 						<v-row>
@@ -51,7 +57,8 @@
 									color="primary"
 									type="submit"
 									@click.prevent="signUp"
-									:text="t('account.create.submit')" />
+									:text="t('account.create.submit')"
+								/>
 							</v-col>
 						</v-row>
 					</v-container>

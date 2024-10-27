@@ -4,7 +4,8 @@
 			<v-row justify="center">
 				<v-col
 					cols="12"
-					md="8">
+					md="8"
+				>
 					<v-card>
 						<v-card-title>
 							<h1>{{ t('privacy.title') }}</h1>
@@ -19,7 +20,8 @@
 			<v-row justify="center">
 				<v-col
 					cols="12"
-					md="8">
+					md="8"
+				>
 					<v-card>
 						<v-card-text class="policy-content">
 							<div class="policy-section">
@@ -88,8 +90,10 @@
 								<h2>8. {{ t('privacy.contact.title') }}</h2>
 								<p>
 									{{ t('privacy.contact.content') }}
-									<a :href="`mailto:${contactEmail}`">{{ contactEmail }}</a
-									>.
+									<a :href="`mailto:${contactEmail}`">
+										{{ contactEmail }}
+                  </a>
+                  .
 								</p>
 							</div>
 						</v-card-text>

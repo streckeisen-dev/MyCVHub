@@ -10,12 +10,14 @@
 				<account-editor
 					v-model:form="form"
 					v-model:form-state="formState"
-					v-model:error-messages="errorMessages" />
+					v-model:error-messages="errorMessages"
+				/>
 
 				<form-buttons
 					:is-saving="isSaving"
 					@save="save"
-					@cancel="cancel" />
+					@cancel="cancel"
+				/>
 			</v-form>
 		</v-container>
 		<v-container v-else-if="isLoading">
@@ -25,7 +27,8 @@
 			v-else
 			:headline="t('error.genericMessage')"
 			:title="t('account.loadingError.title')"
-			:text="t('account.loadingError.text')" />
+			:text="t('account.loadingError.text')"
+		/>
 	</v-main>
 </template>
 

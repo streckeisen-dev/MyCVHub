@@ -3,7 +3,8 @@
 		<v-empty-state
 			:headline="t('notFound.headline')"
 			:title="t('notFound.title')"
-			:text="t('notFound.text')" />
+			:text="t('notFound.text')"
+		/>
 	</v-main>
 </template>
 

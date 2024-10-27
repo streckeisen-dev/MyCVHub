@@ -4,53 +4,67 @@
 			<v-row class="account-section">
 				<v-col
 					cols="12"
-					sm="6">
+					sm="6"
+				>
 					<h2>{{ t('account.personalData') }}</h2>
 					<v-sheet
 						rounded
-						class="account-sheet">
+						class="account-sheet"
+					>
 						<attribute-list>
 							<attribute-value
 								:name="t('fields.firstName')"
-								:value="account.firstName" />
+								:value="account.firstName"
+							/>
 							<attribute-value
 								:name="t('fields.lastName')"
-								:value="account.lastName" />
+								:value="account.lastName"
+							/>
 							<attribute-value
 								:name="t('fields.email')"
-								:value="account.email" />
+								:value="account.email"
+							/>
 							<attribute-value
 								:name="t('fields.phone')"
-								:value="account.phone" />
+								:value="account.phone"
+							/>
 							<attribute-value
 								:name="t('fields.birthday')"
-								:value="account.birthday" />
+								:value="account.birthday"
+							/>
 						</attribute-list>
 					</v-sheet>
 				</v-col>
 				<v-col
 					cols="12"
-					sm="6">
+					sm="6"
+				>
 					<h2>{{ t('account.address') }}</h2>
 					<v-sheet
 						rounded
-						class="account-sheet">
+						class="account-sheet"
+					>
 						<attribute-list>
 							<attribute-value
 								:name="t('fields.street')"
-								:value="account.street" />
+								:value="account.street"
+							/>
 							<attribute-value
 								:name="t('fields.houseNumber')"
-								:value="account.houseNumber" />
+								:value="account.houseNumber"
+							/>
 							<attribute-value
 								:name="t('fields.postcode')"
-								:value="account.postcode" />
+								:value="account.postcode"
+							/>
 							<attribute-value
 								:name="t('fields.city')"
-								:value="account.city" />
+								:value="account.city"
+							/>
 							<attribute-value
 								:name="t('fields.country')"
-								:value="account.country" />
+								:value="account.country"
+							/>
 						</attribute-list>
 					</v-sheet>
 				</v-col>
@@ -59,77 +73,93 @@
 			<v-row class="account-section">
 				<v-col
 					cols="12"
-					sm="6">
+					sm="6"
+				>
 					<h2>{{ t('profile.title') }}</h2>
 					<v-sheet
 						rounded
-						class="account-sheet">
+						class="account-sheet"
+					>
 						<v-row v-if="account.profile">
 							<v-col
 								cols="12"
 								md="5"
-								lg="3">
+								lg="3"
+							>
 								<v-btn
 									:text="t('account.profile.view')"
 									color="primary"
-									:to="{ name: 'public-profile', params: { alias: account.profile } }" />
+									:to="{ name: 'public-profile', params: { alias: account.profile } }"
+								/>
 							</v-col>
 							<v-col
 								cols="12"
 								md="5"
-								lg="3">
+								lg="3"
+							>
 								<v-btn
 									:text="t('account.profile.edit')"
 									color="primary"
-									:to="{ name: 'edit-profile' }" />
+									:to="{ name: 'edit-profile' }"
+								/>
 							</v-col>
 						</v-row>
 						<v-row
 							v-else
-							class="create-profile">
+							class="create-profile"
+						>
 							<v-col
 								cols="12"
 								md="5"
-								lg="3">
+								lg="3"
+							>
 								{{ t('account.profile.notFound') }}
 							</v-col>
 							<v-col
 								cols="12"
 								md="5"
-								lg="3">
+								lg="3"
+							>
 								<v-btn
 									:text="t('account.profile.create')"
 									color="primary"
-									:to="{ name: 'create-profile' }" />
+									:to="{ name: 'create-profile' }"
+								/>
 							</v-col>
 						</v-row>
 					</v-sheet>
 				</v-col>
 				<v-col
 					cols="12"
-					sm="6">
+					sm="6"
+				>
 					<h2>{{ t('account.title') }}</h2>
 					<v-sheet
 						rounded
-						class="account-sheet">
+						class="account-sheet"
+					>
 						<v-row>
 							<v-col
 								cols="12"
 								md="5"
-								lg="3">
+								lg="3"
+							>
 								<v-btn
 									:text="t('account.edit.title')"
 									color="primary"
-									:to="{ name: 'edit-account' }" />
+									:to="{ name: 'edit-account' }"
+								/>
 							</v-col>
 							<v-col
 								cols="12"
 								md="5"
-								lg="3">
+								lg="3"
+							>
 								<v-btn
 									:text="t('account.edit.changePassword')"
 									color="primary"
-									:to="{ name: 'change-password' }" />
+									:to="{ name: 'change-password' }"
+								/>
 							</v-col>
 						</v-row>
 					</v-sheet>
@@ -143,7 +173,8 @@
 			v-else
 			:headline="t('error.genericMessage')"
 			:title="t('account.loadingError.title')"
-			:text="t('account.loadingError.text')" />
+			:text="t('account.loadingError.text')"
+		/>
 	</v-main>
 </template>
 

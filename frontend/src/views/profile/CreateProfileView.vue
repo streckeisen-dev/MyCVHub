@@ -2,7 +2,8 @@
 	<v-main>
 		<profile-editor
 			:profile="emptyProfile"
-			:exists="false" />
+			:exists="false"
+		/>
 	</v-main>
 </template>
 

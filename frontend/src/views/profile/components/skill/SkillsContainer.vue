@@ -3,23 +3,28 @@
 		<v-col cols="12">
 			<v-row
 				v-for="(skills, skillType) in groupedSkills"
-				:key="skillType">
+				:key="skillType"
+			>
 				<v-col
 					cols="12"
-					class="skill-type">
+					class="skill-type"
+				>
 					<h3>{{ skillType }}</h3>
 				</v-col>
 				<v-col
 					cols="12"
-					class="skills">
+					class="skills"
+				>
 					<v-row
 						v-for="(skill, index) in sortSkills(skills)"
 						:key="(skill as SkillDto).id || index"
 						class="skill"
-						justify="end">
+						justify="end"
+					>
 						<v-col
 							cols="12"
-							:md="actions ? 10 : 12">
+							:md="actions ? 10 : 12"
+						>
 							<skill-entry :skill="skill" />
 						</v-col>
 						<template v-if="actions">
@@ -27,21 +32,25 @@
 								cols="3"
 								sm="2"
 								md="1"
-								class="skill-action">
+								class="skill-action"
+							>
 								<v-btn
 									icon="mdi-pencil"
 									color="primary"
-									@click="editSkill(skill as SkillDto)" />
+									@click="editSkill(skill as SkillDto)"
+								/>
 							</v-col>
 							<v-col
 								cols="3"
 								sm="2"
 								md="1"
-								class="skill-action">
+								class="skill-action"
+							>
 								<v-btn
 									icon="mdi-delete"
 									color="red"
-									@click="deleteSkill((skill as SkillDto).id)" />
+									@click="deleteSkill((skill as SkillDto).id)"
+								/>
 							</v-col>
 						</template>
 					</v-row>

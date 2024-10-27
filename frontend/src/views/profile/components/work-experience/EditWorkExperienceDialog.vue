@@ -1,7 +1,8 @@
 <template>
 	<v-dialog
 		:model-value="true"
-		@update:model-value="cancel">
+		@update:model-value="cancel"
+	>
 		<v-sheet class="work-experience-sheet">
 			<h2 v-if="isEdit">{{ t('workExperience.editor.edit') }}</h2>
 			<h2 v-else>{{ t('workExperience.editor.add') }}</h2>
@@ -10,33 +11,40 @@
 				<v-text-field
 					:label="t('fields.jobTitle')"
 					v-model="formState.jobTitle"
-					:error-messages="jobTitleErrors" />
+					:error-messages="jobTitleErrors"
+				/>
 				<v-text-field
 					:label="t('fields.location')"
 					v-model="formState.location"
-					:error-messages="locationErrors" />
+					:error-messages="locationErrors"
+				/>
 				<v-text-field
 					:label="t('fields.company')"
 					v-model="formState.company"
-					:error-messages="companyErrors" />
+					:error-messages="companyErrors"
+				/>
 				<v-date-input
 					:label="t('fields.positionStart')"
 					v-model="formState.positionStart"
-					:error-messages="positionStartErrors" />
+					:error-messages="positionStartErrors"
+				/>
 				<v-date-input
 					:label="t('fields.positionEnd')"
 					v-model="formState.positionEnd"
 					clearable
 					@click:clear="() => (formState.positionEnd = undefined)"
-					:error-messages="positionEndErrors" />
+					:error-messages="positionEndErrors"
+				/>
 				<v-textarea
 					:label="t('fields.description')"
 					v-model="formState.description"
-					:error-messages="descriptionErrors" />
+					:error-messages="descriptionErrors"
+				/>
 
 				<form-buttons
 					@save="save"
-					@cancel="cancel" />
+					@cancel="cancel"
+				/>
 			</v-form>
 		</v-sheet>
 	</v-dialog>

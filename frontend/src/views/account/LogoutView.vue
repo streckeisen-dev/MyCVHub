@@ -3,11 +3,13 @@
 		<v-empty-state
 			:headline="t('account.logout.headline')"
 			:title="t('account.logout.action')"
-			:text="t('account.logout.message')" />
+			:text="t('account.logout.message')"
+		/>
 		<notification
 			v-if="logoutError"
 			:title="t('account.logout.errorTitle')"
-			:message="t('account.logout.errorMessage')" />
+			:message="t('account.logout.errorMessage')"
+		/>
 	</v-main>
 </template>
 

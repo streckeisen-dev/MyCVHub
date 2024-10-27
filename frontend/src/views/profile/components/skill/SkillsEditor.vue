@@ -1,23 +1,27 @@
 <template>
 	<v-row
 		justify="center"
-		class="skills-editor">
+		class="skills-editor"
+	>
 		<v-sheet
 			class="editor-sheet"
-			rounded>
+			rounded
+		>
 			<v-col cols="12">
 				<v-row justify="end">
 					<v-btn
 						:text="t('skills.editor.add')"
 						color="primary"
-						@click="addSkill" />
+						@click="addSkill"
+					/>
 				</v-row>
 			</v-col>
 			<skills-container
 				:values="skills"
 				actions
 				@edit="editSkill"
-				@delete="deleteSkill" />
+				@delete="deleteSkill"
+			/>
 		</v-sheet>
 	</v-row>
 	<edit-skill-dialog
@@ -26,12 +30,14 @@
 		:is-edit="isEdit!!"
 		@saveNew="onSaveNew"
 		@saveEdit="onSaveEdit"
-		@cancel="onEditCancel" />
+		@cancel="onEditCancel"
+	/>
 
 	<notification
 		v-if="deleteErrorMessage"
 		:title="t('skills.editor.deleteError')"
-		:message="deleteErrorMessage" />
+		:message="deleteErrorMessage"
+	/>
 </template>
 
 <script setup lang="ts">

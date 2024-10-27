@@ -5,7 +5,8 @@
 		:type="showPassword ? 'text' : 'password'"
 		:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
 		@click:append="showPassword = !showPassword"
-		:error-messages="errorMessages" />
+		:error-messages="errorMessages"
+	/>
 </template>
 
 <script setup lang="ts">

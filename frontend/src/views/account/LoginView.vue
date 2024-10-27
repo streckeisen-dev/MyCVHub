@@ -9,16 +9,19 @@
 					id="login-sheet"
 					elevation="12"
 					border
-					rounded>
+					rounded
+				>
 					<v-form @submit.prevent>
 						<v-text-field
 							v-model="formState.email"
 							:label="t('fields.email')"
-							:error-messages="emailErrors" />
+							:error-messages="emailErrors"
+						/>
 						<password-input
 							v-model="formState.password"
 							:label="t('fields.password')"
-							:error-messages="passwordErrors" />
+							:error-messages="passwordErrors"
+						/>
 						<v-btn
 							type="submit"
 							block
@@ -36,7 +39,8 @@
 			<notification
 				v-if="errorMessage"
 				:title="t('account.login.error')"
-				:message="errorMessage" />
+				:message="errorMessage"
+			/>
 		</v-container>
 	</v-main>
 </template>

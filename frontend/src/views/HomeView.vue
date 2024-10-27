@@ -4,10 +4,12 @@
 			<v-row
 				align="center"
 				justify="center"
-				class="headline">
+				class="headline"
+			>
 				<v-col
 					cols="12"
-					class="text-center">
+					class="text-center"
+				>
 					<h1>{{ t('home.welcome.title') }}</h1>
 					<p>{{ t('home.welcome.message') }}</p>
 					<router-link :to="{ name: 'signup' }">
@@ -15,7 +17,8 @@
 							color="primary"
 							large
 							:to="{ name: 'login' }"
-							:text="t('home.getStarted')" />
+							:text="t('home.getStarted')"
+						/>
 					</router-link>
 				</v-col>
 			</v-row>
@@ -32,7 +35,8 @@
 					md="4"
 					lg="3"
 					v-for="(feature, index) in features"
-					:key="index">
+					:key="index"
+				>
 					<v-card>
 						<v-card-title>{{ t(feature.title) }}</v-card-title>
 						<v-card-text>
@@ -45,11 +49,13 @@
 			<v-row
 				align="center"
 				justify="center"
-				class="call-to-action">
+				class="call-to-action"
+			>
 				<v-col
 					cols="12"
 					md="8"
-					class="text-center">
+					class="text-center"
+				>
 					<h2>{{ t('home.callToAction.title') }}</h2>
 					<router-link :to="{ name: 'signup' }">
 						<v-btn

@@ -3,10 +3,12 @@
 		v-for="(workExperience, index) in sortedWorkExperiences"
 		:key="(workExperience as WorkExperienceDto).id || index"
 		class="work-experiences"
-		justify="end">
+		justify="end"
+	>
 		<v-col
 			cols="12"
-			:md="actions ? 10 : 12">
+			:md="actions ? 10 : 12"
+		>
 			<work-experience-entry :work-experience="workExperience" />
 		</v-col>
 		<template v-if="actions">
@@ -14,21 +16,25 @@
 				cols="3"
 				sm="2"
 				md="1"
-				class="work-experience-action">
+				class="work-experience-action"
+			>
 				<v-btn
 					icon="mdi-pencil"
 					color="primary"
-					@click="editWorkExperience(workExperience as WorkExperienceDto)" />
+					@click="editWorkExperience(workExperience as WorkExperienceDto)"
+				/>
 			</v-col>
 			<v-col
 				cols="3"
 				sm="2"
 				md="1"
-				class="work-experience-action">
+				class="work-experience-action"
+			>
 				<v-btn
 					icon="mdi-delete"
 					color="red"
-					@click="deleteWorkExperience((workExperience as WorkExperienceDto).id)" />
+					@click="deleteWorkExperience((workExperience as WorkExperienceDto).id)"
+				/>
 			</v-col>
 		</template>
 	</v-row>

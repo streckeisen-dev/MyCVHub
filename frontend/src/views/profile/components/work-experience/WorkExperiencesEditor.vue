@@ -1,23 +1,27 @@
 <template>
 	<v-row
 		justify="center"
-		class="work-experiences-editor">
+		class="work-experiences-editor"
+	>
 		<v-sheet
 			class="editor-sheet"
-			rounded>
+			rounded
+		>
 			<v-col cols="12">
 				<v-row justify="end">
 					<v-btn
 						:text="t('workExperience.editor.add')"
 						@click="addWorkExperience"
-						color="primary" />
+						color="primary"
+					/>
 				</v-row>
 			</v-col>
 			<work-experience-container
 				:values="workExperiences"
 				actions
 				@edit="editWorkExperience"
-				@delete="deleteWorkExperience" />
+				@delete="deleteWorkExperience"
+			/>
 		</v-sheet>
 	</v-row>
 	<edit-work-experience-dialog
@@ -26,12 +30,14 @@
 		:is-edit="isEdit!!"
 		@saveNew="onSaveNew"
 		@saveEdit="onSaveEdit"
-		@cancel="onEditCancel" />
+		@cancel="onEditCancel"
+	/>
 
 	<notification
 		v-if="deleteErrorMessage"
 		:title="t('workExperience.editor.deleteError')"
-		:message="deleteErrorMessage" />
+		:message="deleteErrorMessage"
+	/>
 </template>
 
 <script setup lang="ts">

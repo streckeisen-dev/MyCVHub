@@ -1,7 +1,8 @@
 <template>
 	<v-dialog
 		:model-value="true"
-		@update:model-value="cancel">
+		@update:model-value="cancel"
+	>
 		<v-sheet class="education-sheet">
 			<h2 v-if="isEdit">{{ t('education.editor.edit') }}</h2>
 			<h2 v-else>{{ t('education.editor.add') }}</h2>
@@ -10,33 +11,40 @@
 				<v-text-field
 					:label="t('fields.institution')"
 					v-model="formState.institution"
-					:error-messages="institutionErrors" />
+					:error-messages="institutionErrors"
+				/>
 				<v-text-field
 					:label="t('fields.location')"
 					v-model="formState.location"
-					:error-messages="locationErrors" />
+					:error-messages="locationErrors"
+				/>
 				<v-text-field
 					:label="t('fields.degreeName')"
 					v-model="formState.degreeName"
-					:error-messages="degreeNameErrors" />
+					:error-messages="degreeNameErrors"
+				/>
 				<v-date-input
 					:label="t('fields.educationStart')"
 					v-model="formState.educationStart"
-					:error-messages="educationStartErrors" />
+					:error-messages="educationStartErrors"
+				/>
 				<v-date-input
 					:label="t('fields.educationEnd')"
 					v-model="formState.educationEnd"
 					clearable
 					@click:clear="() => (formState.educationEnd = undefined)"
-					:error-messages="educationEndErrors" />
+					:error-messages="educationEndErrors"
+				/>
 				<v-textarea
 					:label="t('fields.description')"
 					v-model="formState.description"
-					:error-messages="descriptionErrors" />
+					:error-messages="descriptionErrors"
+				/>
 
 				<form-buttons
 					@save="save"
-					@cancel="cancel" />
+					@cancel="cancel"
+				/>
 			</v-form>
 		</v-sheet>
 	</v-dialog>

@@ -1,7 +1,8 @@
 <template>
 	<v-dialog
 		:model-value="true"
-		@update:model-value="cancel">
+		@update:model-value="cancel"
+	>
 		<v-sheet class="skill-sheet">
 			<h2 v-if="isEdit">{{ t('skills.editor.edit') }}</h2>
 			<h2 v-else>{{ t('skills.editor.add') }}</h2>
@@ -10,12 +11,14 @@
 				<v-text-field
 					:label="t('fields.name')"
 					v-model="formState.name"
-					:error-messages="nameErrors" />
+					:error-messages="nameErrors"
+				/>
 				<v-text-field
 					:label="t('fields.type')"
 					:hint="t('skills.editor.typeHint')"
 					v-model="formState.type"
-					:error-messages="typeErrors" />
+					:error-messages="typeErrors"
+				/>
 				<v-slider
 					:label="t('fields.level')"
 					v-model="formState.level"
@@ -23,11 +26,13 @@
 					step="1"
 					:error-messages="levelErrors"
 					class="level-slider"
-					color="primary" />
+					color="primary"
+				/>
 
 				<form-buttons
 					@save="save"
-					@cancel="cancel" />
+					@cancel="cancel"
+				/>
 			</v-form>
 		</v-sheet>
 	</v-dialog>
