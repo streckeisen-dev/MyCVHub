@@ -1,53 +1,53 @@
 <template>
-	<v-dialog
-		:model-value="true"
-		@update:model-value="cancel"
-	>
-		<v-sheet class="work-experience-sheet">
-			<h2 v-if="isEdit">{{ t('workExperience.editor.edit') }}</h2>
-			<h2 v-else>{{ t('workExperience.editor.add') }}</h2>
+  <v-dialog
+    :model-value="true"
+    @update:model-value="cancel"
+  >
+    <v-sheet class="work-experience-sheet">
+      <h2 v-if="isEdit">{{ t('workExperience.editor.edit') }}</h2>
+      <h2 v-else>{{ t('workExperience.editor.add') }}</h2>
 
-			<v-form @submit.prevent>
-				<v-text-field
-					:label="t('fields.jobTitle')"
-					v-model="formState.jobTitle"
-					:error-messages="jobTitleErrors"
-				/>
-				<v-text-field
-					:label="t('fields.location')"
-					v-model="formState.location"
-					:error-messages="locationErrors"
-				/>
-				<v-text-field
-					:label="t('fields.company')"
-					v-model="formState.company"
-					:error-messages="companyErrors"
-				/>
-				<v-date-input
-					:label="t('fields.positionStart')"
-					v-model="formState.positionStart"
-					:error-messages="positionStartErrors"
-				/>
-				<v-date-input
-					:label="t('fields.positionEnd')"
-					v-model="formState.positionEnd"
-					clearable
-					@click:clear="() => (formState.positionEnd = undefined)"
-					:error-messages="positionEndErrors"
-				/>
-				<v-textarea
-					:label="t('fields.description')"
-					v-model="formState.description"
-					:error-messages="descriptionErrors"
-				/>
+      <v-form @submit.prevent>
+        <v-text-field
+          :label="t('fields.jobTitle')"
+          v-model="formState.jobTitle"
+          :error-messages="jobTitleErrors"
+        />
+        <v-text-field
+          :label="t('fields.location')"
+          v-model="formState.location"
+          :error-messages="locationErrors"
+        />
+        <v-text-field
+          :label="t('fields.company')"
+          v-model="formState.company"
+          :error-messages="companyErrors"
+        />
+        <v-date-input
+          :label="t('fields.positionStart')"
+          v-model="formState.positionStart"
+          :error-messages="positionStartErrors"
+        />
+        <v-date-input
+          :label="t('fields.positionEnd')"
+          v-model="formState.positionEnd"
+          clearable
+          @click:clear="() => (formState.positionEnd = undefined)"
+          :error-messages="positionEndErrors"
+        />
+        <v-textarea
+          :label="t('fields.description')"
+          v-model="formState.description"
+          :error-messages="descriptionErrors"
+        />
 
-				<form-buttons
-					@save="save"
-					@cancel="cancel"
-				/>
-			</v-form>
-		</v-sheet>
-	</v-dialog>
+        <form-buttons
+          @save="save"
+          @cancel="cancel"
+        />
+      </v-form>
+    </v-sheet>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
@@ -66,63 +66,63 @@ import { helpers } from '@vuelidate/validators'
 import FormButtons from '@/components/FormButtons.vue'
 
 const { t } = useI18n({
-	useScope: 'global'
+  useScope: 'global'
 })
 
 const props = defineProps<{
-	value: WorkExperienceDto | undefined
-	isEdit: boolean
+  value: WorkExperienceDto | undefined
+  isEdit: boolean
 }>()
 
 const emit = defineEmits(['saveNew', 'saveEdit', 'cancel'])
 
 type FormState = {
-	jobTitle?: string
-	location?: string
-	company?: string
-	positionStart?: Date
-	positionEnd?: Date
-	description?: string
+  jobTitle?: string
+  location?: string
+  company?: string
+  positionStart?: Date
+  positionEnd?: Date
+  description?: string
 }
 
 const formState = reactive<FormState>({
-	jobTitle: props.value?.jobTitle,
-	location: props.value?.location,
-	company: props.value?.company,
-	positionStart: convertStringToDate(props.value?.positionStart),
-	positionEnd: convertStringToDate(props.value?.positionEnd),
-	description: props.value?.description
+  jobTitle: props.value?.jobTitle,
+  location: props.value?.location,
+  company: props.value?.company,
+  positionStart: convertStringToDate(props.value?.positionStart),
+  positionEnd: convertStringToDate(props.value?.positionEnd),
+  description: props.value?.description
 })
 
 const positionEndIsAfterStart = withI18nMessage(() => {
-	if (formState.positionEnd && formState.positionStart) {
-		return formState.positionEnd > formState.positionStart
-	}
-	return true
+  if (formState.positionEnd && formState.positionStart) {
+    return formState.positionEnd > formState.positionStart
+  }
+  return true
 })
 
 const rules = {
-	jobTitle: {
-		required
-	},
-	location: {
-		required
-	},
-	company: {
-		required
-	},
-	positionStart: {
-		required
-	},
-	positionEnd: {
-		dateIsBeforeValidator: helpers.withParams(
-			{ earlierDate: t('fields.positionStart'), laterDate: t('fields.positionEnd') },
-			positionEndIsAfterStart
-		)
-	},
-	description: {
-		required
-	}
+  jobTitle: {
+    required
+  },
+  location: {
+    required
+  },
+  company: {
+    required
+  },
+  positionStart: {
+    required
+  },
+  positionEnd: {
+    dateIsBeforeValidator: helpers.withParams(
+      { earlierDate: t('fields.positionStart'), laterDate: t('fields.positionEnd') },
+      positionEndIsAfterStart
+    )
+  },
+  description: {
+    required
+  }
 }
 
 const form = useVuelidate<FormState>(rules, formState)
@@ -130,7 +130,7 @@ const form = useVuelidate<FormState>(rules, formState)
 const errorMessages = ref<ErrorMessages>({})
 
 function getErrors(attributeName: string): ComputedRef {
-	return getErrorMessages(errorMessages, form, attributeName)
+  return getErrorMessages(errorMessages, form, attributeName)
 }
 
 const jobTitleErrors = getErrors('jobTitle')
@@ -141,46 +141,46 @@ const positionEndErrors = getErrors('positionEnd')
 const descriptionErrors = getErrors('description')
 
 async function save() {
-	const isValid = await form.value.$validate()
-	if (!isValid) {
-		return
-	}
+  const isValid = await form.value.$validate()
+  if (!isValid) {
+    return
+  }
 
-	const workExperience: WorkExperienceUpdateDto = {
-		id: props.isEdit ? props.value!!.id : undefined,
-		jobTitle: formState.jobTitle,
-		company: formState.company,
-		location: formState.location,
-		positionStart: convertDateToString(formState.positionStart),
-		positionEnd: convertDateToString(formState.positionEnd),
-		description: formState.description
-	}
+  const workExperience: WorkExperienceUpdateDto = {
+    id: props.isEdit ? props.value!!.id : undefined,
+    jobTitle: formState.jobTitle,
+    company: formState.company,
+    location: formState.location,
+    positionStart: convertDateToString(formState.positionStart),
+    positionEnd: convertDateToString(formState.positionEnd),
+    description: formState.description
+  }
 
-	try {
-		const savedExperience = await profileApi.saveWorkExperience(workExperience)
-		if (props.isEdit) {
-			emit('saveEdit', savedExperience)
-		} else {
-			emit('saveNew', savedExperience)
-		}
-		errorMessages.value = {}
-	} catch (e) {
-		const error = e as ErrorDto
-		errorMessages.value = error.errors || {}
-	}
+  try {
+    const savedExperience = await profileApi.saveWorkExperience(workExperience)
+    if (props.isEdit) {
+      emit('saveEdit', savedExperience)
+    } else {
+      emit('saveNew', savedExperience)
+    }
+    errorMessages.value = {}
+  } catch (e) {
+    const error = e as ErrorDto
+    errorMessages.value = error.errors || {}
+  }
 }
 
 function cancel() {
-	emit('cancel')
+  emit('cancel')
 }
 </script>
 
 <style lang="scss" scoped>
 .work-experience-sheet {
-	padding: 30px;
+  padding: 30px;
 
-	h2 {
-		margin-bottom: 10px;
-	}
+  h2 {
+    margin-bottom: 10px;
+  }
 }
 </style>

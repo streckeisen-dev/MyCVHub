@@ -1,43 +1,43 @@
 <template>
-	<v-row
-		justify="center"
-		class="skills-editor"
-	>
-		<v-sheet
-			class="editor-sheet"
-			rounded
-		>
-			<v-col cols="12">
-				<v-row justify="end">
-					<v-btn
-						:text="t('skills.editor.add')"
-						color="primary"
-						@click="addSkill"
-					/>
-				</v-row>
-			</v-col>
-			<skills-container
-				:values="skills"
-				actions
-				@edit="editSkill"
-				@delete="deleteSkill"
-			/>
-		</v-sheet>
-	</v-row>
-	<edit-skill-dialog
-		v-if="showEditDialog"
-		:value="skillToEdit"
-		:is-edit="isEdit!!"
-		@saveNew="onSaveNew"
-		@saveEdit="onSaveEdit"
-		@cancel="onEditCancel"
-	/>
+  <v-row
+    justify="center"
+    class="skills-editor"
+  >
+    <v-sheet
+      class="editor-sheet"
+      rounded
+    >
+      <v-col cols="12">
+        <v-row justify="end">
+          <v-btn
+            :text="t('skills.editor.add')"
+            color="primary"
+            @click="addSkill"
+          />
+        </v-row>
+      </v-col>
+      <skills-container
+        :values="skills"
+        actions
+        @edit="editSkill"
+        @delete="deleteSkill"
+      />
+    </v-sheet>
+  </v-row>
+  <edit-skill-dialog
+    v-if="showEditDialog"
+    :value="skillToEdit"
+    :is-edit="isEdit!!"
+    @saveNew="onSaveNew"
+    @saveEdit="onSaveEdit"
+    @cancel="onEditCancel"
+  />
 
-	<notification
-		v-if="deleteErrorMessage"
-		:title="t('skills.editor.deleteError')"
-		:message="deleteErrorMessage"
-	/>
+  <notification
+    v-if="deleteErrorMessage"
+    :title="t('skills.editor.deleteError')"
+    :message="deleteErrorMessage"
+  />
 </template>
 
 <script setup lang="ts">
@@ -51,12 +51,12 @@ import type { SkillDto } from '@/dto/SkillDto'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n({
-	useScope: 'global'
+  useScope: 'global'
 })
 
 const skills = defineModel({
-	required: true,
-	type: Object as PropType<Array<SkillDto>>
+  required: true,
+  type: Object as PropType<Array<SkillDto>>
 })
 
 const showEditDialog = ref(false)
@@ -65,52 +65,52 @@ const isEdit = ref<boolean>()
 const deleteErrorMessage = ref<string>()
 
 function addSkill() {
-	isEdit.value = false
-	showEditDialog.value = true
-	skillToEdit.value = undefined
+  isEdit.value = false
+  showEditDialog.value = true
+  skillToEdit.value = undefined
 }
 
 function editSkill(skill: SkillDto) {
-	isEdit.value = true
-	showEditDialog.value = true
-	skillToEdit.value = skill
+  isEdit.value = true
+  showEditDialog.value = true
+  skillToEdit.value = skill
 }
 
 function onSaveNew(newEntry: SkillDto) {
-	showEditDialog.value = false
-	skillToEdit.value = undefined
-	skills.value.push(newEntry)
+  showEditDialog.value = false
+  skillToEdit.value = undefined
+  skills.value.push(newEntry)
 }
 
 function onSaveEdit(updatedEntry: SkillDto) {
-	showEditDialog.value = false
-	skillToEdit.value = undefined
-	const updateIndex = skills.value.findIndex((e) => e.id === updatedEntry.id)
-	skills.value[updateIndex] = updatedEntry
+  showEditDialog.value = false
+  skillToEdit.value = undefined
+  const updateIndex = skills.value.findIndex((e) => e.id === updatedEntry.id)
+  skills.value[updateIndex] = updatedEntry
 }
 
 function onEditCancel() {
-	showEditDialog.value = false
-	skillToEdit.value = undefined
+  showEditDialog.value = false
+  skillToEdit.value = undefined
 }
 
 async function deleteSkill(id: number) {
-	try {
-		await profileApi.deleteSkill(id)
-		const index = skills.value.findIndex((e) => e.id === id)
-		skills.value.splice(index, 1)
-		deleteErrorMessage.value = undefined
-	} catch (e) {
-		const error = e as ErrorDto
-		deleteErrorMessage.value = error.message
-	}
+  try {
+    await profileApi.deleteSkill(id)
+    const index = skills.value.findIndex((e) => e.id === id)
+    skills.value.splice(index, 1)
+    deleteErrorMessage.value = undefined
+  } catch (e) {
+    const error = e as ErrorDto
+    deleteErrorMessage.value = error.message
+  }
 }
 </script>
 
 <style scoped>
 .editor-sheet {
-	margin-top: 10px;
-	width: 100%;
-	padding: 30px;
+  margin-top: 10px;
+  width: 100%;
+  padding: 30px;
 }
 </style>

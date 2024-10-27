@@ -1,5 +1,5 @@
 export type ChangePasswordRequestDto = {
-	oldPassword?: string
-	password?: string
-	confirmPassword?: string
+  oldPassword?: string
+  password?: string
+  confirmPassword?: string
 }
