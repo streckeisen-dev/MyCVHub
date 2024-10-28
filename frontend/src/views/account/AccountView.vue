@@ -171,7 +171,7 @@
     </v-container>
     <v-empty-state
       v-else
-      :headline="t('error.genericMessage')"
+      :headline="t('error.genericMessageTitle')"
       :title="t('account.loadingError.title')"
       :text="t('account.loadingError.text')"
     />

@@ -5,26 +5,19 @@
       :title="t('account.logout.action')"
       :text="t('account.logout.message')"
     />
-    <notification-message
-      v-if="logoutError"
-      :title="t('account.logout.errorTitle')"
-      :message="t('account.logout.errorMessage')"
-    />
   </v-main>
 </template>
 
 <script setup lang="ts">
 import accountApi from '@/api/AccountApi'
 import router from '@/router'
-import NotificationMessage from '@/components/NotificationMessage.vue'
-import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import ToastService from '@/services/ToastService'
+import type { ErrorDto } from '@/dto/ErrorDto'
 
 const { t } = useI18n({
   useScope: 'global'
 })
-
-const logoutError = ref(false)
 
 if (accountApi.isUserLoggedIn()) {
   try {
@@ -32,7 +25,10 @@ if (accountApi.isUserLoggedIn()) {
     setTimeout(async () => {
       await router.push({ name: 'home' })
     }, 2000)
-  } catch (error) {
+  } catch (e) {
+    const error = e as ErrorDto
+    const errorDetails = error.message || t('error.genericMessage')
+    ToastService.error(t('account.logout.error'), errorDetails)
     setTimeout(() => {
       router.back()
     }, 2000)

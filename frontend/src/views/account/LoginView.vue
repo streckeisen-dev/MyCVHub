@@ -36,11 +36,6 @@
           </p>
         </v-sheet>
       </v-row>
-      <notification-message
-        v-if="errorMessage"
-        :title="t('account.login.error')"
-        :message="errorMessage"
-      />
     </v-container>
   </v-main>
 </template>
@@ -50,12 +45,12 @@ import { type ComputedRef, reactive, ref } from 'vue'
 import accountApi from '@/api/AccountApi'
 import router from '@/router'
 import type { ErrorDto } from '@/dto/ErrorDto'
-import NotificationMessage from '@/components/NotificationMessage.vue'
 import PasswordInput from '@/components/PasswordInput.vue'
 import useVuelidate from '@vuelidate/core'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
 import { useI18n } from 'vue-i18n'
 import { required } from '@/validation/validators'
+import ToastService from '@/services/ToastService'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -99,8 +94,6 @@ const rules = {
 const form = useVuelidate<FormState>(rules, formState)
 
 const errorMessages = ref<ErrorMessages>({})
-const errorMessage = ref<string>()
-
 function getErrors(attributeName: string): ComputedRef {
   return getErrorMessages(errorMessages, form, attributeName)
 }
@@ -116,13 +109,13 @@ async function login() {
 
   try {
     await accountApi.login(formState.email!, formState.password!)
-    errorMessage.value = ''
     await forwardAfterSuccessfulLogin()
   } catch (e) {
     const error = e as ErrorDto
     errorMessages.value = error.errors || {}
     if (Object.keys(errorMessages.value).length === 0) {
-      errorMessage.value = error.message
+      const errorDetails = error.message || t('error.genericMessage')
+      ToastService.error(t('account.login.error'), errorDetails)
     }
   }
 }

@@ -62,8 +62,11 @@ import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
 import type { ChangePasswordRequestDto } from '@/dto/ChangePasswordRequestDto'
 import accountApi from '@/api/AccountApi'
 import type { ErrorDto } from '@/dto/ErrorDto'
+import ToastService from '@/services/ToastService'
 
-const { t } = useI18n()
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const errorMessages = ref<ErrorMessages>({})
 const isSaving = ref(false)
@@ -117,10 +120,15 @@ async function save() {
   isSaving.value = true
   try {
     await accountApi.changePassword(changePasswordRequest)
+    ToastService.success(t('account.changePassword.success'))
     await router.push({ name: 'account' })
   } catch (e) {
     const error = e as ErrorDto
     errorMessages.value = error.errors || {}
+    if (Object.keys(errorMessages.value).length === 0) {
+      const errorDetails = error.message || t('error.genericMessage')
+      ToastService.error(t('account.changePassword.error'), errorDetails)
+    }
   } finally {
     isSaving.value = false
   }

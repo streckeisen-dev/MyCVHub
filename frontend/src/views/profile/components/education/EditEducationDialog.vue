@@ -44,6 +44,7 @@
         <form-buttons
           @save="save"
           @cancel="cancel"
+          :is-saving="isSaving"
         />
       </v-form>
     </v-sheet>
@@ -64,6 +65,7 @@ import { useI18n } from 'vue-i18n'
 import { required, withI18nMessage } from '@/validation/validators'
 import { helpers } from '@vuelidate/validators'
 import FormButtons from '@/components/FormButtons.vue'
+import ToastService from '@/services/ToastService'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -75,6 +77,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits(['saveNew', 'saveEdit', 'cancel'])
+
+const isSaving = ref(false)
 
 type FormState = {
   institution?: string
@@ -129,7 +133,6 @@ const rules = {
 const form = useVuelidate<FormState>(rules, formState)
 
 const errorMessages = ref<ErrorMessages>({})
-
 function getErrors(attributeName: string): ComputedRef {
   return getErrorMessages(errorMessages, form, attributeName)
 }
@@ -158,6 +161,7 @@ async function save() {
   }
 
   try {
+    isSaving.value = true
     const savedEducation = await profileApi.saveEducation(educationUpdate)
     if (props.isEdit) {
       emit('saveEdit', savedEducation)
@@ -168,6 +172,15 @@ async function save() {
   } catch (e) {
     const error = e as ErrorDto
     errorMessages.value = error.errors || {}
+    if (Object.keys(errorMessages.value).length === 0) {
+      const errorMessage = props.isEdit
+        ? t('education.editor.editError')
+        : t('education.editor.addError')
+      const errorDetails = error.message || t('error.genericMessage')
+      ToastService.error(errorMessage, errorDetails)
+    }
+  } finally {
+    isSaving.value = false
   }
 }
 

@@ -48,7 +48,8 @@ shared:
 
 frontend:
   error: 
-    genericMessage: "Ups, etwas ist schief gelaufen"
+    genericMessageTitle: "Ups, etwas ist schief gelaufen"
+    genericMessage: "Ein unerwarteter Fehler ist aufgetreten"
 
   date: 
     today: "Heute"
@@ -92,18 +93,24 @@ frontend:
     edit:
       title: "Account bearbeiten"
       changePassword: "Passwort ändern"
+      error: "Dein Account konnte nicht aktualisiert werden"
+      success: "Dein Account wurde erfolgreich aktualisiert"
+    changePassword:
+      error: "Dein Passwort konnte nicht aktualisiert werden"
+      success: "Dein Passwort wurde erfolgreich aktualisiert"
     login:
       title: "Bei MyCVHub einloggen"
       action: "Anmelden"
       noAccount: "Noch keinen Account?"
       signup: "Jetzt registrieren"
       error: "Anmeldung fehlgeschlagen"
+    signup:
+      error: "Dein Account konnte nicht erstellt werden"
     logout:
       headline: "Auf Wiedersehen"
       action: "Abmelden"
       message: "Du wirst abgemeldet..."
-      errorTitle: "Fehler beim Abmelden"
-      errorMessage: "Etwas ist beim Abmelden schiefgelaufen"
+      error: "Fehler beim Abmelden"
     profile:
       view: "Profil ansehen"
       edit: "Profil bearbeiten"
@@ -136,8 +143,7 @@ frontend:
       publicAddressHint: "Falls aktiviert, wird deine Adresse in deinem Profil angezeigt"
       hideDescriptions: "Beschreibungen aus dem öffentlichen Profil ausblenden"
       hideDescriptionsHint: "Falls aktiviert, werden detaillierte Beschreibungen deiner Lebenslaufeinträge nicht in deinem Profil angezeigt"
-      saveErrorTitle: "Das Profil konnte nicht gespeichert werden"
-      saveErrorMessage: "Beim Versuch, dein Profil zu speichern, ist ein Fehler aufgetreten"
+      saveErrorTitle: "Dein Profil konnte nicht gespeichert werden"
   
   workExperience:
     title: "Arbeitserfahrung"
@@ -145,6 +151,8 @@ frontend:
     editor:
       add: "Arbeitserfahrung hinzufügen"
       edit: "Arbeitserfahrung bearbeiten"
+      addError: "Arbeitserfahrung konnte nicht hinzugefügt werden"
+      editError: "Arbeitserfahrung konnte nicht aktualisiert werden"
       deleteError: "Arbeitserfahrung konnte nicht gelöscht werden"
   
   skills:
@@ -154,6 +162,8 @@ frontend:
       add: "Fähigkeit hinzufügen"
       edit: "Fähigkeit bearbeiten"
       typeHint: "Die Fähigkeiten werden in deinem Lebenslauf nach ihrem Typ gruppiert. Verwende etwas wie 'Programmiersprachen', 'Kommunikation' etc."
+      addError: "Fähigkeit konnte nicht hinzugefügt werden"
+      editError: "Fähigkeit konnte nicht aktualisiert werden"
       deleteError: "Fähigkeit konnte nicht gelöscht werden"
   
   education:
@@ -162,6 +172,8 @@ frontend:
     editor:
       add: "Ausbildung hinzufügen"
       edit: "Ausbildung bearbeiten"
+      addError: "Ausbildung konnte nicht hinzugefügt werden"
+      editError: "Ausbildung konnte nicht aktualisiert werden"
       deleteError: "Ausbildung konnte nicht gelöscht werden"
   
   country:

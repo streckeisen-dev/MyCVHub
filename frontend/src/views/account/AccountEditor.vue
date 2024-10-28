@@ -113,11 +113,6 @@
         </v-col>
       </v-row>
     </v-col>
-    <notification-message
-      v-if="didCountryLoadFail"
-      :title="t('country.loadingError.title')"
-      :message="t('country.loadingError.message')"
-    />
   </v-row>
 </template>
 
@@ -131,7 +126,7 @@ import { useI18n } from 'vue-i18n'
 import type { CountryDto } from '@/dto/CountryDto'
 import countryApi from '@/api/CountryApi'
 import { useLocale } from 'vuetify'
-import NotificationMessage from '@/components/NotificationMessage.vue'
+import toastService from '@/services/ToastService'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -141,19 +136,17 @@ const form = defineModel<Validation>('form', { required: true })
 const formState = defineModel<AccountEditorData>('formState', { required: true })
 const errorMessages = defineModel<ErrorMessages>('errorMessages', { required: true })
 
-const didCountryLoadFail = ref<boolean>(false)
 const countries = ref<Array<CountryDto>>([])
 async function loadCountries() {
   try {
     countries.value = await countryApi.getCountries()
   } catch (error) {
-    didCountryLoadFail.value = true
+    toastService.error(t('country.loadingError.title'), t('country.loadingError.message'))
   }
 }
 await loadCountries()
 
 watch(useLocale().current, async () => {
-  didCountryLoadFail.value = false
   await loadCountries()
 })
 

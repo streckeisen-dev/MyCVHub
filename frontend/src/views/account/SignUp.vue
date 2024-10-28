@@ -82,6 +82,7 @@ import type { SignupRequestDto } from '@/dto/SignUpRequestDto'
 import { convertDateToString } from '@/services/DateHelper'
 import AccountEditor from '@/views/account/AccountEditor.vue'
 import PasswordRequirements from '@/views/account/PasswordRequirements.vue'
+import ToastService from '@/services/ToastService'
 
 if (accountApi.isUserLoggedIn()) {
   await router.push({ name: 'home' })
@@ -175,6 +176,10 @@ async function signUp() {
   } catch (e) {
     const error = e as ErrorDto
     errorMessages.value = error.errors || {}
+    if (Object.keys(errorMessages.value).length === 0) {
+      const errorDetails = error.message || t('error.genericMessage')
+      ToastService.error(t('account.signup.error'), errorDetails)
+    }
   }
 }
 

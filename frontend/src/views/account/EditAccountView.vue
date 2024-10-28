@@ -25,7 +25,7 @@
     </v-container>
     <v-empty-state
       v-else
-      :headline="t('error.genericMessage')"
+      :headline="t('error.genericMessageTitle')"
       :title="t('account.loadingError.title')"
       :text="t('account.loadingError.text')"
     />
@@ -48,8 +48,11 @@ import accountApi from '@/api/AccountApi'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { convertDateToString, convertStringToDate } from '@/services/DateHelper'
 import type { ErrorDto } from '@/dto/ErrorDto'
+import ToastService from '@/services/ToastService'
 
-const { t } = useI18n()
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const isLoading = ref(true)
 const isSaving = ref(false)
@@ -117,10 +120,15 @@ async function save() {
   isSaving.value = true
   try {
     await accountApi.update(accountUpdate)
+    ToastService.success(t('account.edit.success'))
     await router.push({ name: 'account' })
   } catch (e) {
     const error = e as ErrorDto
     errorMessages.value = error.errors || {}
+    if (Object.keys(errorMessages.value).length === 0) {
+      const errorDetails = error.message || t('error.genericMessage')
+      ToastService.error(t('account.edit.error'), errorDetails)
+    }
   } finally {
     isSaving.value = false
   }

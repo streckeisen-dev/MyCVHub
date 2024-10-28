@@ -10,6 +10,7 @@
     <v-btn
       :text="t('forms.cancel')"
       @click="cancel"
+      :disabled="isSaving"
     />
   </div>
 </template>
@@ -17,7 +18,9 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 defineProps<{
   isSaving?: boolean

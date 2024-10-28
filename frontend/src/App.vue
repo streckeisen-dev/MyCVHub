@@ -137,7 +137,9 @@ import { useI18n } from 'vue-i18n'
 import i18n from '@/plugins/i18n'
 import LanguageService from '@/services/LanguageService'
 
-const { t } = useI18n()
+const { t } = useI18n({
+  useScope: 'global'
+})
 const locale = useLocale().current
 
 function localeClass(lang: string): ComputedRef {

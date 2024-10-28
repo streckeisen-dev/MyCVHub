@@ -126,6 +126,7 @@
                 :text="t('forms.save')"
                 color="primary"
                 @click.prevent="saveGeneralInformation"
+                :loading="isSavingProfile"
               />
             </v-form>
           </v-sheet>
@@ -144,11 +145,6 @@
       </template>
     </v-tabs-window>
   </v-container>
-  <notification-message
-    v-if="savingError"
-    :title="t('profile.editor.saveErrorTitle')"
-    :message="`${t('profile.editor.saveErrorMessage')}. ${savingError}`"
-  />
 </template>
 
 <script setup lang="ts">
@@ -164,11 +160,11 @@ import useVuelidate from '@vuelidate/core'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
 import type { ErrorDto } from '@/dto/ErrorDto'
 import router from '@/router'
-import NotificationMessage from '@/components/NotificationMessage.vue'
 import round from 'lodash/round'
 import type { ProfileUpdateRequestDto } from '@/dto/ProfileUpdateRequestDto'
 import { useI18n } from 'vue-i18n'
 import { withI18nMessage } from '@/validation/validators'
+import ToastService from '@/services/ToastService'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -180,12 +176,12 @@ const props = defineProps<{
 }>()
 
 const profilePictureMaxSize = 2097152
+const isSavingProfile = ref(false)
 const activeTab = ref('general')
 const isCreated = ref(props.exists)
 const workExperiences = ref(props.profile.workExperiences)
 const education = ref(props.profile.education)
 const skills = ref(props.profile.skills)
-const savingError = ref<string>()
 const profilePictureUrl = ref(props.profile.profilePicture)
 
 const defaultProfilePicture = ProfileApi.getDefaultProfilePicture()
@@ -245,6 +241,7 @@ const rules = {
 }
 
 const form = useVuelidate<FormState>(rules, formState)
+
 const errorMessages = ref<ErrorMessages>({})
 
 function getErrors(attributeName: string): ComputedRef {
@@ -262,6 +259,7 @@ async function saveGeneralInformation() {
     return
   }
 
+  isSavingProfile.value = true
   try {
     const profileUpdate: ProfileUpdateRequestDto = {
       profilePicture: formState.profilePicture,
@@ -296,13 +294,13 @@ async function saveGeneralInformation() {
     }
   } catch (e) {
     const error = e as ErrorDto
-    if (error.errors) {
-      errorMessages.value = error.errors
-      savingError.value = undefined
-    } else {
-      errorMessages.value = {}
-      savingError.value = error.message || ' '
+    errorMessages.value = error.errors || {}
+    if (Object.keys(errorMessages.value).length === 0) {
+      const errorDetails = error.message || t('error.genericMessage')
+      ToastService.error(t('profile.editor.saveErrorTitle'), errorDetails)
     }
+  } finally {
+    isSavingProfile.value = false
   }
 }
 </script>
