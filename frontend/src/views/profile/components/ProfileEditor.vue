@@ -6,7 +6,10 @@
         class="back-button"
       >
         <router-link :to="{ name: 'account' }">
-          <v-btn icon="mdi-arrow-left" />
+          <v-btn
+            icon="mdi-arrow-left"
+            variant="text"
+          />
           <span>{{ t('profile.editor.back') }}</span>
         </router-link>
       </v-col>
