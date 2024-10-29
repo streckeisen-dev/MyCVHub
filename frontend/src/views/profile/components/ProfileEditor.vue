@@ -1,109 +1,136 @@
 <template>
   <v-container class="profile-editor">
     <v-row>
-      <v-col cols="12" class="back-button">
+      <v-col
+        cols="12"
+        class="back-button"
+      >
         <router-link :to="{ name: 'account' }">
-          <v-btn icon="mdi-arrow-left" />
-          <span>Back to account</span>
+          <v-btn
+            icon="mdi-arrow-left"
+            variant="text"
+          />
+          <span>{{ t('profile.editor.back') }}</span>
         </router-link>
       </v-col>
       <v-col cols="12">
-        <h2>Profile</h2>
+        <h2>{{ t('profile.title') }}</h2>
       </v-col>
     </v-row>
-    <v-tabs v-model="activeTab" color="secondary">
-      <v-tab value="general">General</v-tab>
+    <v-tabs
+      v-model="activeTab"
+      color="secondary"
+    >
+      <v-tab value="general">{{ t('profile.editor.general') }}</v-tab>
       <template v-if="isCreated">
-        <v-tab value="work">Work Experience</v-tab>
-        <v-tab value="edu">Education</v-tab>
-        <v-tab value="skills">Skills</v-tab>
+        <v-tab value="work">{{ t('workExperience.title') }}</v-tab>
+        <v-tab value="edu">{{ t('education.title') }}</v-tab>
+        <v-tab value="skills">{{ t('skills.title') }}</v-tab>
       </template>
     </v-tabs>
 
     <v-tabs-window v-model="activeTab">
       <v-tabs-window-item value="general">
         <v-row justify="center">
-          <v-sheet class="form-sheet" rounded>
+          <v-sheet
+            class="form-sheet"
+            rounded
+          >
             <v-form @submit.prevent>
               <v-row class="form-flex">
-                <v-col cols="12" md="4">
+                <v-col
+                  cols="12"
+                  md="4"
+                >
                   <v-img
                     :src="profilePicture"
                     :lazy-src="defaultProfilePicture"
                     class="profile-picture"
                   >
                     <template #placeholder>
-                      <v-row class="fill-height" justify="center" align="center">
+                      <v-row
+                        class="fill-height"
+                        justify="center"
+                        align="center"
+                      >
                         <v-progress-circular indeterminate />
                       </v-row>
                     </template>
                   </v-img>
                   <v-file-input
                     v-model="formState.profilePicture"
-                    label="Profile Picture"
-                    hint="Your profile picture must not exceed 2MB."
+                    :label="t('fields.profilePicture')"
+                    :hint="t('profile.editor.pictureHint')"
                     prepend-icon="mdi-camera"
                     accept=".png, .jpeg, .jpg"
                     :error-messages="profilePictureErrors"
                   />
                 </v-col>
 
-                <v-col cols="12" md="8">
+                <v-col
+                  cols="12"
+                  md="8"
+                >
                   <v-text-field
                     v-model="formState.alias"
-                    label="Alias"
-                    hint="Name that will be used in the URL of your profile"
+                    :label="t('fields.alias')"
+                    :hint="t('profile.editor.aliasHint')"
                     :error-messages="aliasErrors"
                   />
                   <v-text-field
                     v-model="formState.jobTitle"
-                    label="Job Title"
+                    :label="t('fields.jobTitle')"
                     :error-messages="jobTitleErrors"
                   />
-                  <v-textarea v-model="formState.bio" label="Bio" :error-messages="bioErrors" />
+                  <v-textarea
+                    v-model="formState.bio"
+                    :label="t('fields.bio')"
+                    :error-messages="bioErrors"
+                  />
                   <v-switch
                     v-model="formState.isProfilePublic"
-                    label="Public Profile Access"
-                    hint="If enabled, your profile will be publicly accessible"
+                    :label="t('profile.editor.publicProfile')"
+                    :hint="t('profile.editor.publicProfileHint')"
                     color="primary"
-                    :error-messages="isProfilePublicErrors"
                   />
                   <v-switch
                     v-model="formState.isEmailPublic"
                     :disabled="!formState.isProfilePublic"
-                    label="Show E-Mail in public profile"
-                    hint="If enabled, your E-Mail address will be shown in your profile"
+                    :label="t('profile.editor.publicEmail')"
+                    :hint="t('profile.editor.publicEmailHint')"
                     color="primary"
-                    :error-messages="isEmailPublicErrors"
                   />
                   <v-switch
                     v-model="formState.isPhonePublic"
                     :disabled="!formState.isProfilePublic"
-                    label="Show phone in public profile"
-                    hint="If enabled, your phone number will be shown in your profile"
+                    :label="t('profile.editor.publicPhone')"
+                    :hint="t('profile.editor.publicPhoneHint')"
                     color="primary"
-                    :error-messages="isPhonePublicErrors"
                   />
                   <v-switch
                     v-model="formState.isAddressPublic"
                     :disabled="!formState.isProfilePublic"
-                    label="Show address in public profile"
-                    hint="If enabled, your address will be shown in your profile"
+                    :label="t('profile.editor.publicAddress')"
+                    :hint="t('profile.editor.publicAddressHint')"
                     color="primary"
-                    :error-messages="isAddressPublicErrors"
                   />
                   <v-switch
                     v-model="formState.hideDescriptions"
                     :disabled="!formState.isProfilePublic"
-                    label="Hide descriptions from public profile"
-                    hint="If enabled, detailed descriptions of your CV entries won't be shown in your profile"
+                    :label="t('profile.editor.hideDescriptions')"
+                    :hint="t('profile.editor.hideDescriptionsHint')"
                     color="primary"
-                    :error-messages="hideDescriptionsErrors"
                   />
                 </v-col>
               </v-row>
 
-              <v-btn type="submit" text="Save" color="primary" @click="saveGeneralInformation" />
+              <v-btn
+                type="submit"
+                :text="t('forms.save')"
+                color="primary"
+                @click.prevent="saveGeneralInformation"
+                :loading="isSavingProfile"
+              />
             </v-form>
           </v-sheet>
         </v-row>
@@ -121,11 +148,6 @@
       </template>
     </v-tabs-window>
   </v-container>
-  <notification
-    v-if="savingError"
-    title="Failed to save profile"
-    :message="`An error occurred while trying to save your profile. ${savingError}`"
-  />
 </template>
 
 <script setup lang="ts">
@@ -141,9 +163,15 @@ import useVuelidate from '@vuelidate/core'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
 import type { ErrorDto } from '@/dto/ErrorDto'
 import router from '@/router'
-import Notification from '@/components/Notification.vue'
 import round from 'lodash/round'
 import type { ProfileUpdateRequestDto } from '@/dto/ProfileUpdateRequestDto'
+import { useI18n } from 'vue-i18n'
+import { withI18nMessage } from '@/validation/validators'
+import ToastService from '@/services/ToastService'
+
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const props = defineProps<{
   profile: ProfileDto
@@ -151,12 +179,12 @@ const props = defineProps<{
 }>()
 
 const profilePictureMaxSize = 2097152
+const isSavingProfile = ref(false)
 const activeTab = ref('general')
 const isCreated = ref(props.exists)
 const workExperiences = ref(props.profile.workExperiences)
 const education = ref(props.profile.education)
 const skills = ref(props.profile.skills)
-const savingError = ref<string>()
 const profilePictureUrl = ref(props.profile.profilePicture)
 
 const defaultProfilePicture = ProfileApi.getDefaultProfilePicture()
@@ -188,39 +216,35 @@ const formState = reactive<FormState>({
   hideDescriptions: props.profile.hideDescriptions
 })
 
-const profilePictureSizeValidator = () =>
-  formState.profilePicture == undefined || formState.profilePicture?.size <= profilePictureMaxSize
+const fileSizeValidator = withI18nMessage(
+  () =>
+    formState.profilePicture == undefined || formState.profilePicture?.size <= profilePictureMaxSize
+)
+const profilePictureSizeValidator = helpers.withParams(
+  { maxSize: round(profilePictureMaxSize * Math.pow(2, -20), 1) },
+  fileSizeValidator
+)
 
 const rules = {
   profilePicture: isCreated.value
     ? {
-        profilePictureSizeValidator: helpers.withMessage(
-          `Profile Picture must be less than ${round(profilePictureMaxSize * Math.pow(2, -20), 1)} MB`,
-          profilePictureSizeValidator
-        )
+        fileSizeValidator: profilePictureSizeValidator
       }
     : {
-        required: helpers.withMessage('Profile Picture is required', required),
-        profilePictureSizeValidator: helpers.withMessage(
-          `Profile Picture must be less than ${round(profilePictureMaxSize * Math.pow(2, -20), 1)} MB`,
-          profilePictureSizeValidator
-        )
+        required,
+        fileSizeValidator: profilePictureSizeValidator
       },
   alias: {
-    required: helpers.withMessage('Alias is required', required)
+    required
   },
   jobTitle: {
-    required: helpers.withMessage('Job Title is required', required)
+    required
   },
-  bio: {},
-  isProfilePublic: {},
-  isEmailPublic: {},
-  isPhonePublic: {},
-  isAddressPublic: {},
-  hideDescriptions: {}
+  bio: {}
 }
 
 const form = useVuelidate<FormState>(rules, formState)
+
 const errorMessages = ref<ErrorMessages>({})
 
 function getErrors(attributeName: string): ComputedRef {
@@ -231,11 +255,6 @@ const profilePictureErrors = getErrors('profilePicture')
 const aliasErrors = getErrors('alias')
 const jobTitleErrors = getErrors('jobTitle')
 const bioErrors = getErrors('bio')
-const isProfilePublicErrors = getErrors('isProfilePublic')
-const isEmailPublicErrors = getErrors('isEmailPublic')
-const isPhonePublicErrors = getErrors('isPhonePublic')
-const isAddressPublicErrors = getErrors('isAddressPublic')
-const hideDescriptionsErrors = getErrors('hideDescriptions')
 
 async function saveGeneralInformation() {
   const isValid = await form.value.$validate()
@@ -243,6 +262,7 @@ async function saveGeneralInformation() {
     return
   }
 
+  isSavingProfile.value = true
   try {
     const profileUpdate: ProfileUpdateRequestDto = {
       profilePicture: formState.profilePicture,
@@ -277,13 +297,13 @@ async function saveGeneralInformation() {
     }
   } catch (e) {
     const error = e as ErrorDto
-    if (error.errors) {
-      errorMessages.value = error.errors
-      savingError.value = undefined
-    } else {
-      errorMessages.value = {}
-      savingError.value = error.message || ' '
+    errorMessages.value = error.errors || {}
+    if (Object.keys(errorMessages.value).length === 0) {
+      const errorDetails = error.message || t('error.genericMessage')
+      ToastService.error(t('profile.editor.saveErrorTitle'), errorDetails)
     }
+  } finally {
+    isSavingProfile.value = false
   }
 }
 </script>

@@ -2,7 +2,7 @@ package ch.streckeisen.mycv.backend.cv.experience
 
 import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
-import ch.streckeisen.mycv.backend.exceptions.ResultNotFoundException
+import ch.streckeisen.mycv.backend.exceptions.EntityNotFoundException
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -40,7 +40,7 @@ class WorkExperienceServiceTest {
         }
         workExperienceValidationService = mockk()
         profileService = mockk {
-            every { findByAccountId(any()) } returns Result.failure(ResultNotFoundException(""))
+            every { findByAccountId(any()) } returns Result.failure(EntityNotFoundException(""))
             every { findByAccountId(eq(1)) } returns Result.success(mockProfile)
         }
         workExperienceService =
@@ -56,7 +56,7 @@ class WorkExperienceServiceTest {
         assertTrue { result.isFailure }
         val ex = result.exceptionOrNull()
         assertNotNull(ex)
-        assertTrue { ex is ResultNotFoundException }
+        assertTrue { ex is EntityNotFoundException }
 
         verify(exactly = 1) { workExperienceRepository.findById(eq(5)) }
         verify(exactly = 0) { workExperienceRepository.save(any()) }
@@ -87,7 +87,7 @@ class WorkExperienceServiceTest {
         assertTrue { result.isFailure }
         val ex = result.exceptionOrNull()
         assertNotNull(ex)
-        assertTrue(ex is ResultNotFoundException)
+        assertTrue(ex is EntityNotFoundException)
 
         verify(exactly = 0) { workExperienceRepository.findById(any()) }
         verify(exactly = 0) { workExperienceRepository.save(any()) }
@@ -136,7 +136,7 @@ class WorkExperienceServiceTest {
         assertTrue { result.isFailure }
         val ex = result.exceptionOrNull()
         assertNotNull(ex)
-        assertTrue(ex is ResultNotFoundException)
+        assertTrue(ex is EntityNotFoundException)
     }
 
     @Test

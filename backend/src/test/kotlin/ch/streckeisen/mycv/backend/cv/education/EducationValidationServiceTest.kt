@@ -1,6 +1,7 @@
 package ch.streckeisen.mycv.backend.cv.education
 
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
+import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -15,7 +16,7 @@ class EducationValidationServiceTest {
 
     @BeforeEach
     fun setup() {
-        educationValidationService = EducationValidationService()
+        educationValidationService = EducationValidationService(mockk(relaxed = true))
     }
 
     @ParameterizedTest

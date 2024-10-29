@@ -1,7 +1,7 @@
 package ch.streckeisen.mycv.backend.cv.skill
 
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
-import ch.streckeisen.mycv.backend.exceptions.ResultNotFoundException
+import ch.streckeisen.mycv.backend.exceptions.EntityNotFoundException
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,7 +17,7 @@ class SkillService(
     fun save(accountId: Long, skillUpdate: SkillUpdateDto): Result<SkillEntity> {
         val existingSkill = if (skillUpdate.id != null) {
             skillRepository.findById(skillUpdate.id)
-                .getOrElse { return Result.failure(ResultNotFoundException("This skill does not exist")) }
+                .getOrElse { return Result.failure(EntityNotFoundException("This skill does not exist")) }
         } else null
 
         val profile = if (existingSkill != null) {
@@ -50,7 +50,7 @@ class SkillService(
     @Transactional
     fun delete(accountId: Long, skillId: Long): Result<Unit> {
         val skill = skillRepository.findById(skillId)
-            .getOrElse { return Result.failure(ResultNotFoundException("This skill does not exist")) }
+            .getOrElse { return Result.failure(EntityNotFoundException("This skill does not exist")) }
 
         if (skill.profile.account.id != accountId) {
             return Result.failure(AccessDeniedException("You don't have permission to delete this skill"))

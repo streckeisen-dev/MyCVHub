@@ -1,7 +1,10 @@
 package ch.streckeisen.mycv.backend
 
-import ch.streckeisen.mycv.backend.exceptions.ResultNotFoundException
+import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureStorageException
+import ch.streckeisen.mycv.backend.exceptions.EntityNotFoundException
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
+import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
+import ch.streckeisen.mycv.backend.locale.MessagesService
 import com.fasterxml.jackson.core.JacksonException
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.security.SignatureException
@@ -9,16 +12,28 @@ import org.postgresql.util.PSQLException
 import org.springframework.dao.DataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.AccountStatusException
 import org.springframework.security.authentication.BadCredentialsException
-import org.springframework.security.core.AuthenticationException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
+private const val EXCEPTION_ERROR_KEY_PREFIX = "${MYCV_KEY_PREFIX}.exceptions"
+private const val DATA_ACCESS_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.db"
+private const val EXPIRED_TOKEN_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.expiredJwt"
+private const val BAD_CREDENTIALS_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.badCredentials"
+private const val LOCKED_ACCOUNT_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.lockedAccount"
+private const val INVALID_JWT_SIGNATURE_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.invalidJwtSignature"
+private const val PSQL_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.psql"
+private const val ENTITY_NOT_FOUND_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.entityNotFound"
+private const val REQUEST_FORMAT_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.requestFormat"
+private const val PROFILE_PICTURE_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.profilePictureStorage"
+private const val GENERIC_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.generic"
+
 @ControllerAdvice
-class ControllerAdvice : ResponseEntityExceptionHandler() {
+class ControllerAdvice(
+    private val messagesService: MessagesService
+) : ResponseEntityExceptionHandler() {
     @ExceptionHandler
     fun handleValidationError(ex: ValidationException): ResponseEntity<ErrorDto> {
         return ResponseEntity.badRequest().body(ErrorDto(ex.message!!, ex.errors))
@@ -28,50 +43,50 @@ class ControllerAdvice : ResponseEntityExceptionHandler() {
     fun handleDatabaseError(ex: DataAccessException): ResponseEntity<ErrorDto> {
         logger.error(ex.message, ex)
         return ResponseEntity.badRequest()
-            .body(ErrorDto("A database error occurred. Please contact the administrator"))
+            .body(ErrorDto(messagesService.getMessage(DATA_ACCESS_ERROR_KEY)))
     }
 
     @ExceptionHandler
     fun handleExpiredJwtException(ex: ExpiredJwtException): ResponseEntity<ErrorDto> {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-            .body(ErrorDto("Expired JWT token"))
+            .body(ErrorDto(messagesService.getMessage(EXPIRED_TOKEN_ERROR_KEY)))
     }
 
     @ExceptionHandler
     fun handleBadCredentialsException(ex: BadCredentialsException): ResponseEntity<ErrorDto> {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-            .body(ErrorDto("Username and/or password are incorrect"))
+            .body(ErrorDto(messagesService.getMessage(BAD_CREDENTIALS_ERROR_KEY)))
     }
 
     @ExceptionHandler
     fun handleAccountStatusException(ex: AccountStatusException): ResponseEntity<ErrorDto> {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-            .body(ErrorDto("Account is locked"))
+            .body(ErrorDto(messagesService.getMessage(LOCKED_ACCOUNT_ERROR_KEY)))
     }
 
     @ExceptionHandler
     fun handleSignatureException(ex: SignatureException): ResponseEntity<ErrorDto> {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-            .body(ErrorDto("Invalid JWT signature"))
+            .body(ErrorDto(messagesService.getMessage(INVALID_JWT_SIGNATURE_ERROR_KEY)))
     }
 
     @ExceptionHandler
-    fun handleResultNotFoundException(ex: ResultNotFoundException): ResponseEntity<ErrorDto> {
+    fun handleEntityNotFoundException(ex: EntityNotFoundException): ResponseEntity<ErrorDto> {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-            .body(ErrorDto(ex.message!!))
+            .body(ErrorDto(messagesService.getMessage(ENTITY_NOT_FOUND_ERROR_KEY)))
     }
 
     @ExceptionHandler
     fun handlePsqlException(ex: PSQLException): ResponseEntity<ErrorDto> {
         logger.error(ex.message, ex)
         return ResponseEntity.internalServerError()
-            .body(ErrorDto("Error during data processing"))
+            .body(ErrorDto(messagesService.getMessage(PSQL_ERROR_KEY)))
     }
 
     @ExceptionHandler
     fun handleJacksonException(ex: JacksonException): ResponseEntity<ErrorDto> {
         logger.error(ex.message, ex)
-        return ResponseEntity.badRequest().body(ErrorDto(ex.message!!))
+        return ResponseEntity.badRequest().body(ErrorDto(messagesService.getMessage(REQUEST_FORMAT_ERROR_KEY)))
     }
 
     @ExceptionHandler
@@ -85,8 +100,14 @@ class ControllerAdvice : ResponseEntityExceptionHandler() {
     }
 
     @ExceptionHandler
+    fun handleProfilePictureStorageException(ex: ProfilePictureStorageException): ResponseEntity<ErrorDto> {
+        return ResponseEntity.internalServerError()
+            .body(ErrorDto(messagesService.getMessage(PROFILE_PICTURE_ERROR_KEY)))
+    }
+
+    @ExceptionHandler
     fun handleException(ex: Exception): ResponseEntity<ErrorDto> {
         logger.error(ex.message, ex)
-        return ResponseEntity.internalServerError().body(ErrorDto("An unknown error occurred"))
+        return ResponseEntity.internalServerError().body(ErrorDto(messagesService.getMessage(GENERIC_ERROR_KEY)))
     }
 }

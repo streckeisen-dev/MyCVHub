@@ -1,12 +1,27 @@
 <template>
-  <v-row justify="center" class="skills-editor">
-    <v-sheet class="editor-sheet" rounded>
+  <v-row
+    justify="center"
+    class="skills-editor"
+  >
+    <v-sheet
+      class="editor-sheet"
+      rounded
+    >
       <v-col cols="12">
         <v-row justify="end">
-          <v-btn text="Add skill" color="primary" @click="addSkill" />
+          <v-btn
+            :text="t('skills.editor.add')"
+            color="primary"
+            @click="addSkill"
+          />
         </v-row>
       </v-col>
-      <skills-container :values="skills" actions @edit="editSkill" @delete="deleteSkill" />
+      <skills-container
+        :values="skills"
+        actions
+        @edit="editSkill"
+        @delete="deleteSkill"
+      />
     </v-sheet>
   </v-row>
   <edit-skill-dialog
@@ -17,22 +32,21 @@
     @saveEdit="onSaveEdit"
     @cancel="onEditCancel"
   />
-
-  <notification
-    v-if="deleteErrorMessage"
-    title="Failed to delete skill"
-    :message="deleteErrorMessage"
-  />
 </template>
 
 <script setup lang="ts">
 import { type PropType, ref } from 'vue'
 import profileApi from '@/api/ProfileApi'
 import type { ErrorDto } from '@/dto/ErrorDto'
-import Notification from '@/components/Notification.vue'
 import SkillsContainer from '@/views/profile/components/skill/SkillsContainer.vue'
 import EditSkillDialog from '@/views/profile/components/skill/EditSkillDialog.vue'
 import type { SkillDto } from '@/dto/SkillDto'
+import { useI18n } from 'vue-i18n'
+import ToastService from '@/services/ToastService'
+
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const skills = defineModel({
   required: true,
@@ -42,7 +56,6 @@ const skills = defineModel({
 const showEditDialog = ref(false)
 const skillToEdit = ref<SkillDto>()
 const isEdit = ref<boolean>()
-const deleteErrorMessage = ref<string>()
 
 function addSkill() {
   isEdit.value = false
@@ -79,10 +92,10 @@ async function deleteSkill(id: number) {
     await profileApi.deleteSkill(id)
     const index = skills.value.findIndex((e) => e.id === id)
     skills.value.splice(index, 1)
-    deleteErrorMessage.value = undefined
   } catch (e) {
     const error = e as ErrorDto
-    deleteErrorMessage.value = error.message
+    const errorDetails = error.message || t('error.genericMessage')
+    ToastService.error(t('skills.editor.deleteError'), errorDetails)
   }
 }
 </script>

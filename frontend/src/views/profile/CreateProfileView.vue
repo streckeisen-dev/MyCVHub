@@ -1,6 +1,9 @@
 <template>
   <v-main>
-    <profile-editor :profile="emptyProfile" :exists="false" />
+    <profile-editor
+      :profile="emptyProfile"
+      :exists="false"
+    />
   </v-main>
 </template>
 
@@ -31,11 +34,10 @@ try {
   router.push({ name: 'edit-profile' })
 } catch (e) {
   const error = e as ErrorDto
-  if (error.status === 401) { // prevent the form from being displayed in (unlikely) case that login state is true and cookies are expired
-    await router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath }})
+  if (error.status === 401) {
+    // prevent the form from being displayed in (unlikely) case that login state is true and cookies are expired
+    await router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
   }
   // profile does not exist, therefore continue with creation
 }
 </script>
-
-<style scoped></style>

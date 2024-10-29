@@ -2,7 +2,7 @@ package ch.streckeisen.mycv.backend.cv.profile
 
 import ch.streckeisen.mycv.backend.account.ApplicantAccountService
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
-import ch.streckeisen.mycv.backend.exceptions.ResultNotFoundException
+import ch.streckeisen.mycv.backend.exceptions.EntityNotFoundException
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -19,7 +19,7 @@ class ProfileService(
     @Transactional(readOnly = true)
     fun findByAlias(accountId: Long?, alias: String): Result<ProfileEntity> {
         val profile = profileRepository.findByAlias(alias)
-            .getOrElse { return Result.failure(ResultNotFoundException("Profile not found")) }
+            .getOrElse { return Result.failure(EntityNotFoundException("Profile not found")) }
 
         if (!profile.isProfilePublic && profile.account.id != accountId) {
             return Result.failure(AccessDeniedException("You don't have permission to view this profile"))
@@ -31,7 +31,7 @@ class ProfileService(
     fun findByAccountId(accountId: Long): Result<ProfileEntity> {
         return profileRepository.findByAccountId(accountId)
             .map { Result.success(it) }
-            .orElse(Result.failure(ResultNotFoundException("Profile not found")))
+            .orElse(Result.failure(EntityNotFoundException("Profile not found")))
     }
 
     @Transactional
@@ -42,7 +42,7 @@ class ProfileService(
     ): Result<ProfileEntity> {
         val account = applicantAccountService.findById(accountId).getOrNull()
         if (account == null) {
-            return Result.failure(ResultNotFoundException("Account is invalid"))
+            return Result.failure(EntityNotFoundException("Account is invalid"))
         }
 
         val existingProfile = account.profile

@@ -9,22 +9,41 @@ on:
   push:
     branches:
       - '**'
-  pull_request:
-    branches:
-      - '**'
 
 jobs:
-  build-frontend:
+  i18n:
     runs-on: ubuntu-latest
-
+    container:
+      image: lstreckeisen/my-cv-github-image:latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '21'
+    - name: Check I18n files
+      working-directory: locales
+      run: python check_keys.py
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    container:
+      image: lstreckeisen/my-cv-github-image:latest
+    needs:
+      - i18n
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Prepare i18n files
+      working-directory: locales
+      run: |
+        python generate_messages.py --type frontend
+    
+    # required since test report action uses git
+    - name: Configure Git Safe Directory
+      run: |
+        REPO_NAME=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f2)
+        git config --global --add safe.directory "/__w/$REPO_NAME/$REPO_NAME"
 
     - name: Build frontend
       working-directory: frontend
@@ -49,16 +68,25 @@ jobs:
   
   build-backend:
     runs-on: ubuntu-latest
+    container:
+      image: lstreckeisen/my-cv-github-image:latest
+    needs:
+      - i18n
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Setup JDK
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: temurin
+    - name: Prepare i18n files
+      working-directory: locales
+      run: |
+        python generate_messages.py --type backend
+
+    # required since test report action uses git
+    - name: Configure Git Safe Directory
+      run: |
+        REPO_NAME=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f2)
+        git config --global --add safe.directory "/__w/$REPO_NAME/$REPO_NAME"
 
     - name: Cache maven dependencies
       uses: actions/cache@v4

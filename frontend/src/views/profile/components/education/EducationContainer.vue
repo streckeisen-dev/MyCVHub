@@ -5,19 +5,44 @@
     class="education"
     justify="end"
   >
-    <v-col cols="12" :md="actions ? 10 : 12">
+    <v-col
+      cols="12"
+      :md="actions ? 10 : 12"
+    >
       <education-entry :education="education" />
     </v-col>
     <template v-if="actions">
-      <v-col cols="3" sm="2" md="1" class="education-action">
-        <v-btn icon="mdi-pencil" color="primary" @click="editEducation(education as EducationDto)" />
+      <v-col
+        cols="3"
+        sm="2"
+        md="1"
+        class="education-action"
+      >
+        <v-btn
+          icon="mdi-pencil"
+          color="primary"
+          @click="editEducation(education as EducationDto)"
+        />
       </v-col>
-      <v-col cols="3" sm="2" md="1" class="education-action">
-        <v-btn icon="mdi-delete" color="red" @click="deleteEducation((education as EducationDto).id)" />
+      <v-col
+        cols="3"
+        sm="2"
+        md="1"
+        class="education-action"
+      >
+        <v-btn
+          icon="mdi-delete"
+          color="red"
+          @click="deleteEducation((education as EducationDto).id)"
+        />
       </v-col>
     </template>
   </v-row>
-  <v-col v-if="values.length === 0" cols="12">No education entries yet.</v-col>
+  <v-col
+    v-if="values.length === 0"
+    cols="12"
+    >{{ t('education.noEntries') }}</v-col
+  >
 </template>
 
 <script setup lang="ts">
@@ -26,6 +51,11 @@ import { compareDatesByYearAndMonth, convertStringToDate } from '@/services/Date
 import type { PublicEducationDto } from '@/dto/PublicEducationDto'
 import type { EducationDto } from '@/dto/EducationDto'
 import EducationEntry from '@/views/profile/components/education/EducationEntry.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const props = defineProps<{
   values: Array<EducationDto> | Array<PublicEducationDto>
@@ -35,7 +65,8 @@ const props = defineProps<{
 const emit = defineEmits(['edit', 'delete'])
 
 const sortedEducation = computed(() => {
-  return props.values.sort((a, b) => {
+  const education = props.values
+  return education.sort((a, b) => {
     const educationEndA = convertStringToDate(a.educationEnd)
     const educationEndB = convertStringToDate(b.educationEnd)
     const educationStartA = convertStringToDate(a.educationStart)!!

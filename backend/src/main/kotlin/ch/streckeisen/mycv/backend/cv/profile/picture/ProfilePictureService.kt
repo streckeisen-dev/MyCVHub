@@ -1,6 +1,8 @@
 package ch.streckeisen.mycv.backend.cv.profile.picture
 
 import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
+import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
+import ch.streckeisen.mycv.backend.locale.MessagesService
 import org.apache.tika.mime.MediaType
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.AccessDeniedException
@@ -11,9 +13,12 @@ import java.io.BufferedInputStream
 private val allowedMediaTypes = listOf(MediaType.image("png"), MediaType.image("jpg"), MediaType.image("jpeg"))
 private val logger = LoggerFactory.getLogger(ProfilePictureService::class.java)
 
+private const val ILLEGAL_MEDIA_TYPE_ERROR_KEY = "${MYCV_KEY_PREFIX}.profile.validation.pictureIllegalMediaType"
+
 @Service
 class ProfilePictureService(
-    private val profilePictureStorageService: ProfilePictureStorageService
+    private val profilePictureStorageService: ProfilePictureStorageService,
+    private val messagesService: MessagesService,
 ) {
     fun get(accountId: Long?, profile: ProfileEntity): Result<ProfilePicture> {
         if (!profile.isProfilePublic && profile.account.id != accountId) {
@@ -26,14 +31,25 @@ class ProfilePictureService(
         return Result.success(profilePicture)
     }
 
+    fun getThumbnail(accountId: Long?, profile: ProfileEntity): Result<ProfilePicture> {
+        if (profile.account.id != accountId) {
+            return Result.failure(AccessDeniedException("You can't access this profile picture"))
+        }
+
+        val profilePicture = profilePictureStorageService.getThumbnail(profile.profilePicture)
+            .getOrElse { return Result.failure(it) }
+
+        return Result.success(profilePicture)
+    }
+
     fun store(accountId: Long, profilePicture: MultipartFile, oldProfilePicture: String?): Result<String> {
         if (profilePicture.isEmpty) {
-            return Result.failure(IllegalArgumentException("Profile picture is empty"))
+            return Result.failure(IllegalArgumentException(messagesService.requiredFieldMissingError("profilePicture")))
         }
 
         val mediaType = profilePictureStorageService.detectContentType(BufferedInputStream(profilePicture.inputStream))
         if (!allowedMediaTypes.contains(mediaType)) {
-            return Result.failure(IllegalArgumentException("Profile picture media type is not allowed"))
+            return Result.failure(IllegalArgumentException(messagesService.getMessage(ILLEGAL_MEDIA_TYPE_ERROR_KEY)))
         }
 
         val imageType = mediaType.subtype
