@@ -30,7 +30,7 @@
               />
               <attribute-value
                 :name="t('fields.birthday')"
-                :value="account.birthday"
+                :value="d(account.birthday, 'shortDate')"
               />
             </attribute-list>
           </v-sheet>
@@ -187,7 +187,7 @@ import AttributeList from '@/components/AttributeList.vue'
 import AttributeValue from '@/components/AttributeValue.vue'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n({
+const { t, d } = useI18n({
   useScope: 'global'
 })
 
