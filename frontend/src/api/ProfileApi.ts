@@ -13,6 +13,7 @@ import type { EducationUpdateDto } from '@/dto/EducationUpdateDto'
 import type { EducationDto } from '@/dto/EducationDto'
 import type { SkillUpdateDto } from '@/dto/SkillUpdateDto'
 import type { SkillDto } from '@/dto/SkillDto'
+import type { ThumbnailDto } from '@/dto/ThumbnailDto'
 
 async function getPublicProfile(alias: string): Promise<PublicProfileDto> {
   try {
@@ -26,6 +27,10 @@ async function getPublicProfile(alias: string): Promise<PublicProfileDto> {
 
 function getDefaultProfilePicture(): string {
   return new URL('@/assets/default_profile_picture.png', import.meta.url).toString()
+}
+
+function getDefaultProfilePictureThumbnail(): string {
+  return new URL('@/assets/default_profile_picture_thumbnail.png', import.meta.url).toString()
 }
 
 async function getProfile(): Promise<ProfileDto> {
@@ -138,9 +143,20 @@ async function deleteSkill(id: number): Promise<void> {
   }
 }
 
+async function getThumbnail(): Promise<ThumbnailDto> {
+  try {
+    const response = await fetchFromApi('/profile/picture/thumbnail')
+    const thumbnail = getJSONIfResponseIsOk<ThumbnailDto>(response)
+    return Promise.resolve(thumbnail)
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
 export default {
   getPublicProfile,
   getDefaultProfilePicture,
+  getDefaultProfilePictureThumbnail,
   getProfile,
   updateGeneralInformation,
   saveWorkExperience,
@@ -148,5 +164,6 @@ export default {
   saveEducation,
   deleteEducation,
   saveSkill,
-  deleteSkill
+  deleteSkill,
+  getThumbnail
 }
