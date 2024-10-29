@@ -31,6 +31,17 @@ class ProfilePictureService(
         return Result.success(profilePicture)
     }
 
+    fun getThumbnail(accountId: Long?, profile: ProfileEntity): Result<ProfilePicture> {
+        if (profile.account.id != accountId) {
+            return Result.failure(AccessDeniedException("You can't access this profile picture"))
+        }
+
+        val profilePicture = profilePictureStorageService.getThumbnail(profile.profilePicture)
+            .getOrElse { return Result.failure(it) }
+
+        return Result.success(profilePicture)
+    }
+
     fun store(accountId: Long, profilePicture: MultipartFile, oldProfilePicture: String?): Result<String> {
         if (profilePicture.isEmpty) {
             return Result.failure(IllegalArgumentException(messagesService.requiredFieldMissingError("profilePicture")))

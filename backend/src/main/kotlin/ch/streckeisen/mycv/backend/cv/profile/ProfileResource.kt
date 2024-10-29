@@ -27,9 +27,26 @@ class ProfileResource(
         return profileService.findByAccountId(principal.id)
             .fold(
                 onSuccess = { profile ->
-                    val profilePicture = profilePictureService.get(profile.account.id, profile)
+                    val profilePicture = profilePictureService.get(principal.id, profile)
                         .getOrThrow()
                     ResponseEntity.ok(profile.toDto(profilePicture.uri.toString()))
+                },
+                onFailure = {
+                    throw it
+                }
+            )
+    }
+
+    @GetMapping("picture/thumbnail")
+    fun getProfilePictureThumbnail(): ResponseEntity<ThumbnailDto> {
+        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+
+        return profileService.findByAccountId(principal.id)
+            .fold(
+                onSuccess = { profile ->
+                    val thumbnail = profilePictureService.getThumbnail(principal.id, profile)
+                        .getOrThrow()
+                    ResponseEntity.ok(ThumbnailDto(thumbnail.uri.toString()))
                 },
                 onFailure = {
                     throw it
