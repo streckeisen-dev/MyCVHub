@@ -195,7 +195,9 @@ import profileApi from '@/api/ProfileApi'
 import vuetify from '@/plugins/vuetify'
 import ProfileApi from '@/api/ProfileApi'
 
-const { t } = useI18n()
+const { t } = useI18n({
+  useScope: 'global'
+})
 const locale = useLocale().current
 
 function localeClass(lang: string): ComputedRef {

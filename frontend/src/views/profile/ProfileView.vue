@@ -160,7 +160,7 @@ try {
   // vuetify.theme.themes.value.profile.colors.background = '#ff0000'
 } catch (e) {
   const error = e as ErrorDto
-  loadingError.value = error.message
+  loadingError.value = error.message || t('error.genericMessage')
 } finally {
   isProfileLoading.value = false
 }

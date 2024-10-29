@@ -32,23 +32,17 @@
     @saveEdit="onSaveEdit"
     @cancel="onEditCancel"
   />
-
-  <notification-message
-    v-if="deleteErrorMessage"
-    :title="t('education.editor.deleteError')"
-    :message="deleteErrorMessage"
-  />
 </template>
 
 <script setup lang="ts">
 import { type PropType, ref } from 'vue'
 import profileApi from '@/api/ProfileApi'
 import type { ErrorDto } from '@/dto/ErrorDto'
-import NotificationMessage from '@/components/NotificationMessage.vue'
 import EducationContainer from '@/views/profile/components/education/EducationContainer.vue'
 import EditEducationDialog from '@/views/profile/components/education/EditEducationDialog.vue'
 import type { EducationDto } from '@/dto/EducationDto'
 import { useI18n } from 'vue-i18n'
+import ToastService from '@/services/ToastService'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -62,7 +56,6 @@ const education = defineModel({
 const showEditDialog = ref(false)
 const educationToEdit = ref<EducationDto>()
 const isEdit = ref<boolean>()
-const deleteErrorMessage = ref<string>()
 
 function addEducation() {
   isEdit.value = false
@@ -102,10 +95,10 @@ async function deleteEducation(id: number) {
     await profileApi.deleteEducation(id)
     const index = education.value.findIndex((e) => e.id === id)
     education.value.splice(index, 1)
-    deleteErrorMessage.value = undefined
   } catch (e) {
     const error = e as ErrorDto
-    deleteErrorMessage.value = error.message
+    const errorDetails = error.message || t('error.genericMessage')
+    ToastService.error(t('education.editor.deleteError'), errorDetails)
   }
 }
 </script>

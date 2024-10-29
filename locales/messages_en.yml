@@ -48,7 +48,8 @@ shared:
 
 frontend:
   error: 
-    genericMessage: "Oops, something went wrong"
+    genericMessageTitle: "Oops, something went wrong"
+    genericMessage: "An unexpected error occurred"
 
   date: 
     today: "Today"
@@ -92,18 +93,24 @@ frontend:
     edit:
       title: "Edit account"
       changePassword: "Change password"
+      error: "Failed to update your account"
+      success: "Successfully updated account"
+    changePassword:
+      error: "Failed to change your password"
+      success: "Successfully changed your password"
     login:
       title: "Login to MyCVHub"
       action: "Login"
       noAccount: "Don't have an account yet?"
       signup: "Sign up now"
       error: "Login failed"
+    signup:
+      error: "Failed to create your account"
     logout:
       headline: "Goodbye"
       action: "Logout"
       message: "You are being logged out..."
-      errorTitle: "Failed to logout"
-      errorMessage: "Something went wrong during your logout"
+      error: "Failed to logout"
     profile:
       view: "View Profile"
       edit: "Edit Profile"
@@ -137,7 +144,6 @@ frontend:
       hideDescriptions: "Hide descriptions from public profile"
       hideDescriptionsHint: "If enabled, detailed descriptions of your CV entries won't be shown in your profile"
       saveErrorTitle: "Failed to save profile"
-      saveErrorMessage: "An error occurred while trying to save your profile"
   
   workExperience:
     title: "Work Experience"
@@ -145,6 +151,8 @@ frontend:
     editor:
       add: "Add Work Experience"
       edit: "Edit Work Experience"
+      addError: "Failed to add work experience"
+      editError: "Failed to update work experience"
       deleteError: "Failed to delete work experience"
   
   skills:
@@ -154,6 +162,8 @@ frontend:
       add: "Add skill"
       edit: "Edit Skill"
       typeHint: "Skills will be grouped by their type in your CV. Use something like 'Programming Languages', 'Communication', etc."
+      addError: "Failed to add skill"
+      editError: "Failed to update skill"
       deleteError: "Failed to delete skill"
   
   education:
@@ -162,6 +172,8 @@ frontend:
     editor:
       add: "Add education"
       edit: "Edit Education"
+      addError: "Failed to add education entry"
+      editError: "Failed to update education entry"
       deleteError: "Failed to delete education"
   
   country:

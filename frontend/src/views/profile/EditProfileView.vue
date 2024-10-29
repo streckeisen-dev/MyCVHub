@@ -8,7 +8,7 @@
     <loading-spinner v-else-if="isLoadingProfile" />
     <v-empty-state
       v-else
-      :headline="t('error.genericMessage')"
+      :headline="t('error.genericMessageTitle')"
       :title="t('profile.loadingError')"
       :text="loadingError"
     />
@@ -36,7 +36,7 @@ try {
   profile.value = await profileApi.getProfile()
 } catch (e) {
   const error = e as ErrorDto
-  loadingError.value = error.message
+  loadingError.value = error.message || t('error.genericMessage')
 } finally {
   isLoadingProfile.value = false
 }

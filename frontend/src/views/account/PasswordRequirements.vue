@@ -37,7 +37,9 @@ const rules = defineModel<ValidationRules>('rules', {
   required: true
 })
 
-const { t } = useI18n()
+const { t } = useI18n({
+  useScope: 'global'
+})
 
 const passwordRequirements = computed(() => [
   {
