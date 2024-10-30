@@ -10,7 +10,16 @@ type Messages = {
   [locale: string]: NestedMessage
 }
 
+type DateFormat = {
+  [key: string]: string
+}
+
+type LocaleDateFormat = {
+  [locale: string]: { [name: string]: DateFormat }
+}
+
 const messages: Messages = {}
+const localeDateFormats: LocaleDateFormat = {}
 const langModules = import.meta.glob('../locales/*.json', { eager: true })
 Object.keys(langModules).forEach((filePath) => {
   const lang = filePath.replace('../locales/', '').replace('.json', '')
@@ -21,11 +30,26 @@ Object.keys(langModules).forEach((filePath) => {
   }
 })
 
+Object.keys(messages).forEach((lang) => {
+  localeDateFormats[lang] = {
+    monthAndYear: {
+      month: 'short',
+      year: 'numeric'
+    },
+    shortDate: {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }
+  }
+})
+
 const i18n = createI18n({
   locale: LanguageService.getLanguage(),
   fallbackLocale: 'en',
   legacy: false,
-  messages
+  messages,
+  datetimeFormats: localeDateFormats
 })
 
 export default i18n
