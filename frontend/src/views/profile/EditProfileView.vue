@@ -36,7 +36,7 @@ try {
   profile.value = await profileApi.getProfile()
 } catch (e) {
   const error = e as ErrorDto
-  loadingError.value = error.message || t('error.genericMessage')
+  loadingError.value = error?.message || t('error.genericMessage')
 } finally {
   isLoadingProfile.value = false
 }

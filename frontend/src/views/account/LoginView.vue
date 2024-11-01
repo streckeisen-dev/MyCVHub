@@ -112,9 +112,9 @@ async function login() {
     await forwardAfterSuccessfulLogin()
   } catch (e) {
     const error = e as ErrorDto
-    errorMessages.value = error.errors || {}
+    errorMessages.value = error?.errors || {}
     if (Object.keys(errorMessages.value).length === 0) {
-      const errorDetails = error.message || t('error.genericMessage')
+      const errorDetails = error?.message || t('error.genericMessage')
       ToastService.error(t('account.login.error'), errorDetails)
     }
   }

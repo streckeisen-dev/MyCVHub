@@ -134,10 +134,10 @@ async function save() {
     errorMessages.value = {}
   } catch (e) {
     const error = e as ErrorDto
-    errorMessages.value = error.errors || {}
+    errorMessages.value = error?.errors || {}
     if (Object.keys(errorMessages.value).length === 0) {
       const errorMessage = props.isEdit ? t('skills.editor.editError') : t('skills.editor.addError')
-      const errorDetails = error.message || t('error.genericMessage')
+      const errorDetails = error?.message || t('error.genericMessage')
       ToastService.error(errorMessage, errorDetails)
     }
   } finally {
