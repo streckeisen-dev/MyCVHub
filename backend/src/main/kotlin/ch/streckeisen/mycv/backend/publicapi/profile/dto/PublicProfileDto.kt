@@ -11,5 +11,6 @@ data class PublicProfileDto(
     val profilePicture: String,
     val workExperiences: List<PublicWorkExperienceDto>,
     val skills: List<PublicSkillDto>,
-    val education: List<PublicEducationDto>
+    val education: List<PublicEducationDto>,
+    val theme: PublicProfileThemeDto?
 )
