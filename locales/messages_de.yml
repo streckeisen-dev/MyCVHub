@@ -30,6 +30,8 @@ shared:
     degreeName: "Abschlussname"
     educationStart: "Ausbildungsstart"
     educationEnd: "Ausbildungsende"
+    backgroundColor: "Hintergrundfarbe"
+    surfaceColor: "Kopfzeilenfarbe"
 
   validations: 
     required: "{label} darf nicht leer sein"
@@ -175,6 +177,11 @@ frontend:
       addError: "Ausbildung konnte nicht hinzugefügt werden"
       editError: "Ausbildung konnte nicht aktualisiert werden"
       deleteError: "Ausbildung konnte nicht gelöscht werden"
+  theme:
+    title: "Thema"
+    description: "Standardmäßig wird dein Lebenslauf im hellen Thema von MyCVHub angezeigt. Unten kannst du die verwendeten Farben nach deinem Geschmack anpassen.\nAchte auf Farben, die den Text gut lesbar und professionell machen.\n\nTipps:\n- Hintergrundfarbe: Eine weiche, neutrale Farbe kann dein Profil elegant aussehen lassen.\n- Farbe der Kopfzeile: Nimm eine etwas dunklere oder kontrastierende Farbe, um die Kopfzeile hervorzuheben."
+    reset: "Auf Standards zurücksetzen"
+    preview: "Vorschau"
   
   country:
     loadingError:

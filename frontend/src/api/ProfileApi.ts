@@ -14,6 +14,8 @@ import type { EducationDto } from '@/dto/EducationDto'
 import type { SkillUpdateDto } from '@/dto/SkillUpdateDto'
 import type { SkillDto } from '@/dto/SkillDto'
 import type { ThumbnailDto } from '@/dto/ThumbnailDto'
+import type { ProfileThemeUpdateDto } from '@/dto/ProfileThemeUpdateDto'
+import type { ProfileThemeDto } from '@/dto/ProfileThemeDto'
 
 async function getPublicProfile(alias: string): Promise<PublicProfileDto> {
   try {
@@ -146,8 +148,22 @@ async function deleteSkill(id: number): Promise<void> {
 async function getThumbnail(): Promise<ThumbnailDto> {
   try {
     const response = await fetchFromApi('/profile/picture/thumbnail')
-    const thumbnail = getJSONIfResponseIsOk<ThumbnailDto>(response)
+    const thumbnail = await getJSONIfResponseIsOk<ThumbnailDto>(response)
     return Promise.resolve(thumbnail)
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+async function saveTheme(themeUpdate: ProfileThemeUpdateDto): Promise<ProfileThemeDto> {
+  try {
+    const response = await fetchFromApi('/api/profile/theme', {
+      method: 'POST',
+      body: JSON.stringify(themeUpdate),
+      headers: commonHeaders()
+    })
+    const updatedTheme = await getJSONIfResponseIsOk<ProfileThemeDto>(response)
+    return Promise.resolve(updatedTheme)
   } catch (error) {
     return Promise.reject(error)
   }
@@ -165,5 +181,6 @@ export default {
   deleteEducation,
   saveSkill,
   deleteSkill,
-  getThumbnail
+  getThumbnail,
+  saveTheme
 }

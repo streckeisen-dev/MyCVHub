@@ -2,6 +2,7 @@
   <v-app-bar
     role="navigation"
     aria-label="Header navigation"
+    :color="theme.surfaceColor"
   >
     <v-app-bar-title>
       {{ displayName }}
@@ -13,7 +14,7 @@
     </template>
   </v-app-bar>
 
-  <v-main>
+  <v-main :style="mainStyles">
     <v-container v-if="profile">
       <v-row>
         <v-col
@@ -125,6 +126,7 @@ import {
 import SkillsContainer from '@/views/profile/components/skill/SkillsContainer.vue'
 import EducationContainer from '@/views/profile/components/education/EducationContainer.vue'
 import { useI18n } from 'vue-i18n'
+import type { PublicProfileThemeDto } from '@/dto/PublicProfileThemeDto'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -138,6 +140,14 @@ const profile = ref<PublicProfileDto>()
 const isProfileLoading = ref(false)
 const loadingError = ref<string>()
 const defaultProfilePicture = ProfileApi.getDefaultProfilePicture()
+const theme = ref<PublicProfileThemeDto>({
+  backgroundColor: vuetify.theme.themes.value.profile.colors.background,
+  surfaceColor: vuetify.theme.themes.value.profile.colors.surface
+})
+
+const mainStyles = computed(() => {
+  return { background: theme.value.backgroundColor }
+})
 
 const displayName = computed(() => {
   if (profile.value) {
@@ -155,9 +165,11 @@ const profilePhoneLink = computed(() => `tel:${profile.value!!.phone}`)
 isProfileLoading.value = true
 try {
   profile.value = await profileApi.getPublicProfile(props.alias)
-
-  // TODO: set theme colors according to profile
-  // vuetify.theme.themes.value.profile.colors.background = '#ff0000'
+  const profileTheme = profile.value.theme
+  if (profileTheme) {
+    theme.value.backgroundColor = profileTheme.backgroundColor
+    theme.value.surfaceColor = profileTheme.surfaceColor
+  }
 } catch (e) {
   const error = e as ErrorDto
   loadingError.value = error.message || t('error.genericMessage')
