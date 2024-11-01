@@ -40,8 +40,8 @@
           md="6"
         >
           <password-requirements
-            v-model:form-state="formState"
-            v-model:rules="rules"
+            v-bind:form-state="reactive(formState)"
+            v-bind:rules="reactive(rules)"
           />
         </v-col>
       </v-row>
@@ -124,9 +124,9 @@ async function save() {
     await router.push({ name: 'account' })
   } catch (e) {
     const error = e as ErrorDto
-    errorMessages.value = error.errors || {}
+    errorMessages.value = error?.errors || {}
     if (Object.keys(errorMessages.value).length === 0) {
-      const errorDetails = error.message || t('error.genericMessage')
+      const errorDetails = error?.message || t('error.genericMessage')
       ToastService.error(t('account.changePassword.error'), errorDetails)
     }
   } finally {

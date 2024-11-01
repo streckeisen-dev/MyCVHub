@@ -11,7 +11,7 @@
           <v-container>
             <account-editor
               v-model:form="form"
-              v-model:form-state="formState"
+              v-bind:form-state="reactive(formState)"
               v-model:error-messages="errorMessages"
             />
             <v-row>
@@ -46,8 +46,8 @@
                 md="6"
               >
                 <password-requirements
-                  v-model:form-state="formState"
-                  v-model:rules="rules"
+                  v-bind:form-state="reactive(formState)"
+                  v-bind:rules="reactive(rules)"
                 />
               </v-col>
             </v-row>
@@ -175,9 +175,9 @@ async function signUp() {
     await router.push({ name: 'account' })
   } catch (e) {
     const error = e as ErrorDto
-    errorMessages.value = error.errors || {}
+    errorMessages.value = error?.errors || {}
     if (Object.keys(errorMessages.value).length === 0) {
-      const errorDetails = error.message || t('error.genericMessage')
+      const errorDetails = error?.message || t('error.genericMessage')
       ToastService.error(t('account.signup.error'), errorDetails)
     }
   }
