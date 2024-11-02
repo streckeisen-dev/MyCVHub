@@ -1,7 +1,6 @@
 package ch.streckeisen.mycv.backend.cv.profile.theme
 
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
-import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -15,10 +14,6 @@ class ProfileThemeService(
     fun save(accountId: Long, themeUpdate: ProfileThemeUpdateDto): Result<ProfileThemeEntity> {
         val profile = profileService.findByAccountId(accountId)
             .getOrElse { return Result.failure(it) }
-
-        if (profile.account.id != accountId) {
-            return Result.failure(AccessDeniedException("You don't have permission to edit this profile"))
-        }
 
         profileThemeValidationService.validateThemeUpdate(themeUpdate)
             .onFailure { return Result.failure(it) }
