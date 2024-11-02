@@ -158,6 +158,10 @@ const previewToolbarStyles = computed(() => {
   }
 })
 
+/*
+ * used to simulate the automatic determination of text color usually done be vuetify
+ * since the text color on non-profile page is determined based on the browser theme, that doesn't work for the preview
+ */
 function getTextColor(backgroundColor: string) {
   const color = backgroundColor.replace('#', '')
   const r = parseInt(color.slice(0, 2), 16)
