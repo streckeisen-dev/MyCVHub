@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, type Reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ValidatorFn } from '@vuelidate/core'
 import { withI18nMessage } from '@/validation/validators'
@@ -29,11 +29,11 @@ type PasswordData = {
 
 type ValidationRules = { [key: string]: { [validator: string]: ValidatorFn } }
 
-const formState = defineModel<PasswordData>('formState', {
+const formState = defineModel<Reactive<PasswordData>>('formState', {
   required: true
 })
 
-const rules = defineModel<ValidationRules>('rules', {
+const rules = defineModel<Reactive<ValidationRules>>('rules', {
   required: true
 })
 

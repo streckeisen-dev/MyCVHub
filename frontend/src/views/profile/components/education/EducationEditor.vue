@@ -97,7 +97,7 @@ async function deleteEducation(id: number) {
     education.value.splice(index, 1)
   } catch (e) {
     const error = e as ErrorDto
-    const errorDetails = error.message || t('error.genericMessage')
+    const errorDetails = error?.message || t('error.genericMessage')
     ToastService.error(t('education.editor.deleteError'), errorDetails)
   }
 }

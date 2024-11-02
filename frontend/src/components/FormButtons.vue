@@ -11,6 +11,8 @@
       :text="t('forms.cancel')"
       @click="cancel"
       :disabled="isSaving"
+      color="surface"
+      variant="flat"
     />
   </div>
 </template>

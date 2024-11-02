@@ -26,7 +26,8 @@ const emptyProfile: ProfileDto = {
   profilePicture: '',
   workExperiences: [],
   education: [],
-  skills: []
+  skills: [],
+  theme: undefined
 }
 
 try {

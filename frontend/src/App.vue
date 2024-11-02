@@ -138,7 +138,9 @@
     </template>
 
     <suspense>
-      <router-view class="router-view" />
+      <div class="router-view-wrapper">
+        <router-view />
+      </div>
     </suspense>
 
     <v-footer v-if="showNavigation">
@@ -291,6 +293,11 @@ header.navigation-bar {
 
 .language-selector {
   margin-right: 5px;
+}
+
+.router-view-wrapper {
+  display: flex;
+  height: 100%;
 }
 
 footer {
