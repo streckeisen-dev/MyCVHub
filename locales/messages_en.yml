@@ -106,6 +106,9 @@ frontend:
       noAccount: "Don't have an account yet?"
       signup: "Sign up now"
       error: "Login failed"
+      oauth:
+        github: "Login with GitHub"
+        error: "Login with external account failed"
     signup:
       error: "Failed to create your account"
     logout:
@@ -270,6 +273,10 @@ backend:
   auth:
     login:
       error: "Authentication failed with errors"
+    signup:
+      error: "Signup failed with errors"
+    changePassword:
+      error: "Passwort änderung ist fehlgeschlagen"
   exceptions:
     db: "A database error occurred. Please contact the administrator"
     expiredJwt: "Expired JWT token"

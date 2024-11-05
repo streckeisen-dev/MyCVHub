@@ -106,6 +106,9 @@ frontend:
       noAccount: "Noch keinen Account?"
       signup: "Jetzt registrieren"
       error: "Anmeldung fehlgeschlagen"
+      oauth:
+        github: "Anmelden mit GitHub"
+        error: "Anmeldung mit externem Account ist fehlgeschlagen"
     signup:
       error: "Dein Account konnte nicht erstellt werden"
     logout:
@@ -268,6 +271,10 @@ backend:
   auth:
     login:
       error: "Authentifizierung ist fehlgeschlagen"
+    signup:
+      error: "Registrierung ist fehlgeschlagen"
+    changePassword:
+      error: "Passwort änderung ist fehlgeschlagen"
   exceptions:
     db: "Ein Datenbank-Fehler ist aufgetreten. Bitte kontaktiere den Administrator"
     expiredJwt: "Abgelaufenes JWT-Token"
