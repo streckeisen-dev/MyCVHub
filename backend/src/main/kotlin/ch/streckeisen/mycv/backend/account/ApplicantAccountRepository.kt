@@ -4,5 +4,5 @@ import org.springframework.data.repository.CrudRepository
 import java.util.Optional
 
 interface ApplicantAccountRepository : CrudRepository<ApplicantAccountEntity, Long> {
-    fun findByEmail(email: String): Optional<ApplicantAccountEntity>
+    fun findByUsername(username: String): Optional<ApplicantAccountEntity>
 }

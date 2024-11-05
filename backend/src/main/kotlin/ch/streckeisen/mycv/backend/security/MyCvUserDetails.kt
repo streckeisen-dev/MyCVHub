@@ -1,11 +1,12 @@
 package ch.streckeisen.mycv.backend.security
 
+import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 class MyCvUserDetails(
     private val userDetails: UserDetails,
-    val applicantId: Long
+    val account: ApplicantAccountEntity
 ) : UserDetails {
     override fun getAuthorities(): Collection<GrantedAuthority?>? {
         return userDetails.authorities

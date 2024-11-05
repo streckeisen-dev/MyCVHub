@@ -15,6 +15,21 @@ spring:
     max-request-size: 2MB
     max-file-size: 2MB
 
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
+            scope:
+              - read:user
+              - user:email
+              - repo
+            redirect-uri: "{baseUrl}/api/auth/oauth2/callback/github"
+            authorization-grant-type: authorization_code
+            client-name: GitHub
+
 security.jwt:
   secret: ${JWT_SECRET}
   access.expiration-time: 3600000
@@ -33,3 +48,6 @@ cloudinary:
   api-key: ${CLOUDINARY_API_KEY}
   api-secret: ${CLOUDINARY_API_SECRET}
   url-expiration: 300
+
+frontend:
+  base-url: https://mycvhub.ch/ui

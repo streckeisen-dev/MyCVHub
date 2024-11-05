@@ -30,7 +30,6 @@ class JwtAuthenticationFilter(
         }
 
         try {
-            //val jwt = authHeader.substring(7)
             val jwt = accessToken
             val userEmail = jwtService.extractUsername(jwt)
 
@@ -39,7 +38,7 @@ class JwtAuthenticationFilter(
                 val userDetails = userDetailsService.loadUserByUsername(userEmail)
 
                 if (jwtService.isTokenValid(jwt, userDetails)) {
-                    val principal = MyCvPrincipal(userDetails.username!!, userDetails.applicantId)
+                    val principal = MyCvPrincipal(userDetails.username!!, userDetails.account.id!!)
                     val authToken =
                         UsernamePasswordAuthenticationToken(principal, null, userDetails.authorities)
                     authToken.details = WebAuthenticationDetailsSource().buildDetails(request)

@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.util.Locale
 
-private const val MIN_PASSWORD_LENGTH = 8
-
 private const val ACCOUNT_VALIDATION_KEY_PREFIX = "${MYCV_KEY_PREFIX}.account.validation"
 private const val EMAIL_INVALID_KEY = "${MYCV_KEY_PREFIX}.validations.email"
 private const val EMAIL_TAKEN_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.emailAlreadyTaken"
@@ -23,15 +21,6 @@ private const val PHONE_INVALID_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.phoneInv
 private const val EMPTY_HOUSE_NUMBER_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.houseNumberEmpty"
 private const val COUNTRY_LENGTH_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.countryLengthError"
 private const val COUNTRY_INVALID_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.countryInvalid"
-private const val PASSWORD_KEY_PREFIX = "${MYCV_KEY_PREFIX}.passwordRequirements"
-private const val PASSWORD_LENGTH_KEY = "${PASSWORD_KEY_PREFIX}.length"
-private const val PASSWORD_WHITESPACE_KEY = "${PASSWORD_KEY_PREFIX}.whitespaces"
-private const val PASSWORD_DIGITS_KEY = "${PASSWORD_KEY_PREFIX}.digits"
-private const val PASSWORD_UPPERCASE_KEY = "${PASSWORD_KEY_PREFIX}.uppercase"
-private const val PASSWORD_LOWERCASE_KEY = "${PASSWORD_KEY_PREFIX}.lowercase"
-private const val PASSWORD_SPECIAL_CHARS_KEY = "${PASSWORD_KEY_PREFIX}.specialChars"
-private const val PASSWORD_MATCH_KEY = "${PASSWORD_KEY_PREFIX}.match"
-private const val OLD_PASSWORD_INVALID_ERROR_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.oldPasswordInvalid"
 private const val VALIDATION_ERROR_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.error"
 
 private const val FIRST_NAME_FIELD_KEY = "firstName"
@@ -44,9 +33,6 @@ private const val HOUSE_NUMBER_FIELD_KEY = "houseNumber"
 private const val POSTCODE_FIELD_KEY = "postcode"
 private const val CITY_FIELD_KEY = "city"
 private const val COUNTRY_FIELD_KEY = "country"
-private const val PASSWORD_FIELD_KEY = "password"
-private const val CONFIRM_PASSWORD_FIELD_KEY = "confirmPassword"
-private const val OLD_PASSWORD_FIELD_KEY = "oldPassword"
 
 @Service
 class ApplicantAccountValidationService(
@@ -55,24 +41,6 @@ class ApplicantAccountValidationService(
     private val passwordEncoder: PasswordEncoder
 ) {
     private val phoneNumberUtil = PhoneNumberUtil.getInstance()
-
-    fun validateSignupRequest(signupRequest: SignupRequestDto): Result<Unit> {
-        val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
-
-        validateFirstName(signupRequest.firstName, validationErrorBuilder)
-        validateLastName(signupRequest.lastName, validationErrorBuilder)
-        validateEmail(signupRequest.email, null, validationErrorBuilder)
-        validateStreet(signupRequest.street, validationErrorBuilder)
-        validateHouseNumber(signupRequest.houseNumber, validationErrorBuilder)
-        validatePostcode(signupRequest.postcode, validationErrorBuilder)
-        validateCity(signupRequest.city, validationErrorBuilder)
-        validateCountry(signupRequest.country, validationErrorBuilder)
-        validatePhone(signupRequest.phone, signupRequest.country, validationErrorBuilder)
-        validateBirthday(signupRequest.birthday, validationErrorBuilder)
-        validatePassword(signupRequest.password, signupRequest.confirmPassword, validationErrorBuilder)
-
-        return checkValidationResult(validationErrorBuilder)
-    }
 
     fun validateAccountUpdate(accountId: Long, accountUpdate: AccountUpdateDto): Result<Unit> {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
@@ -91,19 +59,7 @@ class ApplicantAccountValidationService(
         return checkValidationResult(validationErrorBuilder)
     }
 
-    fun validateChangePasswordRequest(
-        changePassword: ChangePasswordDto,
-        currentPassword: String
-    ): Result<Unit> {
-        val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
-
-        validateOldPassword(changePassword.oldPassword, currentPassword, validationErrorBuilder)
-        validatePassword(changePassword.password, changePassword.confirmPassword, validationErrorBuilder)
-
-        return checkValidationResult(validationErrorBuilder)
-    }
-
-    private fun validateFirstName(
+    fun validateFirstName(
         firstName: String?,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
@@ -116,7 +72,7 @@ class ApplicantAccountValidationService(
         }
     }
 
-    private fun validateLastName(
+    fun validateLastName(
         lastName: String?,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
@@ -129,7 +85,7 @@ class ApplicantAccountValidationService(
         }
     }
 
-    private fun validateEmail(
+    fun validateEmail(
         email: String?,
         updateId: Long?,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder,
@@ -144,7 +100,7 @@ class ApplicantAccountValidationService(
             val error = messagesService.fieldMaxLengthExceededError(EMAIL_FIELD_KEY, EMAIL_MAX_LENGTH)
             validationErrorBuilder.addError(EMAIL_FIELD_KEY, error)
         } else {
-            val applicant = applicantAccountRepository.findByEmail(email)
+            val applicant = applicantAccountRepository.findByUsername(email)
             if (applicant.isPresent && applicant.get().id != updateId) {
                 val error = messagesService.getMessage(EMAIL_TAKEN_KEY)
                 validationErrorBuilder.addError(EMAIL_FIELD_KEY, error)
@@ -152,7 +108,7 @@ class ApplicantAccountValidationService(
         }
     }
 
-    private fun validateBirthday(
+    fun validateBirthday(
         birthday: LocalDate?,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
@@ -165,7 +121,7 @@ class ApplicantAccountValidationService(
         }
     }
 
-    private fun validatePhone(
+    fun validatePhone(
         phone: String?,
         country: String?,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
@@ -191,7 +147,7 @@ class ApplicantAccountValidationService(
         }
     }
 
-    private fun validateStreet(
+    fun validateStreet(
         street: String?,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
@@ -204,7 +160,7 @@ class ApplicantAccountValidationService(
         }
     }
 
-    private fun validateHouseNumber(
+    fun validateHouseNumber(
         houseNumber: String?,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
@@ -217,7 +173,7 @@ class ApplicantAccountValidationService(
         }
     }
 
-    private fun validatePostcode(
+    fun validatePostcode(
         postcode: String?,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
@@ -230,7 +186,7 @@ class ApplicantAccountValidationService(
         }
     }
 
-    private fun validateCity(
+    fun validateCity(
         city: String?,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
@@ -243,7 +199,7 @@ class ApplicantAccountValidationService(
         }
     }
 
-    private fun validateCountry(
+    fun validateCountry(
         country: String?,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
@@ -256,54 +212,6 @@ class ApplicantAccountValidationService(
         } else if (!phoneNumberUtil.supportedRegions.contains(country)) {
             val error = messagesService.getMessage(COUNTRY_INVALID_KEY)
             validationErrorBuilder.addError(COUNTRY_FIELD_KEY, error)
-        }
-    }
-
-    private fun validatePassword(
-        password: String?,
-        confirmPassword: String?,
-        validationErrorBuilder: ValidationException.ValidationErrorBuilder
-    ) {
-        if (password.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(PASSWORD_FIELD_KEY)
-            validationErrorBuilder.addError(PASSWORD_FIELD_KEY, error)
-        }
-        if (confirmPassword.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(CONFIRM_PASSWORD_FIELD_KEY)
-            validationErrorBuilder.addError(CONFIRM_PASSWORD_FIELD_KEY, error)
-        }
-        if (password != null && confirmPassword != null) {
-            validatePassword(password, confirmPassword)
-                .onFailure { validationErrorBuilder.addError(PASSWORD_FIELD_KEY, it.message!!) }
-        }
-    }
-
-    private fun validatePassword(password: String, confirmPassword: String) = runCatching {
-        require(password.length >= MIN_PASSWORD_LENGTH) {
-            messagesService.getMessage(
-                PASSWORD_LENGTH_KEY,
-                MIN_PASSWORD_LENGTH.toString()
-            )
-        }
-        require(password.none { it.isWhitespace() }) { messagesService.getMessage(PASSWORD_WHITESPACE_KEY) }
-        require(password.any { it.isDigit() }) { messagesService.getMessage(PASSWORD_DIGITS_KEY) }
-        require(password.any { it.isUpperCase() }) { messagesService.getMessage(PASSWORD_UPPERCASE_KEY) }
-        require(password.any { it.isLowerCase() }) { messagesService.getMessage(PASSWORD_LOWERCASE_KEY) }
-        require(password.any { !it.isLetterOrDigit() }) { messagesService.getMessage(PASSWORD_SPECIAL_CHARS_KEY) }
-        require(password == confirmPassword) { messagesService.getMessage(PASSWORD_MATCH_KEY) }
-    }
-
-    private fun validateOldPassword(
-        oldPassword: String?,
-        currentPassword: String,
-        validationErrorBuilder: ValidationException.ValidationErrorBuilder
-    ) {
-        if (oldPassword.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(OLD_PASSWORD_FIELD_KEY)
-            validationErrorBuilder.addError(OLD_PASSWORD_FIELD_KEY, error)
-        } else if (!passwordEncoder.matches(oldPassword, currentPassword)) {
-            val error = messagesService.getMessage(OLD_PASSWORD_INVALID_ERROR_KEY)
-            validationErrorBuilder.addError(OLD_PASSWORD_FIELD_KEY, error)
         }
     }
 

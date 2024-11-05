@@ -3,7 +3,7 @@ package ch.streckeisen.mycv.backend.account
 import ch.streckeisen.mycv.backend.account.dto.AccountDto
 import ch.streckeisen.mycv.backend.account.dto.AccountUpdateDto
 import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
-import ch.streckeisen.mycv.backend.account.dto.LoginResponseDto
+import ch.streckeisen.mycv.backend.account.dto.AuthResponseDto
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
@@ -37,21 +37,6 @@ class ApplicantAccountResource(private val applicantAccountService: ApplicantAcc
             .fold(
                 onSuccess = { updatedAccount ->
                     ResponseEntity.ok(updatedAccount.toAccountDto())
-                },
-                onFailure = {
-                    throw it
-                }
-            )
-    }
-
-    @PostMapping("/change-password")
-    fun changePassword(@RequestBody changePasswordDto: ChangePasswordDto): ResponseEntity<LoginResponseDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
-
-        return applicantAccountService.changePassword(principal.id, changePasswordDto)
-            .fold(
-                onSuccess = {
-                    ResponseEntity.ok().build()
                 },
                 onFailure = {
                     throw it

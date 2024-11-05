@@ -15,15 +15,15 @@ class UserDetailsServiceImpl(
         if (username.isNullOrBlank()) {
             throw IllegalArgumentException("Username cannot be null or blank")
         }
-        val applicantAccount: ApplicantAccountEntity = applicantAccountRepository.findByEmail(username)
+        val applicantAccount: ApplicantAccountEntity = applicantAccountRepository.findByUsername(username)
             .orElseThrow { BadCredentialsException("There is no user with username $username") }
-        val userDetails = User.withUsername(applicantAccount.email)
+        val userDetails = User.withUsername(applicantAccount.username)
             .password(applicantAccount.password)
             .accountLocked(false)
             .accountExpired(false)
             .disabled(false)
             .credentialsExpired(false)
             .build()
-        return MyCvUserDetails(userDetails, applicantAccount.id!!)
+        return MyCvUserDetails(userDetails, applicantAccount)
     }
 }

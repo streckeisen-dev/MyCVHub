@@ -1,5 +1,6 @@
 package ch.streckeisen.mycv.backend.publicapi.profile
 
+import ch.streckeisen.mycv.backend.account.AccountDetailsEntity
 import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
 import ch.streckeisen.mycv.backend.cv.education.EducationEntity
 import ch.streckeisen.mycv.backend.cv.experience.WorkExperienceEntity
@@ -56,18 +57,22 @@ class PublicProfileMapperTest {
             "p",
             1,
             ApplicantAccountEntity(
-                "f",
-                "l",
-                "e",
+                "u",
                 "p",
-                LocalDate.now(),
-                "s",
-                null,
-                "p",
-                "c",
-                "c",
-                "p",
-                1
+                false,
+                accountDetails = AccountDetailsEntity(
+                    "f",
+                    "l",
+                    "e",
+                    "p",
+                    LocalDate.now(),
+                    "s",
+                    null,
+                    "p",
+                    "c",
+                    "c"
+                ),
+                id = 1
             ),
             workExperiences = listOf(
                 WorkExperienceEntity(

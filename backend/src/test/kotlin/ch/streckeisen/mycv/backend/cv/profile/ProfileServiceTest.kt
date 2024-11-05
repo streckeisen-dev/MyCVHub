@@ -1,5 +1,6 @@
 package ch.streckeisen.mycv.backend.cv.profile
 
+import ch.streckeisen.mycv.backend.account.AccountDetailsEntity
 import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
 import ch.streckeisen.mycv.backend.account.ApplicantAccountService
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
@@ -18,18 +19,22 @@ import kotlin.test.assertTrue
 
 private val existingAccount =
     ApplicantAccountEntity(
-        "f",
-        "l",
-        "email",
-        "phone",
-        LocalDate.now(),
-        "street",
-        null,
-        "code",
-        "city",
-        "CH",
+        "username",
         "abc",
-        1,
+        false,
+        accountDetails = AccountDetailsEntity(
+            "f",
+            "l",
+            "email",
+            "phone",
+            LocalDate.now(),
+            "street",
+            null,
+            "code",
+            "city",
+            "CH"
+        ),
+        id = 1,
         profile = ProfileEntity(
             "alias",
             "job",
@@ -46,18 +51,22 @@ private val existingAccount =
     )
 private val existingAccountWithoutProfile =
     ApplicantAccountEntity(
-        "f",
-        "l",
-        "email",
-        "phone",
-        LocalDate.now(),
-        "street",
-        null,
-        "code",
-        "city",
-        "CH",
+        "username",
         "abc",
-        3,
+        false,
+        accountDetails = AccountDetailsEntity(
+            "f",
+            "l",
+            "email",
+            "phone",
+            LocalDate.now(),
+            "street",
+            null,
+            "code",
+            "city",
+            "CH"
+        ),
+        id = 3,
         profile = null
     )
 private val existingProfile =

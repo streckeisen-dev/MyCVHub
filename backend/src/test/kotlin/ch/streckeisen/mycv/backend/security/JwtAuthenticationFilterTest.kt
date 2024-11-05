@@ -80,7 +80,7 @@ class JwtAuthenticationFilterTest {
         val username = "username"
         val token = "abcdefg"
         val user = User.withUsername(username).password("password").build()
-        val userDetails = MyCvUserDetails(user, userId)
+        val userDetails = MyCvUserDetails(user, mockk { every { id } returns userId })
         assertNull(SecurityContextHolder.getContext().authentication)
         every { request.cookies } returns arrayOf(mockk {
             every { name } returns ACCESS_TOKEN_NAME

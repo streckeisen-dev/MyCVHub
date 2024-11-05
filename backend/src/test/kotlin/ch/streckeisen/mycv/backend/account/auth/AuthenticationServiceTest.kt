@@ -1,26 +1,53 @@
 package ch.streckeisen.mycv.backend.account.auth
 
+import ch.streckeisen.mycv.backend.account.AccountDetailsEntity
 import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
-import ch.streckeisen.mycv.backend.account.ApplicantAccountService
+import ch.streckeisen.mycv.backend.account.ApplicantAccountRepository
+import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
 import ch.streckeisen.mycv.backend.account.dto.LoginRequestDto
 import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
-import ch.streckeisen.mycv.backend.exceptions.ValidationException
+import ch.streckeisen.mycv.backend.account.oauth.OAuthIntegrationService
 import ch.streckeisen.mycv.backend.security.JwtService
+import ch.streckeisen.mycv.backend.security.MyCvUserDetails
+import ch.streckeisen.mycv.backend.security.UserDetailsServiceImpl
+import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.userdetails.User
-import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate
+import java.util.Optional
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-private val VALID_SIGNUP_REQUEST = SignupRequestDto(
+private val existingAccount = ApplicantAccountEntity(
+    "username",
+    "validPassword",
+    false,
+    accountDetails = AccountDetailsEntity(
+        "Existing",
+        "Applicant",
+        "existing@email.com",
+        "+41 79 123 45 67",
+        LocalDate.of(1985, 6, 25),
+        "Realstreet",
+        "124a",
+        "29742",
+        "Real City",
+        "CH",
+    ),
+    id = 1,
+)
+
+private val validSignupRequest = SignupRequestDto(
     "FirstName",
     "LastName",
     "first.last@example.com",
@@ -35,7 +62,7 @@ private val VALID_SIGNUP_REQUEST = SignupRequestDto(
     "a*c3efgH"
 )
 
-private val INVALID_SIGNUP_REQUEST = SignupRequestDto(
+private val invalidSignupRequest = SignupRequestDto(
     null,
     null,
     null,
@@ -50,40 +77,72 @@ private val INVALID_SIGNUP_REQUEST = SignupRequestDto(
     null
 )
 
+private val invalidChangePwRequest = ChangePasswordDto(null, null, null)
+private val validChangePwRequest = ChangePasswordDto("validPassword", "a*c3efgH", "a*c3efgH")
+
 private const val GENERATED_ACCESS_TOKEN = "access_token"
 private const val GENERATED_REFRESH_TOKEN = "refresh_token"
 private const val ACCESS_TOKEN_EXPIRY_TIME = 123456L
 private const val REFRESH_TOKEN_EXPIRY_TIME = 123456789L
 
 class AuthenticationServiceTest {
-    private lateinit var applicantAccountService: ApplicantAccountService
-    private lateinit var userDetailsService: UserDetailsService
+    private lateinit var applicantAccountRepository: ApplicantAccountRepository
+    private lateinit var oauthIntegrationService: OAuthIntegrationService
+    private lateinit var userDetailsService: UserDetailsServiceImpl
     private lateinit var authenticationManager: AuthenticationManager
     private lateinit var jwtService: JwtService
+    private lateinit var authenticationValidationService: AuthenticationValidationService
+    private lateinit var passwordEncoder: PasswordEncoder
     private lateinit var authenticationService: AuthenticationService
+
+    private lateinit var accountSaveSlot: CapturingSlot<ApplicantAccountEntity>
 
     @BeforeEach
     fun setup() {
-        applicantAccountService = mockk {
-            every { create(eq(VALID_SIGNUP_REQUEST)) } returns Result.success(
-                ApplicantAccountEntity(
-                    "New",
-                    "Applicant",
-                    "new@example.com",
-                    "+41 79 987 65 43",
-                    LocalDate.of(1987, 1, 6),
-                    "Newstreet",
-                    null,
-                    "123",
-                    "NewCity",
-                    "CH",
-                    "12345678",
+        accountSaveSlot = slot<ApplicantAccountEntity>()
+        applicantAccountRepository = mockk {
+            every { findById(any()) } returns Optional.empty()
+            every { findById(eq(1)) } returns Optional.of(existingAccount)
+            every { save(capture(accountSaveSlot)) } returns mockk()
+        }
+        oauthIntegrationService = mockk()
+        userDetailsService = mockk {
+            every { loadUserByUsername(eq("first.last@example.com")) } returns MyCvUserDetails(
+                User.withUsername("first.last@example.com")
+                    .password("valid_encoded_pw")
+                    .build(),
+                mockk()
+            )
+        }
+        authenticationManager = mockk()
+        authenticationValidationService = mockk {
+            every { validateLoginRequest(any()) } returns Result.failure(IllegalArgumentException(""))
+            every {
+                validateLoginRequest(
+                    eq(
+                        LoginRequestDto(
+                            "first.last@example.com",
+                            "a*c3efgH"
+                        )
+                    )
+                )
+            } returns Result.success(Unit)
+            every { validateSignupRequest(eq(validSignupRequest)) } returns Result.success(Unit)
+            every { validateSignupRequest(eq(invalidSignupRequest)) } returns Result.failure(
+                IllegalArgumentException(
+                    "Invalid signup request"
                 )
             )
-            every { create(eq(INVALID_SIGNUP_REQUEST)) } returns Result.failure(mockk<ValidationException>())
+            every {
+                validateChangePasswordRequest(
+                    eq(validChangePwRequest),
+                    eq(existingAccount.password!!)
+                )
+            } returns Result.success(Unit)
+            every { validateChangePasswordRequest(eq(invalidChangePwRequest), any()) } returns Result.failure(
+                IllegalArgumentException("Invalid")
+            )
         }
-        userDetailsService = mockk()
-        authenticationManager = mockk()
 
         jwtService = mockk {
             every { generateAccessToken(any()) } returns GENERATED_ACCESS_TOKEN
@@ -91,44 +150,83 @@ class AuthenticationServiceTest {
             every { getAccessTokenExpirationTime() } returns ACCESS_TOKEN_EXPIRY_TIME
             every { getRefreshTokenExpirationTime() } returns REFRESH_TOKEN_EXPIRY_TIME
         }
+        passwordEncoder = mockk {
+            every { encode(eq("a*c3efgH")) } returns "valid_encoded_pw"
+        }
 
         authenticationService = AuthenticationService(
-            applicantAccountService,
+            applicantAccountRepository,
+            oauthIntegrationService,
+            authenticationValidationService,
             userDetailsService,
             authenticationManager,
             jwtService,
-            mockk(relaxed = true)
+            mockk(relaxed = true),
+            passwordEncoder
         )
     }
 
     @Test
     fun testSuccessfulSignUp() {
         every { authenticationManager.authenticate(any()) } returns mockk()
-        every { userDetailsService.loadUserByUsername(any()) } returns User.withUsername("username")
-            .password("pwd")
-            .build()
+        every { userDetailsService.loadUserByUsername(any()) } returns MyCvUserDetails(
+            User.withUsername("username")
+                .password("pwd")
+                .build(),
+            mockk()
+        )
 
-        val signupResult = authenticationService.signUp(VALID_SIGNUP_REQUEST)
+        val signupResult = authenticationService.signUp(validSignupRequest)
 
         assertTrue { signupResult.isSuccess }
+        verify(exactly = 1) { applicantAccountRepository.save(any()) }
         assertNotNull(signupResult.getOrNull())
     }
 
     @Test
     fun testFailedSignUp() {
-        val signupResult = authenticationService.signUp(INVALID_SIGNUP_REQUEST)
+        val signupResult = authenticationService.signUp(invalidSignupRequest)
 
         assertTrue { signupResult.isFailure }
+        verify(exactly = 0) { applicantAccountRepository.save(any()) }
+    }
+
+    @Test
+    fun testSuccessfulChangePassword() {
+        val changePasswordResult = authenticationService.changePassword(1, validChangePwRequest)
+
+        assertTrue { changePasswordResult.isSuccess }
+        verify(exactly = 1) { applicantAccountRepository.save(any()) }
+
+        assertNotNull(accountSaveSlot.captured)
+        assertEquals(existingAccount.id, accountSaveSlot.captured.id)
+        assertEquals(existingAccount.accountDetails!!.firstName, accountSaveSlot.captured.accountDetails!!.firstName)
+        assertEquals(existingAccount.accountDetails.lastName, accountSaveSlot.captured.accountDetails!!.lastName)
+        assertEquals(existingAccount.accountDetails.email, accountSaveSlot.captured.accountDetails!!.email)
+        assertEquals(existingAccount.accountDetails.phone, accountSaveSlot.captured.accountDetails!!.phone)
+        assertEquals(existingAccount.accountDetails.birthday, accountSaveSlot.captured.accountDetails!!.birthday)
+        assertEquals(existingAccount.accountDetails.street, accountSaveSlot.captured.accountDetails!!.street)
+        assertEquals(existingAccount.accountDetails.houseNumber, accountSaveSlot.captured.accountDetails!!.houseNumber)
+        assertEquals(existingAccount.accountDetails.postcode, accountSaveSlot.captured.accountDetails!!.postcode)
+        assertEquals(existingAccount.accountDetails.city, accountSaveSlot.captured.accountDetails!!.city)
+        assertEquals(existingAccount.accountDetails.country, accountSaveSlot.captured.accountDetails!!.country)
+        assertEquals("valid_encoded_pw", accountSaveSlot.captured.password)
+    }
+
+    @Test
+    fun testChangePasswordWithMissingAccount() {
+        val changePasswordResult = authenticationService.changePassword(2, validChangePwRequest)
+
+        assertTrue { changePasswordResult.isFailure }
+        verify(exactly = 0) { authenticationValidationService.validateChangePasswordRequest(any(), any()) }
+        verify(exactly = 0) { applicantAccountRepository.save(any()) }
     }
 
     @Test
     fun testSuccessfulAuthentication() {
         every { authenticationManager.authenticate(any()) } returns mockk()
-        every { userDetailsService.loadUserByUsername(eq("existing_username")) } returns User.withUsername("existing_username")
-            .password("encoded_password")
-            .build()
 
-        val authResult = authenticationService.authenticate(LoginRequestDto("existing_username", "password"))
+        val authResult = authenticationService.authenticate(LoginRequestDto("first.last@example.com", "a*c3efgH"))
 
         assertTrue { authResult.isSuccess }
         val authData = authResult.getOrNull()
@@ -137,28 +235,19 @@ class AuthenticationServiceTest {
     }
 
     @Test
-    fun testAuthenticationWithMissingUsername() {
-        val authResult = authenticationService.authenticate(LoginRequestDto(null, "password"))
+    fun testFailedAuthenticationWithMissingUsername() {
+        val authResult = authenticationService.authenticate(LoginRequestDto(null, null))
 
         assertTrue { authResult.isFailure }
         assertNotNull(authResult.exceptionOrNull())
-        assertTrue { authResult.exceptionOrNull() is ValidationException }
-    }
-
-    @Test
-    fun testAuthenticationWithMissingPassword() {
-        val authResult = authenticationService.authenticate(LoginRequestDto("username", null))
-
-        assertTrue { authResult.isFailure }
-        assertNotNull(authResult.exceptionOrNull())
-        assertTrue { authResult.exceptionOrNull() is ValidationException }
+        assertTrue { authResult.exceptionOrNull() is IllegalArgumentException }
     }
 
     @Test
     fun testAuthenticationWithAuthenticationException() {
         every { authenticationManager.authenticate(any()) } throws BadCredentialsException("Authentication failed with bad credentials")
 
-        val authResult = authenticationService.authenticate(LoginRequestDto("username", "password"))
+        val authResult = authenticationService.authenticate(LoginRequestDto("first.last@example.com", "a*c3efgH"))
 
         assertTrue { authResult.isFailure }
         assertNotNull(authResult.exceptionOrNull())
@@ -169,9 +258,11 @@ class AuthenticationServiceTest {
     fun testRefreshAccessToken() {
         val oldRefreshToken = "old_refresh_token"
         val username = "username"
-        val user = User.withUsername("username")
-            .password("pw")
-            .build()
+        val user = MyCvUserDetails(
+            User.withUsername("username")
+                .password("pw")
+                .build(), mockk()
+        )
 
         every { jwtService.extractUsername(eq(oldRefreshToken)) } returns username
         every { userDetailsService.loadUserByUsername(eq(username)) } returns user
@@ -188,7 +279,7 @@ class AuthenticationServiceTest {
     fun testRefreshAccessTokenWithInvalidToken() {
         val oldRefreshToken = "old_refresh_token"
         every { jwtService.extractUsername(eq(oldRefreshToken)) } returns null
-        every { userDetailsService.loadUserByUsername(any()) } returns null
+        every { userDetailsService.loadUserByUsername(any()) } throws BadCredentialsException("")
 
         val refreshResult = authenticationService.refreshAccessToken(oldRefreshToken)
 
@@ -200,9 +291,11 @@ class AuthenticationServiceTest {
     fun testRefreshAccessTokenWithExpiredToken() {
         val oldRefreshToken = "old_refresh_token"
         val username = "username"
-        val user = User.withUsername("username")
-            .password("pw")
-            .build()
+        val user = MyCvUserDetails(
+            User.withUsername("username")
+                .password("pw")
+                .build(), mockk()
+        )
 
         every { jwtService.extractUsername(eq(oldRefreshToken)) } returns username
         every { userDetailsService.loadUserByUsername(eq(username)) } returns user
