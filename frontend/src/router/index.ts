@@ -19,6 +19,16 @@ const router = createRouter({
       props: (route) => ({ redirect: route.query.redirect })
     },
     {
+      path: '/ui/login/oauth-success',
+      name: 'login-oauth-success',
+      component: () => import('@/views/account/OAuthLoginSuccess.vue'),
+    },
+    {
+      path: '/ui/login/oauth-failure',
+      name: 'login-oauth-failure',
+      component: () => import('@/views/account/OAuthLoginFailure.vue'),
+    },
+    {
       path: '/ui/signup',
       name: 'signup',
       component: () => import('@/views/account/SignUp.vue')

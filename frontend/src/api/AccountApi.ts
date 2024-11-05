@@ -27,6 +27,15 @@ async function login(email: string, password: string): Promise<void> {
   }
 }
 
+async function verifyLogin(): Promise<void> {
+  try {
+    const response = await fetchFromApi('/auth/login/verify')
+    return processAuthResponse(response)
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
 async function signUp(account: SignupRequestDto): Promise<void> {
   try {
     const response = await fetch('/api/auth/signUp', {
@@ -98,6 +107,7 @@ async function logout(): Promise<void> {
 
 export default {
   login,
+  verifyLogin,
   signUp,
   changePassword,
   update,

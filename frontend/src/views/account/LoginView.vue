@@ -11,25 +11,41 @@
           border
           rounded
         >
-          <v-form @submit.prevent>
-            <v-text-field
-              v-model="formState.email"
-              :label="t('fields.email')"
-              :error-messages="emailErrors"
-            />
-            <password-input
-              v-model="formState.password"
-              :label="t('fields.password')"
-              :error-messages="passwordErrors"
-            />
-            <v-btn
-              type="submit"
-              block
-              color="primary"
-              @click="login"
-              >{{ t('account.login.action') }}
-            </v-btn>
-          </v-form>
+          <v-col cols="12">
+            <v-form @submit.prevent>
+              <v-text-field
+                v-model="formState.email"
+                :label="t('fields.email')"
+                :error-messages="emailErrors"
+              />
+              <password-input
+                v-model="formState.password"
+                :label="t('fields.password')"
+                :error-messages="passwordErrors"
+              />
+              <v-btn
+                type="submit"
+                block
+                color="primary"
+                @click="login"
+                >{{ t('account.login.action') }}
+              </v-btn>
+            </v-form>
+          </v-col>
+          <v-col cols="12">
+            <v-row justify="center">
+              <v-list>
+                <v-list-item
+                  prepend-icon="mdi-github"
+                  rounded="pill"
+                  link
+                  @click="loginWithGithub"
+                  :title="t('account.login.oauth.github')"
+                  border
+                />
+              </v-list>
+            </v-row>
+          </v-col>
           <p>
             {{ t('account.login.noAccount') }}
             <router-link :to="{ name: 'signup' }">{{ t('account.login.signup') }}</router-link>
@@ -118,6 +134,10 @@ async function login() {
       ToastService.error(t('account.login.error'), errorDetails)
     }
   }
+}
+
+function loginWithGithub() {
+  window.location.href = '/api/auth/oauth2/authorization/github'
 }
 </script>
 
