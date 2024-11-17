@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service
 
 private const val MIN_PASSWORD_LENGTH = 8
 
+private const val USERNAME_FIELD_KEY = "username"
 private const val PASSWORD_FIELD_KEY = "password"
 private const val CONFIRM_PASSWORD_FIELD_KEY = "confirmPassword"
 private const val OLD_PASSWORD_FIELD_KEY = "oldPassword"
@@ -40,13 +41,13 @@ class AuthenticationValidationService(
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
         if (loginRequest.username.isNullOrBlank()) {
-            val error = messagesService.getMessage("username")
-            validationErrorBuilder.addError("username", error)
+            val error = messagesService.requiredFieldMissingError(USERNAME_FIELD_KEY)
+            validationErrorBuilder.addError(USERNAME_FIELD_KEY, error)
         }
 
         if (loginRequest.password.isNullOrBlank()) {
-            val error = messagesService.getMessage("password")
-            validationErrorBuilder.addError("password", error)
+            val error = messagesService.requiredFieldMissingError(PASSWORD_FIELD_KEY)
+            validationErrorBuilder.addError(PASSWORD_FIELD_KEY, error)
         }
 
         if (validationErrorBuilder.hasErrors()) {
@@ -58,6 +59,7 @@ class AuthenticationValidationService(
     fun validateSignupRequest(signupRequest: SignupRequestDto): Result<Unit> {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
+        applicantAccountValidationService.validateUsername(signupRequest.username, null, validationErrorBuilder)
         applicantAccountValidationService.validateFirstName(signupRequest.firstName, validationErrorBuilder)
         applicantAccountValidationService.validateLastName(signupRequest.lastName, validationErrorBuilder)
         applicantAccountValidationService.validateEmail(signupRequest.email, null, validationErrorBuilder)
@@ -84,6 +86,15 @@ class AuthenticationValidationService(
         return Result.success(Unit)
     }
 
+    fun validateOAuthSignupRequest(username: String): Result<Unit> {
+        val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
+        applicantAccountValidationService.validateUsername(username, null, validationErrorBuilder)
+        if (validationErrorBuilder.hasErrors()) {
+            return Result.failure(validationErrorBuilder.build(messagesService.getMessage(SIGNUP_VALIDATION_ERROR_KEY)))
+        }
+        return Result.success(Unit)
+    }
+
     fun validateChangePasswordRequest(
         changePassword: ChangePasswordDto,
         currentPassword: String
@@ -94,7 +105,13 @@ class AuthenticationValidationService(
         validatePassword(changePassword.password, changePassword.confirmPassword, validationErrorBuilder)
 
         if (validationErrorBuilder.hasErrors()) {
-            return Result.failure(validationErrorBuilder.build(messagesService.getMessage(CHANGE_PASSWORD_VALIDATION_ERROR_KEY)))
+            return Result.failure(
+                validationErrorBuilder.build(
+                    messagesService.getMessage(
+                        CHANGE_PASSWORD_VALIDATION_ERROR_KEY
+                    )
+                )
+            )
         }
         return Result.success(Unit)
     }

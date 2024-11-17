@@ -1,4 +1,4 @@
-package ch.streckeisen.mycv.backend.account.oauth
+package ch.streckeisen.mycv.backend.account.auth.oauth
 
 import org.springframework.data.repository.CrudRepository
 

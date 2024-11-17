@@ -1,4 +1,4 @@
-package ch.streckeisen.mycv.backend.account.oauth
+package ch.streckeisen.mycv.backend.account.auth.oauth
 
 import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
 import jakarta.persistence.EmbeddedId
@@ -12,8 +12,7 @@ import jakarta.persistence.Table
 class OAuthIntegrationEntity(
     @EmbeddedId
     val id: OAuthEntityId,
-    val accessToken: String,
     @ManyToOne(fetch = FetchType.EAGER)
-    val account: ApplicantAccountEntity
+    val account: ApplicantAccountEntity? = null
 ) {
 }
