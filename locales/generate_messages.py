@@ -64,6 +64,7 @@ def write_backend_properties(locales, output_dir, key_prefix, fallback_locale):
 
         # Flatten shared and backend dictionaries for the properties file
         shared_data = flatten_dict(content.get("shared", {}), sep='.')
+        shared_data = {key: convert_named_to_indexed(value) for key, value in shared_data.items()}
         backend_data = flatten_dict(content.get("backend", {}), sep='.')
 
         # Combine shared and backend for the properties file
