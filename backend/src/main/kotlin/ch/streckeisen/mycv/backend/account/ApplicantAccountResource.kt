@@ -1,9 +1,9 @@
 package ch.streckeisen.mycv.backend.account
 
 import ch.streckeisen.mycv.backend.account.dto.AccountDto
+import ch.streckeisen.mycv.backend.account.dto.AccountStatusDto
 import ch.streckeisen.mycv.backend.account.dto.AccountUpdateDto
-import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
-import ch.streckeisen.mycv.backend.account.dto.AuthResponseDto
+import ch.streckeisen.mycv.backend.security.RequiresAccountStatus
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
@@ -42,5 +42,14 @@ class ApplicantAccountResource(private val applicantAccountService: ApplicantAcc
                     throw it
                 }
             )
+    }
+
+    @RequiresAccountStatus(AccountStatus.INCOMPLETE)
+    @GetMapping("status")
+    fun getVerificationStatus(): ResponseEntity<AccountStatusDto> {
+        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val status = applicantAccountService.getAccountStatus(principal.id)
+            .getOrThrow()
+        return ResponseEntity.ok(AccountStatusDto(status))
     }
 }

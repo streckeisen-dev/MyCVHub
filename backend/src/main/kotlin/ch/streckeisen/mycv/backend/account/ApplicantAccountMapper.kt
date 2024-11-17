@@ -3,6 +3,7 @@ package ch.streckeisen.mycv.backend.account
 import ch.streckeisen.mycv.backend.account.dto.AccountDto
 
 fun ApplicantAccountEntity.toAccountDto(): AccountDto = AccountDto(
+    username,
     accountDetails!!.firstName,
     accountDetails.lastName,
     accountDetails.email,
@@ -13,5 +14,6 @@ fun ApplicantAccountEntity.toAccountDto(): AccountDto = AccountDto(
     accountDetails.postcode,
     accountDetails.city,
     accountDetails.country,
-    profile = profile?.alias
+    profile != null,
+    password != null
 )

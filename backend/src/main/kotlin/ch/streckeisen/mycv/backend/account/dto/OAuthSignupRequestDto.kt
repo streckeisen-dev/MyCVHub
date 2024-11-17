@@ -2,7 +2,7 @@ package ch.streckeisen.mycv.backend.account.dto
 
 import java.time.LocalDate
 
-data class SignupRequestDto(
+data class OAuthSignupRequestDto(
     val username: String?,
     val firstName: String?,
     val lastName: String?,
@@ -14,6 +14,4 @@ data class SignupRequestDto(
     val postcode: String?,
     val city: String?,
     val country: String?,
-    val password: String?,
-    val confirmPassword: String?
 )

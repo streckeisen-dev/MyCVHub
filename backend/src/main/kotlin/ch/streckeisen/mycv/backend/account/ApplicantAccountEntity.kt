@@ -1,6 +1,6 @@
 package ch.streckeisen.mycv.backend.account
 
-import ch.streckeisen.mycv.backend.account.oauth.OAuthIntegrationEntity
+import ch.streckeisen.mycv.backend.account.auth.oauth.OAuthIntegrationEntity
 import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -19,6 +19,7 @@ class ApplicantAccountEntity(
     val password: String?,
     @Column(name = "is_oauth_user")
     val isOAuthUser: Boolean,
+    val isVerified: Boolean,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,

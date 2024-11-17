@@ -1,20 +1,18 @@
 package ch.streckeisen.mycv.backend.account
 
 import ch.streckeisen.mycv.backend.account.dto.AccountUpdateDto
-import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
-import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
 import com.google.i18n.phonenumbers.NumberParseException
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import org.apache.commons.validator.routines.EmailValidator
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.util.Locale
 
 private const val ACCOUNT_VALIDATION_KEY_PREFIX = "${MYCV_KEY_PREFIX}.account.validation"
+private const val USERNAME_TAKEN_ERROR_KEY = "${MYCV_KEY_PREFIX}.validations.usernameAlreadyTaken"
 private const val EMAIL_INVALID_KEY = "${MYCV_KEY_PREFIX}.validations.email"
 private const val EMAIL_TAKEN_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.emailAlreadyTaken"
 private const val PHONE_INVALID_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.phoneInvalid"
@@ -23,9 +21,10 @@ private const val COUNTRY_LENGTH_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.country
 private const val COUNTRY_INVALID_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.countryInvalid"
 private const val VALIDATION_ERROR_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.error"
 
+private const val USERNAME_FIELD_KEY = "username"
 private const val FIRST_NAME_FIELD_KEY = "firstName"
 private const val LAST_NAME_FIELD_KEY = "lastName"
-private const val EMAIL_FIELD_KEY = "email"
+private const val EMAIL_FIELD_KEY = "ch/streckeisen/mycv/email"
 private const val BIRTHDAY_FIELD_KEY = "birthday"
 private const val PHONE_FIELD_KEY = "phone"
 private const val STREET_FIELD_KEY = "street"
@@ -37,14 +36,14 @@ private const val COUNTRY_FIELD_KEY = "country"
 @Service
 class ApplicantAccountValidationService(
     private val applicantAccountRepository: ApplicantAccountRepository,
-    private val messagesService: MessagesService,
-    private val passwordEncoder: PasswordEncoder
+    private val messagesService: MessagesService
 ) {
     private val phoneNumberUtil = PhoneNumberUtil.getInstance()
 
     fun validateAccountUpdate(accountId: Long, accountUpdate: AccountUpdateDto): Result<Unit> {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
+        validateUsername(accountUpdate.username, accountId, validationErrorBuilder)
         validateFirstName(accountUpdate.firstName, validationErrorBuilder)
         validateLastName(accountUpdate.lastName, validationErrorBuilder)
         validateEmail(accountUpdate.email, accountId, validationErrorBuilder)
@@ -57,6 +56,26 @@ class ApplicantAccountValidationService(
         validateBirthday(accountUpdate.birthday, validationErrorBuilder)
 
         return checkValidationResult(validationErrorBuilder)
+    }
+
+    fun validateUsername(
+        username: String?,
+        updatedId: Long?,
+        validationErrorBuilder: ValidationException.ValidationErrorBuilder
+    ) {
+        if (username.isNullOrBlank()) {
+            val error = messagesService.requiredFieldMissingError(USERNAME_FIELD_KEY)
+            validationErrorBuilder.addError(USERNAME_FIELD_KEY, error)
+        } else if (username.length > USERNAME_MAX_LENGTH) {
+            val error = messagesService.fieldMaxLengthExceededError(USERNAME_FIELD_KEY, USERNAME_MAX_LENGTH)
+            validationErrorBuilder.addError(USERNAME_FIELD_KEY, error)
+        } else {
+            val accountWithSameUsername = applicantAccountRepository.findByUsername(username).orElse(null)
+            if (accountWithSameUsername != null && accountWithSameUsername.id != updatedId) {
+                val error = messagesService.getMessage(USERNAME_TAKEN_ERROR_KEY)
+                validationErrorBuilder.addError(USERNAME_FIELD_KEY, error)
+            }
+        }
     }
 
     fun validateFirstName(
