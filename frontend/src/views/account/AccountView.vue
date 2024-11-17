@@ -80,7 +80,7 @@
             rounded
             class="account-sheet"
           >
-            <v-row v-if="account.profile">
+            <v-row v-if="account.hasProfile">
               <v-col
                 cols="12"
                 md="5"
@@ -89,7 +89,7 @@
                 <v-btn
                   :text="t('account.profile.view')"
                   color="primary"
-                  :to="{ name: 'public-profile', params: { alias: account.profile } }"
+                  :to="{ name: 'public-profile', params: { alias: account.username } }"
                 />
               </v-col>
               <v-col
@@ -151,6 +151,7 @@
                 />
               </v-col>
               <v-col
+                v-if="account.hasPassword"
                 cols="12"
                 md="5"
                 lg="3"

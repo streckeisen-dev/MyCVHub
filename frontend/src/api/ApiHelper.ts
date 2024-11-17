@@ -1,6 +1,8 @@
 import type { ErrorDto } from '@/dto/ErrorDto'
 import LoginStateService from '@/services/LoginStateService'
 import i18n from '@/plugins/i18n'
+import { ca } from 'vuetify/locale'
+import router from '@/router'
 
 async function fetchFromApi(
   path: string,
@@ -33,7 +35,12 @@ async function refreshToken(): Promise<void> {
     method: 'POST',
     credentials: 'same-origin'
   })
-  return await processAuthResponse(refreshResponse)
+  try {
+    return await processAuthResponse(refreshResponse)
+  } catch (error) {
+    await router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
+    return Promise.reject(error)
+  }
 }
 
 async function getJSONIfResponseIsOk<T>(response: Response): Promise<T> {
@@ -60,11 +67,14 @@ async function extractErrorIfResponseIsNotOk(response: Response): Promise<void> 
 
 async function processAuthResponse(response: Response): Promise<void> {
   try {
+    if (response.status === 401) {
+      LoginStateService.loggedOut()
+      return Promise.reject('Unauthorized')
+    }
     await extractErrorIfResponseIsNotOk(response)
     LoginStateService.successfulLogin()
     return Promise.resolve()
   } catch (error) {
-    LoginStateService.loggedOut()
     return Promise.reject(error)
   }
 }

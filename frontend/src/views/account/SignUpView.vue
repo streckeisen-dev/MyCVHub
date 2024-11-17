@@ -95,6 +95,7 @@ const { t } = useI18n({
 const errorMessages = ref<ErrorMessages>({})
 
 type FormState = {
+  username?: string
   firstName?: string
   lastName?: string
   email?: string
@@ -110,6 +111,7 @@ type FormState = {
 }
 
 const formState = reactive<FormState>({
+  username: undefined,
   firstName: undefined,
   lastName: undefined,
   email: undefined,
@@ -125,6 +127,7 @@ const formState = reactive<FormState>({
 })
 
 const rules = reactive<ValidationArgs>({
+  username: { required },
   firstName: { required },
   lastName: { required },
   email: {
@@ -155,6 +158,7 @@ async function signUp() {
   }
 
   const account: SignupRequestDto = {
+    username: formState.username,
     firstName: formState.firstName,
     lastName: formState.lastName,
     email: formState.email,

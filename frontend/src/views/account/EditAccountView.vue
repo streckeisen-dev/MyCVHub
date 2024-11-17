@@ -68,6 +68,7 @@ try {
 }
 
 const formState = reactive<AccountEditorData>({
+  username: account.value?.username,
   firstName: account.value?.firstName,
   lastName: account.value?.lastName,
   email: account.value?.email,
@@ -81,6 +82,7 @@ const formState = reactive<AccountEditorData>({
 })
 
 const rules = {
+  username: { required },
   firstName: { required },
   lastName: { required },
   email: {
@@ -105,6 +107,7 @@ async function save() {
   }
 
   const accountUpdate: AccountUpdateDto = {
+    username: formState.username,
     firstName: formState.firstName,
     lastName: formState.lastName,
     email: formState.email,
@@ -138,5 +141,3 @@ async function cancel() {
   await router.push({ name: 'account' })
 }
 </script>
-
-<style scoped lang="scss"></style>

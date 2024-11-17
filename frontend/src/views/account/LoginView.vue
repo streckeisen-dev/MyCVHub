@@ -137,7 +137,16 @@ async function login() {
 }
 
 function loginWithGithub() {
-  window.location.href = '/api/auth/oauth2/authorization/github'
+  oauthLogin('github')
+}
+
+function oauthLogin(oauthProvider: string) {
+  const loginPath = `/api/auth/oauth2/authorization/${oauthProvider}`
+  if (props.redirect) {
+    window.location.href = `${loginPath}?redirect=${props.redirect}`
+  } else {
+    window.location.href = loginPath
+  }
 }
 </script>
 

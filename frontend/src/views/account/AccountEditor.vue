@@ -12,6 +12,13 @@
       <v-row>
         <v-col cols="12">
           <v-text-field
+            v-model="formState.username"
+            :label="t('fields.username')"
+            :error-messages="usernameErrors"
+          />
+        </v-col>
+        <v-col cols="12">
+          <v-text-field
             v-model="formState.firstName"
             :label="t('fields.firstName')"
             :error-messages="firstNameErrors"
@@ -154,6 +161,7 @@ function getErrors(attributeName: string): ComputedRef {
   return getErrorMessages(errorMessages, form, attributeName)
 }
 
+const usernameErrors = getErrors('username')
 const firstNameErrors = getErrors('firstName')
 const lastNameErrors = getErrors('lastName')
 const emailErrors = getErrors('email')
@@ -165,5 +173,3 @@ const postcodeErrors = getErrors('postcode')
 const cityErrors = getErrors('city')
 const countryErrors = getErrors('country')
 </script>
-
-<style scoped lang="scss"></style>

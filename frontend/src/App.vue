@@ -250,7 +250,6 @@ router.beforeEach(
     from: RouteLocationNormalizedLoaded,
     next: NavigationGuardNext
   ) => {
-    isNavMenuOpen.value = false
     if (to.meta.authRequired && !accountApi.isUserLoggedIn()) {
       next({ name: 'login', query: { redirect: to.fullPath } })
     } else {
