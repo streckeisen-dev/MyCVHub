@@ -2,16 +2,16 @@
   <div class="form-action-buttons">
     <v-btn
       type="submit"
-      :text="t('forms.save')"
-      color="primary"
+      :text="submitText || t('forms.save')"
+      :color="submitColor || 'primary'"
       @click.prevent="save"
       :loading="isSaving"
     />
     <v-btn
-      :text="t('forms.cancel')"
+      :text="cancelText || t('forms.cancel')"
       @click="cancel"
       :disabled="isSaving"
-      color="surface"
+      :color="cancelColor || 'surface'"
       variant="flat"
     />
   </div>
@@ -25,7 +25,11 @@ const { t } = useI18n({
 })
 
 defineProps<{
-  isSaving?: boolean
+  isSaving?: boolean,
+  submitText?: string
+  cancelText?: string,
+  submitColor?: string
+  cancelColor?: string
 }>()
 
 const emit = defineEmits(['save', 'cancel'])
