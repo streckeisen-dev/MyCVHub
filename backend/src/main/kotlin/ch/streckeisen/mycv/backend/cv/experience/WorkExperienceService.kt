@@ -1,8 +1,8 @@
 package ch.streckeisen.mycv.backend.cv.experience
 
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
-import ch.streckeisen.mycv.backend.exceptions.EntityNotFoundException
-import org.springframework.security.access.AccessDeniedException
+import ch.streckeisen.mycv.backend.exceptions.LocalizedException
+import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import kotlin.jvm.optionals.getOrElse
@@ -17,11 +17,11 @@ class WorkExperienceService(
     fun save(applicantId: Long, workExperience: WorkExperienceUpdateDto): Result<WorkExperienceEntity> {
         val existingWorkExperience = if (workExperience.id != null) {
             workExperienceRepository.findById(workExperience.id)
-                .getOrElse { return Result.failure(EntityNotFoundException("This work experience does not exist")) }
+                .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.workExperience.notFound")) }
         } else null
 
         if (existingWorkExperience != null && existingWorkExperience.profile.account.id != applicantId) {
-            return Result.failure(AccessDeniedException("You don't have permission to modify this work experience"))
+            return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.workExperience.accessDenied"))
         }
 
         val profile = if (existingWorkExperience != null) {
@@ -54,11 +54,11 @@ class WorkExperienceService(
     @Transactional
     fun delete(applicantId: Long, workExperienceId: Long): Result<Unit> {
         val workExperience = workExperienceRepository.findById(workExperienceId).getOrElse {
-            return Result.failure(EntityNotFoundException("This work experience does not exist"))
+            return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.workExperience.notFound"))
         }
 
         if (applicantId != workExperience.profile.account.id) {
-            return Result.failure(AccessDeniedException("You don't have permission to delete this work experience"))
+            return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.workExperience.accessDenied"))
         }
 
         workExperienceRepository.delete(workExperience)

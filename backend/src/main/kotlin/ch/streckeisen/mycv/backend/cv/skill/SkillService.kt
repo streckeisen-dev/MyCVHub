@@ -1,8 +1,8 @@
 package ch.streckeisen.mycv.backend.cv.skill
 
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
-import ch.streckeisen.mycv.backend.exceptions.EntityNotFoundException
-import org.springframework.security.access.AccessDeniedException
+import ch.streckeisen.mycv.backend.exceptions.LocalizedException
+import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import kotlin.jvm.optionals.getOrElse
@@ -17,7 +17,7 @@ class SkillService(
     fun save(accountId: Long, skillUpdate: SkillUpdateDto): Result<SkillEntity> {
         val existingSkill = if (skillUpdate.id != null) {
             skillRepository.findById(skillUpdate.id)
-                .getOrElse { return Result.failure(EntityNotFoundException("This skill does not exist")) }
+                .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.skill.notFound")) }
         } else null
 
         val profile = if (existingSkill != null) {
@@ -28,7 +28,7 @@ class SkillService(
         }
 
         if (profile.account.id != accountId) {
-            return Result.failure(AccessDeniedException("You don't have permission to modify this skill"))
+            return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.skill.accessDenied"))
         }
 
         skillValidationService.validateSkill(skillUpdate)
@@ -50,10 +50,10 @@ class SkillService(
     @Transactional
     fun delete(accountId: Long, skillId: Long): Result<Unit> {
         val skill = skillRepository.findById(skillId)
-            .getOrElse { return Result.failure(EntityNotFoundException("This skill does not exist")) }
+            .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.skill.notFound")) }
 
         if (skill.profile.account.id != accountId) {
-            return Result.failure(AccessDeniedException("You don't have permission to delete this skill"))
+            return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.skill.accessDenied"))
         }
 
         skillRepository.delete(skill)
