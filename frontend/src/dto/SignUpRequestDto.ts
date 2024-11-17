@@ -1,4 +1,5 @@
 export type SignupRequestDto = {
+  username?: string
   firstName?: string
   lastName?: string
   email?: string
