@@ -6,10 +6,10 @@ import ch.streckeisen.mycv.backend.account.ApplicantAccountRepository
 import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
 import ch.streckeisen.mycv.backend.account.dto.LoginRequestDto
 import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
-import ch.streckeisen.mycv.backend.account.oauth.OAuthIntegrationService
 import ch.streckeisen.mycv.backend.security.JwtService
 import ch.streckeisen.mycv.backend.security.MyCvUserDetails
 import ch.streckeisen.mycv.backend.security.UserDetailsServiceImpl
+import io.jsonwebtoken.JwtException
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
@@ -32,6 +32,7 @@ private val existingAccount = ApplicantAccountEntity(
     "username",
     "validPassword",
     false,
+    true,
     accountDetails = AccountDetailsEntity(
         "Existing",
         "Applicant",
@@ -48,6 +49,7 @@ private val existingAccount = ApplicantAccountEntity(
 )
 
 private val validSignupRequest = SignupRequestDto(
+    "username",
     "FirstName",
     "LastName",
     "first.last@example.com",
@@ -74,24 +76,18 @@ private val invalidSignupRequest = SignupRequestDto(
     null,
     null,
     null,
+    null,
     null
 )
 
 private val invalidChangePwRequest = ChangePasswordDto(null, null, null)
 private val validChangePwRequest = ChangePasswordDto("validPassword", "a*c3efgH", "a*c3efgH")
 
-private const val GENERATED_ACCESS_TOKEN = "access_token"
-private const val GENERATED_REFRESH_TOKEN = "refresh_token"
-private const val ACCESS_TOKEN_EXPIRY_TIME = 123456L
-private const val REFRESH_TOKEN_EXPIRY_TIME = 123456789L
-
 class AuthenticationServiceTest {
     private lateinit var applicantAccountRepository: ApplicantAccountRepository
-    private lateinit var oauthIntegrationService: OAuthIntegrationService
-    private lateinit var userDetailsService: UserDetailsServiceImpl
     private lateinit var authenticationManager: AuthenticationManager
-    private lateinit var jwtService: JwtService
     private lateinit var authenticationValidationService: AuthenticationValidationService
+    private lateinit var authTokenService: AuthTokenService
     private lateinit var passwordEncoder: PasswordEncoder
     private lateinit var authenticationService: AuthenticationService
 
@@ -105,15 +101,7 @@ class AuthenticationServiceTest {
             every { findById(eq(1)) } returns Optional.of(existingAccount)
             every { save(capture(accountSaveSlot)) } returns mockk()
         }
-        oauthIntegrationService = mockk()
-        userDetailsService = mockk {
-            every { loadUserByUsername(eq("first.last@example.com")) } returns MyCvUserDetails(
-                User.withUsername("first.last@example.com")
-                    .password("valid_encoded_pw")
-                    .build(),
-                mockk()
-            )
-        }
+
         authenticationManager = mockk()
         authenticationValidationService = mockk {
             every { validateLoginRequest(any()) } returns Result.failure(IllegalArgumentException(""))
@@ -144,23 +132,20 @@ class AuthenticationServiceTest {
             )
         }
 
-        jwtService = mockk {
-            every { generateAccessToken(any()) } returns GENERATED_ACCESS_TOKEN
-            every { generateRefreshToken(any()) } returns GENERATED_REFRESH_TOKEN
-            every { getAccessTokenExpirationTime() } returns ACCESS_TOKEN_EXPIRY_TIME
-            every { getRefreshTokenExpirationTime() } returns REFRESH_TOKEN_EXPIRY_TIME
+        authTokenService = mockk {
+            every { generateAuthData(any()) } returns Result.success(mockk())
+            every { generateAuthData(eq("error")) } returns Result.failure(mockk<AuthenticationException>())
         }
+
         passwordEncoder = mockk {
             every { encode(eq("a*c3efgH")) } returns "valid_encoded_pw"
         }
 
         authenticationService = AuthenticationService(
             applicantAccountRepository,
-            oauthIntegrationService,
             authenticationValidationService,
-            userDetailsService,
             authenticationManager,
-            jwtService,
+            authTokenService,
             mockk(relaxed = true),
             passwordEncoder
         )
@@ -169,12 +154,6 @@ class AuthenticationServiceTest {
     @Test
     fun testSuccessfulSignUp() {
         every { authenticationManager.authenticate(any()) } returns mockk()
-        every { userDetailsService.loadUserByUsername(any()) } returns MyCvUserDetails(
-            User.withUsername("username")
-                .password("pwd")
-                .build(),
-            mockk()
-        )
 
         val signupResult = authenticationService.signUp(validSignupRequest)
 
@@ -229,9 +208,7 @@ class AuthenticationServiceTest {
         val authResult = authenticationService.authenticate(LoginRequestDto("first.last@example.com", "a*c3efgH"))
 
         assertTrue { authResult.isSuccess }
-        val authData = authResult.getOrNull()
-        assertNotNull(authData)
-        assertAuthData(authData)
+        assertNotNull(authResult.getOrNull())
     }
 
     @Test
@@ -258,60 +235,22 @@ class AuthenticationServiceTest {
     fun testRefreshAccessToken() {
         val oldRefreshToken = "old_refresh_token"
         val username = "username"
-        val user = MyCvUserDetails(
-            User.withUsername("username")
-                .password("pw")
-                .build(), mockk()
-        )
-
-        every { jwtService.extractUsername(eq(oldRefreshToken)) } returns username
-        every { userDetailsService.loadUserByUsername(eq(username)) } returns user
-        every { jwtService.isTokenValid(any(), any()) } returns true
+        every { authTokenService.validateRefreshToken(eq(oldRefreshToken)) } returns Result.success(username)
 
         val refreshResult = authenticationService.refreshAccessToken(oldRefreshToken)
 
         assertTrue { refreshResult.isSuccess }
-        val authData = refreshResult.getOrNull()
-        assertAuthData(authData)
+        assertNotNull(refreshResult.getOrNull())
     }
 
     @Test
     fun testRefreshAccessTokenWithInvalidToken() {
         val oldRefreshToken = "old_refresh_token"
-        every { jwtService.extractUsername(eq(oldRefreshToken)) } returns null
-        every { userDetailsService.loadUserByUsername(any()) } throws BadCredentialsException("")
+        every { authTokenService.validateRefreshToken(eq(oldRefreshToken)) } returns Result.failure(JwtException("Invalid refresh token"))
 
         val refreshResult = authenticationService.refreshAccessToken(oldRefreshToken)
 
         assertTrue { refreshResult.isFailure }
         assertNotNull(refreshResult.exceptionOrNull())
-    }
-
-    @Test
-    fun testRefreshAccessTokenWithExpiredToken() {
-        val oldRefreshToken = "old_refresh_token"
-        val username = "username"
-        val user = MyCvUserDetails(
-            User.withUsername("username")
-                .password("pw")
-                .build(), mockk()
-        )
-
-        every { jwtService.extractUsername(eq(oldRefreshToken)) } returns username
-        every { userDetailsService.loadUserByUsername(eq(username)) } returns user
-        every { jwtService.isTokenValid(any(), any()) } returns false
-
-        val refreshResult = authenticationService.refreshAccessToken(oldRefreshToken)
-
-        assertTrue { refreshResult.isFailure }
-        assertNotNull(refreshResult.exceptionOrNull())
-    }
-
-    private fun assertAuthData(authData: AuthData?) {
-        assertNotNull(authData)
-        assertEquals(GENERATED_REFRESH_TOKEN, authData.refreshToken)
-        assertEquals(GENERATED_ACCESS_TOKEN, authData.accessToken)
-        assertEquals(ACCESS_TOKEN_EXPIRY_TIME, authData.accessTokenExpirationTime)
-        assertEquals(REFRESH_TOKEN_EXPIRY_TIME, authData.refreshTokenExpirationTime)
     }
 }

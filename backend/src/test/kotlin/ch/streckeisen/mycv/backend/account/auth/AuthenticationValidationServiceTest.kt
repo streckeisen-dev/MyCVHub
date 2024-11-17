@@ -27,12 +27,25 @@ class AuthenticationValidationServiceTest {
     @BeforeEach
     fun setup() {
         applicantAccountValidationService = mockk {
+            every { validateUsername(eq("valid"), isNull(), any()) } just Runs
+            every { validateUsername(eq("invalid"), any(), any()) } answers {
+                mockValidationError(
+                    "username",
+                    thirdArg()
+                )
+            }
             every { validateFirstName(eq("valid"), any()) } just Runs
             every { validateFirstName(eq("invalid"), any()) } answers { mockValidationError("firstName", secondArg()) }
             every { validateLastName(eq("valid"), any()) } just Runs
             every { validateLastName(eq("invalid"), any()) } answers { mockValidationError("lastName", secondArg()) }
             every { validateEmail(eq("valid"), any(), any()) } just Runs
-            every { validateEmail(eq("invalid"), any(), any()) } answers { mockValidationError("email", thirdArg()) }
+            every {
+                validateEmail(
+                    eq("invalid"),
+                    any(),
+                    any()
+                )
+            } answers { mockValidationError("ch/streckeisen/mycv/email", thirdArg()) }
             every { validatePhone(eq("valid"), any(), any()) } just Runs
             every { validatePhone(eq("invalid"), any(), any()) } answers { mockValidationError("phone", thirdArg()) }
             every { validateBirthday(any(), any()) } just Runs
@@ -122,6 +135,26 @@ class AuthenticationValidationServiceTest {
                     "invalid",
                     "invalid",
                     "invalid",
+                    "invalid",
+                    null,
+                    "invalid",
+                    "invalid",
+                    "invalid",
+                    "invalid",
+                    "invalid",
+                    null,
+                    null
+                ),
+                false,
+                13
+            ),
+            Arguments.of(
+                SignupRequestDto(
+                    "valid",
+                    "invalid",
+                    "invalid",
+                    "invalid",
+                    "invalid",
                     null,
                     "invalid",
                     "invalid",
@@ -136,6 +169,7 @@ class AuthenticationValidationServiceTest {
             ),
             Arguments.of(
                 SignupRequestDto(
+                    "invalid",
                     "valid",
                     "invalid",
                     "invalid",
@@ -150,10 +184,11 @@ class AuthenticationValidationServiceTest {
                     null
                 ),
                 false,
-                11
+                12
             ),
             Arguments.of(
                 SignupRequestDto(
+                    "invalid",
                     "invalid",
                     "valid",
                     "invalid",
@@ -168,10 +203,11 @@ class AuthenticationValidationServiceTest {
                     null
                 ),
                 false,
-                11
+                12
             ),
             Arguments.of(
                 SignupRequestDto(
+                    "invalid",
                     "invalid",
                     "invalid",
                     "valid",
@@ -186,10 +222,11 @@ class AuthenticationValidationServiceTest {
                     null
                 ),
                 false,
-                11
+                12
             ),
             Arguments.of(
                 SignupRequestDto(
+                    "invalid",
                     "invalid",
                     "invalid",
                     "invalid",
@@ -204,10 +241,11 @@ class AuthenticationValidationServiceTest {
                     null
                 ),
                 false,
-                11
+                12
             ),
             Arguments.of(
                 SignupRequestDto(
+                    "invalid",
                     "invalid",
                     "invalid",
                     "invalid",
@@ -222,10 +260,11 @@ class AuthenticationValidationServiceTest {
                     null
                 ),
                 false,
-                11
+                12
             ),
             Arguments.of(
                 SignupRequestDto(
+                    "invalid",
                     "invalid",
                     "invalid",
                     "invalid",
@@ -240,10 +279,11 @@ class AuthenticationValidationServiceTest {
                     null
                 ),
                 false,
-                11
+                12
             ),
             Arguments.of(
                 SignupRequestDto(
+                    "invalid",
                     "invalid",
                     "invalid",
                     "invalid",
@@ -258,10 +298,11 @@ class AuthenticationValidationServiceTest {
                     null
                 ),
                 false,
-                11
+                12
             ),
             Arguments.of(
                 SignupRequestDto(
+                    "invalid",
                     "invalid",
                     "invalid",
                     "invalid",
@@ -276,10 +317,11 @@ class AuthenticationValidationServiceTest {
                     null
                 ),
                 false,
-                11
+                12
             ),
             Arguments.of(
                 SignupRequestDto(
+                    "invalid",
                     "invalid",
                     "invalid",
                     "invalid",
@@ -294,10 +336,11 @@ class AuthenticationValidationServiceTest {
                     null
                 ),
                 false,
-                11
+                12
             ),
             Arguments.of(
                 SignupRequestDto(
+                    "invalid",
                     "invalid",
                     "invalid",
                     "invalid",
@@ -312,10 +355,11 @@ class AuthenticationValidationServiceTest {
                     null
                 ),
                 false,
-                11
+                12
             ),
             Arguments.of(
                 SignupRequestDto(
+                    "valid",
                     "valid",
                     "valid",
                     "valid",

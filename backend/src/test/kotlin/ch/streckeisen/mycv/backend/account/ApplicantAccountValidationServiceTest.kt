@@ -7,7 +7,6 @@ import io.mockk.mockk
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate
 import java.util.Optional
 import kotlin.test.BeforeTest
@@ -20,7 +19,6 @@ private const val EXISTING_USER_EMAIL = "existing.user@example.com"
 class ApplicantAccountValidationServiceTest {
     private lateinit var applicantAccountRepository: ApplicantAccountRepository
     private lateinit var applicantAccountValidationService: ApplicantAccountValidationService
-    private lateinit var passwordEncoder: PasswordEncoder
 
     @BeforeTest
     fun setup() {
@@ -28,13 +26,9 @@ class ApplicantAccountValidationServiceTest {
             every { findByUsername(eq(EXISTING_USER_EMAIL)) } returns Optional.of(existingApplicant())
             every { findByUsername(not(eq(EXISTING_USER_EMAIL))) } returns Optional.empty()
         }
-        passwordEncoder = mockk {
-            every { matches(any(), any()) } returns false
-            every { matches(eq("validPassword"), eq("validEncodedPassword")) } returns true
-        }
 
         applicantAccountValidationService =
-            ApplicantAccountValidationService(applicantAccountRepository, mockk(relaxed = true), passwordEncoder)
+            ApplicantAccountValidationService(applicantAccountRepository, mockk(relaxed = true))
     }
 
     @ParameterizedTest
@@ -65,6 +59,7 @@ class ApplicantAccountValidationServiceTest {
         "username",
         "abc",
         false,
+        true,
         accountDetails = AccountDetailsEntity(
             "Existing",
             "Applicant",
@@ -85,13 +80,14 @@ class ApplicantAccountValidationServiceTest {
         fun updateAccountValidationDataProvider() = listOf(
             Arguments.of(
                 1,
-                AccountUpdateDto(null, null, null, null, null, null, null, null, null, null),
+                AccountUpdateDto(null, null, null, null, null, null, null, null, null, null, null),
                 false,
-                9
+                10
             ),
             Arguments.of(
                 2,
                 AccountUpdateDto(
+                    "u",
                     "f",
                     "l",
                     EXISTING_USER_EMAIL,
@@ -109,6 +105,7 @@ class ApplicantAccountValidationServiceTest {
             Arguments.of(
                 1,
                 AccountUpdateDto(
+                    "u",
                     "f",
                     "l",
                     EXISTING_USER_EMAIL,
@@ -126,6 +123,7 @@ class ApplicantAccountValidationServiceTest {
             Arguments.of(
                 2,
                 AccountUpdateDto(
+                    "u",
                     "f",
                     "l",
                     "another@email.com",

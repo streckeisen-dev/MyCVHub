@@ -1,8 +1,7 @@
 package ch.streckeisen.mycv.backend.account
 
 import ch.streckeisen.mycv.backend.account.dto.AccountUpdateDto
-import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
-import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
+import ch.streckeisen.mycv.backend.account.verification.AccountVerificationService
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
@@ -10,7 +9,6 @@ import io.mockk.slot
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate
 import java.util.Optional
 import kotlin.test.assertEquals
@@ -21,6 +19,7 @@ private val EXISTING_ACCOUNT = ApplicantAccountEntity(
     "username",
     "validPassword",
     false,
+    true,
     accountDetails = AccountDetailsEntity(
         "Existing",
         "Applicant",
@@ -36,8 +35,9 @@ private val EXISTING_ACCOUNT = ApplicantAccountEntity(
     id = 1,
 )
 
-private val INVALID_ACCOUNT_UPDATE = AccountUpdateDto(null, null, null, null, null, null, null, null, null, null)
+private val INVALID_ACCOUNT_UPDATE = AccountUpdateDto(null, null, null, null, null, null, null, null, null, null, null)
 private val VALID_ACCOUNT_UPDATE = AccountUpdateDto(
+    "username",
     "fN",
     "lN",
     "new2@email.com",
@@ -53,7 +53,7 @@ private val VALID_ACCOUNT_UPDATE = AccountUpdateDto(
 class ApplicantAccountServiceTest {
     private lateinit var applicantAccountRepository: ApplicantAccountRepository
     private lateinit var applicantAccountValidationService: ApplicantAccountValidationService
-    private lateinit var passwordEncoder: PasswordEncoder
+    private lateinit var accountVerificationService: AccountVerificationService
     private lateinit var applicantAccountService: ApplicantAccountService
 
     private lateinit var accountSaveSlot: CapturingSlot<ApplicantAccountEntity>
@@ -68,6 +68,7 @@ class ApplicantAccountServiceTest {
                 "newusername",
                 "12345678",
                 false,
+                true,
                 accountDetails = AccountDetailsEntity(
                     "New",
                     "Applicant",
@@ -88,13 +89,15 @@ class ApplicantAccountServiceTest {
             )
             every { validateAccountUpdate(eq(1), eq(VALID_ACCOUNT_UPDATE)) } returns Result.success(Unit)
         }
-        passwordEncoder = mockk {
-            every { encode(eq("a*c3efgH")) } returns "valid_encoded_pw"
+
+        accountVerificationService = mockk {
+            every { generateVerificationToken(any()) } returns Result.success(Unit)
         }
 
         applicantAccountService = ApplicantAccountService(
             applicantAccountRepository,
-            applicantAccountValidationService
+            applicantAccountValidationService,
+            accountVerificationService
         )
     }
 

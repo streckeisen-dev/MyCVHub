@@ -46,7 +46,6 @@ class PublicProfileMapperTest {
         hideDescriptions: Boolean
     ): ProfileEntity {
         return ProfileEntity(
-            "a",
             "j",
             null,
             true,
@@ -60,6 +59,7 @@ class PublicProfileMapperTest {
                 "u",
                 "p",
                 false,
+                true,
                 accountDetails = AccountDetailsEntity(
                     "f",
                     "l",
