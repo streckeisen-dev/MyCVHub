@@ -19,14 +19,24 @@ CREATE TABLE account_details_entity
 ALTER TABLE account_details_entity
     ADD CONSTRAINT pk_account_details PRIMARY KEY (id);
 
-ALTER TABLE applicant_account_entity ADD COLUMN username varchar(100);
-ALTER TABLE applicant_account_entity ADD CONSTRAINT unique_account_username UNIQUE (username);
-ALTER TABLE applicant_account_entity ADD COLUMN is_oauth_user boolean NOT NULL CONSTRAINT df_account_oauth DEFAULT false;
-ALTER TABLE applicant_account_entity ALTER COLUMN is_oauth_user DROP DEFAULT;
+ALTER TABLE applicant_account_entity
+    ADD COLUMN username varchar(100);
+ALTER TABLE applicant_account_entity
+    ADD CONSTRAINT unique_account_username UNIQUE (username);
+ALTER TABLE applicant_account_entity
+    ADD COLUMN is_oauth_user boolean NOT NULL
+        CONSTRAINT df_account_oauth DEFAULT false;
+ALTER TABLE applicant_account_entity
+    ALTER COLUMN is_oauth_user DROP DEFAULT;
 ALTER TABLE applicant_account_entity
     ADD COLUMN account_details_id bigint NULL;
 ALTER TABLE applicant_account_entity
     ADD CONSTRAINT fk_account_details FOREIGN KEY (account_details_id) REFERENCES account_details_entity (id);
+ALTER TABLE applicant_account_entity
+    ADD COLUMN is_verified boolean NOT NULL
+        CONSTRAINT df_account_verified DEFAULT false;
+ALTER TABLE applicant_account_entity
+    ALTER COLUMN is_verified DROP DEFAULT;
 
 INSERT INTO account_details_entity (firstname,
                                     lastname,
@@ -56,17 +66,59 @@ FROM account_details_entity ade
 WHERE aae.email = ade.email;
 
 UPDATE applicant_account_entity a
-SET username = COALESCE((SELECT p.alias FROM profile_entity p WHERE p.account_id = a.id), a.email);
-ALTER TABLE applicant_account_entity ALTER COLUMN username SET NOT NULL;
+SET username = a.email;
+ALTER TABLE applicant_account_entity
+    ALTER COLUMN username SET NOT NULL;
+ALTER TABLE applicant_account_entity
+    ALTER COLUMN password DROP NOT NULL;
+
+ALTER TABLE applicant_account_entity
+    ADD CONSTRAINT check_password_not_null CHECK (is_oauth_user = true OR (is_oauth_user = false AND password IS NOT NULL));
 
 CREATE TABLE oauth_integration_entity
 (
     id           varchar(255) NOT NULL,
     type         varchar(30)  NOT NULL,
-    access_token varchar(255) NOT NULL,
     account_id   bigint       NOT NULL
 );
 ALTER TABLE oauth_integration_entity
     ADD CONSTRAINT pk_oauth_integration PRIMARY KEY (id, type);
 ALTER TABLE oauth_integration_entity
     ADD CONSTRAINT fk_oauth_integration_account FOREIGN KEY (account_id) REFERENCES applicant_account_entity (id);
+
+CREATE TABLE account_verification_entity
+(
+    id              bigserial   NOT NULL,
+    token           varchar(64) NOT NULL,
+    expiration_date timestamp   NOT NULL,
+    account_id      bigint      NOT NULL
+);
+ALTER TABLE account_verification_entity
+    ADD CONSTRAINT pk_account_verification PRIMARY KEY (id);
+ALTER TABLE account_verification_entity
+    ADD CONSTRAINT fk_account_verification_account FOREIGN KEY (account_id) REFERENCES applicant_account_entity (id);
+ALTER TABLE account_verification_entity
+    ADD CONSTRAINT unique_account_verification_token UNIQUE (token);
+ALTER TABLE account_verification_entity
+    ADD CONSTRAINT unique_account_verification_account UNIQUE (account_id);
+
+CREATE TABLE upgrade_task_execution_entity
+(
+    id             int          NOT NULL,
+    task_name      varchar(255) NOT NULL,
+    execution_date timestamp    NOT NULL
+);
+ALTER TABLE upgrade_task_execution_entity
+    ADD CONSTRAINT pk_upgrade_task_execution PRIMARY KEY (id);
+
+ALTER TABLE applicant_account_entity
+    DROP COLUMN email,
+    DROP COLUMN firstname,
+    DROP COLUMN lastname,
+    DROP COLUMN phone,
+    DROP COLUMN birthday,
+    DROP COLUMN street,
+    DROP COLUMN house_number,
+    DROP COLUMN postcode,
+    DROP COLUMN city,
+    DROP COLUMN country;
