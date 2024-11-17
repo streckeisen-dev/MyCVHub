@@ -1,5 +1,6 @@
 package ch.streckeisen.mycv.backend.security
 
+import ch.streckeisen.mycv.backend.account.AccountStatus
 import ch.streckeisen.mycv.backend.account.auth.ACCESS_TOKEN_NAME
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -30,15 +31,18 @@ class JwtAuthenticationFilter(
         }
 
         try {
-            val jwt = accessToken
-            val userEmail = jwtService.extractUsername(jwt)
+            val userEmail = jwtService.extractUsername(accessToken)
 
             val authentication = SecurityContextHolder.getContext().authentication
             if (userEmail != null && authentication == null) {
                 val userDetails = userDetailsService.loadUserByUsername(userEmail)
 
-                if (jwtService.isTokenValid(jwt, userDetails)) {
-                    val principal = MyCvPrincipal(userDetails.username!!, userDetails.account.id!!)
+                if (jwtService.isTokenValid(accessToken, userDetails)) {
+                    val principal = MyCvPrincipal(
+                        userDetails.username!!,
+                        userDetails.account.id!!,
+                        AccountStatus.ofAccount(userDetails.account)
+                    )
                     val authToken =
                         UsernamePasswordAuthenticationToken(principal, null, userDetails.authorities)
                     authToken.details = WebAuthenticationDetailsSource().buildDetails(request)

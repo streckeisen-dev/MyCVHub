@@ -5,34 +5,33 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 class MyCvUserDetails(
-    private val userDetails: UserDetails,
     val account: ApplicantAccountEntity
 ) : UserDetails {
-    override fun getAuthorities(): Collection<GrantedAuthority?>? {
-        return userDetails.authorities
+    override fun getAuthorities(): Collection<GrantedAuthority> {
+        return listOf()
     }
 
     override fun getPassword(): String? {
-        return userDetails.password
+        return account.password
     }
 
-    override fun getUsername(): String? {
-        return userDetails.username
+    override fun getUsername(): String {
+        return account.username
     }
 
     override fun isAccountNonExpired(): Boolean {
-        return userDetails.isAccountNonExpired
+        return true
     }
 
     override fun isAccountNonLocked(): Boolean {
-        return userDetails.isAccountNonLocked
+        return true
     }
 
     override fun isCredentialsNonExpired(): Boolean {
-        return userDetails.isCredentialsNonExpired
+        return true
     }
 
     override fun isEnabled(): Boolean {
-        return userDetails.isEnabled
+        return true
     }
 }
