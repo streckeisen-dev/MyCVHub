@@ -6,7 +6,6 @@ import ch.streckeisen.mycv.backend.cv.profile.theme.toDto
 import ch.streckeisen.mycv.backend.cv.skill.toDto
 
 fun ProfileEntity.toDto(profilePicture: String) = ProfileDto(
-    alias,
     jobTitle,
     bio,
     isProfilePublic,
