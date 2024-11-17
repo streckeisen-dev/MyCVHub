@@ -3,10 +3,16 @@ spring.datasource:
   username: postgres
   password: postgres
 
-security.jwt.secret: wHqRTjE8tXtgm/zhvn1qmmxLkcA+MvjnbX0aLkNhLm4=
-
 logging:
   file.name: ./logs/mycv.log
+  level:
+    org.springframework.web: info
+    org.hibernate: error
+    ch.streckeisen.mycv.backend: debug
 
-frontend:
-  base-url: http://localhost:3000/ui
+my-cv:
+  security:
+    jwt:
+      secret: wHqRTjE8tXtgm/zhvn1qmmxLkcA+MvjnbX0aLkNhLm4=
+  frontend:
+    base-url: http://localhost:3000/ui

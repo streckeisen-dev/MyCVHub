@@ -30,10 +30,17 @@ spring:
             authorization-grant-type: authorization_code
             client-name: GitHub
 
-security.jwt:
-  secret: ${JWT_SECRET}
-  access.expiration-time: 3600000
-  refresh.expiration-time: 432000000
+  mail:
+    host: smtp.eu.mailgun.org
+    port: 587
+    username: ${MAILGUN_SMTP_USERNAME}
+    password: ${MAILGUN_SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 logging:
   file.name: /app/logs/mycv.log
@@ -49,5 +56,19 @@ cloudinary:
   api-secret: ${CLOUDINARY_API_SECRET}
   url-expiration: 300
 
-frontend:
-  base-url: https://mycvhub.ch/ui
+my-cv:
+  security:
+    jwt:
+      secret: ${JWT_SECRET}
+      access:
+        expiration-time: 3600000
+      refresh:
+        expiration-time: 432000000
+  account:
+    verification:
+      token-expiration-hours: 12
+      token-generation-block-minutes: 30
+  frontend:
+    base-url: https://mycvhub.ch/ui
+  github:
+    api-base-url: https://api.github.com
