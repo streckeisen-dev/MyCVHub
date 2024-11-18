@@ -1,8 +1,8 @@
 package ch.streckeisen.mycv.backend.account.verification
 
 import ch.streckeisen.mycv.backend.account.AccountStatus
-import ch.streckeisen.mycv.backend.security.RequiresAccountStatus
-import ch.streckeisen.mycv.backend.security.PublicApi
+import ch.streckeisen.mycv.backend.security.annotations.RequiresAccountStatus
+import ch.streckeisen.mycv.backend.security.annotations.PublicApi
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder

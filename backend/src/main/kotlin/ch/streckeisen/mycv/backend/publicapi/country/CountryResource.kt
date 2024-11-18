@@ -1,6 +1,6 @@
 package ch.streckeisen.mycv.backend.publicapi.country
 
-import ch.streckeisen.mycv.backend.security.PublicApi
+import ch.streckeisen.mycv.backend.security.annotations.PublicApi
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.http.ResponseEntity

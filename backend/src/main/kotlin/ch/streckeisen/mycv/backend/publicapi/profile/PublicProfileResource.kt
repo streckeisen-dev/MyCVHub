@@ -3,7 +3,7 @@ package ch.streckeisen.mycv.backend.publicapi.profile
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
 import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicProfileDto
-import ch.streckeisen.mycv.backend.security.PublicApi
+import ch.streckeisen.mycv.backend.security.annotations.PublicApi
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipalOrNull
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder

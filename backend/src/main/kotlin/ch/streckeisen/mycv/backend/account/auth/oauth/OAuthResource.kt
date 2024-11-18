@@ -4,7 +4,7 @@ import ch.streckeisen.mycv.backend.account.AccountStatus
 import ch.streckeisen.mycv.backend.account.dto.AccountDto
 import ch.streckeisen.mycv.backend.account.dto.OAuthSignupRequestDto
 import ch.streckeisen.mycv.backend.account.toAccountDto
-import ch.streckeisen.mycv.backend.security.RequiresAccountStatus
+import ch.streckeisen.mycv.backend.security.annotations.RequiresAccountStatus
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder

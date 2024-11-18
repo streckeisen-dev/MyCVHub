@@ -1,6 +1,8 @@
 package ch.streckeisen.mycv.backend.security
 
 import ch.streckeisen.mycv.backend.account.AccountStatus
+import ch.streckeisen.mycv.backend.security.annotations.PublicApi
+import ch.streckeisen.mycv.backend.security.annotations.RequiresAccountStatus
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Before
@@ -22,7 +24,7 @@ class EndpointSecurityAspect {
             @annotation(org.springframework.web.bind.annotation.PutMapping) ||
             @annotation(org.springframework.web.bind.annotation.DeleteMapping)
            ) && 
-            !@annotation(ch.streckeisen.mycv.backend.security.PublicApi) &&
+            !@annotation(ch.streckeisen.mycv.backend.security.annotations.PublicApi) &&
             execution(* ch.streckeisen.mycv.backend..*(..))            
         """
 

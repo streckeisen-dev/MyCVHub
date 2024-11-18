@@ -1,8 +1,6 @@
 package ch.streckeisen.mycv.backend.cv.profile
 
-import ch.streckeisen.mycv.backend.account.AccountStatus
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
-import ch.streckeisen.mycv.backend.security.RequiresAccountStatus
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.MediaType

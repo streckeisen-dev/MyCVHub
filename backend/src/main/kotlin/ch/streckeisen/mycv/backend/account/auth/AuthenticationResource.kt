@@ -5,10 +5,9 @@ import ch.streckeisen.mycv.backend.account.dto.AuthResponseDto
 import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
 import ch.streckeisen.mycv.backend.account.dto.LoginRequestDto
 import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
-import ch.streckeisen.mycv.backend.exceptions.LocalizedException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
-import ch.streckeisen.mycv.backend.security.PublicApi
-import ch.streckeisen.mycv.backend.security.RequiresAccountStatus
+import ch.streckeisen.mycv.backend.security.annotations.PublicApi
+import ch.streckeisen.mycv.backend.security.annotations.RequiresAccountStatus
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipalOrNull
 import jakarta.servlet.http.HttpServletRequest
@@ -16,8 +15,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
-import org.springframework.security.authentication.BadCredentialsException
-import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.rememberme.InvalidCookieException
 import org.springframework.web.bind.annotation.GetMapping

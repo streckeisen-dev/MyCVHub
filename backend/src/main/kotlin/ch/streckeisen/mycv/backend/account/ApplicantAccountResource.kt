@@ -3,7 +3,7 @@ package ch.streckeisen.mycv.backend.account
 import ch.streckeisen.mycv.backend.account.dto.AccountDto
 import ch.streckeisen.mycv.backend.account.dto.AccountStatusDto
 import ch.streckeisen.mycv.backend.account.dto.AccountUpdateDto
-import ch.streckeisen.mycv.backend.security.RequiresAccountStatus
+import ch.streckeisen.mycv.backend.security.annotations.RequiresAccountStatus
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder

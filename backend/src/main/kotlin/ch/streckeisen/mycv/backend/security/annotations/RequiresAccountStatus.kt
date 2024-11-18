@@ -1,4 +1,4 @@
-package ch.streckeisen.mycv.backend.security
+package ch.streckeisen.mycv.backend.security.annotations
 
 import ch.streckeisen.mycv.backend.account.AccountStatus
 
