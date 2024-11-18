@@ -1,6 +1,8 @@
 package ch.streckeisen.mycv.backend.security
 
 import ch.streckeisen.mycv.backend.account.AccountStatus
+import ch.streckeisen.mycv.backend.security.annotations.PublicApi
+import ch.streckeisen.mycv.backend.security.annotations.RequiresAccountStatus
 import io.mockk.every
 import io.mockk.mockk
 import org.aspectj.lang.JoinPoint
