@@ -7,8 +7,8 @@ import org.aspectj.lang.annotation.Before
 import org.aspectj.lang.reflect.MethodSignature
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.AnonymousAuthenticationToken
-import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.web.authentication.rememberme.InvalidCookieException
 import org.springframework.stereotype.Component
 
 @Aspect
@@ -36,7 +36,7 @@ class EndpointSecurityAspect {
 
         val authentication = SecurityContextHolder.getContext().authentication
         if (authentication == null || !authentication.isAuthenticated || authentication is AnonymousAuthenticationToken) {
-            throw BadCredentialsException("Unauthorized")
+            throw InvalidCookieException("Unauthorized")
         }
         val userAccountStatus = authentication.getMyCvPrincipal().status
 
@@ -48,14 +48,17 @@ class EndpointSecurityAspect {
             methodRequiresAccountStatusAnnotation ?: classRequiresAccountStatusAnnotation
         if (requiresAccountStatusAnnotation != null) {
             val requiredStatus = requiresAccountStatusAnnotation.accountStatus
-            if (requiresAccountStatusAnnotation.exact && userAccountStatus == requiredStatus) {
-                return
-            }
-            if (userAccountStatus.permissionValue >= requiredStatus.permissionValue) {
-                return
-            } else {
+            if (requiresAccountStatusAnnotation.exact) {
+                if (userAccountStatus == requiredStatus) {
+                    return
+                }
                 throw AccessDeniedException("Access denied: Account does not fulfill status requirement ${requiredStatus.name}")
             }
+
+            if (userAccountStatus.permissionValue >= requiredStatus.permissionValue) {
+                return
+            }
+            throw AccessDeniedException("Access denied: Account does not fulfill status requirement ${requiredStatus.name}")
         }
 
         if (userAccountStatus != AccountStatus.VERIFIED) {
