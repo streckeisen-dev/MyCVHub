@@ -6,6 +6,7 @@ import ch.streckeisen.mycv.backend.account.ApplicantAccountRepository
 import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
 import ch.streckeisen.mycv.backend.account.dto.LoginRequestDto
 import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
+import ch.streckeisen.mycv.backend.account.verification.AccountVerificationService
 import ch.streckeisen.mycv.backend.security.JwtService
 import ch.streckeisen.mycv.backend.security.MyCvUserDetails
 import ch.streckeisen.mycv.backend.security.UserDetailsServiceImpl
@@ -89,6 +90,7 @@ class AuthenticationServiceTest {
     private lateinit var authenticationValidationService: AuthenticationValidationService
     private lateinit var authTokenService: AuthTokenService
     private lateinit var passwordEncoder: PasswordEncoder
+    private lateinit var accountVerificationService: AccountVerificationService
     private lateinit var authenticationService: AuthenticationService
 
     private lateinit var accountSaveSlot: CapturingSlot<ApplicantAccountEntity>
@@ -99,7 +101,9 @@ class AuthenticationServiceTest {
         applicantAccountRepository = mockk {
             every { findById(any()) } returns Optional.empty()
             every { findById(eq(1)) } returns Optional.of(existingAccount)
-            every { save(capture(accountSaveSlot)) } returns mockk()
+            every { save(capture(accountSaveSlot)) } returns mockk {
+                every { id } returns 10
+            }
         }
 
         authenticationManager = mockk()
@@ -141,24 +145,42 @@ class AuthenticationServiceTest {
             every { encode(eq("a*c3efgH")) } returns "valid_encoded_pw"
         }
 
+        accountVerificationService = mockk()
+
         authenticationService = AuthenticationService(
             applicantAccountRepository,
             authenticationValidationService,
             authenticationManager,
             authTokenService,
             mockk(relaxed = true),
-            passwordEncoder
+            passwordEncoder,
+            accountVerificationService
         )
     }
 
     @Test
     fun testSuccessfulSignUp() {
         every { authenticationManager.authenticate(any()) } returns mockk()
+        every { accountVerificationService.generateVerificationToken(eq(10)) } returns Result.success(Unit)
 
         val signupResult = authenticationService.signUp(validSignupRequest)
 
         assertTrue { signupResult.isSuccess }
         verify(exactly = 1) { applicantAccountRepository.save(any()) }
+        verify(exactly = 1) { accountVerificationService.generateVerificationToken(eq(10)) }
+        assertNotNull(signupResult.getOrNull())
+    }
+
+    @Test
+    fun testSuccessfulSignUpWithFailedVerificationTokenGeneration() {
+        every { authenticationManager.authenticate(any()) } returns mockk()
+        every { accountVerificationService.generateVerificationToken(eq(10)) } returns Result.failure(IllegalArgumentException("Failed"))
+
+        val signupResult = authenticationService.signUp(validSignupRequest)
+
+        assertTrue { signupResult.isSuccess }
+        verify(exactly = 1) { applicantAccountRepository.save(any()) }
+        verify(exactly = 1) { accountVerificationService.generateVerificationToken(eq(10)) }
         assertNotNull(signupResult.getOrNull())
     }
 

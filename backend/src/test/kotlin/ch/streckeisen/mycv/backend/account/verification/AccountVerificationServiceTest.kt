@@ -37,7 +37,14 @@ class AccountVerificationServiceTest {
         }
         applicantAccountRepository = mockk {
             every { findById(any()) } returns Optional.empty()
-            every { findById(eq(1)) } returns Optional.of(mockk { every { id } returns 1 })
+            every { findById(eq(1)) } returns Optional.of(mockk {
+                every { id } returns 1
+                every { isVerified } returns false
+            })
+            every { findById(eq(2)) } returns Optional.of(mockk {
+                every { id } returns 2
+                every { isVerified } returns true
+            })
             every { setAccountVerified(any()) } just runs
         }
 
@@ -142,6 +149,15 @@ class AccountVerificationServiceTest {
 
     @Test
     fun testGenerateVerificationTokenWithNoAccount() {
+        val result = accountVerificationService.generateVerificationToken(5)
+
+        assertTrue(result.isFailure)
+        verify(exactly = 0) { accountVerificationRepository.save(any()) }
+        verify(exactly = 0) { emailService.sendAccountVerificationEmail(any(), any()) }
+    }
+
+    @Test
+    fun testGenerateVerificationTokenWithVerifiedAccount() {
         val result = accountVerificationService.generateVerificationToken(2)
 
         assertTrue(result.isFailure)

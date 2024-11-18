@@ -8,7 +8,6 @@ import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.security.authentication.BadCredentialsException
-import org.springframework.security.core.userdetails.User
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -30,10 +29,9 @@ class AuthTokenServiceTest {
             every { loadUserByUsernameAsResult(any()) } returns Result.failure(BadCredentialsException(""))
             every { loadUserByUsernameAsResult(eq("first.last@example.com")) } returns Result.success(
                 MyCvUserDetails(
-                    User.withUsername("first.last@example.com")
-                        .password("valid_encoded_pw")
-                        .build(),
-                    mockk()
+                    mockk {
+                        every { username } returns "first.last@example.com"
+                    }
                 )
             )
         }
@@ -70,21 +68,21 @@ class AuthTokenServiceTest {
     @Test
     fun testValidateRefreshToken() {
         val oldRefreshToken = "old_refresh_token"
-        val username = "username"
+        val name = "username"
         val user = MyCvUserDetails(
-            User.withUsername("username")
-                .password("pw")
-                .build(), mockk()
+            mockk {
+                every { username } returns name
+            }
         )
 
-        every { jwtService.extractUsername(eq(oldRefreshToken)) } returns username
-        every { userDetailsService.loadUserByUsernameAsResult(eq(username)) } returns Result.success(user)
+        every { jwtService.extractUsername(eq(oldRefreshToken)) } returns name
+        every { userDetailsService.loadUserByUsernameAsResult(eq(name)) } returns Result.success(user)
         every { jwtService.isTokenValid(any(), any()) } returns true
 
         val validationResult = authTokenService.validateRefreshToken(oldRefreshToken)
 
         assertTrue { validationResult.isSuccess }
-        assertEquals(username, validationResult.getOrNull())
+        assertEquals(name, validationResult.getOrNull())
     }
 
     @Test
@@ -102,15 +100,15 @@ class AuthTokenServiceTest {
     @Test
     fun testRefreshAccessTokenWithExpiredToken() {
         val oldRefreshToken = "old_refresh_token"
-        val username = "username"
+        val name = "username"
         val user = MyCvUserDetails(
-            User.withUsername("username")
-                .password("pw")
-                .build(), mockk()
+            mockk {
+                every { username } returns name
+            }
         )
 
-        every { jwtService.extractUsername(eq(oldRefreshToken)) } returns username
-        every { userDetailsService.loadUserByUsernameAsResult(eq(username)) } returns Result.success(user)
+        every { jwtService.extractUsername(eq(oldRefreshToken)) } returns name
+        every { userDetailsService.loadUserByUsernameAsResult(eq(name)) } returns Result.success(user)
         every { jwtService.isTokenValid(any(), any()) } returns false
 
         val refreshResult = authTokenService.validateRefreshToken(oldRefreshToken)
