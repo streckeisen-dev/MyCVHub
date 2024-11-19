@@ -14,11 +14,13 @@ CREATE TABLE account_details_entity
     house_number varchar(10),
     postcode     varchar(15)  NOT NULL,
     city         varchar(100) NOT NULL,
-    country      character(2) NOT NULL
+    country      varchar(2) NOT NULL
 );
 ALTER TABLE account_details_entity
     ADD CONSTRAINT pk_account_details PRIMARY KEY (id);
 
+ALTER TABLE applicant_account_entity
+    ALTER COLUMN password TYPE varchar(60);
 ALTER TABLE applicant_account_entity
     ADD COLUMN username varchar(100);
 ALTER TABLE applicant_account_entity
@@ -66,7 +68,9 @@ FROM account_details_entity ade
 WHERE aae.email = ade.email;
 
 UPDATE applicant_account_entity a
-SET username = a.email;
+SET username = a.email
+WHERE username IS NULL;
+
 ALTER TABLE applicant_account_entity
     ALTER COLUMN username SET NOT NULL;
 ALTER TABLE applicant_account_entity
