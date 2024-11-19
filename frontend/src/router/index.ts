@@ -5,11 +5,9 @@ import {
   type RouteLocationNormalized,
   type RouteLocationNormalizedLoaded
 } from 'vue-router'
-import accountApi from '@/api/AccountApi'
 import LoginStateService from '@/services/LoginStateService'
-import ToastService from '@/services/ToastService'
-import vuetify from '@/plugins/vuetify'
 import { AccountStatus } from '@/dto/AccountStatusDto'
+import RouteSecurityService from '@/services/RouteSecurityService'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -138,47 +136,22 @@ router.beforeEach(
   ) => {
     const authRequired = to.matched.some((record) => record.meta.authRequired)
     const requiredAccountStatus = to.matched.find((record) => record.meta.requiredAccountStatus)
-      ?.meta.requiredAccountStatus
+      ?.meta.requiredAccountStatus as AccountStatus | undefined
     const isLoggedIn = LoginStateService.isLoggedIn()
     const accountStatus = LoginStateService.getAccountStatus()
-    console.log('authRequired', authRequired)
-    console.log('requiredAccountStatus', requiredAccountStatus)
-    console.log('isLoggedIn', isLoggedIn)
-    console.log('accountStatus', accountStatus)
+
     if (authRequired && !isLoggedIn) {
       next({ name: 'login', query: { redirect: to.fullPath } })
       return
-    } else if (authRequired) {
-      if (
-        accountStatus == null ||
-        accountStatus === AccountStatus.INCOMPLETE ||
-        accountStatus === AccountStatus.UNVERIFIED
-      ) {
-        try {
-          await accountApi.loadAccountStatus()
-        } catch (error) {
-          ToastService.error(vuetify.locale.t('account.verification.statusCheck.error'))
-          next({ name: 'account-verification-pending' })
-          return
-        }
-      }
+    }
 
-      if (
-        (requiredAccountStatus === AccountStatus.VERIFIED || requiredAccountStatus == null) &&
-        accountStatus !== AccountStatus.VERIFIED
-      ) {
-        console.log('requires verified')
-        next({ name: 'account-verification-pending' })
-        return
-      }
-      if (
-        requiredAccountStatus === AccountStatus.UNVERIFIED &&
-        accountStatus === AccountStatus.INCOMPLETE
-      ) {
-        console.log('requires unverified')
-        next({ name: 'oauth-signup' })
-        return
-      }
+    if (authRequired) {
+      await RouteSecurityService.enforceRouteAccessPermissions(
+        requiredAccountStatus,
+        accountStatus,
+        next
+      )
+      return
     }
     next()
   }
