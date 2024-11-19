@@ -39,7 +39,7 @@ class JwtAuthenticationFilter(
 
                 if (jwtService.isTokenValid(accessToken, userDetails)) {
                     val principal = MyCvPrincipal(
-                        userDetails.username!!,
+                        userDetails.username,
                         userDetails.account.id!!,
                         AccountStatus.ofAccount(userDetails.account)
                     )
