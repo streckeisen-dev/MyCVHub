@@ -37,5 +37,3 @@ try {
   isLoading.value = false
 }
 </script>
-
-<style scoped lang="scss"></style>

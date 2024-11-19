@@ -17,6 +17,8 @@ private const val GENERATED_REFRESH_TOKEN = "refresh_token"
 private const val ACCESS_TOKEN_EXPIRY_TIME = 123456L
 private const val REFRESH_TOKEN_EXPIRY_TIME = 123456789L
 
+private const val TEST_EMAIL = "first.last@example.com"
+
 class AuthTokenServiceTest {
     private lateinit var userDetailsService: UserDetailsServiceImpl
     private lateinit var jwtService: JwtService
@@ -27,10 +29,10 @@ class AuthTokenServiceTest {
     fun setup() {
         userDetailsService = mockk {
             every { loadUserByUsernameAsResult(any()) } returns Result.failure(BadCredentialsException(""))
-            every { loadUserByUsernameAsResult(eq("first.last@example.com")) } returns Result.success(
+            every { loadUserByUsernameAsResult(eq(TEST_EMAIL)) } returns Result.success(
                 MyCvUserDetails(
                     mockk {
-                        every { username } returns "first.last@example.com"
+                        every { username } returns TEST_EMAIL
                     }
                 )
             )
@@ -47,7 +49,7 @@ class AuthTokenServiceTest {
 
     @Test
     fun testGenerateAuthData() {
-        val result = authTokenService.generateAuthData("first.last@example.com")
+        val result = authTokenService.generateAuthData(TEST_EMAIL)
 
         assertTrue(result.isSuccess)
         val authTokens = result.getOrNull()

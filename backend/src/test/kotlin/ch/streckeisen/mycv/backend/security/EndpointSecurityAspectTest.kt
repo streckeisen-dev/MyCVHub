@@ -61,44 +61,56 @@ class EndpointSecurityAspectTest {
 
     @PublicApi
     private class PublicApiTest {
-        fun test() {}
+        fun test() {
+            // no body required for testing
+        }
     }
 
     private class RequiresAccountStatusTest {
         @RequiresAccountStatus(AccountStatus.VERIFIED)
         fun testRequiresVerified() {
+            // no body required for testing
         }
 
         @RequiresAccountStatus(AccountStatus.UNVERIFIED)
         fun testRequiresUnverified() {
+            // no body required for testing
         }
 
         @RequiresAccountStatus(AccountStatus.INCOMPLETE)
         fun testRequiresIncomplete() {
+            // no body required for testing
         }
     }
 
     private class RequiresExactAccountStatusTest {
         @RequiresAccountStatus(AccountStatus.VERIFIED, exact = true)
         fun testRequiresVerified() {
+            // no body required for testing
         }
 
         @RequiresAccountStatus(AccountStatus.UNVERIFIED, exact = true)
         fun testRequiresUnverified() {
+            // no body required for testing
         }
 
         @RequiresAccountStatus(AccountStatus.INCOMPLETE, exact = true)
         fun testRequiresIncomplete() {
+            // no body required for testing
         }
     }
 
     @RequiresAccountStatus(AccountStatus.UNVERIFIED)
     private class ClassLevelRequiresAccountStatusTest {
-        fun testClassLevelAccountStatus() {}
+        fun testClassLevelAccountStatus() {
+            // no body required for testing
+        }
     }
 
     private class DefaultAuthorizationLevelTest {
-        fun testDefault() {}
+        fun testDefault() {
+            // no body required for testing
+        }
     }
 
     companion object {

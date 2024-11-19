@@ -7,9 +7,6 @@ import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
 import ch.streckeisen.mycv.backend.account.dto.LoginRequestDto
 import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
 import ch.streckeisen.mycv.backend.account.verification.AccountVerificationService
-import ch.streckeisen.mycv.backend.security.JwtService
-import ch.streckeisen.mycv.backend.security.MyCvUserDetails
-import ch.streckeisen.mycv.backend.security.UserDetailsServiceImpl
 import io.jsonwebtoken.JwtException
 import io.mockk.CapturingSlot
 import io.mockk.every
@@ -21,7 +18,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.AuthenticationException
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate
 import java.util.Optional
@@ -49,11 +45,14 @@ private val existingAccount = ApplicantAccountEntity(
     id = 1,
 )
 
+private const val TEST_EMAIL = "first.last@example.com"
+private const val VALID_TEST_PASSWORD = "a*c3efgH"
+
 private val validSignupRequest = SignupRequestDto(
     "username",
     "FirstName",
     "LastName",
-    "first.last@example.com",
+    TEST_EMAIL,
     "+41 79 123 45 67",
     LocalDate.of(2000, 8, 13),
     "StreetName",
@@ -61,8 +60,8 @@ private val validSignupRequest = SignupRequestDto(
     "3287",
     "City",
     "CH",
-    "a*c3efgH",
-    "a*c3efgH"
+    VALID_TEST_PASSWORD,
+    VALID_TEST_PASSWORD
 )
 
 private val invalidSignupRequest = SignupRequestDto(
@@ -82,7 +81,7 @@ private val invalidSignupRequest = SignupRequestDto(
 )
 
 private val invalidChangePwRequest = ChangePasswordDto(null, null, null)
-private val validChangePwRequest = ChangePasswordDto("validPassword", "a*c3efgH", "a*c3efgH")
+private val validChangePwRequest = ChangePasswordDto("validPassword", VALID_TEST_PASSWORD, VALID_TEST_PASSWORD)
 
 class AuthenticationServiceTest {
     private lateinit var applicantAccountRepository: ApplicantAccountRepository
@@ -113,8 +112,8 @@ class AuthenticationServiceTest {
                 validateLoginRequest(
                     eq(
                         LoginRequestDto(
-                            "first.last@example.com",
-                            "a*c3efgH"
+                            TEST_EMAIL,
+                            VALID_TEST_PASSWORD
                         )
                     )
                 )
@@ -142,7 +141,7 @@ class AuthenticationServiceTest {
         }
 
         passwordEncoder = mockk {
-            every { encode(eq("a*c3efgH")) } returns "valid_encoded_pw"
+            every { encode(eq(VALID_TEST_PASSWORD)) } returns "valid_encoded_pw"
         }
 
         accountVerificationService = mockk()
@@ -174,7 +173,9 @@ class AuthenticationServiceTest {
     @Test
     fun testSuccessfulSignUpWithFailedVerificationTokenGeneration() {
         every { authenticationManager.authenticate(any()) } returns mockk()
-        every { accountVerificationService.generateVerificationToken(eq(10)) } returns Result.failure(IllegalArgumentException("Failed"))
+        every { accountVerificationService.generateVerificationToken(eq(10)) } returns Result.failure(
+            IllegalArgumentException("Failed")
+        )
 
         val signupResult = authenticationService.signUp(validSignupRequest)
 
@@ -227,7 +228,7 @@ class AuthenticationServiceTest {
     fun testSuccessfulAuthentication() {
         every { authenticationManager.authenticate(any()) } returns mockk()
 
-        val authResult = authenticationService.authenticate(LoginRequestDto("first.last@example.com", "a*c3efgH"))
+        val authResult = authenticationService.authenticate(LoginRequestDto(TEST_EMAIL, VALID_TEST_PASSWORD))
 
         assertTrue { authResult.isSuccess }
         assertNotNull(authResult.getOrNull())
@@ -246,7 +247,7 @@ class AuthenticationServiceTest {
     fun testAuthenticationWithAuthenticationException() {
         every { authenticationManager.authenticate(any()) } throws BadCredentialsException("Authentication failed with bad credentials")
 
-        val authResult = authenticationService.authenticate(LoginRequestDto("first.last@example.com", "a*c3efgH"))
+        val authResult = authenticationService.authenticate(LoginRequestDto(TEST_EMAIL, VALID_TEST_PASSWORD))
 
         assertTrue { authResult.isFailure }
         assertNotNull(authResult.exceptionOrNull())

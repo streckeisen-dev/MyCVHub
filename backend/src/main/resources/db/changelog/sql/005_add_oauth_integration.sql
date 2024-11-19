@@ -77,7 +77,7 @@ ALTER TABLE applicant_account_entity
     ALTER COLUMN password DROP NOT NULL;
 
 ALTER TABLE applicant_account_entity
-    ADD CONSTRAINT check_password_not_null CHECK (is_oauth_user = true OR (is_oauth_user = false AND password IS NOT NULL));
+    ADD CONSTRAINT check_password_not_null CHECK (is_oauth_user OR (NOT is_oauth_user AND password IS NOT NULL));
 
 CREATE TABLE oauth_integration_entity
 (
