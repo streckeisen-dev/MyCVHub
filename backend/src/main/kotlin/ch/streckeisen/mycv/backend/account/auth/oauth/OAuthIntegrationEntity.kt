@@ -13,6 +13,6 @@ class OAuthIntegrationEntity(
     @EmbeddedId
     val id: OAuthEntityId,
     @ManyToOne(fetch = FetchType.EAGER)
-    val account: ApplicantAccountEntity? = null
+    val account: ApplicantAccountEntity
 ) {
 }

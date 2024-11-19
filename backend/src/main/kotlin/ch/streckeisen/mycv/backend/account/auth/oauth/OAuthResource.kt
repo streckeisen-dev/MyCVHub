@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/oauth")
 class OAuthResource(
-    private val oAuthService: OAuthService
+    private val oAuthIntegrationService: OAuthIntegrationService
 ) {
     @RequiresAccountStatus(AccountStatus.INCOMPLETE, exact = true)
     @PostMapping("/signup")
     fun oauthSignup(@RequestBody oauthSignupRequest: OAuthSignupRequestDto): ResponseEntity<AccountDto> {
         val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
-        return oAuthService.completeSignup(principal.id, oauthSignupRequest)
+        return oAuthIntegrationService.completeSignup(principal.id, oauthSignupRequest)
             .fold(
                 onSuccess = { account ->
                     ResponseEntity.ok(account.toAccountDto())

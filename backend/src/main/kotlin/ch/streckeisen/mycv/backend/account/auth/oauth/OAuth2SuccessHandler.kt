@@ -15,7 +15,7 @@ import java.util.Base64
 @Component
 class OAuth2SuccessHandler(
     private val authTokenService: AuthTokenService,
-    private val oauthService: OAuthService,
+    private val oAuthIntegrationService: OAuthIntegrationService,
     @Value("\${my-cv.frontend.base-url}")
     private val frontendBaseUrl: String,
 ) : AuthenticationSuccessHandler {
@@ -31,7 +31,7 @@ class OAuth2SuccessHandler(
         val account = when (registrationId) {
             "github" -> {
                 val oauthId = oauthUser.attributes["id"].toString()
-                oauthService.getOAuthAccount(
+                oAuthIntegrationService.getOrCreateOAuthAccount(
                     oauthAuthentication,
                     oauthId,
                     OAuthType.GITHUB
