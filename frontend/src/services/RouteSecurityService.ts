@@ -23,10 +23,10 @@ async function enforceRouteAccessPermissions(
     next({ name: 'account-verification-pending' })
     return
   }
+
   if (routeRequiresUnverifiedAndAccountIsIncomplete(requiredAccountStatus, accountStatus)) {
     console.log('requires unverified')
     next({ name: 'oauth-signup' })
-    return
   }
 }
 
