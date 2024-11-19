@@ -41,7 +41,7 @@ class JwtService(
 
     fun isTokenValid(token: String, userDetails: UserDetails): Boolean {
         val username = extractUsername(token)
-        return userDetails.username.equals(username) && !isTokenExpired(token)
+        return userDetails.username == username && !isTokenExpired(token)
     }
 
     private fun buildToken(extraClaims: Map<String, Any>, userDetails: UserDetails, expirationTime: Long): String {

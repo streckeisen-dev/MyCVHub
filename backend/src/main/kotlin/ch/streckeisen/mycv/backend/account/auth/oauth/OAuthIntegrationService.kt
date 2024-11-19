@@ -100,9 +100,9 @@ class OAuthIntegrationService(
                         }
                     )
             }
-        if (AccountStatus.ofAccount(account) == AccountStatus.VERIFIED) {
+        return if (AccountStatus.ofAccount(account) == AccountStatus.VERIFIED) {
             logger.debug { "[Account ${account.id}] Adding GitHub integration for account" }
-            return addOAuthIntegration(account, oauthId, oAuthType)
+            addOAuthIntegration(account, oauthId, oAuthType)
                 .fold(
                     onSuccess = { oauthIntegration ->
                         logger.debug { "[Account ${account.id}] Added GitHub integration for account" }
@@ -110,12 +110,12 @@ class OAuthIntegrationService(
                     },
                     onFailure = {
                         logger.error(it) { "Account [${account.id}] Failed to associate oauth account" }
-                        return Result.failure(it)
+                        Result.failure(it)
                     }
                 )
         } else {
             logger.debug { "[Account ${account.id}] Cannot add OAuth integration to unverified account" }
-            return Result.failure(OAuth2AuthenticationException("Cannot add OAuth integration to unverified account"))
+            Result.failure(OAuth2AuthenticationException("Cannot add OAuth integration to unverified account"))
         }
     }
 

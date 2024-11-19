@@ -109,20 +109,28 @@ class ApplicantAccountValidationService(
         updateId: Long?,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder,
     ) {
-        if (email.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(EMAIL_FIELD_KEY)
-            validationErrorBuilder.addError(EMAIL_FIELD_KEY, error)
-        } else if (!EmailValidator.getInstance().isValid(email)) {
-            val error = messagesService.getMessage(EMAIL_INVALID_KEY)
-            validationErrorBuilder.addError(EMAIL_FIELD_KEY, error)
-        } else if (email.length > EMAIL_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError(EMAIL_FIELD_KEY, EMAIL_MAX_LENGTH)
-            validationErrorBuilder.addError(EMAIL_FIELD_KEY, error)
-        } else {
-            val applicant = applicantAccountRepository.findByUsername(email)
-            if (applicant.isPresent && applicant.get().id != updateId) {
-                val error = messagesService.getMessage(EMAIL_TAKEN_KEY)
+        when {
+            email.isNullOrBlank() -> {
+                val error = messagesService.requiredFieldMissingError(EMAIL_FIELD_KEY)
                 validationErrorBuilder.addError(EMAIL_FIELD_KEY, error)
+            }
+
+            !EmailValidator.getInstance().isValid(email) -> {
+                val error = messagesService.getMessage(EMAIL_INVALID_KEY)
+                validationErrorBuilder.addError(EMAIL_FIELD_KEY, error)
+            }
+
+            email.length > EMAIL_MAX_LENGTH -> {
+                val error = messagesService.fieldMaxLengthExceededError(EMAIL_FIELD_KEY, EMAIL_MAX_LENGTH)
+                validationErrorBuilder.addError(EMAIL_FIELD_KEY, error)
+            }
+
+            else -> {
+                val applicant = applicantAccountRepository.findByUsername(email)
+                if (applicant.isPresent && applicant.get().id != updateId) {
+                    val error = messagesService.getMessage(EMAIL_TAKEN_KEY)
+                    validationErrorBuilder.addError(EMAIL_FIELD_KEY, error)
+                }
             }
         }
     }
@@ -222,15 +230,21 @@ class ApplicantAccountValidationService(
         country: String?,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
-        if (country.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(COUNTRY_FIELD_KEY)
-            validationErrorBuilder.addError(COUNTRY_FIELD_KEY, error)
-        } else if (country.length != COUNTRY_MAX_LENGTH) {
-            val error = messagesService.getMessage(COUNTRY_LENGTH_KEY, COUNTRY_MAX_LENGTH.toString())
-            validationErrorBuilder.addError(COUNTRY_FIELD_KEY, error)
-        } else if (!phoneNumberUtil.supportedRegions.contains(country)) {
-            val error = messagesService.getMessage(COUNTRY_INVALID_KEY)
-            validationErrorBuilder.addError(COUNTRY_FIELD_KEY, error)
+        when {
+            country.isNullOrBlank() -> {
+                val error = messagesService.requiredFieldMissingError(COUNTRY_FIELD_KEY)
+                validationErrorBuilder.addError(COUNTRY_FIELD_KEY, error)
+            }
+
+            country.length != COUNTRY_MAX_LENGTH -> {
+                val error = messagesService.getMessage(COUNTRY_LENGTH_KEY, COUNTRY_MAX_LENGTH.toString())
+                validationErrorBuilder.addError(COUNTRY_FIELD_KEY, error)
+            }
+
+            !phoneNumberUtil.supportedRegions.contains(country) -> {
+                val error = messagesService.getMessage(COUNTRY_INVALID_KEY)
+                validationErrorBuilder.addError(COUNTRY_FIELD_KEY, error)
+            }
         }
     }
 

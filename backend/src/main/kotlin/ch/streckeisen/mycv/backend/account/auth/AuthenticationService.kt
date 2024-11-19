@@ -3,7 +3,6 @@ package ch.streckeisen.mycv.backend.account.auth
 import ch.streckeisen.mycv.backend.account.AccountDetailsEntity
 import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
 import ch.streckeisen.mycv.backend.account.ApplicantAccountRepository
-import ch.streckeisen.mycv.backend.account.ApplicantAccountValidationService
 import ch.streckeisen.mycv.backend.account.PASSWORD_MAX_LENGTH
 import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
 import ch.streckeisen.mycv.backend.account.dto.LoginRequestDto
@@ -140,7 +139,7 @@ class AuthenticationService(
         )
         val account = applicantAccountRepository.save(applicantAccount)
         accountVerificationService.generateVerificationToken(account.id!!)
-            .onFailure { logger.error(it) { "[Account ${account.id}] Failed to generate verification token"} }
+            .onFailure { logger.error(it) { "[Account ${account.id}] Failed to generate verification token" } }
         return Result.success(account)
     }
 

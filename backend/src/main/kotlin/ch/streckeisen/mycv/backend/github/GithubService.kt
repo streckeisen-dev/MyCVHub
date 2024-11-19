@@ -24,7 +24,7 @@ class GithubService(
             .uri("/user/emails", accountId)
             .accept(MediaType.APPLICATION_JSON)
             .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-            .exchange<Result<List<GithubUserEmail>>> { request, response ->
+            .exchange<Result<List<GithubUserEmail>>> { _, response ->
                 if (response.statusCode.is2xxSuccessful) {
                     val emails = response.bodyTo(object : ParameterizedTypeReference<List<GithubUserEmail>>() {})
                     if (emails == null) {

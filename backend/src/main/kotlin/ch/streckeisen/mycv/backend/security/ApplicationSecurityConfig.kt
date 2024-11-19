@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationProvider
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -49,8 +48,15 @@ class ApplicationSecurityConfig(
             .oauth2Login { oauth2 ->
                 oauth2.loginPage("/api/auth/oauth2")
                 oauth2.authorizationEndpoint { authorizationEndpoint ->
-                    val baseResolver = DefaultOAuth2AuthorizationRequestResolver(clientRegistrationRepository, "/api/auth/oauth2/authorization")
-                    authorizationEndpoint.authorizationRequestResolver(MyCvOAuth2AuthorizationRequestResolver(baseResolver))
+                    val baseResolver = DefaultOAuth2AuthorizationRequestResolver(
+                        clientRegistrationRepository,
+                        "/api/auth/oauth2/authorization"
+                    )
+                    authorizationEndpoint.authorizationRequestResolver(
+                        MyCvOAuth2AuthorizationRequestResolver(
+                            baseResolver
+                        )
+                    )
                 }
                 oauth2.redirectionEndpoint { redirectionEndpoint ->
                     redirectionEndpoint.baseUri("/api/auth/oauth2/callback/*")

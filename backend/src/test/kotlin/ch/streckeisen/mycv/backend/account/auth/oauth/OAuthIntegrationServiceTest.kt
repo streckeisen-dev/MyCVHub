@@ -76,16 +76,18 @@ class OAuthIntegrationServiceTest {
 
     @Test
     fun testGetOAuthAccountWithNewOAuthAccount() {
+        val oauthId = "newOAuthUser"
+        val accountEmail = "test@email.com"
         val authentication = mockk<OAuth2AuthenticationToken> {
             every { authorizedClientRegistrationId } returns "githubRegistrationId"
-            every { name } returns "newOAuthUser"
+            every { name } returns oauthId
         }
         every { authorizedClientService.loadAuthorizedClient<OAuth2AuthorizedClient>(any(), any()) } returns mockk {
             every { accessToken.tokenValue } returns "accessToken"
         }
-        every { githubService.getUserEmail("newOAuthUser", "accessToken") } returns Result.success("test@email.com")
+        every { githubService.getUserEmail(oauthId, "accessToken") } returns Result.success(accountEmail)
         every { applicantAccountRepository.findByEmail(any()) } returns Optional.empty()
-        every { authenticationValidationService.validateOAuthSignupRequest(eq("test@email.com")) } returns Result.success(
+        every { authenticationValidationService.validateOAuthSignupRequest(eq(accountEmail)) } returns Result.success(
             Unit
         )
         val accountSlot = slot<ApplicantAccountEntity>()
@@ -95,14 +97,14 @@ class OAuthIntegrationServiceTest {
         val oauthIntegrationSlot = slot<OAuthIntegrationEntity>()
         every { oauthIntegrationRepository.save(capture(oauthIntegrationSlot)) } returns mockk()
 
-        val result = oAuthIntegrationService.getOrCreateOAuthAccount(authentication, "newOAuthUser", OAuthType.GITHUB)
+        val result = oAuthIntegrationService.getOrCreateOAuthAccount(authentication, oauthId, OAuthType.GITHUB)
 
         assertTrue(result.isSuccess)
         verify(exactly = 1) { applicantAccountRepository.save(any()) }
         verify(exactly = 1) { oauthIntegrationRepository.save(any()) }
 
         assertNotNull(accountSlot.captured)
-        assertEquals("test@email.com", accountSlot.captured.username)
+        assertEquals(accountEmail, accountSlot.captured.username)
         assertTrue(accountSlot.captured.isOAuthUser)
         assertFalse(accountSlot.captured.isVerified)
         assertNull(accountSlot.captured.password)
@@ -110,27 +112,30 @@ class OAuthIntegrationServiceTest {
         assertTrue(accountSlot.captured.oauthIntegrations.isEmpty())
 
         assertNotNull(oauthIntegrationSlot.captured)
-        assertEquals("newOAuthUser", oauthIntegrationSlot.captured.id.id)
+        assertEquals(oauthId, oauthIntegrationSlot.captured.id.id)
         assertEquals(OAuthType.GITHUB, oauthIntegrationSlot.captured.id.type)
         assertEquals(10, oauthIntegrationSlot.captured.account.id)
     }
 
     @Test
     fun testGetOAuthAccountWithNewUsernameTaken() {
+        val oauthId = "newOAuthUser"
+        val accountEmail = "test@email.com"
+        val token = "accessToken"
         val authentication = mockk<OAuth2AuthenticationToken> {
             every { authorizedClientRegistrationId } returns "githubRegistrationId"
-            every { name } returns "newOAuthUser"
+            every { name } returns oauthId
         }
         every { authorizedClientService.loadAuthorizedClient<OAuth2AuthorizedClient>(any(), any()) } returns mockk {
-            every { accessToken.tokenValue } returns "accessToken"
+            every { accessToken.tokenValue } returns token
         }
-        every { githubService.getUserEmail("newOAuthUser", "accessToken") } returns Result.success("test@email.com")
+        every { githubService.getUserEmail(oauthId, token) } returns Result.success(accountEmail)
         every { applicantAccountRepository.findByEmail(any()) } returns Optional.empty()
-        every { authenticationValidationService.validateOAuthSignupRequest(eq("test@email.com")) } returns Result.failure(
+        every { authenticationValidationService.validateOAuthSignupRequest(eq(accountEmail)) } returns Result.failure(
             IllegalArgumentException("Username already taken")
         )
 
-        val result = oAuthIntegrationService.getOrCreateOAuthAccount(authentication, "newOAuthUser", OAuthType.GITHUB)
+        val result = oAuthIntegrationService.getOrCreateOAuthAccount(authentication, oauthId, OAuthType.GITHUB)
 
         assertTrue(result.isFailure)
         verify(exactly = 0) { applicantAccountRepository.save(any()) }
@@ -139,65 +144,72 @@ class OAuthIntegrationServiceTest {
 
     @Test
     fun testGetOAuthAccountWithExistingNonAssociatedAccount() {
+        val oauthId = "unassociatedOAuthUser"
+        val accountEmail = "unassociated@email.com"
+        val token = "accessToken"
         val authentication = mockk<OAuth2AuthenticationToken> {
             every { authorizedClientRegistrationId } returns "githubRegistrationId"
-            every { name } returns "unassociatedOAuthUser"
+            every { name } returns oauthId
         }
         every { authorizedClientService.loadAuthorizedClient<OAuth2AuthorizedClient>(any(), any()) } returns mockk {
-            every { accessToken.tokenValue } returns "accessToken"
+            every { accessToken.tokenValue } returns token
         }
         every {
             githubService.getUserEmail(
-                "unassociatedOAuthUser",
-                "accessToken"
+                oauthId,
+                token
             )
-        } returns Result.success("unassociated@email.com")
+        } returns Result.success(accountEmail)
         val oauthAccount = mockk<ApplicantAccountEntity> {
             every { id } returns 5
             every { accountDetails } returns mockk()
             every { isVerified } returns true
         }
-        every { applicantAccountRepository.findByEmail(eq("unassociated@email.com")) } returns Optional.of(oauthAccount)
+        every { applicantAccountRepository.findByEmail(eq(accountEmail)) } returns Optional.of(oauthAccount)
         val oauthIntegrationSlot = slot<OAuthIntegrationEntity>()
         every { oauthIntegrationRepository.save(capture(oauthIntegrationSlot)) } returns mockk {
             every { account } returns oauthAccount
         }
 
         val result =
-            oAuthIntegrationService.getOrCreateOAuthAccount(authentication, "unassociatedOAuthUser", OAuthType.GITHUB)
+            oAuthIntegrationService.getOrCreateOAuthAccount(authentication, oauthId, OAuthType.GITHUB)
 
         assertTrue(result.isSuccess)
         verify(exactly = 1) { oauthIntegrationRepository.save(any()) }
         verify(exactly = 0) { applicantAccountRepository.save(any()) }
         assertNotNull(oauthIntegrationSlot.captured)
-        assertEquals("unassociatedOAuthUser", oauthIntegrationSlot.captured.id.id)
+        assertEquals(oauthId, oauthIntegrationSlot.captured.id.id)
         assertEquals(OAuthType.GITHUB, oauthIntegrationSlot.captured.id.type)
         assertEquals(5, oauthIntegrationSlot.captured.account.id)
     }
 
     @Test
     fun testGetOAuthAccountWithExistingNonAssociatedAndNonVerifiedAccount() {
+        val oauthId = "unassociatedOAuthUser"
+        val accountEmail = "unassociated@email.com"
+        val token = "accessToken"
+
         val authentication = mockk<OAuth2AuthenticationToken> {
             every { authorizedClientRegistrationId } returns "githubRegistrationId"
-            every { name } returns "unassociatedOAuthUser"
+            every { name } returns oauthId
         }
         every { authorizedClientService.loadAuthorizedClient<OAuth2AuthorizedClient>(any(), any()) } returns mockk {
-            every { accessToken.tokenValue } returns "accessToken"
+            every { accessToken.tokenValue } returns token
         }
         every {
             githubService.getUserEmail(
-                "unassociatedOAuthUser",
-                "accessToken"
+                oauthId,
+                token
             )
-        } returns Result.success("unassociated@email.com")
-        every { applicantAccountRepository.findByEmail(eq("unassociated@email.com")) } returns Optional.of(mockk {
+        } returns Result.success(accountEmail)
+        every { applicantAccountRepository.findByEmail(eq(accountEmail)) } returns Optional.of(mockk {
             every { id } returns 5
             every { accountDetails } returns null
             every { isVerified } returns true
         })
 
         val result =
-            oAuthIntegrationService.getOrCreateOAuthAccount(authentication, "unassociatedOAuthUser", OAuthType.GITHUB)
+            oAuthIntegrationService.getOrCreateOAuthAccount(authentication, oauthId, OAuthType.GITHUB)
 
         assertTrue(result.isFailure)
         verify(exactly = 0) { oauthIntegrationRepository.save(any()) }
@@ -206,22 +218,25 @@ class OAuthIntegrationServiceTest {
 
     @Test
     fun testGetOAuthAccountWithFailedEmailRequest() {
+        val oauthId = "unassociatedOAuthUser"
+        val token = "accessToken"
+
         val authentication = mockk<OAuth2AuthenticationToken> {
             every { authorizedClientRegistrationId } returns "githubRegistrationId"
-            every { name } returns "unassociatedOAuthUser"
+            every { name } returns oauthId
         }
         every { authorizedClientService.loadAuthorizedClient<OAuth2AuthorizedClient>(any(), any()) } returns mockk {
-            every { accessToken.tokenValue } returns "accessToken"
+            every { accessToken.tokenValue } returns token
         }
         every {
             githubService.getUserEmail(
-                "unassociatedOAuthUser",
-                "accessToken"
+                oauthId,
+                token
             )
         } returns Result.failure(GithubException("Failed to get email"))
 
         val result =
-            oAuthIntegrationService.getOrCreateOAuthAccount(authentication, "unassociatedOAuthUser", OAuthType.GITHUB)
+            oAuthIntegrationService.getOrCreateOAuthAccount(authentication, oauthId, OAuthType.GITHUB)
 
         assertTrue(result.isFailure)
         verify(exactly = 0) { oauthIntegrationRepository.save(any()) }
