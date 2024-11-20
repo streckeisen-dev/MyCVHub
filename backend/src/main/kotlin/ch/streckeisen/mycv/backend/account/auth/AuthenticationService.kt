@@ -42,7 +42,7 @@ class AuthenticationService(
         return createAccount(signupRequest)
             .fold(
                 onSuccess = {
-                    authenticate(LoginRequestDto(signupRequest.email, signupRequest.password))
+                    authenticate(LoginRequestDto(signupRequest.username, signupRequest.password))
                 },
                 onFailure = {
                     Result.failure(it)
@@ -99,17 +99,9 @@ class AuthenticationService(
         val encodedNewPassword = encodePassword(changePasswordDto.password)
             .getOrElse { return Result.failure(it) }
 
-        val account = ApplicantAccountEntity(
-            existingAccount.username,
-            encodedNewPassword,
-            existingAccount.isOAuthUser,
-            existingAccount.isVerified,
-            accountDetails = existingAccount.accountDetails,
-            id = existingAccount.id,
-            profile = existingAccount.profile
-        )
-
-        return Result.success(applicantAccountRepository.save(account))
+        val account = applicantAccountRepository.setPassword(accountId, encodedNewPassword)
+            .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.account.notFound")) }
+        return Result.success(account)
     }
 
     @Transactional(readOnly = false)

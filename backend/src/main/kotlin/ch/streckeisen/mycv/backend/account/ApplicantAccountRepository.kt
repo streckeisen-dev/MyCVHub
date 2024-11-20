@@ -20,4 +20,8 @@ interface ApplicantAccountRepository : CrudRepository<ApplicantAccountEntity, Lo
 
     @Query("SELECT a.accountDetails IS NOT NULL FROM ApplicantAccountEntity a WHERE a.id = :accountId")
     fun hasAccountDetails(accountId: Long): Optional<Boolean>
+
+    @Modifying
+    @Query("UPDATE ApplicantAccountEntity a SET a.password = :password WHERE a.id = :accountId")
+    fun setPassword(accountId: Long, password: String): Optional<ApplicantAccountEntity>
 }

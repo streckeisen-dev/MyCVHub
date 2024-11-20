@@ -21,7 +21,6 @@ import org.springframework.security.core.AuthenticationException
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate
 import java.util.Optional
-import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -49,7 +48,7 @@ private const val TEST_EMAIL = "first.last@example.com"
 private const val VALID_TEST_PASSWORD = "a*c3efgH"
 
 private val validSignupRequest = SignupRequestDto(
-    "username",
+    TEST_EMAIL,
     "FirstName",
     "LastName",
     TEST_EMAIL,
@@ -195,24 +194,24 @@ class AuthenticationServiceTest {
 
     @Test
     fun testSuccessfulChangePassword() {
+        every { applicantAccountRepository.setPassword(eq(1), eq("valid_encoded_pw")) } returns Optional.of(
+            existingAccount
+        )
+
         val changePasswordResult = authenticationService.changePassword(1, validChangePwRequest)
 
         assertTrue { changePasswordResult.isSuccess }
-        verify(exactly = 1) { applicantAccountRepository.save(any()) }
+        verify(exactly = 1) { applicantAccountRepository.setPassword(any(), any()) }
+    }
 
-        assertNotNull(accountSaveSlot.captured)
-        assertEquals(existingAccount.id, accountSaveSlot.captured.id)
-        assertEquals(existingAccount.accountDetails!!.firstName, accountSaveSlot.captured.accountDetails!!.firstName)
-        assertEquals(existingAccount.accountDetails.lastName, accountSaveSlot.captured.accountDetails!!.lastName)
-        assertEquals(existingAccount.accountDetails.email, accountSaveSlot.captured.accountDetails!!.email)
-        assertEquals(existingAccount.accountDetails.phone, accountSaveSlot.captured.accountDetails!!.phone)
-        assertEquals(existingAccount.accountDetails.birthday, accountSaveSlot.captured.accountDetails!!.birthday)
-        assertEquals(existingAccount.accountDetails.street, accountSaveSlot.captured.accountDetails!!.street)
-        assertEquals(existingAccount.accountDetails.houseNumber, accountSaveSlot.captured.accountDetails!!.houseNumber)
-        assertEquals(existingAccount.accountDetails.postcode, accountSaveSlot.captured.accountDetails!!.postcode)
-        assertEquals(existingAccount.accountDetails.city, accountSaveSlot.captured.accountDetails!!.city)
-        assertEquals(existingAccount.accountDetails.country, accountSaveSlot.captured.accountDetails!!.country)
-        assertEquals("valid_encoded_pw", accountSaveSlot.captured.password)
+    @Test
+    fun testChangePasswordWithFailingUpdateQuery() {
+        every { applicantAccountRepository.setPassword(eq(1), eq("valid_encoded_pw")) } returns Optional.empty()
+
+        val changePasswordResult = authenticationService.changePassword(1, validChangePwRequest)
+
+        assertTrue { changePasswordResult.isFailure }
+        verify(exactly = 1) { applicantAccountRepository.setPassword(any(), any()) }
     }
 
     @Test

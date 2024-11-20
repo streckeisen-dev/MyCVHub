@@ -1,9 +1,12 @@
 package ch.streckeisen.mycv.backend.account.auth
 
+import ch.streckeisen.mycv.backend.account.dto.AuthResponseDto
 import ch.streckeisen.mycv.backend.security.JwtService
 import ch.streckeisen.mycv.backend.security.UserDetailsServiceImpl
 import io.jsonwebtoken.JwtException
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseCookie
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 const val REFRESH_TOKEN_NAME = "refreshToken"
@@ -46,6 +49,30 @@ class AuthTokenService(
 
     fun createAccessCookie(accessToken: String, expiresIn: Long) =
         createCookie(ACCESS_TOKEN_NAME, accessToken, "/", expiresIn)
+
+    fun handleAuthTokenResult(authTokens: Result<AuthTokens>): ResponseEntity<AuthResponseDto> {
+        return authTokens.fold(
+            onSuccess = { authData ->
+                val refreshCookie =
+                    createRefreshCookie(
+                        authData.refreshToken,
+                        authData.refreshTokenExpirationTime / 1000
+                    )
+                val accessCookie =
+                    createAccessCookie(authData.accessToken, authData.accessTokenExpirationTime / 1000)
+
+                val headers = HttpHeaders()
+                headers.add(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                headers.add(HttpHeaders.SET_COOKIE, accessCookie.toString())
+                ResponseEntity.ok()
+                    .headers(headers)
+                    .body(AuthResponseDto(authData.accessToken, authData.accessTokenExpirationTime))
+            },
+            onFailure = {
+                throw it
+            }
+        )
+    }
 
     private fun createCookie(name: String, value: String, path: String, expiresIn: Long) =
         ResponseCookie.from(name, value)

@@ -4,6 +4,8 @@ import ch.streckeisen.mycv.backend.account.AccountStatus
 import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
 import ch.streckeisen.mycv.backend.account.ApplicantAccountRepository
 import ch.streckeisen.mycv.backend.account.ApplicantAccountService
+import ch.streckeisen.mycv.backend.account.auth.AuthTokenService
+import ch.streckeisen.mycv.backend.account.auth.AuthTokens
 import ch.streckeisen.mycv.backend.account.auth.AuthenticationValidationService
 import ch.streckeisen.mycv.backend.account.dto.AccountUpdateDto
 import ch.streckeisen.mycv.backend.account.dto.OAuthSignupRequestDto
@@ -28,7 +30,8 @@ class OAuthIntegrationService(
     private val applicantAccountRepository: ApplicantAccountRepository,
     private val authorizedClientService: OAuth2AuthorizedClientService,
     private val githubService: GithubService,
-    private val accountService: ApplicantAccountService
+    private val accountService: ApplicantAccountService,
+    private val authTokenService: AuthTokenService
 ) {
     @Transactional(readOnly = true)
     fun findById(oauthId: String, oauthType: OAuthType): Result<OAuthIntegrationEntity> {
@@ -54,7 +57,7 @@ class OAuthIntegrationService(
         )
     }
 
-    fun completeSignup(accountId: Long, oauthSignupRequest: OAuthSignupRequestDto): Result<ApplicantAccountEntity> {
+    fun completeSignup(accountId: Long, oauthSignupRequest: OAuthSignupRequestDto): Result<AuthTokens> {
         val accountUpdate = AccountUpdateDto(
             username = oauthSignupRequest.username,
             firstName = oauthSignupRequest.firstName,
@@ -68,8 +71,9 @@ class OAuthIntegrationService(
             city = oauthSignupRequest.city,
             country = oauthSignupRequest.country
         )
-        return accountService.update(accountId, accountUpdate)
-            .onFailure { return Result.failure(it) }
+        val account = accountService.update(accountId, accountUpdate)
+            .getOrElse { return Result.failure(it) }
+        return authTokenService.generateAuthData(account.username)
     }
 
     @Transactional

@@ -33,7 +33,7 @@ class AuthenticationResource(
     @PostMapping("/login")
     fun login(@RequestBody loginRequest: LoginRequestDto): ResponseEntity<AuthResponseDto> {
         val loginResult = authenticationService.authenticate(loginRequest)
-        return handleAuthResult(loginResult)
+        return authTokenService.handleAuthTokenResult(loginResult)
     }
 
     @RequiresAccountStatus(AccountStatus.INCOMPLETE)
@@ -50,7 +50,7 @@ class AuthenticationResource(
     @PostMapping("/signup")
     fun signup(@RequestBody userRegistration: SignupRequestDto): ResponseEntity<AuthResponseDto> {
         val loginResult = authenticationService.signUp(userRegistration)
-        return handleAuthResult(loginResult)
+        return authTokenService.handleAuthTokenResult(loginResult)
     }
 
     @PublicApi
@@ -62,7 +62,7 @@ class AuthenticationResource(
         }
 
         val refreshResult = authenticationService.refreshAccessToken(refreshToken)
-        return handleAuthResult(refreshResult)
+        return authTokenService.handleAuthTokenResult(refreshResult)
     }
 
     @PostMapping("/change-password")
@@ -97,29 +97,5 @@ class AuthenticationResource(
         return ResponseEntity.ok()
             .headers(headers)
             .build()
-    }
-
-    private fun handleAuthResult(loginResult: Result<AuthTokens>): ResponseEntity<AuthResponseDto> {
-        return loginResult.fold(
-            onSuccess = { authData ->
-                val refreshCookie =
-                    authTokenService.createRefreshCookie(
-                        authData.refreshToken,
-                        authData.refreshTokenExpirationTime / 1000
-                    )
-                val accessCookie =
-                    authTokenService.createAccessCookie(authData.accessToken, authData.accessTokenExpirationTime / 1000)
-
-                val headers = HttpHeaders()
-                headers.add(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                headers.add(HttpHeaders.SET_COOKIE, accessCookie.toString())
-                ResponseEntity.ok()
-                    .headers(headers)
-                    .body(AuthResponseDto(authData.accessToken, authData.accessTokenExpirationTime))
-            },
-            onFailure = {
-                throw it
-            }
-        )
     }
 }

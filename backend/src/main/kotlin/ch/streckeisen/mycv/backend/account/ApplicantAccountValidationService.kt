@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.util.Locale
 
-private const val ACCOUNT_VALIDATION_KEY_PREFIX = "${MYCV_KEY_PREFIX}.account.validation"
-private const val USERNAME_TAKEN_ERROR_KEY = "${MYCV_KEY_PREFIX}.validations.usernameAlreadyTaken"
 private const val EMAIL_INVALID_KEY = "${MYCV_KEY_PREFIX}.validations.email"
+private const val ACCOUNT_VALIDATION_KEY_PREFIX = "${MYCV_KEY_PREFIX}.account.validations"
+private const val USERNAME_TAKEN_ERROR_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.usernameAlreadyTaken"
 private const val EMAIL_TAKEN_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.emailAlreadyTaken"
 private const val PHONE_INVALID_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.phoneInvalid"
 private const val EMPTY_HOUSE_NUMBER_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.houseNumberEmpty"

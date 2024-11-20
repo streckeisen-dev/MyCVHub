@@ -35,23 +35,32 @@ class JwtAuthenticationFilter(
 
             val authentication = SecurityContextHolder.getContext().authentication
             if (userEmail != null && authentication == null) {
-                val userDetails = userDetailsService.loadUserByUsername(userEmail)
-
-                if (jwtService.isTokenValid(accessToken, userDetails)) {
-                    val principal = MyCvPrincipal(
-                        userDetails.username,
-                        userDetails.account.id!!,
-                        AccountStatus.ofAccount(userDetails.account)
-                    )
-                    val authToken =
-                        UsernamePasswordAuthenticationToken(principal, null, userDetails.authorities)
-                    authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
-                    SecurityContextHolder.getContext().authentication = authToken
+                authenticateUser(userEmail, accessToken, request)
+            } else if (userEmail != null && authentication != null && authentication is UsernamePasswordAuthenticationToken) {
+                val principal = authentication.principal as MyCvPrincipal
+                if (principal.status != AccountStatus.VERIFIED) {
+                    authenticateUser(userEmail, accessToken, request)
                 }
             }
             filterChain.doFilter(request, response)
         } catch (ex: Exception) {
             handlerExceptionResolver.resolveException(request, response, null, ex)
+        }
+    }
+
+    private fun authenticateUser(userEmail: String, accessToken: String, request: HttpServletRequest) {
+        val userDetails = userDetailsService.loadUserByUsername(userEmail)
+
+        if (jwtService.isTokenValid(accessToken, userDetails)) {
+            val principal = MyCvPrincipal(
+                userDetails.username,
+                userDetails.account.id!!,
+                AccountStatus.ofAccount(userDetails.account)
+            )
+            val authToken =
+                UsernamePasswordAuthenticationToken(principal, null, userDetails.authorities)
+            authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
+            SecurityContextHolder.getContext().authentication = authToken
         }
     }
 }

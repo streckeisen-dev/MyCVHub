@@ -3,6 +3,7 @@ package ch.streckeisen.mycv.backend.account.auth.oauth
 import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
 import ch.streckeisen.mycv.backend.account.ApplicantAccountRepository
 import ch.streckeisen.mycv.backend.account.ApplicantAccountService
+import ch.streckeisen.mycv.backend.account.auth.AuthTokenService
 import ch.streckeisen.mycv.backend.account.auth.AuthenticationValidationService
 import ch.streckeisen.mycv.backend.github.GithubException
 import ch.streckeisen.mycv.backend.github.GithubService
@@ -29,6 +30,7 @@ class OAuthIntegrationServiceTest {
     private lateinit var authorizedClientService: OAuth2AuthorizedClientService
     private lateinit var githubService: GithubService
     private lateinit var accountService: ApplicantAccountService
+    private lateinit var authTokenService: AuthTokenService
     private lateinit var oAuthIntegrationService: OAuthIntegrationService
 
     @BeforeEach
@@ -46,6 +48,7 @@ class OAuthIntegrationServiceTest {
         authorizedClientService = mockk {}
         githubService = mockk {}
         accountService = mockk {}
+        authTokenService = mockk {}
 
         oAuthIntegrationService = OAuthIntegrationService(
             oauthIntegrationRepository,
@@ -53,7 +56,8 @@ class OAuthIntegrationServiceTest {
             applicantAccountRepository,
             authorizedClientService,
             githubService,
-            accountService
+            accountService,
+            authTokenService
         )
     }
 
