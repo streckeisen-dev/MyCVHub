@@ -10,6 +10,8 @@ import LoginStateService from '@/services/LoginStateService'
 import type { SignupRequestDto } from '@/dto/SignUpRequestDto'
 import type { AccountUpdateDto } from '@/dto/AccountUpdateDto'
 import type { ChangePasswordRequestDto } from '@/dto/ChangePasswordRequestDto'
+import { AccountStatus, type AccountStatusDto } from '@/dto/AccountStatusDto'
+import type { OAuthSignUpRequestDto } from '@/dto/OAuthSignUpRequestDto'
 
 async function login(email: string, password: string): Promise<void> {
   try {
@@ -27,11 +29,33 @@ async function login(email: string, password: string): Promise<void> {
   }
 }
 
+async function verifyLogin(): Promise<void> {
+  try {
+    const response = await fetchFromApi('/auth/login/verify')
+    return processAuthResponse(response)
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
 async function signUp(account: SignupRequestDto): Promise<void> {
   try {
-    const response = await fetch('/api/auth/signUp', {
+    const response = await fetch('/api/auth/signup', {
       method: 'POST',
       body: JSON.stringify(account),
+      headers: commonHeaders()
+    })
+    return processAuthResponse(response)
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+async function oauthSignUp(oAuthSignUpRequest: OAuthSignUpRequestDto): Promise<void> {
+  try {
+    const response = await fetch('/api/oauth/signup', {
+      method: 'POST',
+      body: JSON.stringify(oAuthSignUpRequest),
       headers: commonHeaders()
     })
     return processAuthResponse(response)
@@ -96,12 +120,60 @@ async function logout(): Promise<void> {
   }
 }
 
+async function loadAccountStatus(): Promise<void> {
+  try {
+    const response = await fetchFromApi('/account/status')
+    const accountStatus = await getJSONIfResponseIsOk<AccountStatusDto>(response)
+    LoginStateService.setAccountStatus(accountStatus.status)
+    return Promise.resolve()
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+async function generateVerificationCode(): Promise<void> {
+  try {
+    const response = await fetchFromApi('/account/verification/generate', {
+      method: 'POST'
+    })
+    await extractErrorIfResponseIsNotOk(response)
+    return Promise.resolve()
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+async function verifyAccount(accountId: number, token: string): Promise<void> {
+  try {
+    const response = await fetchFromApi('/account/verification', {
+      method: 'POST',
+      body: JSON.stringify({
+        id: accountId,
+        token
+      }),
+      headers: commonHeaders()
+    })
+    await extractErrorIfResponseIsNotOk(response)
+    if (isUserLoggedIn()) {
+      LoginStateService.setAccountStatus(AccountStatus.VERIFIED)
+    }
+    return Promise.resolve()
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
 export default {
   login,
+  verifyLogin,
   signUp,
+  oauthSignUp,
   changePassword,
   update,
   isUserLoggedIn,
   logout,
-  getAccountInfo
+  getAccountInfo,
+  loadAccountStatus,
+  generateVerificationCode,
+  verifyAccount
 }

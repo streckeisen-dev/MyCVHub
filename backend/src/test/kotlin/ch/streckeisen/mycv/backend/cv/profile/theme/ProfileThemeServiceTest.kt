@@ -2,7 +2,6 @@ package ch.streckeisen.mycv.backend.cv.profile.theme
 
 import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
-import ch.streckeisen.mycv.backend.exceptions.EntityNotFoundException
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
@@ -37,7 +36,7 @@ class ProfileThemeServiceTest {
             )
         }
         profileService = mockk {
-            every { findByAccountId(any()) } returns Result.failure(EntityNotFoundException("Not found"))
+            every { findByAccountId(any()) } returns Result.failure(IllegalArgumentException("Not found"))
             every { findByAccountId(eq(1)) } returns Result.success(profile)
             every { findByAccountId(eq(2)) } returns Result.success(
                 profile(
@@ -114,7 +113,6 @@ class ProfileThemeServiceTest {
     }
 
     private fun profile(theme: ProfileThemeEntity?) = ProfileEntity(
-        alias = "alias",
         jobTitle = "jobTitle",
         bio = "Bio",
         isProfilePublic = true,

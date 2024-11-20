@@ -1,9 +1,9 @@
 package ch.streckeisen.mycv.backend.cv.profile
 
+import ch.streckeisen.mycv.backend.account.AccountDetailsEntity
 import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
 import ch.streckeisen.mycv.backend.account.ApplicantAccountService
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
-import ch.streckeisen.mycv.backend.exceptions.EntityNotFoundException
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -18,22 +18,26 @@ import kotlin.test.assertTrue
 
 private val existingAccount =
     ApplicantAccountEntity(
-        "f",
-        "l",
-        "email",
-        "phone",
-        LocalDate.now(),
-        "street",
-        null,
-        "code",
-        "city",
-        "CH",
-        "abc",
-        1,
+        username = "username",
+        password = "abc",
+        isOAuthUser = false,
+        isVerified = true,
+        accountDetails = AccountDetailsEntity(
+            firstName = "f",
+            lastName = "l",
+            email = "ch/streckeisen/mycv/email",
+            phone = "phone",
+            birthday = LocalDate.now(),
+            street = "street",
+            houseNumber = null,
+            postcode = "code",
+            city = "city",
+            country = "CH"
+        ),
+        id = 1,
         profile = ProfileEntity(
-            "alias",
-            "job",
-            "bio",
+            jobTitle = "job",
+            bio = "bio",
             isProfilePublic = true,
             isEmailPublic = true,
             isPhonePublic = true,
@@ -46,25 +50,29 @@ private val existingAccount =
     )
 private val existingAccountWithoutProfile =
     ApplicantAccountEntity(
-        "f",
-        "l",
-        "email",
-        "phone",
-        LocalDate.now(),
-        "street",
-        null,
-        "code",
-        "city",
-        "CH",
-        "abc",
-        3,
+        username = "username",
+        password = "abc",
+        isOAuthUser = false,
+        isVerified = true,
+        accountDetails = AccountDetailsEntity(
+            firstName = "f",
+            lastName = "l",
+            email = "ch/streckeisen/mycv/email",
+            phone = "phone",
+            birthday = LocalDate.now(),
+            street = "street",
+            houseNumber = null,
+            postcode = "code",
+            city = "city",
+            country = "CH"
+        ),
+        id = 3,
         profile = null
     )
 private val existingProfile =
     ProfileEntity(
-        "alias",
-        "job",
-        "bio",
+        jobTitle = "job",
+        bio = "bio",
         isProfilePublic = false,
         isEmailPublic = false,
         isPhonePublic = false,
@@ -90,7 +98,7 @@ class ProfileServiceTest {
         profileValidationService = mockk()
         applicantAccountService = mockk {
             every { findById(eq(1)) } returns Result.success(existingAccount)
-            every { findById(eq(2)) } returns Result.failure(EntityNotFoundException("Not found"))
+            every { findById(eq(2)) } returns Result.failure(IllegalArgumentException("Not found"))
             every { findById(eq(3)) } returns Result.success(existingAccountWithoutProfile)
         }
         profilePictureService = mockk()
@@ -102,7 +110,6 @@ class ProfileServiceTest {
     fun testProfileSave() {
         every {
             profileValidationService.validateProfileInformation(
-                eq(1),
                 any(),
                 any(),
                 any()
@@ -111,9 +118,8 @@ class ProfileServiceTest {
         every { profilePictureService.store(eq(1), any(), any()) } returns Result.success("test.png")
 
         val update = GeneralProfileInformationUpdateDto(
-            "test",
-            "Job",
-            null,
+            jobTitle = "Job",
+            bio = null,
             isProfilePublic = true,
             isEmailPublic = false,
             isPhonePublic = false,
@@ -127,7 +133,7 @@ class ProfileServiceTest {
         val entity = saveResult.getOrNull()
         assertNotNull(entity)
         verify(exactly = 1) { applicantAccountService.findById(any()) }
-        verify(exactly = 1) { profileValidationService.validateProfileInformation(any(), any(), any(), any()) }
+        verify(exactly = 1) { profileValidationService.validateProfileInformation(any(), any(), any()) }
         verify(exactly = 1) { profilePictureService.store(any(), any(), any()) }
         verify(exactly = 1) { profileRepository.save(any()) }
     }
@@ -136,7 +142,6 @@ class ProfileServiceTest {
     fun testProfileSaveWithoutPicture() {
         every {
             profileValidationService.validateProfileInformation(
-                eq(1),
                 any(),
                 any(),
                 any()
@@ -144,9 +149,8 @@ class ProfileServiceTest {
         } returns Result.success(Unit)
 
         val update = GeneralProfileInformationUpdateDto(
-            "test",
-            "Job",
-            null,
+            jobTitle = "Job",
+            bio = null,
             isProfilePublic = true,
             isEmailPublic = false,
             isPhonePublic = false,
@@ -160,7 +164,7 @@ class ProfileServiceTest {
         val entity = saveResult.getOrNull()
         assertNotNull(entity)
         verify(exactly = 1) { applicantAccountService.findById(any()) }
-        verify(exactly = 1) { profileValidationService.validateProfileInformation(any(), any(), any(), any()) }
+        verify(exactly = 1) { profileValidationService.validateProfileInformation(any(), any(), any()) }
         verify(exactly = 0) { profilePictureService.store(any(), any(), any()) }
         verify(exactly = 1) { profileRepository.save(any()) }
     }
@@ -172,9 +176,8 @@ class ProfileServiceTest {
         assertTrue { saveResult.isFailure }
         val ex = saveResult.exceptionOrNull()
         assertNotNull(ex)
-        assertTrue { ex is EntityNotFoundException }
         verify(exactly = 1) { applicantAccountService.findById(any()) }
-        verify(exactly = 0) { profileValidationService.validateProfileInformation(any(), any(), any(), any()) }
+        verify(exactly = 0) { profileValidationService.validateProfileInformation(any(), any(), any()) }
         verify(exactly = 0) { profilePictureService.store(any(), any(), any()) }
         verify(exactly = 0) { profileRepository.save(any()) }
     }
@@ -183,7 +186,6 @@ class ProfileServiceTest {
     fun testProfileSaveValidationError() {
         every {
             profileValidationService.validateProfileInformation(
-                eq(1),
                 any(),
                 any(),
                 any()
@@ -198,7 +200,7 @@ class ProfileServiceTest {
         assertTrue { ex is IllegalArgumentException }
 
         verify(exactly = 1) { applicantAccountService.findById(any()) }
-        verify(exactly = 1) { profileValidationService.validateProfileInformation(any(), any(), any(), any()) }
+        verify(exactly = 1) { profileValidationService.validateProfileInformation(any(), any(), any()) }
         verify(exactly = 0) { profilePictureService.store(any(), any(), any()) }
         verify(exactly = 0) { profileRepository.save(any()) }
     }
@@ -207,7 +209,6 @@ class ProfileServiceTest {
     fun testProfileSavePictureError() {
         every {
             profileValidationService.validateProfileInformation(
-                eq(1),
                 any(),
                 any(),
                 any()
@@ -222,7 +223,7 @@ class ProfileServiceTest {
         assertNotNull(ex)
         assertTrue { ex is IOException }
         verify(exactly = 1) { applicantAccountService.findById(any()) }
-        verify(exactly = 1) { profileValidationService.validateProfileInformation(any(), any(), any(), any()) }
+        verify(exactly = 1) { profileValidationService.validateProfileInformation(any(), any(), any()) }
         verify(exactly = 1) { profilePictureService.store(any(), any(), any()) }
         verify(exactly = 0) { profileRepository.save(any()) }
     }
@@ -232,7 +233,6 @@ class ProfileServiceTest {
         val profileEntitySlot = slot<ProfileEntity>()
         every {
             profileValidationService.validateProfileInformation(
-                eq(3),
                 any(),
                 any(),
                 any()
@@ -242,9 +242,8 @@ class ProfileServiceTest {
         every { profileRepository.save(capture(profileEntitySlot)) } returns existingProfile
 
         val update = GeneralProfileInformationUpdateDto(
-            "test",
-            "Job",
-            null,
+            jobTitle = "Job",
+            bio = null,
             isProfilePublic = null,
             isEmailPublic = null,
             isPhonePublic = null,
@@ -268,7 +267,6 @@ class ProfileServiceTest {
         val profileEntitySlot = slot<ProfileEntity>()
         every {
             profileValidationService.validateProfileInformation(
-                eq(1),
                 any(),
                 any(),
                 any()
@@ -278,9 +276,8 @@ class ProfileServiceTest {
         every { profileRepository.save(capture(profileEntitySlot)) } returns existingProfile
 
         val update = GeneralProfileInformationUpdateDto(
-            "test",
-            "Job",
-            null,
+            jobTitle = "Job",
+            bio = null,
             isProfilePublic = null,
             isEmailPublic = null,
             isPhonePublic = null,

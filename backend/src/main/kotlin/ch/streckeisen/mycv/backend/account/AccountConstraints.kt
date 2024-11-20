@@ -1,5 +1,6 @@
 package ch.streckeisen.mycv.backend.account
 
+const val USERNAME_MAX_LENGTH = 100
 const val FIRST_NAME_MAX_LENGTH = 50
 const val LAST_NAME_MAX_LENGTH = 50
 const val EMAIL_MAX_LENGTH = 100

@@ -1,6 +1,6 @@
 package ch.streckeisen.mycv.backend.account.dto
 
-data class LoginResponseDto(
+data class AuthResponseDto(
     val token: String,
     val expiresIn: Long,
 )

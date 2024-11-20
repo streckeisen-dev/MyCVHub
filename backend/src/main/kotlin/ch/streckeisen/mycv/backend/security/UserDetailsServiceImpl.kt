@@ -2,28 +2,26 @@ package ch.streckeisen.mycv.backend.security
 
 import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
 import ch.streckeisen.mycv.backend.account.ApplicantAccountRepository
-import org.springframework.security.authentication.BadCredentialsException
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
+import kotlin.jvm.optionals.getOrElse
 
 @Service
 class UserDetailsServiceImpl(
     private val applicantAccountRepository: ApplicantAccountRepository
 ) : UserDetailsService {
     override fun loadUserByUsername(username: String?): MyCvUserDetails {
+        return loadUserByUsernameAsResult(username).getOrThrow()
+    }
+
+    fun loadUserByUsernameAsResult(username: String?): Result<MyCvUserDetails> {
         if (username.isNullOrBlank()) {
-            throw IllegalArgumentException("Username cannot be null or blank")
+            return Result.failure(IllegalArgumentException("Username cannot be null or blank"))
         }
-        val applicantAccount: ApplicantAccountEntity = applicantAccountRepository.findByEmail(username)
-            .orElseThrow { BadCredentialsException("There is no user with username $username") }
-        val userDetails = User.withUsername(applicantAccount.email)
-            .password(applicantAccount.password)
-            .accountLocked(false)
-            .accountExpired(false)
-            .disabled(false)
-            .credentialsExpired(false)
-            .build()
-        return MyCvUserDetails(userDetails, applicantAccount.id!!)
+        val applicantAccount: ApplicantAccountEntity = applicantAccountRepository.findByUsername(username)
+            .getOrElse { return Result.failure(UsernameNotFoundException("There is no user with username $username")) }
+
+        return Result.success(MyCvUserDetails(applicantAccount))
     }
 }

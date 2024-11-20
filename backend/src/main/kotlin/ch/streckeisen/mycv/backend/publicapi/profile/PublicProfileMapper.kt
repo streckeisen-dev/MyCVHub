@@ -13,18 +13,18 @@ import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicProfileThemeDto
 import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicWorkExperienceDto
 
 fun ProfileEntity.toPublicDto(profilePicture: String): PublicProfileDto = PublicProfileDto(
-    account.firstName,
-    account.lastName,
+    account.accountDetails!!.firstName,
+    account.accountDetails.lastName,
     jobTitle,
     bio,
-    email = if (isEmailPublic) account.email else null,
-    phone = if (isPhonePublic) account.phone else null,
+    email = if (isEmailPublic) account.accountDetails.email else null,
+    phone = if (isPhonePublic) account.accountDetails.phone else null,
     address = if (isAddressPublic) PublicAddressDto(
-        account.street,
-        account.houseNumber,
-        account.postcode,
-        account.city,
-        account.country
+        account.accountDetails.street,
+        account.accountDetails.houseNumber,
+        account.accountDetails.postcode,
+        account.accountDetails.city,
+        account.accountDetails.country
     ) else null,
     profilePicture = profilePicture,
     workExperiences.map { it.toPublicDto(hideDescriptions) }.toList(),

@@ -31,7 +31,7 @@ class WorkExperienceResource(
     }
 
     @DeleteMapping("{id}")
-    fun deleteWorkExperience(@PathVariable("id") id: Long): ResponseEntity<Void> {
+    fun deleteWorkExperience(@PathVariable("id") id: Long): ResponseEntity<Unit> {
         val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
 
         return workExperienceService.delete(principal.id, id)

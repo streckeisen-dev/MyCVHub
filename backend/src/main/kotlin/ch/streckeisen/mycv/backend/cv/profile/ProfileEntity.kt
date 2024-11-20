@@ -15,7 +15,6 @@ import jakarta.persistence.OneToOne
 
 @Entity
 class ProfileEntity(
-    val alias: String,
     val jobTitle: String,
     val bio: String?,
     val isProfilePublic: Boolean,

@@ -7,7 +7,6 @@ import ch.streckeisen.mycv.backend.cv.skill.SkillDto
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class ProfileDto(
-    val alias: String,
     val jobTitle: String,
     val bio: String?,
     @get:JsonProperty(value = "isProfilePublic") val isProfilePublic: Boolean,

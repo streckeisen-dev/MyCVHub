@@ -106,6 +106,9 @@ frontend:
       noAccount: "Noch keinen Account?"
       signup: "Jetzt registrieren"
       error: "Anmeldung fehlgeschlagen"
+      oauth:
+        github: "Anmelden mit GitHub"
+        error: "Anmeldung mit externem Account ist fehlgeschlagen"
     signup:
       error: "Dein Account konnte nicht erstellt werden"
     logout:
@@ -121,6 +124,19 @@ frontend:
     loadingError:
       title: "Dein Konto konnte nicht geladen werden"
       text: "Vergewissere dich, dass du angemeldet bist und versuche es erneut"
+    verification:
+      statusCheck:
+        error: "Dein Account-Verifizierungsstatus konnte nicht überprüft werden"
+      pending:
+        title: "Ausstehende Account-Verifizierung"
+        description: "Um deinen Account nutzen zu können, musst du deine E-Mail-Adresse verifizieren.\nDu solltst eine Verifizierungs-E-Mail mit einem Link zur Bestätigung deiner E-Mail-Adresse erhalten haben."
+      resend:
+        description: "Du hast keine Verifizierungs-E-Mail erhalten?"
+        action: "Verifizierungs-E-Mail erneut senden"
+        success: "Verifizierungs-E-Mail erfolgreich verschickt"
+        error: "Die Verifizierungs-E-Mail konnte nicht verschickt werden"
+      success: "Deine E-Mail Addresse wurde erfolgreich verifiziert"
+      error: "Deine E-Mail Addresse konnte nicht verifiziert werden"
   
   profile:
     title: "Profil"
@@ -241,20 +257,37 @@ backend:
     numberTooSmall: "{0} muss grösser als {1} sein"
     numberTooBig: "{0} muss kleiner als {1} sein"
   workExperience:
+    notFound: "Berufserfahrung nicht gefunden"
+    accessDenied: "Du hast keinen Zugriff auf diese Arbeitserfahrung"
     validationError: "Validierung der Arbeitserfahrung ist fehlgeschlagen"
   skill:
+    notFound: "Fähigkeit nicht gefunden"
+    accessDenied: "Du hast keinen Zugriff auf diese Fähigkeit"
     validationError: "Validierung der Fähigkeit ist fehlgeschlagen"
   profile:
+    notFound: "Profil nicht gefunden"
+    accessDenied: "Du hast keinen Zugriff auf dieses Profil"
     validation:
       aliasWithInvalidChars: "Alias muss mit einem Buchstaben beginnen und nur Buchstaben, Zahlen, - und _ enthalten"
-      aliasAlreadyTaken: "Alias ist bereits vergeben"
       pictureIllegalMediaType: "Profilbild Dateityp ist nicht erlaubt"
       error: "Profil Validierung ist fehlgeschlagen"
+    picture:
+      accessDenied: "Du hast keinen Zugriff auf dieses Profilbild"
   education:
+    notFound: "Ausbildung nicht gefunden"
+    accessDenied: "Du hast keinen Zugriff auf diese Ausbildung"
     validation:
       error: "Validierung der Ausbildung ist fehlgeschlagen"
   account:
-    validation:
+    notFound: "Account nicht gefunden"
+    verification:
+      noToken: "Account hat kein Verifizierungs-Token"
+      tokenGenerationBlocked: "Die Generierung von Verifizierungs-Token ist nur alle {0} Minuten erlaubt"
+      tokenExpired: "Das Verifizierungs-Token ist abgelaufen"
+      tokenInvalid: "Verifizierungs-Token ist ungültig"
+      alreadyVerified: "Account ist bereits verifiziert"
+    validations:
+      usernameAlreadyTaken: "Benutzername ist bereits vergeben"
       emailAlreadyTaken: "E-Mail ist schon vergeben"
       phoneInvalid: "Telefonnummer ist nicht gültig"
       houseNumberEmpty: "Hausnummer muss 'null' sein oder einen Wert haben"
@@ -265,9 +298,19 @@ backend:
         encodingError: "Passwortverschlüsselung fehlgeschlagen"
       oldPasswordInvalid: "Altes Password ist nicht korrekt"
       error: "Account-Validierung fehlgeschlagen"
+    oauth:
+      notFound: "OAuth Account nicht gefunden"
   auth:
     login:
       error: "Authentifizierung ist fehlgeschlagen"
+    signup:
+      error: "Registrierung ist fehlgeschlagen"
+    changePassword:
+      passwordNotSet: "Passwortänderung benötigt bereits gesetztes Passwort"
+      error: "Passwortänderung ist fehlgeschlagen"
+    tokenRefresh:
+      refreshTokenRequired: "Refresh Token wird benötigt für Token-Erneuerung"
+    accessDenied: "You are not authorized to perform this operation"
   exceptions:
     db: "Ein Datenbank-Fehler ist aufgetreten. Bitte kontaktiere den Administrator"
     expiredJwt: "Abgelaufenes JWT-Token"
@@ -275,7 +318,6 @@ backend:
     lockedAccount: "Account ist blockiert"
     invalidJwtSignature: "Ungültige JWT-Signatur"
     psql: "Fehler während Datenverarbeitung"
-    entityNotFound: "Entität nicht gefunden"
     accessDenied: "Du hast keine Berechtigung um auf diese Ressource zuzugreifen"
     unauthorized: "Unbefugt"
     requestFormat: "Request-Format ist ungültig"
