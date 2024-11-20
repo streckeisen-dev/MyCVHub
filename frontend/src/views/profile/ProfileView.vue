@@ -132,7 +132,7 @@ const { t } = useI18n({
   useScope: 'global'
 })
 
-const props = defineProps<{ alias: string }>()
+const props = defineProps<{ username: string }>()
 const originalTheme = vuetify.theme.global.name.value
 vuetify.theme.global.name.value = 'profile'
 
@@ -164,7 +164,7 @@ const profilePhoneLink = computed(() => `tel:${profile.value!!.phone}`)
 
 isProfileLoading.value = true
 try {
-  profile.value = await profileApi.getPublicProfile(props.alias)
+  profile.value = await profileApi.getPublicProfile(props.username)
   const profileTheme = profile.value.theme
   if (profileTheme) {
     theme.value.backgroundColor = profileTheme.backgroundColor
