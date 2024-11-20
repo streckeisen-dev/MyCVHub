@@ -4,7 +4,6 @@ import type { SkillDto } from '@/dto/SkillDto'
 import type { ProfileThemeDto } from '@/dto/ProfileThemeDto'
 
 export type ProfileDto = {
-  alias: string
   jobTitle: string
   bio: string
   isProfilePublic: boolean

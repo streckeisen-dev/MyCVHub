@@ -74,12 +74,6 @@
                   md="8"
                 >
                   <v-text-field
-                    v-model="formState.alias"
-                    :label="t('fields.alias')"
-                    :hint="t('profile.editor.aliasHint')"
-                    :error-messages="aliasErrors"
-                  />
-                  <v-text-field
                     v-model="formState.jobTitle"
                     :label="t('fields.jobTitle')"
                     :error-messages="jobTitleErrors"
@@ -205,7 +199,6 @@ const profilePicture = computed(() => {
 
 type FormState = {
   profilePicture?: File
-  alias?: string
   jobTitle?: string
   bio?: string
   isProfilePublic?: boolean
@@ -217,7 +210,6 @@ type FormState = {
 
 const formState = reactive<FormState>({
   profilePicture: undefined,
-  alias: props.profile.alias,
   jobTitle: props.profile.jobTitle,
   bio: props.profile.bio,
   isProfilePublic: props.profile.isProfilePublic,
@@ -245,9 +237,6 @@ const rules = {
         required,
         fileSizeValidator: profilePictureSizeValidator
       },
-  alias: {
-    required
-  },
   jobTitle: {
     required
   },
@@ -263,7 +252,6 @@ function getErrors(attributeName: string): ComputedRef {
 }
 
 const profilePictureErrors = getErrors('profilePicture')
-const aliasErrors = getErrors('alias')
 const jobTitleErrors = getErrors('jobTitle')
 const bioErrors = getErrors('bio')
 
@@ -277,7 +265,6 @@ async function saveGeneralInformation() {
   try {
     const profileUpdate: ProfileUpdateRequestDto = {
       profilePicture: formState.profilePicture,
-      alias: formState.alias,
       jobTitle: formState.jobTitle,
       bio: formState.bio,
       isProfilePublic: formState.isProfilePublic,
@@ -294,7 +281,6 @@ async function saveGeneralInformation() {
       isCreated.value = true
       errorMessages.value = {}
 
-      formState.alias = savedProfile.alias
       formState.jobTitle = savedProfile.jobTitle
       formState.bio = savedProfile.bio
       formState.isProfilePublic = savedProfile.isProfilePublic

@@ -89,7 +89,7 @@
                 <v-btn
                   :text="t('account.profile.view')"
                   color="primary"
-                  :to="{ name: 'public-profile', params: { alias: account.username } }"
+                  :to="{ name: 'public-profile', params: { username: account.username } }"
                 />
               </v-col>
               <v-col

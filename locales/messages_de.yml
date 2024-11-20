@@ -15,7 +15,6 @@ shared:
     city: "Stadt"
     country: "Land"
     profilePicture: "Profilbild"
-    alias: "Alias"
     jobTitle: "Tätigkeitsbezeichnung"
     bio: "Bio"
     location: "Standort"
@@ -150,7 +149,6 @@ frontend:
       back: "Zurück zum Account"
       general: "Allgemein"
       pictureHint: "Dein Profilbild darf nicht grösser als 2MB sein."
-      aliasHint: "Name, der in der URL deines Profils verwendet werden soll"
       publicProfile: "Öffentlicher Profilzugriff"
       publicProfileHint: "Falls aktiviert, ist dein Profil öffentlich zugänglich"
       publicEmail: "E-Mail im öffentlichen Profil anzeigen"
@@ -268,7 +266,6 @@ backend:
     notFound: "Profil nicht gefunden"
     accessDenied: "Du hast keinen Zugriff auf dieses Profil"
     validation:
-      aliasWithInvalidChars: "Alias muss mit einem Buchstaben beginnen und nur Buchstaben, Zahlen, - und _ enthalten"
       pictureIllegalMediaType: "Profilbild Dateityp ist nicht erlaubt"
       error: "Profil Validierung ist fehlgeschlagen"
     picture:

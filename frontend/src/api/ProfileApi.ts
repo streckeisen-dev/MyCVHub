@@ -17,9 +17,9 @@ import type { ThumbnailDto } from '@/dto/ThumbnailDto'
 import type { ProfileThemeUpdateDto } from '@/dto/ProfileThemeUpdateDto'
 import type { ProfileThemeDto } from '@/dto/ProfileThemeDto'
 
-async function getPublicProfile(alias: string): Promise<PublicProfileDto> {
+async function getPublicProfile(username: string): Promise<PublicProfileDto> {
   try {
-    const response = await fetchFromApi(`/api/public/profile/${alias}`)
+    const response = await fetchFromApi(`/api/public/profile/${username}`)
     const profile = await getJSONIfResponseIsOk<PublicProfileDto>(response)
     return Promise.resolve(profile)
   } catch (error) {
