@@ -10,10 +10,9 @@
             cols="12"
             md="6"
           >
-            <div
-              class="theme-description"
-              v-html="themeDescription"
-            />
+            <div class="theme-description">
+              {{ t('theme.description') }}
+            </div>
           </v-col>
         </v-col>
         <v-col
@@ -119,8 +118,6 @@ import ProfileApi from '@/api/ProfileApi'
 import type { ErrorDto } from '@/dto/ErrorDto'
 import type { ErrorMessages } from '@/services/FormHelper'
 import ToastService from '@/services/ToastService'
-import { marked } from 'marked'
-import DOMPurify from 'dompurify'
 
 const theme = defineModel<ProfileThemeDto | undefined>()
 
@@ -135,13 +132,6 @@ const surfaceColor = ref<string>(theme.value?.surfaceColor || defaultColors.surf
 const errorMessages = ref<ErrorMessages>({})
 const isSaving = ref(false)
 const isResetting = ref(false)
-
-const themeDescription = computed(() => {
-  const markdown = marked(t('theme.description'), {
-    async: false
-  }) as string
-  return DOMPurify.sanitize(markdown)
-})
 
 const previewContainerStyles = computed(() => {
   return {
