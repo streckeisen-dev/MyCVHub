@@ -46,7 +46,6 @@ async function generateToken() {
     await accountApi.generateVerificationCode()
     ToastService.success(t('account.verification.resend.success'))
   } catch (e) {
-    console.log(e)
     const error = e as ErrorDto
     const errorDetails = error?.message || t('error.genericMessage')
     ToastService.error(t('account.verification.resend.error'), errorDetails)

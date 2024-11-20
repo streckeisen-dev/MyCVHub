@@ -67,8 +67,9 @@ async function extractErrorIfResponseIsNotOk(response: Response): Promise<void> 
 async function processAuthResponse(response: Response): Promise<void> {
   try {
     if (response.status === 401) {
+      const error = await response.json() as ErrorDto
       LoginStateService.loggedOut()
-      return Promise.reject('Unauthorized')
+      return Promise.reject(error || {})
     }
     await extractErrorIfResponseIsNotOk(response)
     LoginStateService.successfulLogin()

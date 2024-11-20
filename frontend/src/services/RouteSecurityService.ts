@@ -25,7 +25,6 @@ async function enforceRouteAccessPermissions(
   }
 
   if (routeRequiresUnverifiedAndAccountIsIncomplete(requiredAccountStatus, accountStatus)) {
-    console.log('requires unverified')
     next({ name: 'oauth-signup' })
   }
 }

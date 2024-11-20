@@ -151,7 +151,6 @@ router.beforeEach(
         accountStatus,
         next
       )
-      return
     }
     next()
   }

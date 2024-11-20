@@ -19,14 +19,14 @@ const { t } = useI18n({
 })
 
 const props = defineProps<{
-  accountId: number
+  accountId: string
   token: string
 }>()
 
 const isLoading = ref(true)
 
 try {
-  await accountApi.verifyAccount(props.accountId, props.token)
+  await accountApi.verifyAccount(Number.parseInt(props.accountId), props.token)
   await router.push({ name: 'account' })
   ToastService.success(t('account.verification.success'))
 } catch (e) {

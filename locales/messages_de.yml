@@ -286,7 +286,7 @@ backend:
       tokenExpired: "Das Verifizierungs-Token ist abgelaufen"
       tokenInvalid: "Verifizierungs-Token ist ungültig"
       alreadyVerified: "Account ist bereits verifiziert"
-    validation:
+    validations:
       usernameAlreadyTaken: "Benutzername ist bereits vergeben"
       emailAlreadyTaken: "E-Mail ist schon vergeben"
       phoneInvalid: "Telefonnummer ist nicht gültig"
