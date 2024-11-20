@@ -34,6 +34,20 @@ envs:
 - key: CLOUDINARY_CLOUD_NAME
   scope: RUN_AND_BUILD_TIME
   value: dd2kbqj6y
+- key: MAILGUN_SMTP_USERNAME
+  scope: RUN_AND_BUILD_TIME
+  value: donotreply@mailgun.mycvhub.ch
+- key: MAILGUN_SMTP_PASSWORD
+  scope: RUN_AND_BUILD_TIME
+  type: SECRET
+  value: EV[1:/oWWdUew6vZSUDfPwSJsZCKhjfkdBeS0:PDe3JbtGMM2QpPJDcnvh19QzapNJM3kCp0smO6R7zWd9T05WwbvML7iOqhU9RMcUK4pnRP8aB8jgNoS7qq1OAnsY]
+- key: GITHUB_CLIENT_ID
+  scope: RUN_AND_BUILD_TIME
+  value: Ov23liBaGRjAUrgCzqES
+- key: GITHUB_CLIENT_SECRET
+  scope: RUN_AND_BUILD_TIME
+  type: SECRET
+  value: EV[1:SMXUhIBmyd5vGk2HDDxjblItPo2FSQbX:NpyiIbWho+LVglWRKwyGABzxa9qcSayCnhCVrGwTStylVZysXcT3uwd8Mf/cf3K16FsR5cIutlA=]
 features:
 - buildpack-stack=ubuntu-22
 ingress:

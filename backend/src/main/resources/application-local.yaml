@@ -5,10 +5,6 @@ spring.datasource:
 
 logging:
   file.name: ./logs/mycv.log
-  level:
-    org.springframework.web: info
-    org.hibernate: error
-    ch.streckeisen.mycv.backend: debug
 
 my-cv:
   security:

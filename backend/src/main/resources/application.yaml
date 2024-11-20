@@ -49,6 +49,10 @@ logging:
     rollingpolicy:
       max-history: 5
       max-file-size: 5MB
+  level:
+    org.springframework.web: info
+    org.hibernate: error
+    ch.streckeisen.mycv.backend: debug
 
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME}
