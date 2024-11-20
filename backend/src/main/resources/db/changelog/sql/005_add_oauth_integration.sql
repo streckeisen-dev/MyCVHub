@@ -126,3 +126,6 @@ ALTER TABLE applicant_account_entity
     DROP COLUMN postcode,
     DROP COLUMN city,
     DROP COLUMN country;
+
+ALTER TABLE profile_entity
+    DROP COLUMN alias;

@@ -17,8 +17,8 @@ class ProfileService(
     private val profilePictureService: ProfilePictureService
 ) {
     @Transactional(readOnly = true)
-    fun findByUsername(accountId: Long?, alias: String): Result<ProfileEntity> {
-        val profile = profileRepository.findByAccountUsername(alias)
+    fun findByUsername(accountId: Long?, username: String): Result<ProfileEntity> {
+        val profile = profileRepository.findByAccountUsername(username)
             .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.profile.notFound")) }
 
         if (!profile.isProfilePublic && profile.account.id != accountId) {
