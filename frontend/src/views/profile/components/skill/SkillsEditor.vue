@@ -94,7 +94,7 @@ async function deleteSkill(id: number) {
     skills.value.splice(index, 1)
   } catch (e) {
     const error = e as ErrorDto
-    const errorDetails = error.message || t('error.genericMessage')
+    const errorDetails = error?.message || t('error.genericMessage')
     ToastService.error(t('skills.editor.deleteError'), errorDetails)
   }
 }

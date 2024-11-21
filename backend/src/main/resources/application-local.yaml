@@ -3,7 +3,12 @@ spring.datasource:
   username: postgres
   password: postgres
 
-security.jwt.secret: wHqRTjE8tXtgm/zhvn1qmmxLkcA+MvjnbX0aLkNhLm4=
-
 logging:
   file.name: ./logs/mycv.log
+
+my-cv:
+  security:
+    jwt:
+      secret: wHqRTjE8tXtgm/zhvn1qmmxLkcA+MvjnbX0aLkNhLm4=
+  frontend:
+    base-url: http://localhost:3000/ui

@@ -15,10 +15,32 @@ spring:
     max-request-size: 2MB
     max-file-size: 2MB
 
-security.jwt:
-  secret: ${JWT_SECRET}
-  access.expiration-time: 3600000
-  refresh.expiration-time: 432000000
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
+            scope:
+              - read:user
+              - user:email
+              - repo
+            redirect-uri: "{baseUrl}/api/auth/oauth2/callback/github"
+            authorization-grant-type: authorization_code
+            client-name: GitHub
+
+  mail:
+    host: smtp.eu.mailgun.org
+    port: 587
+    username: ${MAILGUN_SMTP_USERNAME}
+    password: ${MAILGUN_SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 logging:
   file.name: /app/logs/mycv.log
@@ -27,9 +49,30 @@ logging:
     rollingpolicy:
       max-history: 5
       max-file-size: 5MB
+  level:
+    org.springframework.web: info
+    org.hibernate: error
+    ch.streckeisen.mycv.backend: debug
 
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME}
   api-key: ${CLOUDINARY_API_KEY}
   api-secret: ${CLOUDINARY_API_SECRET}
   url-expiration: 300
+
+my-cv:
+  security:
+    jwt:
+      secret: ${JWT_SECRET}
+      access:
+        expiration-time: 3600000
+      refresh:
+        expiration-time: 432000000
+  account:
+    verification:
+      token-expiration-hours: 12
+      token-generation-block-minutes: 30
+  frontend:
+    base-url: https://mycvhub.ch/ui
+  github:
+    api-base-url: https://api.github.com

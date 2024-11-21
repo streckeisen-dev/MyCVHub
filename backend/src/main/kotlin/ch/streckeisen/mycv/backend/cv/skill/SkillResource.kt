@@ -31,7 +31,7 @@ class SkillResource(
     }
 
     @DeleteMapping("{id}")
-    fun deleteSkill(@PathVariable id: Long): ResponseEntity<Void> {
+    fun deleteSkill(@PathVariable id: Long): ResponseEntity<Unit> {
         val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
 
         return skillService.delete(principal.id, id)

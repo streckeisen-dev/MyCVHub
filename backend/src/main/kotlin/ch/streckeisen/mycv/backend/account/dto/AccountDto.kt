@@ -3,6 +3,7 @@ package ch.streckeisen.mycv.backend.account.dto
 import java.time.LocalDate
 
 data class AccountDto(
+    val username: String,
     val firstName: String,
     val lastName: String,
     val email: String,
@@ -13,5 +14,6 @@ data class AccountDto(
     val postcode: String,
     val city: String,
     val country: String,
-    val profile: String?
+    val hasProfile: Boolean,
+    val hasPassword: Boolean
 )

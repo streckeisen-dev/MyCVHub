@@ -1,4 +1,5 @@
 export type AccountEditorData = {
+  username?: string
   firstName?: string
   lastName?: string
   email?: string

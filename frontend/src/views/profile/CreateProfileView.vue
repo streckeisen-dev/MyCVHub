@@ -15,7 +15,6 @@ import router from '@/router'
 import type { ErrorDto } from '@/dto/ErrorDto'
 
 const emptyProfile: ProfileDto = {
-  alias: '',
   jobTitle: '',
   bio: '',
   isProfilePublic: false,
@@ -26,7 +25,8 @@ const emptyProfile: ProfileDto = {
   profilePicture: '',
   workExperiences: [],
   education: [],
-  skills: []
+  skills: [],
+  theme: undefined
 }
 
 try {

@@ -11,7 +11,7 @@
           <v-container>
             <account-editor
               v-model:form="form"
-              v-model:form-state="formState"
+              v-bind:form-state="reactive(formState)"
               v-model:error-messages="errorMessages"
             />
             <v-row>
@@ -46,8 +46,8 @@
                 md="6"
               >
                 <password-requirements
-                  v-model:form-state="formState"
-                  v-model:rules="rules"
+                  v-bind:form-state="reactive(formState)"
+                  v-bind:rules="reactive(rules)"
                 />
               </v-col>
             </v-row>
@@ -95,6 +95,7 @@ const { t } = useI18n({
 const errorMessages = ref<ErrorMessages>({})
 
 type FormState = {
+  username?: string
   firstName?: string
   lastName?: string
   email?: string
@@ -110,6 +111,7 @@ type FormState = {
 }
 
 const formState = reactive<FormState>({
+  username: undefined,
   firstName: undefined,
   lastName: undefined,
   email: undefined,
@@ -125,6 +127,7 @@ const formState = reactive<FormState>({
 })
 
 const rules = reactive<ValidationArgs>({
+  username: { required },
   firstName: { required },
   lastName: { required },
   email: {
@@ -155,6 +158,7 @@ async function signUp() {
   }
 
   const account: SignupRequestDto = {
+    username: formState.username,
     firstName: formState.firstName,
     lastName: formState.lastName,
     email: formState.email,
@@ -175,9 +179,9 @@ async function signUp() {
     await router.push({ name: 'account' })
   } catch (e) {
     const error = e as ErrorDto
-    errorMessages.value = error.errors || {}
+    errorMessages.value = error?.errors || {}
     if (Object.keys(errorMessages.value).length === 0) {
-      const errorDetails = error.message || t('error.genericMessage')
+      const errorDetails = error?.message || t('error.genericMessage')
       ToastService.error(t('account.signup.error'), errorDetails)
     }
   }

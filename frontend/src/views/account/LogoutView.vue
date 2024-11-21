@@ -27,7 +27,7 @@ if (accountApi.isUserLoggedIn()) {
     }, 2000)
   } catch (e) {
     const error = e as ErrorDto
-    const errorDetails = error.message || t('error.genericMessage')
+    const errorDetails = error?.message || t('error.genericMessage')
     ToastService.error(t('account.logout.error'), errorDetails)
     setTimeout(() => {
       router.back()

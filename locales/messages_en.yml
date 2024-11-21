@@ -15,7 +15,6 @@ shared:
     city: "City"
     country: "Country"
     profilePicture: "Profile Picture"
-    alias: "Alias"
     jobTitle: "Job Title"
     bio: "Bio"
     location: "Location"
@@ -30,6 +29,8 @@ shared:
     degreeName: "Degree Name"
     educationStart: "Education Start"
     educationEnd: "Education End"
+    backgroundColor: "Background Color"
+    surfaceColor: "Header Color"
   
   validations: 
     required: "{label} must not be blank"
@@ -104,6 +105,9 @@ frontend:
       noAccount: "Don't have an account yet?"
       signup: "Sign up now"
       error: "Login failed"
+      oauth:
+        github: "Login with GitHub"
+        error: "Login with external account failed"
     signup:
       error: "Failed to create your account"
     logout:
@@ -119,6 +123,19 @@ frontend:
     loadingError:
       title: "Failed to load your account"
       text: "Make sure you're logged in and try again"
+    verification:
+      statusCheck:
+        error: "Your account verification status couldn't be checked"
+      pending:
+        title: "Pending Account Verification"
+        description: "To use your account, you need to verify your email address.\nYou should have received a verification email with a link to confirm your email address."
+      resend:
+        description: "Didn't receive a verification email?"
+        action: "Re-send verification email"
+        success: "Successfully re-sent verification email"
+        error: "Failed to re-send verification email"
+      success: "Successfully verified your email"
+      error: "Failed to verify your email"
   
   profile:
     title: "Profile"
@@ -132,7 +149,6 @@ frontend:
       back: "Back to account"
       general: "General"
       pictureHint: "Your profile picture must not exceed 2MB."
-      aliasHint: "Name that will be used in the URL of your profile"
       publicProfile: "Public Profile Access"
       publicProfileHint: "If enabled, your profile will be publicly accessible"
       publicEmail: "Show E-Mail in public profile"
@@ -175,6 +191,12 @@ frontend:
       addError: "Failed to add education entry"
       editError: "Failed to update education entry"
       deleteError: "Failed to delete education"
+  
+  theme:
+    title: "Theme"
+    description: "By default, your CV profile is displayed in MyCVHub's light theme. Below, you can personalize the used theme colors to your taste.\nAim for colors that keep your text easy to read and professional.\n\nTips:\n- Background Color: A soft, neutral color can keep your profile looking clean.\n- Header Color: Try a slightly darker or contrasting color to highlight the header."
+    reset: "Reset to defaults"
+    preview: "Preview"
   
   country:
     loadingError:
@@ -235,20 +257,36 @@ backend:
     numberTooBig: "{0} must be less than {1}"
   
   workExperience:
+    notFound: "Work Experience not found"
+    accessDenied: "You don't have access to this work experience"
     validationError: "Work experience validation failed"
   skill:
+    notFound: "Skill not found"
+    accessDenied: "You don't have access to this skill"
     validationError: "Skill validation failed"
   profile:
+    notFound: "Profile not found"
+    accessDenied: "You don't have access to this profile"
     validation:
-      aliasWithInvalidChars: "Alias must start with a letter and only contain letters, digits, - and _"
-      aliasAlreadyTaken: "Alias is already taken"
       pictureIllegalMediaType: "Profile picture media type is not allowed"
       error: "Profile validation failed"
+    picture:
+      accessDenied: "You don't have access to this profile picture"
   education:
+    notFound: "Education Entry not found"
+    accessDenied: "You don't have access to this education entry"
     validation:
       error: "Education validation failed"
   account:
-    validation:
+    notFound: "Account not found"
+    verification:
+      noToken: "Account has no verification token"
+      tokenGenerationBlocked: "Verification token generation is only allowed every {0} minutes"
+      tokenExpired: "Verification token has expired"
+      tokenInvalid: "Verification token is invalid"
+      alreadyVerified: "Account is already verified"
+    validations:
+      usernameAlreadyTaken: "Username is already taken"
       emailAlreadyTaken: "Email is already taken"
       phoneInvalid: "Phone number is not valid"
       houseNumberEmpty: "House number must be null or have a value"
@@ -259,9 +297,19 @@ backend:
         encodingError: "Password encoding failed"
       oldPasswordInvalid: "Old password is incorrect"
       error: "Account validation failed"
+    oauth:
+      notFound: "OAuth Account not found"
   auth:
     login:
       error: "Authentication failed with errors"
+    signup:
+      error: "Signup failed with errors"
+    changePassword:
+      passwordNotSet: "Change password requires a set password"
+      error: "Password change failed"
+    tokenRefresh:
+      refreshTokenRequired: "Refresh token is required to refresh access"
+    accessDenied: "You are not authorized to perform this operation"
   exceptions:
     db: "A database error occurred. Please contact the administrator"
     expiredJwt: "Expired JWT token"
@@ -269,7 +317,6 @@ backend:
     lockedAccount: "Account is locked"
     invalidJwtSignature: "Invalid JWT signature"
     psql: "Error during data processing"
-    entityNotFound: "Entity not found"
     accessDenied: "You don't have permission to access this resource"
     unauthorized: "Unauthorized"
     requestFormat: "Request format is invalid"

@@ -1,7 +1,7 @@
 package ch.streckeisen.mycv.backend
 
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureStorageException
-import ch.streckeisen.mycv.backend.exceptions.EntityNotFoundException
+import ch.streckeisen.mycv.backend.exceptions.LocalizedException
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
@@ -12,8 +12,10 @@ import org.postgresql.util.PSQLException
 import org.springframework.dao.DataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.AccountStatusException
 import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.core.AuthenticationException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
@@ -23,11 +25,12 @@ private const val DATA_ACCESS_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.db"
 private const val EXPIRED_TOKEN_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.expiredJwt"
 private const val BAD_CREDENTIALS_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.badCredentials"
 private const val LOCKED_ACCOUNT_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.lockedAccount"
+private const val ACCESS_DENIED_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.accessDenied"
 private const val INVALID_JWT_SIGNATURE_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.invalidJwtSignature"
 private const val PSQL_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.psql"
-private const val ENTITY_NOT_FOUND_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.entityNotFound"
 private const val REQUEST_FORMAT_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.requestFormat"
 private const val PROFILE_PICTURE_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.profilePictureStorage"
+private const val UNAUTHORIZED_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.unauthorized"
 private const val GENERIC_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.generic"
 
 @ControllerAdvice
@@ -65,15 +68,21 @@ class ControllerAdvice(
     }
 
     @ExceptionHandler
-    fun handleSignatureException(ex: SignatureException): ResponseEntity<ErrorDto> {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-            .body(ErrorDto(messagesService.getMessage(INVALID_JWT_SIGNATURE_ERROR_KEY)))
+    fun handleAuthenticationException(ex: AuthenticationException): ResponseEntity<ErrorDto> {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body(ErrorDto(messagesService.getMessage(UNAUTHORIZED_ERROR_KEY)))
     }
 
     @ExceptionHandler
-    fun handleEntityNotFoundException(ex: EntityNotFoundException): ResponseEntity<ErrorDto> {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-            .body(ErrorDto(messagesService.getMessage(ENTITY_NOT_FOUND_ERROR_KEY)))
+    fun handleAccessDeniedException(ex: AccessDeniedException): ResponseEntity<ErrorDto> {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            .body(ErrorDto(messagesService.getMessage(ACCESS_DENIED_ERROR_KEY)))
+    }
+
+    @ExceptionHandler
+    fun handleSignatureException(ex: SignatureException): ResponseEntity<ErrorDto> {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            .body(ErrorDto(messagesService.getMessage(INVALID_JWT_SIGNATURE_ERROR_KEY)))
     }
 
     @ExceptionHandler
@@ -103,6 +112,11 @@ class ControllerAdvice(
     fun handleProfilePictureStorageException(ex: ProfilePictureStorageException): ResponseEntity<ErrorDto> {
         return ResponseEntity.internalServerError()
             .body(ErrorDto(messagesService.getMessage(PROFILE_PICTURE_ERROR_KEY)))
+    }
+
+    @ExceptionHandler
+    fun handleLocalizedException(ex: LocalizedException): ResponseEntity<ErrorDto> {
+        return ResponseEntity.badRequest().body(ErrorDto(messagesService.getMessage(ex.messageKey, *ex.args)))
     }
 
     @ExceptionHandler

@@ -1,16 +1,12 @@
-import { useLocale } from 'vuetify'
+import { useI18n } from 'vue-i18n'
 
 export function toShortDate(dateString: string | undefined): string {
-  const locale = useLocale()
+  const { t, d } = useI18n()
 
   if (dateString == null) {
-    return locale.t('date.today')
+    return t('date.today')
   }
-  const date = new Date(dateString)
-  return date.toLocaleDateString(locale.current.value, {
-    month: 'short',
-    year: 'numeric'
-  })
+  return d(dateString, 'monthAndYear')
 }
 
 export function convertStringToDate(dateString: string | undefined): Date | undefined {

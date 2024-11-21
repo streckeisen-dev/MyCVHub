@@ -138,7 +138,9 @@
     </template>
 
     <suspense>
-      <router-view class="router-view" />
+      <div class="router-view-wrapper">
+        <router-view />
+      </div>
     </suspense>
 
     <v-footer v-if="showNavigation">
@@ -248,7 +250,6 @@ router.beforeEach(
     from: RouteLocationNormalizedLoaded,
     next: NavigationGuardNext
   ) => {
-    isNavMenuOpen.value = false
     if (to.meta.authRequired && !accountApi.isUserLoggedIn()) {
       next({ name: 'login', query: { redirect: to.fullPath } })
     } else {
@@ -291,6 +292,11 @@ header.navigation-bar {
 
 .language-selector {
   margin-right: 5px;
+}
+
+.router-view-wrapper {
+  display: flex;
+  height: 100%;
 }
 
 footer {

@@ -1,17 +1,17 @@
 package ch.streckeisen.mycv.backend.cv.profile.picture
 
 import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
+import ch.streckeisen.mycv.backend.exceptions.LocalizedException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.apache.tika.mime.MediaType
-import org.slf4j.LoggerFactory
-import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.io.BufferedInputStream
 
 private val allowedMediaTypes = listOf(MediaType.image("png"), MediaType.image("jpg"), MediaType.image("jpeg"))
-private val logger = LoggerFactory.getLogger(ProfilePictureService::class.java)
+private val logger = KotlinLogging.logger { }
 
 private const val ILLEGAL_MEDIA_TYPE_ERROR_KEY = "${MYCV_KEY_PREFIX}.profile.validation.pictureIllegalMediaType"
 
@@ -22,7 +22,7 @@ class ProfilePictureService(
 ) {
     fun get(accountId: Long?, profile: ProfileEntity): Result<ProfilePicture> {
         if (!profile.isProfilePublic && profile.account.id != accountId) {
-            return Result.failure(AccessDeniedException("You can't access this profile picture"))
+            return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.profile.picture.accessDenied"))
         }
 
         val profilePicture = profilePictureStorageService.get(profile.profilePicture)
@@ -33,7 +33,7 @@ class ProfilePictureService(
 
     fun getThumbnail(accountId: Long?, profile: ProfileEntity): Result<ProfilePicture> {
         if (profile.account.id != accountId) {
-            return Result.failure(AccessDeniedException("You can't access this profile picture"))
+            return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.profile.picture.accessDenied"))
         }
 
         val profilePicture = profilePictureStorageService.getThumbnail(profile.profilePicture)
@@ -61,7 +61,7 @@ class ProfilePictureService(
             profilePictureStorageService.delete(oldProfilePicture)
                 .onFailure {
                     // since this is a cleanup job, we don't want the action itself to fail
-                    logger.error("Failed to delete old profile picture", it)
+                    logger.error(it) { "Failed to delete old profile picture" }
                 }
         }
 
