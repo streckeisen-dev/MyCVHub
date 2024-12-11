@@ -56,20 +56,22 @@ class ProfilePictureService(
             .getOrElse { return Result.failure(it) }
 
         if (oldProfilePicture != null && savedProfilePicture != oldProfilePicture) {
-            profilePictureStorageService.delete(oldProfilePicture)
+            delete(accountId, oldProfilePicture)
                 .onFailure {
                     // since this is a cleanup job, we don't want the action itself to fail
-                    logger.error(it) { "Failed to delete old profile picture" }
+                    logger.error(it) { "Account [$accountId]: Failed to delete old profile picture" }
                 }
         }
 
+        logger.debug { "Account [$accountId]: Stored profile picture '$savedProfilePicture'" }
         return Result.success(savedProfilePicture)
     }
 
-    fun delete(profilePicture: String): Result<Unit> {
+    fun delete(accountId: Long, profilePicture: String): Result<Unit> {
         profilePictureStorageService.delete(profilePicture)
             .onFailure { return Result.failure(it) }
 
+        logger.debug { "Account [$accountId]: Successfully deleted profile picture $profilePicture" }
         return Result.success(Unit)
     }
 }
