@@ -6,6 +6,7 @@ import ch.streckeisen.mycv.backend.cv.experience.WorkExperienceEntity
 import ch.streckeisen.mycv.backend.cv.profile.theme.ProfileThemeEntity
 import ch.streckeisen.mycv.backend.cv.skill.SkillEntity
 import jakarta.persistence.Entity
+import jakarta.persistence.EntityListeners
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -14,6 +15,7 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 
 @Entity
+@EntityListeners(ProfileEntityDeletionListener::class)
 class ProfileEntity(
     val jobTitle: String,
     val bio: String?,

@@ -7,6 +7,7 @@ import ch.streckeisen.mycv.backend.security.annotations.RequiresAccountStatus
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -51,5 +52,20 @@ class ApplicantAccountResource(private val applicantAccountService: ApplicantAcc
         val status = applicantAccountService.getAccountStatus(principal.id)
             .getOrThrow()
         return ResponseEntity.ok(AccountStatusDto(status))
+    }
+
+    @RequiresAccountStatus(AccountStatus.INCOMPLETE)
+    @DeleteMapping
+    fun deleteAccount(): ResponseEntity<Unit> {
+        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        return applicantAccountService.delete(principal.id)
+            .fold(
+                onSuccess = {
+                    ResponseEntity.ok().build()
+                },
+                onFailure = {
+                    throw it
+                }
+            )
     }
 }

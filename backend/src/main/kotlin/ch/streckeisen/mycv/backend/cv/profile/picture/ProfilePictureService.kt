@@ -52,9 +52,7 @@ class ProfilePictureService(
             return Result.failure(IllegalArgumentException(messagesService.getMessage(ILLEGAL_MEDIA_TYPE_ERROR_KEY)))
         }
 
-        val imageType = mediaType.subtype
-        val profilePictureName = "$accountId.${imageType}"
-        val savedProfilePicture = profilePictureStorageService.store(profilePictureName, profilePicture)
+        val savedProfilePicture = profilePictureStorageService.store(profilePicture)
             .getOrElse { return Result.failure(it) }
 
         if (oldProfilePicture != null && savedProfilePicture != oldProfilePicture) {
@@ -66,5 +64,12 @@ class ProfilePictureService(
         }
 
         return Result.success(savedProfilePicture)
+    }
+
+    fun delete(profilePicture: String): Result<Unit> {
+        profilePictureStorageService.delete(profilePicture)
+            .onFailure { return Result.failure(it) }
+
+        return Result.success(Unit)
     }
 }
