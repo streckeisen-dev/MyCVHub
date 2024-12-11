@@ -21,33 +21,34 @@ class ProfileEntityDeletionListenerTest {
 
     @Test
     fun testPreRemoveSuccess() {
-        val profilePicture = "validProfilePicture"
+        val picture = "validProfilePicture"
         val profile = mockk<ProfileEntity> {
-            every { profilePicture } returns profilePicture
+            every { profilePicture } returns picture
             every { account } returns mockk {
                 every { id } returns 1
             }
         }
-        every { profilePictureService.delete(eq(1), eq(profilePicture)) } returns Result.success(Unit)
+        every { profilePictureService.delete(eq(1), eq(picture)) } returns Result.success(Unit)
 
         profileEntityDeletionListener.preRemove(profile)
 
-        verify(exactly = 1) { profilePictureService.delete(eq(1), eq(profilePicture)) }
+        verify(exactly = 1) { profilePictureService.delete(eq(1), eq(picture)) }
     }
 
     @Test
     fun testPreRemoveFailure() {
-        val profilePicture = "validProfilePicture"
+        val picture = "validProfilePicture"
         val profile = mockk<ProfileEntity> {
-            every { profilePicture } returns profilePicture
+            every { profilePicture
+            } returns picture
             every { account } returns mockk {
                 every { id } returns 1
             }
         }
-        every { profilePictureService.delete(eq(1), eq(profilePicture)) } returns Result.failure(RuntimeException())
+        every { profilePictureService.delete(eq(1), eq(picture)) } returns Result.failure(RuntimeException())
 
         assertThrows<LocalizedException> { profileEntityDeletionListener.preRemove(profile) }
 
-        verify(exactly = 1) { profilePictureService.delete(eq(1), eq(profilePicture)) }
+        verify(exactly = 1) { profilePictureService.delete(eq(1), eq(picture)) }
     }
 }
