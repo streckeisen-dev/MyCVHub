@@ -46,7 +46,6 @@ import { AccountStatus } from '@/dto/AccountStatusDto'
 import type { AccountEditorData } from '@/dto/AccountEditorData'
 import type { OAuthSignUpRequestDto } from '@/dto/OAuthSignUpRequestDto'
 import FormButtons from '@/components/FormButtons.vue'
-import AccountApi from '@/api/AccountApi'
 
 if (LoginStateService.getAccountStatus() !== AccountStatus.INCOMPLETE) {
   await router.push({ name: 'account' })
@@ -116,8 +115,8 @@ async function signUp() {
 
 async function cancelSignup() {
   try {
-    await AccountApi.deleteAccount()
-    await AccountApi.logout()
+    await accountApi.deleteAccount()
+    await accountApi.logout()
     await router.push({ name: 'home' })
   } catch (e) {
     const error = e as ErrorDto
