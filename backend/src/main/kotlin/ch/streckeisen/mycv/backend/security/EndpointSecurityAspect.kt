@@ -24,15 +24,15 @@ class EndpointSecurityAspect {
             @annotation(org.springframework.web.bind.annotation.PutMapping) ||
             @annotation(org.springframework.web.bind.annotation.DeleteMapping)
            ) && 
-            !@annotation(ch.streckeisen.mycv.backend.security.annotations.PublicApi) &&
             execution(* ch.streckeisen.mycv.backend..*(..))            
         """
 
     )
     fun authorize(joinPoint: JoinPoint) {
         val methodSignature = joinPoint.signature as MethodSignature
+        val isPublicApiMethod = methodSignature.method.annotations.any { it is PublicApi }
         val isPublicApiClass = methodSignature.method.declaringClass.annotations.any { it is PublicApi }
-        if (isPublicApiClass) {
+        if (isPublicApiMethod || isPublicApiClass) {
             return
         }
 
@@ -45,7 +45,7 @@ class EndpointSecurityAspect {
         val methodRequiresAccountStatusAnnotation =
             methodSignature.method.annotations.find { it is RequiresAccountStatus } as RequiresAccountStatus?
         val classRequiresAccountStatusAnnotation =
-            methodSignature.declaringType.annotations.find { it is RequiresAccountStatus } as RequiresAccountStatus?
+            methodSignature.method.declaringClass.annotations.find { it is RequiresAccountStatus } as RequiresAccountStatus?
         val requiresAccountStatusAnnotation =
             methodRequiresAccountStatusAnnotation ?: classRequiresAccountStatusAnnotation
         if (requiresAccountStatusAnnotation != null) {
