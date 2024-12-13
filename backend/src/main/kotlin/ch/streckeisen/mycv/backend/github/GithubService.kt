@@ -35,7 +35,8 @@ class GithubService(
                 } else {
                     Result.failure(GithubException("Failed to get user email for account $accountId"))
                 }
-            }
+            }!!
+
         return result.fold(
             onSuccess = { emailData ->
                 val email = emailData.firstOrNull { email -> email.primary && email.verified }
