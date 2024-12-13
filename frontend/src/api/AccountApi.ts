@@ -110,6 +110,7 @@ async function logout(): Promise<void> {
     const response = await fetch('/api/auth/logout', {
       method: 'POST'
     })
+
     if (!response.ok) {
       return Promise.reject('Failed to perform logout')
     }
@@ -163,6 +164,19 @@ async function verifyAccount(accountId: number, token: string): Promise<void> {
   }
 }
 
+async function deleteAccount(): Promise<void> {
+  try {
+    const response = await fetchFromApi('/account', {
+      method: 'DELETE',
+      headers: commonHeaders()
+    })
+    await extractErrorIfResponseIsNotOk(response)
+    return Promise.resolve()
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
 export default {
   login,
   verifyLogin,
@@ -175,5 +189,6 @@ export default {
   getAccountInfo,
   loadAccountStatus,
   generateVerificationCode,
-  verifyAccount
+  verifyAccount,
+  deleteAccount
 }

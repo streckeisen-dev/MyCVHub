@@ -113,8 +113,16 @@ async function signUp() {
   }
 }
 
-function cancelSignup() {
-  ToastService.info('TODO')
+async function cancelSignup() {
+  try {
+    await accountApi.deleteAccount()
+    await accountApi.logout()
+    await router.push({ name: 'home' })
+  } catch (e) {
+    const error = e as ErrorDto
+    const errorDetails = error?.message || t('error.genericMessage')
+    ToastService.error(t('account.delete.error'), errorDetails)
+  }
 }
 </script>
 

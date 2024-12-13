@@ -92,7 +92,7 @@ class JwtAuthenticationFilterTest {
         })
         every { jwtService.extractUsername(eq(token)) } returns userName
         every { jwtService.isTokenValid(any(), any()) } returns true
-        every { userDetailsService.loadUserByUsername(eq(userName)) } returns userDetails
+        every { userDetailsService.loadUserByUsernameAsResult(eq(userName)) } returns Result.success(userDetails)
 
         jwtAuthenticationFilter.doFilter(request, response, filterChain)
 

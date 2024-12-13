@@ -27,6 +27,7 @@ async function enforceRouteAccessPermissions(
   if (routeRequiresUnverifiedAndAccountIsIncomplete(requiredAccountStatus, accountStatus)) {
     next({ name: 'oauth-signup' })
   }
+  next()
 }
 
 function shouldLoadAccountStatus(accountStatus: AccountStatus | undefined): boolean {

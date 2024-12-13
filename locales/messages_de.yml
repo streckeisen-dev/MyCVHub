@@ -136,6 +136,11 @@ frontend:
         error: "Die Verifizierungs-E-Mail konnte nicht verschickt werden"
       success: "Deine E-Mail Addresse wurde erfolgreich verifiziert"
       error: "Deine E-Mail Addresse konnte nicht verifiziert werden"
+    delete:
+      title: "Account löschen"
+      confirmationText: "Wenn du dein Account löschst, werden alle Account- und Lebenslaufdaten endgültig gelöscht. Du kannst deine Daten datanch nicht mehr wiederherstellen."
+      success: "Dein Account wurde erfolgreich gelöscht"
+      error: "Dein Account konnte nicht gelöscht werden"
   
   profile:
     title: "Profil"
@@ -297,6 +302,8 @@ backend:
       error: "Account-Validierung fehlgeschlagen"
     oauth:
       notFound: "OAuth Account nicht gefunden"
+    delete:
+      cleanupError: "Deine Account-Daten konnten nicht gelöscht werden"
   auth:
     login:
       error: "Authentifizierung ist fehlgeschlagen"

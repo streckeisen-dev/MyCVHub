@@ -73,7 +73,8 @@ class ApplicantAccountService(
             ),
             id = existingAccount.id,
             profile = existingAccount.profile,
-            oauthIntegrations = existingAccount.oauthIntegrations
+            oauthIntegrations = existingAccount.oauthIntegrations,
+            accountVerification = existingAccount.accountVerification
         )
         applicantAccountRepository.save(account)
         if (!account.isVerified) {
@@ -81,5 +82,14 @@ class ApplicantAccountService(
                 .onFailure { logger.error(it) { "[Account ${accountId}] Failed to generate new verification token for new email address" } }
         }
         return Result.success(account)
+    }
+
+    @Transactional
+    fun delete(accountId: Long): Result<Unit> {
+        val existingAccount = applicantAccountRepository.findById(accountId)
+            .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.account.notFound")) }
+
+        applicantAccountRepository.delete(existingAccount)
+        return Result.success(Unit)
     }
 }

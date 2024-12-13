@@ -165,6 +165,40 @@
             </v-row>
           </v-sheet>
         </v-col>
+
+        <v-col
+          cols="12"
+          sm="6"
+        >
+          <h2>{{ t('account.delete.title') }}</h2>
+          <v-sheet
+            rounded
+            class="account-sheet"
+          >
+            <v-row>
+              <v-col
+                cols="12"
+                md="5"
+                lg="3"
+              >
+                <v-btn
+                  :text="t('account.delete.title')"
+                  color="error"
+                  @click="requestDeletionConfirmation"
+                />
+              </v-col>
+            </v-row>
+          </v-sheet>
+          <confirmation-dialog
+            v-if="shouldDeleteAccount"
+            :title="t('account.delete.title')"
+            :description="t('account.delete.confirmationText')"
+            :confirmation-btn-text="t('account.delete.title')"
+            confirmation-btn-color="error"
+            @confirm="deleteAccount"
+            @cancel="hideDeleteConfirmation"
+          />
+        </v-col>
       </v-row>
     </v-container>
     <v-container v-else-if="isAccountLoading">
@@ -187,19 +221,46 @@ import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import AttributeList from '@/components/AttributeList.vue'
 import AttributeValue from '@/components/AttributeValue.vue'
 import { useI18n } from 'vue-i18n'
+import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
+import router from '@/router'
+import toastService from '@/services/ToastService.ts'
+import type { ErrorDto } from '@/dto/ErrorDto.ts'
 
 const { t, d } = useI18n({
   useScope: 'global'
 })
 
 const account = ref<AccountDto>()
-const isAccountLoading = ref<boolean>(true)
+const isAccountLoading = ref(true)
+const shouldDeleteAccount = ref(false)
 try {
   account.value = await accountApi.getAccountInfo()
 } catch (ignore) {
   // ignore
 } finally {
   isAccountLoading.value = false
+}
+
+function hideDeleteConfirmation() {
+  shouldDeleteAccount.value = false
+}
+
+function requestDeletionConfirmation() {
+  shouldDeleteAccount.value = true
+}
+
+async function deleteAccount() {
+  hideDeleteConfirmation()
+  try {
+    await accountApi.deleteAccount()
+    await accountApi.logout()
+    toastService.success(t('account.delete.success'))
+    await router.push({ name: 'home' })
+  } catch (e) {
+    const error = e as ErrorDto
+    const errorDetails = error?.message || t('error.genericMessage')
+    toastService.error(t('account.delete.error', errorDetails))
+  }
 }
 </script>
 

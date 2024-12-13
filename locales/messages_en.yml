@@ -136,6 +136,11 @@ frontend:
         error: "Failed to re-send verification email"
       success: "Successfully verified your email"
       error: "Failed to verify your email"
+    delete:
+      title: "Delete Account"
+      confirmationText: "If you go ahead and delete your account, all your account and CV data will be deleted permanently. You will not be able to recover your data."
+      success: "Your account was successfully deleted"
+      error: "Failed to delete your account"
   
   profile:
     title: "Profile"
@@ -299,6 +304,8 @@ backend:
       error: "Account validation failed"
     oauth:
       notFound: "OAuth Account not found"
+    delete:
+      cleanupError: "Data related to your account couldn't be deleted"
   auth:
     login:
       error: "Authentication failed with errors"
