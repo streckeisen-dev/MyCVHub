@@ -9,7 +9,10 @@ export default defineConfig(
       globals: true,
       coverage: {
         provider: 'istanbul'
-      }
+      },
+      reporters: [
+        ['junit', { suiteName: 'Frontend unit tests', outputFile: './test-results.xml' }]
+      ]
     }
   })
 )

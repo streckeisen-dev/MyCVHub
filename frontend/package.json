@@ -12,7 +12,7 @@
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --fix",
     "format": "prettier --write src/",
-    "test": "vitest --dom",
+    "test": "vitest run --dom",
     "test-coverage": "vitest run --coverage"
   },
   "dependencies": {
