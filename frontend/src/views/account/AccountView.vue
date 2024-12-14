@@ -30,7 +30,7 @@
               />
               <attribute-value
                 :name="t('fields.birthday')"
-                :value="d(account.birthday, 'shortDate')"
+                :value="d(account.birthday, 'simpleDate')"
               />
             </attribute-list>
           </v-sheet>

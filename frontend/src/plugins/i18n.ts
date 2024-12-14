@@ -1,6 +1,7 @@
-import { createI18n } from 'vue-i18n'
+import { type Composer, createI18n, type UseI18nOptions } from 'vue-i18n'
 import LanguageService from '@/services/LanguageService'
 import * as vuetifyLocale from 'vuetify/locale'
+import type { Options } from '@vitejs/plugin-vue'
 
 type NestedMessage = {
   [key: string]: string | NestedMessage
@@ -36,7 +37,7 @@ Object.keys(messages).forEach((lang) => {
       month: 'short',
       year: 'numeric'
     },
-    shortDate: {
+    simpleDate: {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric'
@@ -53,3 +54,5 @@ const i18n = createI18n({
 })
 
 export default i18n
+
+export type UseI18n<Options extends UseI18nOptions = UseI18nOptions> = Composer<NonNullable<Options['messages']>, NonNullable<Options['datetimeFormats']>, NonNullable<Options['numberFormats']>, Options['locale'] extends unknown ? string : Options['locale']>
