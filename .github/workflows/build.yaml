@@ -46,7 +46,7 @@ jobs:
         git config --global --add safe.directory "/__w/$REPO_NAME/$REPO_NAME"
     
     - name: Test frontend
-      working-directory: frondend
+      working-directory: frontend
       run: yarn test
     
     - name: Frontend test report
