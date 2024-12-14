@@ -23,8 +23,8 @@
       cols="4"
       md="2"
     >
-      {{ toShortDate(workExperience.positionStart) }} -
-      {{ toShortDate(workExperience.positionEnd) }}
+      {{ toShortDate(workExperience.positionStart, i18n) }} -
+      {{ toShortDate(workExperience.positionEnd, i18n) }}
     </v-col>
     <v-col
       v-if="workExperience.description"
@@ -40,10 +40,15 @@
 import type { PublicWorkExperienceDto } from '@/dto/PublicWorkExperienceDto'
 import { toShortDate } from '@/services/DateHelper'
 import type { WorkExperienceDto } from '@/dto/WorkExperienceDto'
+import { useI18n } from 'vue-i18n'
 
 defineProps<{
   workExperience: PublicWorkExperienceDto | WorkExperienceDto
 }>()
+
+const i18n = useI18n({
+  useScope: 'global'
+})
 </script>
 
 <style lang="scss" scoped>

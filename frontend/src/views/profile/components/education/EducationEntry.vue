@@ -23,7 +23,7 @@
       cols="4"
       md="2"
     >
-      {{ toShortDate(education.educationStart) }} - {{ toShortDate(education.educationEnd) }}
+      {{ toShortDate(education.educationStart, i18n) }} - {{ toShortDate(education.educationEnd, i18n) }}
     </v-col>
     <v-col
       v-if="education.description"
@@ -39,10 +39,15 @@
 import type { PublicEducationDto } from '@/dto/PublicEducationDto'
 import { toShortDate } from '@/services/DateHelper'
 import type { EducationDto } from '@/dto/EducationDto'
+import { useI18n } from 'vue-i18n'
 
 defineProps<{
   education: EducationDto | PublicEducationDto
 }>()
+
+const i18n = useI18n({
+  useScope: 'global'
+})
 </script>
 
 <style lang="scss" scoped>
