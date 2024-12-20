@@ -13,6 +13,7 @@
     "lint": "eslint . --fix",
     "format": "prettier --write src/",
     "test": "vitest run --dom",
+    "test-watch": "vitest --reporter=default",
     "test-coverage": "vitest run --coverage"
   },
   "dependencies": {
