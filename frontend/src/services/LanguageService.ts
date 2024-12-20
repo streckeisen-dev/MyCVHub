@@ -1,4 +1,4 @@
-const LANGUAGE_KEY = 'language'
+export const LANGUAGE_KEY = 'language'
 
 function getLanguage(): string {
   return localStorage.getItem(LANGUAGE_KEY) || navigator.language.split('-')[0]
