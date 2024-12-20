@@ -3,6 +3,7 @@ import accountApi from '@/api/AccountApi'
 import ToastService from '@/services/ToastService'
 import vuetify from '@/plugins/vuetify'
 import type { NavigationGuardNext } from 'vue-router'
+import LoginStateService from '@/services/LoginStateService.ts'
 
 async function enforceRouteAccessPermissions(
   requiredAccountStatus: AccountStatus | undefined,
@@ -19,14 +20,33 @@ async function enforceRouteAccessPermissions(
     }
   }
 
-  if (routeRequiresVerifiedAccountAndAccountIsNotVerified(requiredAccountStatus, accountStatus)) {
+  const updatedAccountStatus = LoginStateService.getAccountStatus()
+  if (updatedAccountStatus == null) {
+    ToastService.error(vuetify.locale.t('account.verification.statusCheck.error'))
     next({ name: 'account-verification-pending' })
     return
   }
 
-  if (routeRequiresUnverifiedAndAccountIsIncomplete(requiredAccountStatus, accountStatus)) {
-    next({ name: 'oauth-signup' })
+  if (routeRequiresVerifiedAccount(requiredAccountStatus)) {
+    if (updatedAccountStatus !== AccountStatus.VERIFIED) {
+      next({ name: 'account-verification-pending' })
+      return
+    }
+
+    next()
+    return
   }
+
+  if (requiredAccountStatus === AccountStatus.UNVERIFIED) {
+    if (updatedAccountStatus == AccountStatus.INCOMPLETE) {
+      next({ name: 'oauth-signup' })
+      return
+    }
+
+    next()
+    return
+  }
+
   next()
 }
 
@@ -38,23 +58,8 @@ function shouldLoadAccountStatus(accountStatus: AccountStatus | undefined): bool
   )
 }
 
-function routeRequiresVerifiedAccountAndAccountIsNotVerified(
-  requiredAccountStatus: AccountStatus | undefined,
-  accountStatus: AccountStatus | undefined
-): boolean {
-  return (
-    (requiredAccountStatus === AccountStatus.VERIFIED || requiredAccountStatus == null) &&
-    accountStatus !== AccountStatus.VERIFIED
-  )
-}
-
-function routeRequiresUnverifiedAndAccountIsIncomplete(
-  requiredAccountStatus: AccountStatus | undefined,
-  accountStatus: AccountStatus | undefined
-): boolean {
-  return (
-    requiredAccountStatus === AccountStatus.UNVERIFIED && accountStatus === AccountStatus.INCOMPLETE
-  )
+function routeRequiresVerifiedAccount(requiredAccountStatus: AccountStatus | undefined): boolean {
+  return requiredAccountStatus === AccountStatus.VERIFIED || requiredAccountStatus == null
 }
 
 export default {
