@@ -21,26 +21,26 @@
     "vue-i18n": "^10.0.5",
     "vue-router": "^4.5.0",
     "vue-toastification": "^2.0.0-rc.5",
-    "vuetify": "^3.7.5"
+    "vuetify": "^3.7.6"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.4",
-    "@intlify/unplugin-vue-i18n": "^6.0.1",
+    "@intlify/unplugin-vue-i18n": "^6.0.3",
     "@mdi/font": "^7.4.47",
     "@rushstack/eslint-patch": "^1.10.4",
     "@tsconfig/node22": "^22.0.0",
     "@types/lodash": "^4.17.13",
-    "@types/node": "^22.10.2",
+    "@types/node": "^22.10.3",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/eslint-config-prettier": "^10.1.0",
-    "@vue/eslint-config-typescript": "^14.1.4",
+    "@vue/eslint-config-typescript": "^14.2.0",
     "@vue/tsconfig": "^0.7.0",
-    "eslint": "^9.16.0",
+    "eslint": "^9.17.0",
     "eslint-plugin-vue": "^9.32.0",
     "prettier": "^3.4.2",
     "sass-embedded": "^1.83.0",
-    "typescript": "~5.6.3",
-    "vite": "^6.0.3",
-    "vue-tsc": "^2.1.10"
+    "typescript": "~5.7.2",
+    "vite": "^6.0.6",
+    "vue-tsc": "^2.2.0"
   }
 }
