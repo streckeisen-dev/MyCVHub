@@ -154,9 +154,10 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           build: yarn build
-          start: npm dev
+          start: yarn dev
           browser: firefox
           working-directory: frontend
+          config: baseUrl=http://localhost:3000
   
   docker-build:
     name: Docker Build
