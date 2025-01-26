@@ -155,6 +155,16 @@ jobs:
         with:
           working-directory: frontend
           component: true
+      - name: Merge test result files
+        working-directory: frontend
+        run: yarn cypress:results:merge
+      - name: Cypress test report
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Cypress Test Results
+          path: frontend/mochawesome.json
+          reporter: mocha-json
   
   docker-build:
     name: Docker Build
