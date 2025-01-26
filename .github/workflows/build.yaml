@@ -151,12 +151,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Cypress run
-        working-directory: frontend
         uses: cypress-io/github-action@v6
         with:
           build: yarn build
           start: npm dev
           browser: firefox
+          working-directory: frontend
   
   docker-build:
     name: Docker Build
