@@ -156,6 +156,7 @@ jobs:
           working-directory: frontend
           component: true
       - name: Merge test result files
+        if: always()
         working-directory: frontend
         run: yarn cypress:results:merge
       - name: Cypress test report

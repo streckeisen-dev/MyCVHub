@@ -16,7 +16,7 @@
     "test-watch": "vitest --reporter=default",
     "test-coverage": "vitest run --coverage",
     "cypress": "node --loader ts-node/esm node_modules/.bin/cypress open",
-    "cypress:results:merge": "yarn mochawesome-merge \"cypress/results/*.json\" > mochawesome.json"
+    "cypress:results:merge": "yarn mochawesome-merge \"cypress/results/*.json\" -o mochawesome.json"
   },
   "dependencies": {
     "@vuelidate/core": "^2.0.3",
