@@ -6,12 +6,9 @@ export default defineConfig({
       framework: 'vue',
       bundler: 'vite'
     },
-    reporter: 'mochawesome',
+    reporter: 'junit',
     reporterOptions: {
-      reportDir: 'cypress/results',
-      overwrite: true,
-      html: false,
-      json: true
+      mochaFile: 'cypress/component-results.xml'
     },
     specPattern: 'cypress/component/**/*.cy.ts',
     supportFile: 'cypress/support/component.ts'
