@@ -11,7 +11,7 @@ export default defineConfig(
         provider: 'istanbul'
       },
       reporters: [
-        ['junit', { suiteName: 'Frontend unit tests', outputFile: './test-results.xml' }]
+        ['junit', { suiteName: 'Frontend unit component', outputFile: './test-results.xml' }]
       ]
     }
   })
