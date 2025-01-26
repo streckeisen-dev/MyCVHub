@@ -8,7 +8,7 @@ export default defineConfig({
     },
     reporter: 'junit',
     reporterOptions: {
-      mochaFile: 'cypress/component-results.xml'
+      mochaFile: 'cypress/results/component-results.[suiteName].xml'
     },
     specPattern: 'cypress/component/**/*.cy.ts',
     supportFile: 'cypress/support/component.ts'
