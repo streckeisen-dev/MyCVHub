@@ -1,5 +1,6 @@
 <template>
   <v-dialog
+    test-id="confirmation-dialog"
     :model-value="true"
     @update:model-value="cancel"
   >
@@ -13,7 +14,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12">
+        <v-col cols="12" test-id="dialog-controls">
           <form-buttons
             @save="confirm"
             @cancel="cancel"
