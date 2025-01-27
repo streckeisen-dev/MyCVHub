@@ -46,6 +46,7 @@ Cypress.Commands.add('mountInApp', (component, options = {}) => {
     },
     ...options
   }).then(({ wrapper }) => {
+    cy.viewport(1200, 800)
     return cy.wrap(wrapper).as('vue')
   })
 })
