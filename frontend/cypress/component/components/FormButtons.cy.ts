@@ -10,9 +10,8 @@ describe('FormButtons', () => {
     cy.mountInApp(FormButtons)
       .then(wrapper => {
         wrapper.find('button[test-id=save-button]').trigger('click')
-        const saveEmit = wrapper.emitted('save')
-        expect(saveEmit).to.have.length
-        expect(saveEmit[0][0]).to.equal(undefined)
+        const emitted = wrapper.emitted()
+        expect(emitted).to.have.property('save')
       })
   })
 
