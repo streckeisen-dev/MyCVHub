@@ -1,7 +1,7 @@
-import { useI18n } from 'vue-i18n'
+import type { UseI18n } from '@/plugins/i18n.ts'
 
-export function toShortDate(dateString: string | undefined): string {
-  const { t, d } = useI18n()
+export function toShortDate(dateString: string | undefined, i18n: UseI18n): string {
+  const { t, d } = i18n
 
   if (dateString == null) {
     return t('date.today')
@@ -25,6 +25,13 @@ export function convertDateToString(date: Date | undefined): string | undefined 
   return undefined
 }
 
+
+/**
+ * Compare two dates by year and month in descending sort order, an undefined date is considered greater than any defined date
+ * @param dateA
+ * @param dateB
+ * @returns 0 if dates are equal, -1 if dateA is greater than dateB, 1 if dateA is less than dateB
+ */
 export function compareDatesByYearAndMonth(
   dateA: Date | undefined,
   dateB: Date | undefined

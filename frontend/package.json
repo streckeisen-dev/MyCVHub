@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "license": "LGPL-3.0-or-later",
   "scripts": {
     "dev": "vite",
     "build": "yarn type-check & yarn build-only",
@@ -10,7 +11,12 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --fix",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "test": "vitest run --dom",
+    "test-watch": "vitest --reporter=default",
+    "test-coverage": "vitest run --coverage",
+    "cypress": "node --loader ts-node/esm node_modules/.bin/cypress open",
+    "cypress:results:merge": "jrm ./cypress/component-results.xml \"./cypress/results/*.xml\""
   },
   "dependencies": {
     "@vuelidate/core": "^2.0.3",
@@ -41,6 +47,15 @@
     "sass-embedded": "^1.83.0",
     "typescript": "~5.7.2",
     "vite": "^6.0.6",
-    "vue-tsc": "^2.2.0"
+    "vue-tsc": "^2.2.0",
+    "vitest": "^2.1.8",
+    "@vue/test-utils": "^2.4.6",
+    "happy-dom": "^15.11.7",
+    "@vitest/coverage-istanbul": "^2.1.8",
+    "cypress": "^14.0.0",
+    "@cypress/vue": "^6.0.2",
+    "@cypress/vite-dev-server": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "junit-report-merger": "^7.0.0"
   }
 }

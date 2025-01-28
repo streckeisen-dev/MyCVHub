@@ -1,7 +1,7 @@
 import { AccountStatus } from '@/dto/AccountStatusDto'
 
-const AUTH_STATE_KEY = 'my-cv-login-state'
-const ACCOUNT_STATUS_KEY = 'my-cv-account-status'
+export const AUTH_STATE_KEY = 'my-cv-login-state'
+export const ACCOUNT_STATUS_KEY = 'my-cv-account-status'
 
 function successfulLogin() {
   localStorage.setItem(AUTH_STATE_KEY, 'true')

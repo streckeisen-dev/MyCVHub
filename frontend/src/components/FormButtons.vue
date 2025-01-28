@@ -1,6 +1,7 @@
 <template>
   <div class="form-action-buttons">
     <v-btn
+      test-id="save-button"
       type="submit"
       :text="submitText || t('forms.save')"
       :color="submitColor || 'primary'"
@@ -8,6 +9,7 @@
       :loading="isSaving"
     />
     <v-btn
+      test-id="cancel-button"
       :text="cancelText || t('forms.cancel')"
       @click="cancel"
       :disabled="isSaving"
