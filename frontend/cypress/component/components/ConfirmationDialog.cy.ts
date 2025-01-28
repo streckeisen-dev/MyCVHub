@@ -1,5 +1,4 @@
 import ConfirmationDialog from '../../../src/components/ConfirmationDialog.vue'
-import { ref } from 'vue'
 
 describe('ConfirmationDialog', () => {
   it('renders', () => {
