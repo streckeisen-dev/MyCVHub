@@ -2,7 +2,6 @@ import FormButtons from '../../../src/components/FormButtons.vue'
 
 describe('FormButtons', () => {
   it('renders', () => {
-    // see: https://on.cypress.io/mounting-vue
     cy.mountInApp(FormButtons)
   })
 
