@@ -57,5 +57,3 @@ function removeLink(index: number) {
   model.value.splice(index, 1)
 }
 </script>
-
-<style scoped lang="scss"></style>

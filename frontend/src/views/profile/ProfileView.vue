@@ -118,7 +118,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { PublicProfileDto } from '@/dto/PublicProfileDto'
-import profileApi from '@/api/ProfileApi'
 import ProfileApi from '@/api/ProfileApi'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import type { ErrorDto } from '@/dto/ErrorDto'
@@ -173,7 +172,7 @@ const profilePhoneLink = computed(() => `tel:${profile.value!!.phone}`)
 
 isProfileLoading.value = true
 try {
-  profile.value = await profileApi.getPublicProfile(props.username)
+  profile.value = await ProfileApi.getPublicProfile(props.username)
   const profileTheme = profile.value.theme
   if (profileTheme) {
     theme.value.backgroundColor = profileTheme.backgroundColor
