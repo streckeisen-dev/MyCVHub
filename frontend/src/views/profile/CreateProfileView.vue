@@ -26,6 +26,7 @@ const emptyProfile: ProfileDto = {
   workExperiences: [],
   education: [],
   skills: [],
+  projects: [],
   theme: undefined
 }
 
