@@ -26,6 +26,7 @@
         <v-tab value="work">{{ t('workExperience.title') }}</v-tab>
         <v-tab value="edu">{{ t('education.title') }}</v-tab>
         <v-tab value="skills">{{ t('skills.title') }}</v-tab>
+        <v-tab value="projects">{{ t('project.title') }}</v-tab>
         <v-tab value="theme">{{ t('theme.title') }}</v-tab>
       </template>
     </v-tabs>
@@ -141,6 +142,9 @@
         <v-tabs-window-item value="skills">
           <skills-editor v-model="skills" />
         </v-tabs-window-item>
+        <v-tabs-window-item value="projects">
+          <project-editor v-model="projects" />
+        </v-tabs-window-item>
         <v-tabs-window-item value="theme">
           <theme-editor v-model="theme" />
         </v-tabs-window-item>
@@ -152,7 +156,6 @@
 <script setup lang="ts">
 import { computed, type ComputedRef, reactive, ref, watchEffect } from 'vue'
 import type { ProfileDto } from '@/dto/ProfileDto'
-import profileApi from '@/api/ProfileApi'
 import ProfileApi from '@/api/ProfileApi'
 import WorkExperiencesEditor from '@/views/profile/components/work-experience/WorkExperiencesEditor.vue'
 import EducationEditor from '@/views/profile/components/education/EducationEditor.vue'
@@ -168,6 +171,7 @@ import { useI18n } from 'vue-i18n'
 import { withI18nMessage } from '@/validation/validators'
 import ToastService from '@/services/ToastService'
 import ThemeEditor from '@/views/profile/components/ThemeEditor.vue'
+import ProjectEditor from '@/views/profile/components/project/ProjectEditor.vue'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -185,6 +189,7 @@ const isCreated = ref(props.exists)
 const workExperiences = ref(props.profile.workExperiences)
 const education = ref(props.profile.education)
 const skills = ref(props.profile.skills)
+const projects = ref(props.profile.projects)
 const theme = ref(props.profile.theme)
 const profilePictureUrl = ref(props.profile.profilePicture)
 
@@ -274,7 +279,7 @@ async function saveGeneralInformation() {
       hideDescriptions: formState.hideDescriptions
     }
 
-    const savedProfile = await profileApi.updateGeneralInformation(profileUpdate)
+    const savedProfile = await ProfileApi.updateGeneralInformation(profileUpdate)
     if (isCreated.value === false) {
       await router.push({ name: 'edit-profile' })
     } else {
