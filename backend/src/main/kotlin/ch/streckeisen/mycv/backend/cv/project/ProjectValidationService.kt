@@ -23,48 +23,91 @@ class ProjectValidationService(
     fun validateProject(projectUpdate: ProjectUpdateDto): Result<Unit> {
         val validationErrorBuilder = ValidationErrorBuilder()
 
-        if (projectUpdate.name.isNullOrBlank()) {
+        validateProjectName(projectUpdate.name, validationErrorBuilder)
+        validateProjectRole(projectUpdate.role, validationErrorBuilder)
+        validateDescription(projectUpdate.description, validationErrorBuilder)
+        validateProjectStart(projectUpdate.projectStart, validationErrorBuilder)
+        validateProjectEnd(projectUpdate.projectEnd, projectUpdate.projectStart, validationErrorBuilder)
+        validateProjectLinks(projectUpdate.links, validationErrorBuilder)
+
+        if (validationErrorBuilder.hasErrors()) {
+            return Result.failure(validationErrorBuilder.build(VALIDATION_ERROR_KEY))
+        }
+        return Result.success(Unit)
+    }
+
+    private fun validateProjectName(
+        projectName: String?,
+        validationErrorBuilder: ValidationErrorBuilder
+    ) {
+        if (projectName.isNullOrBlank()) {
             val error = messagesService.requiredFieldMissingError(NAME_FIELD_KEY)
             validationErrorBuilder.addError(NAME_FIELD_KEY, error)
-        } else if (projectUpdate.name.length > PROJECT_NAME_MAX_LENGTH) {
+        } else if (projectName.length > PROJECT_NAME_MAX_LENGTH) {
             val error = messagesService.fieldMaxLengthExceededError(NAME_FIELD_KEY, PROJECT_NAME_MAX_LENGTH)
             validationErrorBuilder.addError(NAME_FIELD_KEY, error)
         }
+    }
 
-        if (projectUpdate.role.isNullOrBlank()) {
+    private fun validateProjectRole(
+        projectRole: String?,
+        validationErrorBuilder: ValidationErrorBuilder
+    ) {
+        if (projectRole.isNullOrBlank()) {
             val error = messagesService.requiredFieldMissingError(ROLE_FIELD_KEY)
             validationErrorBuilder.addError(ROLE_FIELD_KEY, error)
-        } else if (projectUpdate.role.length > ROLE_MAX_LENGTH) {
+        } else if (projectRole.length > ROLE_MAX_LENGTH) {
             val error = messagesService.fieldMaxLengthExceededError(ROLE_FIELD_KEY, ROLE_MAX_LENGTH)
             validationErrorBuilder.addError(ROLE_FIELD_KEY, error)
         }
+    }
 
-        if (projectUpdate.description.isNullOrBlank()) {
+    private fun validateDescription(
+        description: String?,
+        validationErrorBuilder: ValidationErrorBuilder
+    ) {
+        if (description.isNullOrBlank()) {
             val error = messagesService.requiredFieldMissingError(DESCRIPTION_FIELD_KEY)
             validationErrorBuilder.addError(DESCRIPTION_FIELD_KEY, error)
         }
+    }
 
-        if (projectUpdate.projectStart == null) {
+    private fun validateProjectStart(
+        projectStart: LocalDate?,
+        validationErrorBuilder: ValidationErrorBuilder
+    ) {
+        if (projectStart == null) {
             val error = messagesService.requiredFieldMissingError(PROJECT_START_FIELD_KEY)
             validationErrorBuilder.addError(PROJECT_START_FIELD_KEY, error)
-        } else if (projectUpdate.projectStart.isAfter(LocalDate.now())) {
+        } else if (projectStart.isAfter(LocalDate.now())) {
             val error = messagesService.dateIsInFutureError(PROJECT_START_FIELD_KEY)
             validationErrorBuilder.addError(PROJECT_START_FIELD_KEY, error)
         }
+    }
 
-        if (projectUpdate.projectEnd != null && projectUpdate.projectEnd.isAfter(LocalDate.now())) {
+    private fun validateProjectEnd(
+        projectEnd: LocalDate?,
+        projectStart: LocalDate?,
+        validationErrorBuilder: ValidationErrorBuilder
+    ) {
+        if (projectEnd != null && projectEnd.isAfter(LocalDate.now())) {
             val error = messagesService.dateIsInFutureError(PROJECT_END_FIELD_KEY)
             validationErrorBuilder.addError(PROJECT_END_FIELD_KEY, error)
         } else if (
-            projectUpdate.projectEnd != null
-            && projectUpdate.projectStart != null
-            && projectUpdate.projectStart.isAfter(projectUpdate.projectEnd)
+            projectEnd != null
+            && projectStart != null
+            && projectStart.isAfter(projectEnd)
         ) {
             val error = messagesService.dateIsAfterError(PROJECT_START_FIELD_KEY, PROJECT_END_FIELD_KEY)
             validationErrorBuilder.addError(PROJECT_END_FIELD_KEY, error)
         }
+    }
 
-        projectUpdate.links?.forEachIndexed { index, link ->
+    private fun validateProjectLinks(
+        projectLinks: List<ProjectLinkUpdateDto>?,
+        validationErrorBuilder: ValidationErrorBuilder
+    ) {
+        projectLinks?.forEachIndexed { index, link ->
             if (link.url.isNullOrBlank()) {
                 val error = messagesService.requiredFieldMissingError(PROJECT_LINK_URL_KEY)
                 validationErrorBuilder.addError("$PROJECT_LINK_KEY[$index].$PROJECT_LINK_URL_KEY", error)
@@ -75,10 +118,5 @@ class ProjectValidationService(
                 validationErrorBuilder.addError("$PROJECT_LINK_KEY[$index].$PROJECT_LINK_TYPE_KEY", error)
             }
         }
-
-        if (validationErrorBuilder.hasErrors()) {
-            return Result.failure(validationErrorBuilder.build(VALIDATION_ERROR_KEY))
-        }
-        return Result.success(Unit)
     }
 }
