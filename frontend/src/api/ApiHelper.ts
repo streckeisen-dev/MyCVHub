@@ -2,6 +2,7 @@ import type { ErrorDto } from '@/dto/ErrorDto'
 import LoginStateService from '@/services/LoginStateService'
 import i18n from '@/plugins/i18n'
 import router from '@/router'
+import { RestError } from '@/api/RestError'
 
 async function fetchFromApi(
   path: string,
@@ -25,7 +26,7 @@ async function fetchFromApi(
     }
     return response
   } catch (error) {
-    return Promise.reject(error)
+    return Promise.reject(new RestError('Failed to execute call', error as ErrorDto))
   }
 }
 
@@ -36,9 +37,10 @@ async function refreshToken(): Promise<void> {
   })
   try {
     return await processAuthResponse(refreshResponse)
-  } catch (error) {
+  } catch (e) {
     await router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
-    return Promise.reject(error)
+    const error = (e as RestError).errorDto
+    return Promise.reject(new RestError('', error))
   }
 }
 
@@ -46,8 +48,9 @@ async function getJSONIfResponseIsOk<T>(response: Response): Promise<T> {
   try {
     await extractErrorIfResponseIsNotOk(response)
     return response.json()
-  } catch (error) {
-    return Promise.reject(error)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    return Promise.reject(new RestError('Failed to extract response body', error))
   }
 }
 
@@ -56,9 +59,9 @@ async function extractErrorIfResponseIsNotOk(response: Response): Promise<void> 
     try {
       const error: ErrorDto = await response.json()
       error.status = response.status
-      return Promise.reject(error)
+      return Promise.reject(new RestError('Call failed', error))
     } catch (error) {
-      return Promise.reject()
+      return Promise.reject(new RestError('Failed to extract error'))
     }
   }
   return Promise.resolve()
@@ -69,13 +72,13 @@ async function processAuthResponse(response: Response): Promise<void> {
     if (response.status === 401) {
       const error = await response.json() as ErrorDto
       LoginStateService.loggedOut()
-      return Promise.reject(error || {})
+      return Promise.reject(new RestError('Unauthorized', error))
     }
     await extractErrorIfResponseIsNotOk(response)
     LoginStateService.successfulLogin()
     return Promise.resolve()
   } catch (error) {
-    return Promise.reject(error)
+    return Promise.reject(new RestError('Failed to execute call', error as ErrorDto))
   }
 }
 

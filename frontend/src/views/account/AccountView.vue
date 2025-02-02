@@ -224,7 +224,7 @@ import { useI18n } from 'vue-i18n'
 import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
 import router from '@/router'
 import toastService from '@/services/ToastService.ts'
-import type { ErrorDto } from '@/dto/ErrorDto.ts'
+import { RestError } from '@/api/RestError'
 
 const { t, d } = useI18n({
   useScope: 'global'
@@ -257,7 +257,7 @@ async function deleteAccount() {
     toastService.success(t('account.delete.success'))
     await router.push({ name: 'home' })
   } catch (e) {
-    const error = e as ErrorDto
+    const error = (e as RestError).errorDto
     const errorDetails = error?.message || t('error.genericMessage')
     toastService.error(t('account.delete.error', errorDetails))
   }

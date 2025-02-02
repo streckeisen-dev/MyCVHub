@@ -33,7 +33,6 @@
 import accountApi from '@/api/AccountApi'
 import router from '@/router'
 import { reactive, ref } from 'vue'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import useVuelidate, { type ValidationArgs } from '@vuelidate/core'
 import { type ErrorMessages } from '@/services/FormHelper'
 import { useI18n } from 'vue-i18n'
@@ -46,6 +45,7 @@ import { AccountStatus } from '@/dto/AccountStatusDto'
 import type { AccountEditorData } from '@/dto/AccountEditorData'
 import type { OAuthSignUpRequestDto } from '@/dto/OAuthSignUpRequestDto'
 import FormButtons from '@/components/FormButtons.vue'
+import { RestError } from '@/api/RestError'
 
 if (LoginStateService.getAccountStatus() !== AccountStatus.INCOMPLETE) {
   await router.push({ name: 'account' })
@@ -104,7 +104,7 @@ async function signUp() {
     LoginStateService.setAccountStatus(AccountStatus.UNVERIFIED)
     await router.push({ name: 'account' })
   } catch (e) {
-    const error = e as ErrorDto
+    const error = (e as RestError).errorDto
     errorMessages.value = error?.errors || {}
     if (Object.keys(errorMessages.value).length === 0) {
       const errorDetails = error?.message || t('error.genericMessage')
@@ -119,7 +119,7 @@ async function cancelSignup() {
     await accountApi.logout()
     await router.push({ name: 'home' })
   } catch (e) {
-    const error = e as ErrorDto
+    const error = (e as RestError).errorDto
     const errorDetails = error?.message || t('error.genericMessage')
     ToastService.error(t('account.delete.error'), errorDetails)
   }

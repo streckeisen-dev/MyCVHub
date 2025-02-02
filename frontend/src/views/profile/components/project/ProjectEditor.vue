@@ -37,12 +37,12 @@
 <script setup lang="ts">
 import { type PropType, ref } from 'vue'
 import profileApi from '@/api/ProfileApi'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import ProjectContainer from '@/views/profile/components/project/ProjectContainer.vue'
 import { useI18n } from 'vue-i18n'
 import ToastService from '@/services/ToastService'
 import { ProjectDto } from '@/dto/ProjectDto'
 import EditProjectDialog from '@/views/profile/components/project/EditProjectDialog.vue'
+import { RestError } from '@/api/RestError'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -93,7 +93,7 @@ async function deleteProject(id: number) {
     const index = projects.value.findIndex((e) => e.id === id)
     projects.value.splice(index, 1)
   } catch (e) {
-    const error = e as ErrorDto
+    const error = (e as RestError).errorDto
     const errorDetails = error?.message || t('error.genericMessage')
     ToastService.error(t('project.editor.deleteError'), errorDetails)
   }

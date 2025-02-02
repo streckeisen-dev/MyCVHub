@@ -60,13 +60,13 @@
 import { type ComputedRef, reactive, ref } from 'vue'
 import accountApi from '@/api/AccountApi'
 import router from '@/router'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import PasswordInput from '@/components/PasswordInput.vue'
 import useVuelidate from '@vuelidate/core'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
 import { useI18n } from 'vue-i18n'
 import { required } from '@/validation/validators'
 import ToastService from '@/services/ToastService'
+import { RestError } from '@/api/RestError'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -110,6 +110,7 @@ const rules = {
 const form = useVuelidate<FormState>(rules, formState)
 
 const errorMessages = ref<ErrorMessages>({})
+
 function getErrors(attributeName: string): ComputedRef {
   return getErrorMessages(errorMessages, form, attributeName)
 }
@@ -127,9 +128,9 @@ async function login() {
     await accountApi.login(formState.email!, formState.password!)
     await forwardAfterSuccessfulLogin()
   } catch (e) {
-    const error = e as ErrorDto
-    errorMessages.value = error?.errors || {}
-    if (Object.keys(error.errors).length === 0) {
+    const error = (e as RestError).errorDto
+    errorMessages.value = error?.errors ?? {}
+    if (Object.keys(errorMessages.value).length === 0) {
       const errorDetails = error?.message || t('error.genericMessage')
       ToastService.error(t('account.login.error'), errorDetails)
     }

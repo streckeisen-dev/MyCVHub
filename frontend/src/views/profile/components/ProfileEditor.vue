@@ -163,7 +163,6 @@ import SkillsEditor from '@/views/profile/components/skill/SkillsEditor.vue'
 import { helpers, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import router from '@/router'
 import round from 'lodash/round'
 import type { ProfileUpdateRequestDto } from '@/dto/ProfileUpdateRequestDto'
@@ -172,6 +171,7 @@ import { withI18nMessage } from '@/validation/validators'
 import ToastService from '@/services/ToastService'
 import ThemeEditor from '@/views/profile/components/ThemeEditor.vue'
 import ProjectEditor from '@/views/profile/components/project/ProjectEditor.vue'
+import { RestError } from '@/api/RestError'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -298,7 +298,7 @@ async function saveGeneralInformation() {
       profilePictureUrl.value = savedProfile.profilePicture
     }
   } catch (e) {
-    const error = e as ErrorDto
+    const error = (e as RestError).errorDto
     errorMessages.value = error?.errors || {}
     if (Object.keys(errorMessages.value).length === 0) {
       const errorDetails = error?.message || t('error.genericMessage')

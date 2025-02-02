@@ -193,7 +193,6 @@ import router from '@/router'
 import { useI18n } from 'vue-i18n'
 import i18n from '@/plugins/i18n'
 import LanguageService from '@/services/LanguageService'
-import profileApi from '@/api/ProfileApi'
 import vuetify from '@/plugins/vuetify'
 import ProfileApi from '@/api/ProfileApi'
 
@@ -227,7 +226,7 @@ const profileThumbnail = ref<string>()
 watchEffect(async () => {
   if (accountApi.isUserLoggedIn()) {
     try {
-      profileThumbnail.value = (await profileApi.getThumbnail()).thumbnailUrl
+      profileThumbnail.value = (await ProfileApi.getThumbnail()).thumbnailUrl
     } catch (e) {
       profileThumbnail.value = undefined
     }

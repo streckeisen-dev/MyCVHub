@@ -120,7 +120,6 @@ import { computed, ref } from 'vue'
 import type { PublicProfileDto } from '@/dto/PublicProfileDto'
 import ProfileApi from '@/api/ProfileApi'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import ProfileSection from '@/views/profile/components/ProfileSection.vue'
 import vuetify from '@/plugins/vuetify'
 import WorkExperienceContainer from '@/views/profile/components/work-experience/WorkExperienceContainer.vue'
@@ -135,6 +134,7 @@ import EducationContainer from '@/views/profile/components/education/EducationCo
 import { useI18n } from 'vue-i18n'
 import type { PublicProfileThemeDto } from '@/dto/PublicProfileThemeDto'
 import ProjectContainer from '@/views/profile/components/project/ProjectContainer.vue'
+import { RestError } from '@/api/RestError'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -179,8 +179,8 @@ try {
     theme.value.surfaceColor = profileTheme.surfaceColor
   }
 } catch (e) {
-  const error = e as ErrorDto
-  loadingError.value = error.message || t('error.genericMessage')
+  const error = (e as RestError).errorDto
+  loadingError.value = error?.message || t('error.genericMessage')
 } finally {
   isProfileLoading.value = false
 }

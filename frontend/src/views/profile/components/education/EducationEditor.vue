@@ -37,12 +37,12 @@
 <script setup lang="ts">
 import { type PropType, ref } from 'vue'
 import profileApi from '@/api/ProfileApi'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import EducationContainer from '@/views/profile/components/education/EducationContainer.vue'
 import EditEducationDialog from '@/views/profile/components/education/EditEducationDialog.vue'
 import type { EducationDto } from '@/dto/EducationDto'
 import { useI18n } from 'vue-i18n'
 import ToastService from '@/services/ToastService'
+import { RestError } from '@/api/RestError'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -96,7 +96,7 @@ async function deleteEducation(id: number) {
     const index = education.value.findIndex((e) => e.id === id)
     education.value.splice(index, 1)
   } catch (e) {
-    const error = e as ErrorDto
+    const error = (e as RestError).errorDto
     const errorDetails = error?.message || t('error.genericMessage')
     ToastService.error(t('education.editor.deleteError'), errorDetails)
   }
