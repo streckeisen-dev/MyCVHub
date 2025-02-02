@@ -31,6 +31,11 @@ shared:
     educationEnd: "Ausbildungsende"
     backgroundColor: "Hintergrundfarbe"
     surfaceColor: "Kopfzeilenfarbe"
+    projectStart: "Projekt Start"
+    projectEnd: "Projekt Ende"
+    role: "Rolle"
+    links: "Links"
+    url: "URL"
 
   validations: 
     required: "{label} darf nicht leer sein"
@@ -196,6 +201,17 @@ frontend:
       addError: "Ausbildung konnte nicht hinzugefügt werden"
       editError: "Ausbildung konnte nicht aktualisiert werden"
       deleteError: "Ausbildung konnte nicht gelöscht werden"
+  
+  project:
+    title: "Projekte"
+    noEntries: "Noch keine Projekte."
+    editor:
+      add: "Projekt hinzufügen"
+      edit: "Projekt bearbeiten"
+      addError: "Projekte konnte nicht hinzugefügt werden"
+      editError: "Projekt konnte nicht aktualisiert werden"
+      deleteError: "Projekt konnte nicht gelöscht werden"
+  
   theme:
     title: "Thema"
     description: "Standardmäßig wird dein Lebenslauf im hellen Thema von MyCVHub angezeigt. Unten kannst du die verwendeten Farben nach deinem Geschmack anpassen.\nAchte auf Farben, die den Text gut lesbar und professionell machen.\n\nTipps:\n- Hintergrundfarbe: Eine weiche, neutrale Farbe kann dein Profil elegant aussehen lassen.\n- Farbe der Kopfzeile: Nimm eine etwas dunklere oder kontrastierende Farbe, um die Kopfzeile hervorzuheben."
@@ -280,6 +296,11 @@ backend:
     accessDenied: "Du hast keinen Zugriff auf diese Ausbildung"
     validation:
       error: "Validierung der Ausbildung ist fehlgeschlagen"
+  project:
+    notFound: "Projekt nicht gefunden"
+    accessDenied: "Du hast keinen Zugriff auf dieses Projekt"
+    validation:
+      error: "Validierung des Projekts ist fehlgeschlagen"
   account:
     notFound: "Account nicht gefunden"
     verification:
