@@ -1,14 +1,11 @@
 package ch.streckeisen.mycv.backend.cv.skill
 
-import ch.streckeisen.mycv.backend.exceptions.ValidationException
+import ch.streckeisen.mycv.backend.util.executeParameterizedTest
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 class SkillValidationServiceTest {
     private lateinit var skillValidationService: SkillValidationService
@@ -21,15 +18,7 @@ class SkillValidationServiceTest {
     @ParameterizedTest
     @MethodSource("skillValidationDataProvider")
     fun testValidateSkill(skillUpdate: SkillUpdateDto, isValid: Boolean, numberOfErrors: Int) {
-        val result = skillValidationService.validateSkill(skillUpdate)
-
-        assertEquals(isValid, result.isSuccess)
-        if (!isValid) {
-            val ex = result.exceptionOrNull()
-            assertNotNull(ex)
-            assertTrue(ex is ValidationException)
-            assertEquals(numberOfErrors, ex.errors.size)
-        }
+        executeParameterizedTest(skillUpdate, isValid, numberOfErrors) { skillValidationService.validateSkill(it) }
     }
 
     companion object {
