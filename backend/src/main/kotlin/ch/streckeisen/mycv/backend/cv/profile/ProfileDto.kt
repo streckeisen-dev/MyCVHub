@@ -3,6 +3,7 @@ package ch.streckeisen.mycv.backend.cv.profile
 import ch.streckeisen.mycv.backend.cv.education.EducationDto
 import ch.streckeisen.mycv.backend.cv.experience.WorkExperienceDto
 import ch.streckeisen.mycv.backend.cv.profile.theme.ProfileThemeDto
+import ch.streckeisen.mycv.backend.cv.project.ProjectDto
 import ch.streckeisen.mycv.backend.cv.skill.SkillDto
 import com.fasterxml.jackson.annotation.JsonProperty
 
@@ -18,5 +19,6 @@ data class ProfileDto(
     val workExperiences: List<WorkExperienceDto>,
     val education: List<EducationDto>,
     val skills: List<SkillDto>,
+    val projects: List<ProjectDto>,
     val theme: ProfileThemeDto?
 )
