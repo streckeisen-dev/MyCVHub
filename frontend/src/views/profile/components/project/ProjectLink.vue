@@ -1,5 +1,5 @@
 <template>
-  <v-btn :href="link.url" target="_blank" :icon="mdiIcon" />
+  <v-btn :href="link.url" target="_blank" :icon="mdiIcon" variant="text" />
 </template>
 
 <script setup lang="ts">

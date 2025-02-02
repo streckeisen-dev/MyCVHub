@@ -89,10 +89,18 @@
             <education-container :values="profile.education" />
           </profile-section>
           <profile-section
+            v-if="profile.skills?.length > 0"
             :title="t('skills.title')"
             h2
           >
             <skills-container :values="profile.skills" />
+          </profile-section>
+          <profile-section
+            v-if="profile.projects?.length > 0"
+            :title="t('project.title')"
+            h2
+          >
+            <project-container :values="profile.projects" />
           </profile-section>
         </v-col>
       </v-row>
@@ -127,6 +135,7 @@ import SkillsContainer from '@/views/profile/components/skill/SkillsContainer.vu
 import EducationContainer from '@/views/profile/components/education/EducationContainer.vue'
 import { useI18n } from 'vue-i18n'
 import type { PublicProfileThemeDto } from '@/dto/PublicProfileThemeDto'
+import ProjectContainer from '@/views/profile/components/project/ProjectContainer.vue'
 
 const { t } = useI18n({
   useScope: 'global'
