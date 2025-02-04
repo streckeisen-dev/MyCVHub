@@ -275,6 +275,8 @@ backend:
     dateInFuture: "{0} darf nicht in der Zukunft liegen"
     numberTooSmall: "{0} muss grösser als {1} sein"
     numberTooBig: "{0} muss kleiner als {1} sein"
+    invalidUrl: "URL ist ungültig"
+
   workExperience:
     notFound: "Berufserfahrung nicht gefunden"
     accessDenied: "Du hast keinen Zugriff auf diese Arbeitserfahrung"

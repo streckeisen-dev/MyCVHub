@@ -275,6 +275,7 @@ backend:
     dateInFuture: "{0} must not be in the future"
     numberTooSmall: "{0} must be greater than {1}"
     numberTooBig: "{0} must be less than {1}"
+    invalidUrl: "URL is invalid"
   
   workExperience:
     notFound: "Work Experience not found"

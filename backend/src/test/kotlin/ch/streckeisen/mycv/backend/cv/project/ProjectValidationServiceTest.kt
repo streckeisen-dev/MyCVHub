@@ -209,6 +209,24 @@ class ProjectValidationServiceTest {
                     )
                 ),
                 false,
+                6
+            ),
+            Arguments.of(
+                ProjectUpdateDto(
+                    id = null,
+                    name = null,
+                    role = null,
+                    description = null,
+                    projectStart = null,
+                    projectEnd = null,
+                    links = listOf(
+                        ProjectLinkUpdateDto(
+                            url = "https://example.com",
+                            type = null
+                        )
+                    )
+                ),
+                false,
                 5
             ),
             Arguments.of(
@@ -239,7 +257,7 @@ class ProjectValidationServiceTest {
                     projectEnd = null,
                     links = listOf(
                         ProjectLinkUpdateDto(
-                            url = "url",
+                            url = "https://example.com",
                             type = ProjectLinkType.WEBSITE
                         )
                     )

@@ -4,6 +4,10 @@ import ch.streckeisen.mycv.backend.exceptions.ValidationException.ValidationErro
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
 import org.springframework.stereotype.Service
+import java.net.MalformedURLException
+import java.net.URI
+import java.net.URISyntaxException
+import java.net.URL
 import java.time.LocalDate
 
 private const val VALIDATION_ERROR_KEY = "${MYCV_KEY_PREFIX}.project.validation.error"
@@ -111,6 +115,19 @@ class ProjectValidationService(
             if (link.url.isNullOrBlank()) {
                 val error = messagesService.requiredFieldMissingError(PROJECT_LINK_URL_KEY)
                 validationErrorBuilder.addError("$PROJECT_LINK_KEY[$index].$PROJECT_LINK_URL_KEY", error)
+            } else {
+                try {
+                    URI(link.url).toURL()
+                } catch (ex: Exception) {
+                    when (ex) {
+                        is URISyntaxException, is MalformedURLException, is IllegalArgumentException -> {
+                            val error = messagesService.invalidUrlError(PROJECT_LINK_URL_KEY)
+                            validationErrorBuilder.addError("$PROJECT_LINK_KEY[$index].$PROJECT_LINK_URL_KEY", error)
+                        }
+
+                        else -> throw ex
+                    }
+                }
             }
 
             if (link.type == null) {
