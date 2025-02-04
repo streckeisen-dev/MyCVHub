@@ -20,9 +20,9 @@ import profileApi from '@/api/ProfileApi'
 import ProfileEditor from '@/views/profile/components/ProfileEditor.vue'
 import type { ProfileDto } from '@/dto/ProfileDto'
 import { ref } from 'vue'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { useI18n } from 'vue-i18n'
+import { RestError } from '@/api/RestError'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -35,7 +35,7 @@ const loadingError = ref<string>()
 try {
   profile.value = await profileApi.getProfile()
 } catch (e) {
-  const error = e as ErrorDto
+  const error = (e as RestError).errorDto
   loadingError.value = error?.message || t('error.genericMessage')
 } finally {
   isLoadingProfile.value = false

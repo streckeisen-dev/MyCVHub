@@ -89,10 +89,18 @@
             <education-container :values="profile.education" />
           </profile-section>
           <profile-section
+            v-if="profile.skills?.length > 0"
             :title="t('skills.title')"
             h2
           >
             <skills-container :values="profile.skills" />
+          </profile-section>
+          <profile-section
+            v-if="profile.projects?.length > 0"
+            :title="t('project.title')"
+            h2
+          >
+            <project-container :values="profile.projects" />
           </profile-section>
         </v-col>
       </v-row>
@@ -110,10 +118,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { PublicProfileDto } from '@/dto/PublicProfileDto'
-import profileApi from '@/api/ProfileApi'
 import ProfileApi from '@/api/ProfileApi'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import ProfileSection from '@/views/profile/components/ProfileSection.vue'
 import vuetify from '@/plugins/vuetify'
 import WorkExperienceContainer from '@/views/profile/components/work-experience/WorkExperienceContainer.vue'
@@ -127,6 +133,8 @@ import SkillsContainer from '@/views/profile/components/skill/SkillsContainer.vu
 import EducationContainer from '@/views/profile/components/education/EducationContainer.vue'
 import { useI18n } from 'vue-i18n'
 import type { PublicProfileThemeDto } from '@/dto/PublicProfileThemeDto'
+import ProjectContainer from '@/views/profile/components/project/ProjectContainer.vue'
+import { RestError } from '@/api/RestError'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -164,15 +172,15 @@ const profilePhoneLink = computed(() => `tel:${profile.value!!.phone}`)
 
 isProfileLoading.value = true
 try {
-  profile.value = await profileApi.getPublicProfile(props.username)
+  profile.value = await ProfileApi.getPublicProfile(props.username)
   const profileTheme = profile.value.theme
   if (profileTheme) {
     theme.value.backgroundColor = profileTheme.backgroundColor
     theme.value.surfaceColor = profileTheme.surfaceColor
   }
 } catch (e) {
-  const error = e as ErrorDto
-  loadingError.value = error.message || t('error.genericMessage')
+  const error = (e as RestError).errorDto
+  loadingError.value = error?.message || t('error.genericMessage')
 } finally {
   isProfileLoading.value = false
 }

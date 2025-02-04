@@ -5,6 +5,8 @@ import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
 import ch.streckeisen.mycv.backend.account.dto.LoginRequestDto
 import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
+import ch.streckeisen.mycv.backend.util.assertValidationResult
+import ch.streckeisen.mycv.backend.util.executeParameterizedTest
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -15,9 +17,6 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 private const val VALID_ATTRIBUTE = "valid"
 private const val INVALID_ATTRIBUTE = "invalid"
@@ -111,8 +110,9 @@ class AuthenticationValidationServiceTest {
     @ParameterizedTest
     @MethodSource("signupValidationDataProvider")
     fun testValidateSignupRequest(signupRequest: SignupRequestDto, isValid: Boolean, numberOfErrors: Int) {
-        val validationResult = authenticationValidationService.validateSignupRequest(signupRequest)
-        assertValidationResult(validationResult, isValid, numberOfErrors)
+        executeParameterizedTest(signupRequest, isValid, numberOfErrors) {
+            authenticationValidationService.validateSignupRequest(it)
+        }
     }
 
     @ParameterizedTest
@@ -131,20 +131,8 @@ class AuthenticationValidationServiceTest {
     @ParameterizedTest
     @MethodSource("loginRequestValidationDataProvider")
     fun testValidateLoginRequest(loginRequest: LoginRequestDto, isValid: Boolean, numberOfErrors: Int) {
-        val result = authenticationValidationService.validateLoginRequest(loginRequest)
-
-        assertValidationResult(result, isValid, numberOfErrors)
-    }
-
-    private fun assertValidationResult(result: Result<Unit>, isValid: Boolean, numberOfErrors: Int) {
-        if (isValid) {
-            assertTrue { result.isSuccess }
-        } else {
-            assertTrue { result.isFailure }
-            val throwable = result.exceptionOrNull()
-            assertNotNull(throwable)
-            assertTrue(throwable is ValidationException)
-            assertEquals(numberOfErrors, throwable.errors.size)
+        executeParameterizedTest(loginRequest, isValid, numberOfErrors) {
+            authenticationValidationService.validateLoginRequest(it)
         }
     }
 

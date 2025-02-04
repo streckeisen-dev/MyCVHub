@@ -13,6 +13,7 @@ const val VALIDATION_DATE_IS_AFTER_ERROR_KEY = "${VALIDATION_ERROR_KEY_PREFIX}.d
 const val VALIDATION_DATE_IN_FUTURE_ERROR_KEY = "${VALIDATION_ERROR_KEY_PREFIX}.dateInFuture"
 const val VALIDATION_NUMBER_TOO_SMALL_ERROR_KEY = "${VALIDATION_ERROR_KEY_PREFIX}.numberTooSmall"
 const val VALIDATION_NUMBER_TOO_BIG_ERROR_KEY = "${VALIDATION_ERROR_KEY_PREFIX}.numberTooBig"
+const val VALIDATION_INVALID_URL_ERROR_KEY = "${VALIDATION_ERROR_KEY_PREFIX}.invalidUrl"
 
 @Service
 class MessagesService(
@@ -52,5 +53,9 @@ class MessagesService(
 
     fun numberTooBigError(field: String, max: Int): String {
         return getMessage(VALIDATION_NUMBER_TOO_BIG_ERROR_KEY, field, max.toString())
+    }
+
+    fun invalidUrlError(url: String): String {
+        return getMessage(VALIDATION_INVALID_URL_ERROR_KEY, url)
     }
 }

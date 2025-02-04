@@ -73,7 +73,6 @@ import accountApi from '@/api/AccountApi'
 import router from '@/router'
 import { type ComputedRef, reactive, ref } from 'vue'
 import PasswordInput from '@/components/PasswordInput.vue'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import useVuelidate, { type ValidationArgs } from '@vuelidate/core'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
 import { useI18n } from 'vue-i18n'
@@ -83,6 +82,7 @@ import { convertDateToString } from '@/services/DateHelper'
 import AccountEditor from '@/views/account/AccountEditor.vue'
 import PasswordRequirements from '@/views/account/PasswordRequirements.vue'
 import ToastService from '@/services/ToastService'
+import { RestError } from '@/api/RestError'
 
 if (accountApi.isUserLoggedIn()) {
   await router.push({ name: 'home' })
@@ -178,7 +178,7 @@ async function signUp() {
     errorMessages.value = {}
     await router.push({ name: 'account' })
   } catch (e) {
-    const error = e as ErrorDto
+    const error = (e as RestError).errorDto
     errorMessages.value = error?.errors || {}
     if (Object.keys(errorMessages.value).length === 0) {
       const errorDetails = error?.message || t('error.genericMessage')

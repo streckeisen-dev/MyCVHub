@@ -8,11 +8,11 @@
 <script setup lang="ts">
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import accountApi from '@/api/AccountApi'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import { useI18n } from 'vue-i18n'
 import ToastService from '@/services/ToastService'
 import { ref } from 'vue'
 import router from '@/router'
+import { RestError } from '@/api/RestError'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -30,7 +30,7 @@ try {
   await router.push({ name: 'account' })
   ToastService.success(t('account.verification.success'))
 } catch (e) {
-  const error = e as ErrorDto
+  const error = (e as RestError).errorDto
   const errorDetails = error?.message || t('error.genericMessage')
   ToastService.error(t('account.verification.error'), errorDetails)
 } finally {

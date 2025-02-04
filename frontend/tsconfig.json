@@ -12,7 +12,10 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["vite/client", "cypress"]
+    "types": ["vite/client", "cypress"],
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "outDir": "./dist"
   },
   "include": ["src", "cypress/**/*.ts"],
   "exclude": ["node_modules", "dist"]
