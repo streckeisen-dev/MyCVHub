@@ -71,14 +71,12 @@ function editProject(project: ProjectDto) {
 }
 
 function onSaveNew(newEntry: ProjectDto) {
-  console.log('on save new', newEntry)
   showEditDialog.value = false
   projectToEdit.value = undefined
   projects.value.push(newEntry)
 }
 
 function onSaveEdit(updatedEntry: ProjectDto) {
-  console.log('on save edit', updatedEntry)
   showEditDialog.value = false
   projectToEdit.value = undefined
   const updateIndex = projects.value.findIndex((e) => e.id === updatedEntry.id)
@@ -86,7 +84,6 @@ function onSaveEdit(updatedEntry: ProjectDto) {
 }
 
 function onEditCancel() {
-  console.log('on edit cancel')
   showEditDialog.value = false
   projectToEdit.value = undefined
 }
