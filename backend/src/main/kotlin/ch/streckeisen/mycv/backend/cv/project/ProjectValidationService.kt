@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service
 import java.net.MalformedURLException
 import java.net.URI
 import java.net.URISyntaxException
-import java.net.URL
 import java.time.LocalDate
 
 private const val VALIDATION_ERROR_KEY = "${MYCV_KEY_PREFIX}.project.validation.error"

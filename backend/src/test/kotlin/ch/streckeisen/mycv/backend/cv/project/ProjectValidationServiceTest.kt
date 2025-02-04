@@ -9,6 +9,8 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.time.LocalDate
 
+private const val VALID_URL = "https://example.com"
+
 class ProjectValidationServiceTest {
     private lateinit var messagesService: MessagesService
     private lateinit var projectValidationService: ProjectValidationService
@@ -221,7 +223,7 @@ class ProjectValidationServiceTest {
                     projectEnd = null,
                     links = listOf(
                         ProjectLinkUpdateDto(
-                            url = "https://example.com",
+                            url = VALID_URL,
                             type = null
                         )
                     )
@@ -257,7 +259,7 @@ class ProjectValidationServiceTest {
                     projectEnd = null,
                     links = listOf(
                         ProjectLinkUpdateDto(
-                            url = "https://example.com",
+                            url = VALID_URL,
                             type = ProjectLinkType.WEBSITE
                         )
                     )
@@ -275,7 +277,7 @@ class ProjectValidationServiceTest {
                     projectEnd = LocalDate.of(2021, 12, 31),
                     links = listOf(
                         ProjectLinkUpdateDto(
-                            url = "https://example.com",
+                            url = VALID_URL,
                             type = ProjectLinkType.WEBSITE
                         )
                     )
