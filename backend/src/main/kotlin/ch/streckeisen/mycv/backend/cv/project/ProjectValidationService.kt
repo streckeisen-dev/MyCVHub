@@ -12,7 +12,7 @@ private const val ROLE_FIELD_KEY = "role"
 private const val DESCRIPTION_FIELD_KEY = "description"
 private const val PROJECT_START_FIELD_KEY = "projectStart"
 private const val PROJECT_END_FIELD_KEY = "projectEnd"
-private const val PROJECT_LINK_KEY = "projectLink"
+private const val PROJECT_LINK_KEY = "links"
 private const val PROJECT_LINK_URL_KEY = "url"
 private const val PROJECT_LINK_TYPE_KEY = "type"
 

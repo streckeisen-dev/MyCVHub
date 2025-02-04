@@ -37,7 +37,10 @@
         />
 
         <h3>{{ t('fields.links') }}</h3>
-        <project-link-editor v-model="formState.links" />
+        <project-link-editor
+          v-model="formState.links"
+          :error-messages="ref(errorMessages)"
+        />
 
         <form-buttons
           @save="save"
@@ -123,7 +126,8 @@ const rules = {
   },
   description: {
     required
-  }
+  },
+  links: {}
 }
 
 const form = useVuelidate<FormState>(rules, formState)
