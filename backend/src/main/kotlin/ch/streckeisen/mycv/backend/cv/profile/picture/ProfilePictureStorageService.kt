@@ -97,6 +97,7 @@ class ProfilePictureStorageService(
             )
             val result = cloudinary.uploader()
                 .upload(file, uploadParams)
+                .toMap()
 
             val publicId = result["public_id"] as String?
             if (publicId == null) {
@@ -115,7 +116,10 @@ class ProfilePictureStorageService(
             "invalidate" to true,
             "type" to AUTHENTICATED_TYPE
         )
-        val result = cloudinary.uploader().destroy(filename, destroyParams)
+        val result = cloudinary.uploader()
+            .destroy(filename, destroyParams)
+            .toMap()
+
         val status = result["result"] as String?
         if (status != "ok") {
             return Result.failure(ProfilePictureStorageException("Failed to delete file $filename"))
