@@ -9,7 +9,7 @@
       <v-form>
         <account-editor
           v-model:form="form"
-          v-model:form-state="formState"
+          v-bind:form-state="reactive(formState)"
           v-model:error-messages="errorMessages"
         />
 
@@ -47,8 +47,8 @@ import type { AccountDto } from '@/dto/AccountDto'
 import accountApi from '@/api/AccountApi'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { convertDateToString, convertStringToDate } from '@/services/DateHelper'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import ToastService from '@/services/ToastService'
+import { RestError } from '@/api/RestError'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -68,6 +68,7 @@ try {
 }
 
 const formState = reactive<AccountEditorData>({
+  username: account.value?.username,
   firstName: account.value?.firstName,
   lastName: account.value?.lastName,
   email: account.value?.email,
@@ -81,6 +82,7 @@ const formState = reactive<AccountEditorData>({
 })
 
 const rules = {
+  username: { required },
   firstName: { required },
   lastName: { required },
   email: {
@@ -105,6 +107,7 @@ async function save() {
   }
 
   const accountUpdate: AccountUpdateDto = {
+    username: formState.username,
     firstName: formState.firstName,
     lastName: formState.lastName,
     email: formState.email,
@@ -123,10 +126,10 @@ async function save() {
     ToastService.success(t('account.edit.success'))
     await router.push({ name: 'account' })
   } catch (e) {
-    const error = e as ErrorDto
-    errorMessages.value = error.errors || {}
+    const error = (e as RestError).errorDto
+    errorMessages.value = error?.errors || {}
     if (Object.keys(errorMessages.value).length === 0) {
-      const errorDetails = error.message || t('error.genericMessage')
+      const errorDetails = error?.message || t('error.genericMessage')
       ToastService.error(t('account.edit.error'), errorDetails)
     }
   } finally {
@@ -138,5 +141,3 @@ async function cancel() {
   await router.push({ name: 'account' })
 }
 </script>
-
-<style scoped lang="scss"></style>

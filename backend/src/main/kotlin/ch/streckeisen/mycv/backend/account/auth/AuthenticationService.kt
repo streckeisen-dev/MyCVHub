@@ -1,34 +1,48 @@
 package ch.streckeisen.mycv.backend.account.auth
 
-import ch.streckeisen.mycv.backend.account.ApplicantAccountService
+import ch.streckeisen.mycv.backend.account.AccountDetailsEntity
+import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
+import ch.streckeisen.mycv.backend.account.ApplicantAccountRepository
+import ch.streckeisen.mycv.backend.account.PASSWORD_MAX_LENGTH
+import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
 import ch.streckeisen.mycv.backend.account.dto.LoginRequestDto
 import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
+import ch.streckeisen.mycv.backend.account.verification.AccountVerificationService
+import ch.streckeisen.mycv.backend.exceptions.LocalizedException
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
-import ch.streckeisen.mycv.backend.security.JwtService
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.jsonwebtoken.JwtException
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.AuthenticationException
-import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import kotlin.jvm.optionals.getOrElse
 
-private const val LOGIN_VALIDATION_ERROR_KEY = "${MYCV_KEY_PREFIX}.auth.login.error"
+private const val ENCODED_PASSWORD_LENGTH_ERROR_KEY = "${MYCV_KEY_PREFIX}.account.validation.password.encodingTooLong"
+private const val PASSWORD_ENCODING_ERROR_KEY = "${MYCV_KEY_PREFIX}.account.validation.password.encodingError"
+
+private val logger = KotlinLogging.logger {}
 
 @Service
 class AuthenticationService(
-    private val applicantAccountService: ApplicantAccountService,
-    private val userDetailsService: UserDetailsService,
+    private val applicantAccountRepository: ApplicantAccountRepository,
+    private val authenticationValidationService: AuthenticationValidationService,
     private val authenticationManager: AuthenticationManager,
-    private val jwtService: JwtService,
-    private val messagesService: MessagesService
+    private val authTokenService: AuthTokenService,
+    private val messagesService: MessagesService,
+    private val passwordEncoder: PasswordEncoder,
+    private val accountVerificationService: AccountVerificationService
 ) {
-    fun signUp(signupRequest: SignupRequestDto): Result<AuthData> {
-        return applicantAccountService.create(signupRequest)
+    fun signUp(signupRequest: SignupRequestDto): Result<AuthTokens> {
+        return createAccount(signupRequest)
             .fold(
                 onSuccess = {
-                    authenticate(LoginRequestDto(signupRequest.email, signupRequest.password))
+                    authenticate(LoginRequestDto(signupRequest.username, signupRequest.password))
                 },
                 onFailure = {
                     Result.failure(it)
@@ -36,8 +50,8 @@ class AuthenticationService(
             )
     }
 
-    fun authenticate(loginRequest: LoginRequestDto): Result<AuthData> {
-        return validateLoginRequest(loginRequest)
+    fun authenticate(loginRequest: LoginRequestDto): Result<AuthTokens> {
+        return authenticationValidationService.validateLoginRequest(loginRequest)
             .fold(
                 onSuccess = {
                     try {
@@ -47,20 +61,7 @@ class AuthenticationService(
                                 loginRequest.password
                             )
                         )
-
-                        val userDetails = userDetailsService.loadUserByUsername(loginRequest.username)
-                        val accessToken = jwtService.generateAccessToken(userDetails)
-                        val refreshToken = jwtService.generateRefreshToken(userDetails)
-                        val accessTokenExpirationTime = jwtService.getAccessTokenExpirationTime()
-                        val refreshTokenExpirationTime = jwtService.getRefreshTokenExpirationTime()
-                        Result.success(
-                            AuthData(
-                                accessToken,
-                                accessTokenExpirationTime,
-                                refreshToken,
-                                refreshTokenExpirationTime
-                            )
-                        )
+                        authTokenService.generateAuthData(loginRequest.username!!)
                     } catch (ex: AuthenticationException) {
                         Result.failure(ex)
                     }
@@ -71,41 +72,76 @@ class AuthenticationService(
             )
     }
 
-    fun refreshAccessToken(oldRefreshToken: String): Result<AuthData> {
-        val username = jwtService.extractUsername(oldRefreshToken)
-        val userDetails = userDetailsService.loadUserByUsername(username)
-        if (userDetails == null || !jwtService.isTokenValid(oldRefreshToken, userDetails)) {
-            return Result.failure(JwtException("Invalid refresh token"))
+    fun refreshAccessToken(oldRefreshToken: String): Result<AuthTokens> {
+        try {
+            val username = authTokenService.validateRefreshToken(oldRefreshToken)
+                .getOrElse { return Result.failure(it) }
+            return authTokenService.generateAuthData(username)
+        } catch (ex: BadCredentialsException) {
+            return Result.failure(ex)
+        } catch (ex: JwtException) {
+            return Result.failure(ex)
         }
-
-        val accessToken = jwtService.generateAccessToken(userDetails)
-        val refreshToken = jwtService.generateRefreshToken(userDetails)
-        return Result.success(
-            AuthData(
-                accessToken,
-                jwtService.getAccessTokenExpirationTime(),
-                refreshToken,
-                jwtService.getRefreshTokenExpirationTime()
-            )
-        )
     }
 
-    private fun validateLoginRequest(loginRequest: LoginRequestDto): Result<Unit> {
-        val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
+    @Transactional
+    fun changePassword(accountId: Long, changePasswordDto: ChangePasswordDto): Result<ApplicantAccountEntity> {
+        val existingAccount = applicantAccountRepository.findById(accountId)
+            .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.account.notFound")) }
 
-        if (loginRequest.username.isNullOrBlank()) {
-            val error = messagesService.getMessage("username")
-            validationErrorBuilder.addError("username", error)
+        if (existingAccount.password == null) {
+            throw LocalizedException("${MYCV_KEY_PREFIX}.auth.changePassword.passwordNotSet")
         }
 
-        if (loginRequest.password.isNullOrBlank()) {
-            val error = messagesService.getMessage("password")
-            validationErrorBuilder.addError("password", error)
-        }
+        authenticationValidationService.validateChangePasswordRequest(changePasswordDto, existingAccount.password)
+            .onFailure { return Result.failure(it) }
 
-        if (validationErrorBuilder.hasErrors()) {
-            return Result.failure(validationErrorBuilder.build(messagesService.getMessage(LOGIN_VALIDATION_ERROR_KEY)))
+        val encodedNewPassword = encodePassword(changePasswordDto.password)
+            .getOrElse { return Result.failure(it) }
+
+        val account = applicantAccountRepository.setPassword(accountId, encodedNewPassword)
+            .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.account.notFound")) }
+        return Result.success(account)
+    }
+
+    @Transactional(readOnly = false)
+    private fun createAccount(signupRequest: SignupRequestDto): Result<ApplicantAccountEntity> {
+        authenticationValidationService.validateSignupRequest(signupRequest)
+            .onFailure { return Result.failure(it) }
+        val encodedPassword = encodePassword(signupRequest.password)
+            .getOrElse { return Result.failure(it) }
+
+        val applicantAccount = ApplicantAccountEntity(
+            signupRequest.username!!,
+            encodedPassword,
+            false,
+            false,
+            accountDetails = AccountDetailsEntity(
+                signupRequest.firstName!!,
+                signupRequest.lastName!!,
+                signupRequest.email!!,
+                signupRequest.phone!!,
+                signupRequest.birthday!!,
+                signupRequest.street!!,
+                signupRequest.houseNumber,
+                signupRequest.postcode!!,
+                signupRequest.city!!,
+                signupRequest.country!!
+            )
+        )
+        val account = applicantAccountRepository.save(applicantAccount)
+        accountVerificationService.generateVerificationToken(account.id!!)
+            .onFailure { logger.error(it) { "[Account ${account.id}] Failed to generate verification token" } }
+        return Result.success(account)
+    }
+
+    private fun encodePassword(password: String?): Result<String> {
+        val encodedPassword = passwordEncoder.encode(password)
+        if (encodedPassword.length > PASSWORD_MAX_LENGTH) {
+            val errors = ValidationException.ValidationErrorBuilder()
+            errors.addError("password", messagesService.getMessage(ENCODED_PASSWORD_LENGTH_ERROR_KEY))
+            return Result.failure(errors.build(messagesService.getMessage(PASSWORD_ENCODING_ERROR_KEY)))
         }
-        return Result.success(Unit)
+        return Result.success(encodedPassword)
     }
 }

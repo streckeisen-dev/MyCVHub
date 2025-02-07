@@ -12,6 +12,13 @@
       <v-row>
         <v-col cols="12">
           <v-text-field
+            v-model="formState.username"
+            :label="t('fields.username')"
+            :error-messages="usernameErrors"
+          />
+        </v-col>
+        <v-col cols="12">
+          <v-text-field
             v-model="formState.firstName"
             :label="t('fields.firstName')"
             :error-messages="firstNameErrors"
@@ -118,7 +125,7 @@
 
 <script setup lang="ts">
 import { VDateInput } from 'vuetify/labs/components'
-import { type ComputedRef, ref, watch } from 'vue'
+import { type ComputedRef, type Reactive, ref, watch } from 'vue'
 import type { AccountEditorData } from '@/dto/AccountEditorData'
 import type { Validation } from '@vuelidate/core'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
@@ -133,7 +140,7 @@ const { t } = useI18n({
 })
 
 const form = defineModel<Validation>('form', { required: true })
-const formState = defineModel<AccountEditorData>('formState', { required: true })
+const formState = defineModel<Reactive<AccountEditorData>>('formState', { required: true })
 const errorMessages = defineModel<ErrorMessages>('errorMessages', { required: true })
 
 const countries = ref<Array<CountryDto>>([])
@@ -154,6 +161,7 @@ function getErrors(attributeName: string): ComputedRef {
   return getErrorMessages(errorMessages, form, attributeName)
 }
 
+const usernameErrors = getErrors('username')
 const firstNameErrors = getErrors('firstName')
 const lastNameErrors = getErrors('lastName')
 const emailErrors = getErrors('email')
@@ -165,5 +173,3 @@ const postcodeErrors = getErrors('postcode')
 const cityErrors = getErrors('city')
 const countryErrors = getErrors('country')
 </script>
-
-<style scoped lang="scss"></style>

@@ -13,7 +13,7 @@ import accountApi from '@/api/AccountApi'
 import router from '@/router'
 import { useI18n } from 'vue-i18n'
 import ToastService from '@/services/ToastService'
-import type { ErrorDto } from '@/dto/ErrorDto'
+import { RestError } from '@/api/RestError'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -26,8 +26,8 @@ if (accountApi.isUserLoggedIn()) {
       await router.push({ name: 'home' })
     }, 2000)
   } catch (e) {
-    const error = e as ErrorDto
-    const errorDetails = error.message || t('error.genericMessage')
+    const error = (e as RestError).errorDto
+    const errorDetails = error?.message || t('error.genericMessage')
     ToastService.error(t('account.logout.error'), errorDetails)
     setTimeout(() => {
       router.back()

@@ -3,8 +3,11 @@ package ch.streckeisen.mycv.backend.cv.profile
 import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
 import ch.streckeisen.mycv.backend.cv.education.EducationEntity
 import ch.streckeisen.mycv.backend.cv.experience.WorkExperienceEntity
+import ch.streckeisen.mycv.backend.cv.profile.theme.ProfileThemeEntity
+import ch.streckeisen.mycv.backend.cv.project.ProjectEntity
 import ch.streckeisen.mycv.backend.cv.skill.SkillEntity
 import jakarta.persistence.Entity
+import jakarta.persistence.EntityListeners
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -13,8 +16,8 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 
 @Entity
+@EntityListeners(ProfileEntityDeletionListener::class)
 class ProfileEntity(
-    val alias: String,
     val jobTitle: String,
     val bio: String?,
     val isProfilePublic: Boolean,
@@ -37,4 +40,8 @@ class ProfileEntity(
     val skills: List<SkillEntity> = listOf(),
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "profile")
     val education: List<EducationEntity> = listOf(),
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "profile")
+    val projects: List<ProjectEntity> = listOf(),
+    @OneToOne(mappedBy = "profile")
+    val profileTheme: ProfileThemeEntity? = null
 )

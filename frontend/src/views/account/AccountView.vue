@@ -30,7 +30,7 @@
               />
               <attribute-value
                 :name="t('fields.birthday')"
-                :value="account.birthday"
+                :value="d(account.birthday, 'simpleDate')"
               />
             </attribute-list>
           </v-sheet>
@@ -80,7 +80,7 @@
             rounded
             class="account-sheet"
           >
-            <v-row v-if="account.profile">
+            <v-row v-if="account.hasProfile">
               <v-col
                 cols="12"
                 md="5"
@@ -89,7 +89,7 @@
                 <v-btn
                   :text="t('account.profile.view')"
                   color="primary"
-                  :to="{ name: 'public-profile', params: { alias: account.profile } }"
+                  :to="{ name: 'public-profile', params: { username: account.username } }"
                 />
               </v-col>
               <v-col
@@ -151,6 +151,7 @@
                 />
               </v-col>
               <v-col
+                v-if="account.hasPassword"
                 cols="12"
                 md="5"
                 lg="3"
@@ -163,6 +164,40 @@
               </v-col>
             </v-row>
           </v-sheet>
+        </v-col>
+
+        <v-col
+          cols="12"
+          sm="6"
+        >
+          <h2>{{ t('account.delete.title') }}</h2>
+          <v-sheet
+            rounded
+            class="account-sheet"
+          >
+            <v-row>
+              <v-col
+                cols="12"
+                md="5"
+                lg="3"
+              >
+                <v-btn
+                  :text="t('account.delete.title')"
+                  color="error"
+                  @click="requestDeletionConfirmation"
+                />
+              </v-col>
+            </v-row>
+          </v-sheet>
+          <confirmation-dialog
+            v-if="shouldDeleteAccount"
+            :title="t('account.delete.title')"
+            :description="t('account.delete.confirmationText')"
+            :confirmation-btn-text="t('account.delete.title')"
+            confirmation-btn-color="error"
+            @confirm="deleteAccount"
+            @cancel="hideDeleteConfirmation"
+          />
         </v-col>
       </v-row>
     </v-container>
@@ -186,19 +221,46 @@ import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import AttributeList from '@/components/AttributeList.vue'
 import AttributeValue from '@/components/AttributeValue.vue'
 import { useI18n } from 'vue-i18n'
+import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
+import router from '@/router'
+import toastService from '@/services/ToastService.ts'
+import { RestError } from '@/api/RestError'
 
-const { t } = useI18n({
+const { t, d } = useI18n({
   useScope: 'global'
 })
 
 const account = ref<AccountDto>()
-const isAccountLoading = ref<boolean>(true)
+const isAccountLoading = ref(true)
+const shouldDeleteAccount = ref(false)
 try {
   account.value = await accountApi.getAccountInfo()
 } catch (ignore) {
   // ignore
 } finally {
   isAccountLoading.value = false
+}
+
+function hideDeleteConfirmation() {
+  shouldDeleteAccount.value = false
+}
+
+function requestDeletionConfirmation() {
+  shouldDeleteAccount.value = true
+}
+
+async function deleteAccount() {
+  hideDeleteConfirmation()
+  try {
+    await accountApi.deleteAccount()
+    await accountApi.logout()
+    toastService.success(t('account.delete.success'))
+    await router.push({ name: 'home' })
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    const errorDetails = error?.message || t('error.genericMessage')
+    toastService.error(t('account.delete.error', errorDetails))
+  }
 }
 </script>
 

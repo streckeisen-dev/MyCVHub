@@ -1,12 +1,13 @@
 package ch.streckeisen.mycv.backend.account
 
 import ch.streckeisen.mycv.backend.account.dto.AccountDto
+import ch.streckeisen.mycv.backend.account.dto.AccountStatusDto
 import ch.streckeisen.mycv.backend.account.dto.AccountUpdateDto
-import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
-import ch.streckeisen.mycv.backend.account.dto.LoginResponseDto
+import ch.streckeisen.mycv.backend.security.annotations.RequiresAccountStatus
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -44,11 +45,20 @@ class ApplicantAccountResource(private val applicantAccountService: ApplicantAcc
             )
     }
 
-    @PostMapping("/change-password")
-    fun changePassword(@RequestBody changePasswordDto: ChangePasswordDto): ResponseEntity<LoginResponseDto> {
+    @RequiresAccountStatus(AccountStatus.INCOMPLETE)
+    @GetMapping("status")
+    fun getVerificationStatus(): ResponseEntity<AccountStatusDto> {
         val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val status = applicantAccountService.getAccountStatus(principal.id)
+            .getOrThrow()
+        return ResponseEntity.ok(AccountStatusDto(status))
+    }
 
-        return applicantAccountService.changePassword(principal.id, changePasswordDto)
+    @RequiresAccountStatus(AccountStatus.INCOMPLETE)
+    @DeleteMapping
+    fun deleteAccount(): ResponseEntity<Unit> {
+        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        return applicantAccountService.delete(principal.id)
             .fold(
                 onSuccess = {
                     ResponseEntity.ok().build()

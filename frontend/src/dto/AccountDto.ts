@@ -1,4 +1,5 @@
 export type AccountDto = {
+  username: string
   firstName: string
   lastName: string
   email: string
@@ -9,6 +10,6 @@ export type AccountDto = {
   postcode: string
   city: string
   country: string
-  password: string
-  profile?: string
+  hasProfile: boolean,
+  hasPassword: boolean
 }

@@ -1,5 +1,6 @@
 package ch.streckeisen.mycv.backend.security
 
+import ch.streckeisen.mycv.backend.account.AccountStatus
 import ch.streckeisen.mycv.backend.account.auth.ACCESS_TOKEN_NAME
 import io.jsonwebtoken.ExpiredJwtException
 import io.mockk.every
@@ -14,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.web.servlet.HandlerExceptionResolver
 import org.springframework.web.servlet.ModelAndView
@@ -77,27 +77,32 @@ class JwtAuthenticationFilterTest {
         val response = mockResponse()
         val filterChain = mockFilterChain()
         val userId = 1L
-        val username = "username"
+        val userName = "username"
         val token = "abcdefg"
-        val user = User.withUsername(username).password("password").build()
-        val userDetails = MyCvUserDetails(user, userId)
+        val userDetails = MyCvUserDetails(mockk {
+            every { id } returns userId
+            every { username } returns userName
+            every { isVerified } returns false
+            every { accountDetails } returns mockk()
+        })
         assertNull(SecurityContextHolder.getContext().authentication)
         every { request.cookies } returns arrayOf(mockk {
             every { name } returns ACCESS_TOKEN_NAME
             every { value } returns token
         })
-        every { jwtService.extractUsername(eq(token)) } returns username
+        every { jwtService.extractUsername(eq(token)) } returns userName
         every { jwtService.isTokenValid(any(), any()) } returns true
-        every { userDetailsService.loadUserByUsername(eq(username)) } returns userDetails
+        every { userDetailsService.loadUserByUsernameAsResult(eq(userName)) } returns Result.success(userDetails)
 
         jwtAuthenticationFilter.doFilter(request, response, filterChain)
 
+        assertNotNull(SecurityContextHolder.getContext().authentication)
         val auth = SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken
-        assertNotNull(auth)
         assertTrue { auth.isAuthenticated }
         val principal = auth.principal as MyCvPrincipal
-        assertEquals(username, principal.username)
+        assertEquals(userName, principal.username)
         assertEquals(userId, principal.id)
+        assertEquals(AccountStatus.UNVERIFIED, principal.status)
         verify(exactly = 0) { handlerExceptionResolver.resolveException(any(), any(), any(), any()) }
     }
 
@@ -111,7 +116,7 @@ class JwtAuthenticationFilterTest {
             every { value } returns "abcdefg"
         })
         every { jwtService.extractUsername(eq("abcdefg")) } returns "username"
-        val authToken = UsernamePasswordAuthenticationToken(MyCvPrincipal("username", 1), null, listOf())
+        val authToken = UsernamePasswordAuthenticationToken(MyCvPrincipal("username", 1, AccountStatus.VERIFIED), null, listOf())
         authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
         SecurityContextHolder.getContext().authentication = authToken
 

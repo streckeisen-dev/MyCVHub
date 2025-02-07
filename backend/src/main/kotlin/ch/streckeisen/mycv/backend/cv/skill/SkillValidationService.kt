@@ -33,15 +33,21 @@ class SkillValidationService(
             validationErrorBuilder.addError(TYPE_FIELD_KEY, error)
         }
 
-        if (skillUpdate.level == null) {
-            val error = messagesService.requiredFieldMissingError(LEVEL_FIELD_KEY)
-            validationErrorBuilder.addError(LEVEL_FIELD_KEY, error)
-        } else if (skillUpdate.level < LEVEL_MIN_VALUE) {
-            val error = messagesService.numberTooSmallError(LEVEL_FIELD_KEY, LEVEL_MIN_VALUE.toInt())
-            validationErrorBuilder.addError(LEVEL_FIELD_KEY, error)
-        } else if (skillUpdate.level > LEVEL_MAX_VALUE) {
-            val error = messagesService.numberTooBigError(LEVEL_FIELD_KEY, LEVEL_MAX_VALUE.toInt())
-            validationErrorBuilder.addError(LEVEL_FIELD_KEY, error)
+        when {
+            skillUpdate.level == null -> {
+                val error = messagesService.requiredFieldMissingError(LEVEL_FIELD_KEY)
+                validationErrorBuilder.addError(LEVEL_FIELD_KEY, error)
+            }
+
+            skillUpdate.level < LEVEL_MIN_VALUE -> {
+                val error = messagesService.numberTooSmallError(LEVEL_FIELD_KEY, LEVEL_MIN_VALUE.toInt())
+                validationErrorBuilder.addError(LEVEL_FIELD_KEY, error)
+            }
+
+            skillUpdate.level > LEVEL_MAX_VALUE -> {
+                val error = messagesService.numberTooBigError(LEVEL_FIELD_KEY, LEVEL_MAX_VALUE.toInt())
+                validationErrorBuilder.addError(LEVEL_FIELD_KEY, error)
+            }
         }
 
         if (validationErrorBuilder.hasErrors()) {

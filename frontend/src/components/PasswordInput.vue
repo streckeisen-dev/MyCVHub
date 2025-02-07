@@ -21,5 +21,3 @@ const props = defineProps<{
 
 const showPassword = ref<boolean>(false)
 </script>
-
-<style scoped></style>

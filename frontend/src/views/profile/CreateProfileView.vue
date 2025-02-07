@@ -12,10 +12,9 @@ import ProfileEditor from '@/views/profile/components/ProfileEditor.vue'
 import type { ProfileDto } from '@/dto/ProfileDto'
 import profileApi from '@/api/ProfileApi'
 import router from '@/router'
-import type { ErrorDto } from '@/dto/ErrorDto'
+import { RestError } from '@/api/RestError'
 
 const emptyProfile: ProfileDto = {
-  alias: '',
   jobTitle: '',
   bio: '',
   isProfilePublic: false,
@@ -26,15 +25,17 @@ const emptyProfile: ProfileDto = {
   profilePicture: '',
   workExperiences: [],
   education: [],
-  skills: []
+  skills: [],
+  projects: [],
+  theme: undefined
 }
 
 try {
   await profileApi.getProfile()
   router.push({ name: 'edit-profile' })
 } catch (e) {
-  const error = e as ErrorDto
-  if (error.status === 401) {
+  const error = (e as RestError).errorDto
+  if (error?.status === 401) {
     // prevent the form from being displayed in (unlikely) case that login state is true and cookies are expired
     await router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
   }

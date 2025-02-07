@@ -1,15 +1,12 @@
 package ch.streckeisen.mycv.backend.cv.education
 
-import ch.streckeisen.mycv.backend.exceptions.ValidationException
+import ch.streckeisen.mycv.backend.util.executeParameterizedTest
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.time.LocalDate
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 class EducationValidationServiceTest {
     private lateinit var educationValidationService: EducationValidationService
@@ -22,15 +19,11 @@ class EducationValidationServiceTest {
     @ParameterizedTest
     @MethodSource("educationValidationDataProvider")
     fun testValidateEduction(educationUpdate: EducationUpdateDto, isValid: Boolean, numberOfErrors: Int) {
-        val result = educationValidationService.validateEducation(educationUpdate)
-
-        assertEquals(isValid, result.isSuccess)
-        if (!isValid) {
-            val ex = result.exceptionOrNull()
-            assertNotNull(ex)
-            assertTrue(ex is ValidationException)
-            assertEquals(numberOfErrors, ex.errors.size)
-        }
+        executeParameterizedTest(
+            educationUpdate,
+            isValid,
+            numberOfErrors
+        ) { educationValidationService.validateEducation(educationUpdate) }
     }
 
     companion object {

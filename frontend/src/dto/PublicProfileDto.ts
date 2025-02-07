@@ -1,6 +1,8 @@
 import type { PublicWorkExperienceDto } from '@/dto/PublicWorkExperienceDto'
 import type { PublicSkillDto } from '@/dto/PublicSkillDto'
 import type { PublicEducationDto } from '@/dto/PublicEducationDto'
+import type { PublicProfileThemeDto } from '@/dto/PublicProfileThemeDto'
+import { PublicProjectDto } from '@/dto/PublicProjectDto'
 
 export type PublicProfileDto = {
   firstName: string
@@ -14,6 +16,8 @@ export type PublicProfileDto = {
   workExperiences: Array<PublicWorkExperienceDto>
   skills: Array<PublicSkillDto>
   education: Array<PublicEducationDto>
+  projects: Array<PublicProjectDto>
+  theme?: PublicProfileThemeDto
 }
 
 export type PublicAddressDto = {

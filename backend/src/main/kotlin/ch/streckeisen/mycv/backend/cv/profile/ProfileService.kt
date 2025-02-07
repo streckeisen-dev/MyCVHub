@@ -2,8 +2,8 @@ package ch.streckeisen.mycv.backend.cv.profile
 
 import ch.streckeisen.mycv.backend.account.ApplicantAccountService
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
-import ch.streckeisen.mycv.backend.exceptions.EntityNotFoundException
-import org.springframework.security.access.AccessDeniedException
+import ch.streckeisen.mycv.backend.exceptions.LocalizedException
+import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -17,12 +17,12 @@ class ProfileService(
     private val profilePictureService: ProfilePictureService
 ) {
     @Transactional(readOnly = true)
-    fun findByAlias(accountId: Long?, alias: String): Result<ProfileEntity> {
-        val profile = profileRepository.findByAlias(alias)
-            .getOrElse { return Result.failure(EntityNotFoundException("Profile not found")) }
+    fun findByUsername(accountId: Long?, username: String): Result<ProfileEntity> {
+        val profile = profileRepository.findByAccountUsername(username)
+            .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.profile.notFound")) }
 
         if (!profile.isProfilePublic && profile.account.id != accountId) {
-            return Result.failure(AccessDeniedException("You don't have permission to view this profile"))
+            return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.profile.accessDenied"))
         }
         return Result.success(profile)
     }
@@ -31,7 +31,7 @@ class ProfileService(
     fun findByAccountId(accountId: Long): Result<ProfileEntity> {
         return profileRepository.findByAccountId(accountId)
             .map { Result.success(it) }
-            .orElse(Result.failure(EntityNotFoundException("Profile not found")))
+            .orElse(Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.profile.notFound")))
     }
 
     @Transactional
@@ -42,12 +42,11 @@ class ProfileService(
     ): Result<ProfileEntity> {
         val account = applicantAccountService.findById(accountId).getOrNull()
         if (account == null) {
-            return Result.failure(EntityNotFoundException("Account is invalid"))
+            return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.account.notFound"))
         }
 
         val existingProfile = account.profile
         profileValidationService.validateProfileInformation(
-            accountId,
             profileInformationUpdate,
             profilePictureUpdate,
             existingProfile == null
@@ -68,7 +67,6 @@ class ProfileService(
 
         val profile = ProfileEntity(
             id = existingProfile?.id,
-            alias = profileInformationUpdate.alias!!,
             jobTitle = profileInformationUpdate.jobTitle!!,
             bio = if (profileInformationUpdate.bio == "") null else profileInformationUpdate.bio,
             isProfilePublic = isProfilePublic,

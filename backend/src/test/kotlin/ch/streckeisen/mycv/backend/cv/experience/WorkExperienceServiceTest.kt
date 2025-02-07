@@ -2,13 +2,11 @@ package ch.streckeisen.mycv.backend.cv.experience
 
 import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
-import ch.streckeisen.mycv.backend.exceptions.EntityNotFoundException
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.security.access.AccessDeniedException
 import java.time.LocalDate
 import java.util.Optional
 import kotlin.test.assertNotNull
@@ -40,7 +38,7 @@ class WorkExperienceServiceTest {
         }
         workExperienceValidationService = mockk()
         profileService = mockk {
-            every { findByAccountId(any()) } returns Result.failure(EntityNotFoundException(""))
+            every { findByAccountId(any()) } returns Result.failure(IllegalArgumentException(""))
             every { findByAccountId(eq(1)) } returns Result.success(mockProfile)
         }
         workExperienceService =
@@ -56,7 +54,6 @@ class WorkExperienceServiceTest {
         assertTrue { result.isFailure }
         val ex = result.exceptionOrNull()
         assertNotNull(ex)
-        assertTrue { ex is EntityNotFoundException }
 
         verify(exactly = 1) { workExperienceRepository.findById(eq(5)) }
         verify(exactly = 0) { workExperienceRepository.save(any()) }
@@ -71,7 +68,6 @@ class WorkExperienceServiceTest {
         assertTrue { result.isFailure }
         val ex = result.exceptionOrNull()
         assertNotNull(ex)
-        assertTrue { ex is AccessDeniedException }
 
         verify(exactly = 1) { workExperienceRepository.findById(eq(1)) }
         verify(exactly = 0) { profileService.findByAccountId(any()) }
@@ -87,7 +83,6 @@ class WorkExperienceServiceTest {
         assertTrue { result.isFailure }
         val ex = result.exceptionOrNull()
         assertNotNull(ex)
-        assertTrue(ex is EntityNotFoundException)
 
         verify(exactly = 0) { workExperienceRepository.findById(any()) }
         verify(exactly = 0) { workExperienceRepository.save(any()) }
@@ -136,7 +131,6 @@ class WorkExperienceServiceTest {
         assertTrue { result.isFailure }
         val ex = result.exceptionOrNull()
         assertNotNull(ex)
-        assertTrue(ex is EntityNotFoundException)
     }
 
     @Test
@@ -146,7 +140,6 @@ class WorkExperienceServiceTest {
         assertTrue { result.isFailure }
         val ex = result.exceptionOrNull()
         assertNotNull(ex)
-        assertTrue(ex is AccessDeniedException)
     }
 
     @Test

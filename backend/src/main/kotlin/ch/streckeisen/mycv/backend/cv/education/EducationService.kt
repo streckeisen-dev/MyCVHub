@@ -1,8 +1,8 @@
 package ch.streckeisen.mycv.backend.cv.education
 
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
-import ch.streckeisen.mycv.backend.exceptions.EntityNotFoundException
-import org.springframework.security.access.AccessDeniedException
+import ch.streckeisen.mycv.backend.exceptions.LocalizedException
+import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import kotlin.jvm.optionals.getOrElse
@@ -17,11 +17,11 @@ class EducationService(
     fun save(accountId: Long, educationUpdate: EducationUpdateDto): Result<EducationEntity> {
         val existingEducation = if (educationUpdate.id != null) {
             educationRepository.findById(educationUpdate.id)
-                .getOrElse { return Result.failure(EntityNotFoundException("This eduction entry does not exist")) }
+                .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.education.notFound")) }
         } else null
 
         if (existingEducation != null && existingEducation.profile.account.id != accountId) {
-            return Result.failure(AccessDeniedException("You don't have permission to modify this education entry"))
+            return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.education.accessDenied"))
         }
 
         val profile = if (existingEducation != null) {
@@ -53,10 +53,10 @@ class EducationService(
     @Transactional
     fun delete(accountId: Long, id: Long): Result<Unit> {
         val education = educationRepository.findById(id)
-            .getOrElse { return Result.failure(EntityNotFoundException("This eduction entry does not exist")) }
+            .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.education.notFound")) }
 
         if (education.profile.account.id != accountId) {
-            return Result.failure(AccessDeniedException("You don't have permission to delete this education entry"))
+            return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.education.accessDenied"))
         }
 
         educationRepository.delete(education)

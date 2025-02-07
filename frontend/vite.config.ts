@@ -28,5 +28,16 @@ export default () =>
           changeOrigin: true
         }
       }
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern'
+        }
+      }
+    },
+    build: {
+      target: 'esnext',
+      minify: 'esbuild'
     }
   })

@@ -44,7 +44,6 @@ import { type ComputedRef, reactive, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import profileApi from '@/api/ProfileApi'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import type { SkillDto } from '@/dto/SkillDto'
 import type { SkillUpdateDto } from '@/dto/SkillUpdateDto'
 import { useI18n } from 'vue-i18n'
@@ -52,6 +51,7 @@ import { required, withI18nMessage } from '@/validation/validators'
 import { helpers } from '@vuelidate/validators'
 import FormButtons from '@/components/FormButtons.vue'
 import ToastService from '@/services/ToastService'
+import { RestError } from '@/api/RestError'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -133,11 +133,11 @@ async function save() {
     }
     errorMessages.value = {}
   } catch (e) {
-    const error = e as ErrorDto
-    errorMessages.value = error.errors || {}
+    const error = (e as RestError).errorDto
+    errorMessages.value = error?.errors || {}
     if (Object.keys(errorMessages.value).length === 0) {
       const errorMessage = props.isEdit ? t('skills.editor.editError') : t('skills.editor.addError')
-      const errorDetails = error.message || t('error.genericMessage')
+      const errorDetails = error?.message || t('error.genericMessage')
       ToastService.error(errorMessage, errorDetails)
     }
   } finally {

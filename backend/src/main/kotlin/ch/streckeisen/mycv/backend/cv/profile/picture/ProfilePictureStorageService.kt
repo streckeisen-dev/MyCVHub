@@ -2,6 +2,7 @@ package ch.streckeisen.mycv.backend.cv.profile.picture
 
 import com.cloudinary.Cloudinary
 import com.cloudinary.EagerTransformation
+import org.apache.commons.io.FileUtils
 import org.apache.tika.detect.DefaultDetector
 import org.apache.tika.metadata.Metadata
 import org.apache.tika.mime.MediaType
@@ -10,10 +11,10 @@ import org.springframework.core.env.Environment
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.io.BufferedInputStream
-import java.io.File
 import java.io.IOException
 import java.net.URI
 import java.time.Instant
+import kotlin.io.path.createTempFile
 
 private const val PROD_ASSET_FOLDER = "prod"
 private const val TEST_ASSET_FOLDER = "local"
@@ -76,9 +77,9 @@ class ProfilePictureStorageService(
         }
     }
 
-    fun store(filename: String, profilePicture: MultipartFile): Result<String> {
+    fun store(profilePicture: MultipartFile): Result<String> {
+        val file = createTempFile("profile-picture", ".tmp").toFile()
         try {
-            val file = File(filename)
             profilePicture.inputStream.use { inputStream ->
                 file.outputStream().use { outputStream ->
                     inputStream.copyTo(outputStream)
@@ -96,6 +97,7 @@ class ProfilePictureStorageService(
             )
             val result = cloudinary.uploader()
                 .upload(file, uploadParams)
+                .toMap()
 
             val publicId = result["public_id"] as String?
             if (publicId == null) {
@@ -104,6 +106,8 @@ class ProfilePictureStorageService(
             return Result.success(publicId)
         } catch (ex: IOException) {
             return Result.failure(ex)
+        } finally {
+            FileUtils.delete(file)
         }
     }
 
@@ -112,7 +116,10 @@ class ProfilePictureStorageService(
             "invalidate" to true,
             "type" to AUTHENTICATED_TYPE
         )
-        val result = cloudinary.uploader().destroy(filename, destroyParams)
+        val result = cloudinary.uploader()
+            .destroy(filename, destroyParams)
+            .toMap()
+
         val status = result["result"] as String?
         if (status != "ok") {
             return Result.failure(ProfilePictureStorageException("Failed to delete file $filename"))

@@ -1,120 +1,95 @@
 package ch.streckeisen.mycv.backend.account
 
 import ch.streckeisen.mycv.backend.account.dto.AccountUpdateDto
-import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
-import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
-import ch.streckeisen.mycv.backend.exceptions.EntityNotFoundException
-import ch.streckeisen.mycv.backend.exceptions.ValidationException
+import ch.streckeisen.mycv.backend.account.verification.AccountVerificationService
+import ch.streckeisen.mycv.backend.exceptions.LocalizedException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
-import ch.streckeisen.mycv.backend.locale.MessagesService
-import org.springframework.security.crypto.password.PasswordEncoder
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import kotlin.jvm.optionals.getOrElse
 
-private const val ENCODED_PASSWORD_LENGTH_ERROR_KEY = "${MYCV_KEY_PREFIX}.account.validation.password.encodingTooLong"
-private const val PASSWORD_ENCODING_ERROR_KEY = "${MYCV_KEY_PREFIX}.account.validation.password.encodingError"
+private val logger = KotlinLogging.logger {}
 
 @Service
 class ApplicantAccountService(
     private val applicantAccountRepository: ApplicantAccountRepository,
     private val applicantAccountValidationService: ApplicantAccountValidationService,
-    private val passwordEncoder: PasswordEncoder,
-    private val messagesService: MessagesService
+    private val accountVerificationService: AccountVerificationService
 ) {
     @Transactional(readOnly = true)
     fun findById(id: Long): Result<ApplicantAccountEntity> {
         return applicantAccountRepository.findById(id)
             .map { applicant -> Result.success(applicant) }
-            .orElse(Result.failure(EntityNotFoundException("No applicant with ID $id")))
+            .orElse(Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.account.notFound")))
     }
 
-    @Transactional(readOnly = false)
-    fun create(signupRequest: SignupRequestDto): Result<ApplicantAccountEntity> {
-        applicantAccountValidationService.validateSignupRequest(signupRequest)
-            .onFailure { return Result.failure(it) }
-        val encodedPassword = encodePassword(signupRequest.password)
-            .getOrElse { return Result.failure(it) }
+    @Transactional(readOnly = true)
+    fun getAccountStatus(accountId: Long): Result<AccountStatus> {
+        val hasAccountDetails = applicantAccountRepository.hasAccountDetails(accountId)
+            .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.account.notFound")) }
+        if (!hasAccountDetails) {
+            return Result.success(AccountStatus.INCOMPLETE)
+        }
 
-        val applicantAccount = ApplicantAccountEntity(
-            signupRequest.firstName!!,
-            signupRequest.lastName!!,
-            signupRequest.email!!,
-            signupRequest.phone!!,
-            signupRequest.birthday!!,
-            signupRequest.street!!,
-            signupRequest.houseNumber,
-            signupRequest.postcode!!,
-            signupRequest.city!!,
-            signupRequest.country!!,
-            encodedPassword
-        )
-        return Result.success(applicantAccountRepository.save(applicantAccount))
+        val isVerified = applicantAccountRepository.isAccountVerified(accountId)
+            .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.account.notFound")) }
+
+        return if (isVerified) {
+            Result.success(AccountStatus.VERIFIED)
+        } else {
+            Result.success(AccountStatus.UNVERIFIED)
+        }
     }
 
     @Transactional
     fun update(accountId: Long, accountUpdate: AccountUpdateDto): Result<ApplicantAccountEntity> {
         val existingAccount = applicantAccountRepository.findById(accountId)
-            .getOrElse { return Result.failure(EntityNotFoundException("Account does not exist")) }
+            .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.account.notFound")) }
 
         applicantAccountValidationService.validateAccountUpdate(accountId, accountUpdate)
             .onFailure { return Result.failure(it) }
 
+        val isVerified = if (existingAccount.accountDetails?.email == accountUpdate.email) {
+            existingAccount.isVerified
+        } else false
+
         val account = ApplicantAccountEntity(
-            accountUpdate.firstName!!,
-            accountUpdate.lastName!!,
-            accountUpdate.email!!,
-            accountUpdate.phone!!,
-            accountUpdate.birthday!!,
-            accountUpdate.street!!,
-            accountUpdate.houseNumber,
-            accountUpdate.postcode!!,
-            accountUpdate.city!!,
-            accountUpdate.country!!,
+            accountUpdate.username!!,
             existingAccount.password,
-            existingAccount.id,
-            existingAccount.profile
+            existingAccount.isOAuthUser,
+            isVerified,
+            accountDetails = AccountDetailsEntity(
+                accountUpdate.firstName!!,
+                accountUpdate.lastName!!,
+                accountUpdate.email!!,
+                accountUpdate.phone!!,
+                accountUpdate.birthday!!,
+                accountUpdate.street!!,
+                accountUpdate.houseNumber,
+                accountUpdate.postcode!!,
+                accountUpdate.city!!,
+                accountUpdate.country!!
+            ),
+            id = existingAccount.id,
+            profile = existingAccount.profile,
+            oauthIntegrations = existingAccount.oauthIntegrations,
+            accountVerification = existingAccount.accountVerification
         )
-        return Result.success(applicantAccountRepository.save(account))
+        applicantAccountRepository.save(account)
+        if (!account.isVerified) {
+            accountVerificationService.generateVerificationToken(accountId)
+                .onFailure { logger.error(it) { "[Account ${accountId}] Failed to generate new verification token for new email address" } }
+        }
+        return Result.success(account)
     }
 
     @Transactional
-    fun changePassword(accountId: Long, changePasswordDto: ChangePasswordDto): Result<ApplicantAccountEntity> {
+    fun delete(accountId: Long): Result<Unit> {
         val existingAccount = applicantAccountRepository.findById(accountId)
-            .getOrElse { return Result.failure(EntityNotFoundException("Account does not exist")) }
+            .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.account.notFound")) }
 
-        applicantAccountValidationService.validateChangePasswordRequest(changePasswordDto, existingAccount.password)
-            .onFailure { return Result.failure(it) }
-
-        val encodedNewPassword = encodePassword(changePasswordDto.password)
-            .getOrElse { return Result.failure(it) }
-
-        val account = ApplicantAccountEntity(
-            existingAccount.firstName,
-            existingAccount.lastName,
-            existingAccount.email,
-            existingAccount.phone,
-            existingAccount.birthday,
-            existingAccount.street,
-            existingAccount.houseNumber,
-            existingAccount.postcode,
-            existingAccount.city,
-            existingAccount.country,
-            encodedNewPassword,
-            existingAccount.id,
-            existingAccount.profile
-        )
-
-        return Result.success(applicantAccountRepository.save(account))
-    }
-
-    private fun encodePassword(password: String?): Result<String> {
-        val encodedPassword = passwordEncoder.encode(password)
-        if (encodedPassword.length > PASSWORD_MAX_LENGTH) {
-            val errors = ValidationException.ValidationErrorBuilder()
-            errors.addError("password", messagesService.getMessage(ENCODED_PASSWORD_LENGTH_ERROR_KEY))
-            return Result.failure(errors.build(messagesService.getMessage(PASSWORD_ENCODING_ERROR_KEY)))
-        }
-        return Result.success(encodedPassword)
+        applicantAccountRepository.delete(existingAccount)
+        return Result.success(Unit)
     }
 }

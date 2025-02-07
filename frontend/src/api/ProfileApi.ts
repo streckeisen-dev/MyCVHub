@@ -14,14 +14,20 @@ import type { EducationDto } from '@/dto/EducationDto'
 import type { SkillUpdateDto } from '@/dto/SkillUpdateDto'
 import type { SkillDto } from '@/dto/SkillDto'
 import type { ThumbnailDto } from '@/dto/ThumbnailDto'
+import type { ProfileThemeUpdateDto } from '@/dto/ProfileThemeUpdateDto'
+import type { ProfileThemeDto } from '@/dto/ProfileThemeDto'
+import { ProjectUpdateDto } from '@/dto/ProjectUpdateDto'
+import { ProjectDto } from '@/dto/ProjectDto'
+import { RestError } from '@/api/RestError'
 
-async function getPublicProfile(alias: string): Promise<PublicProfileDto> {
+async function getPublicProfile(username: string): Promise<PublicProfileDto> {
   try {
-    const response = await fetchFromApi(`/api/public/profile/${alias}`)
+    const response = await fetchFromApi(`/api/public/profile/${username}`)
     const profile = await getJSONIfResponseIsOk<PublicProfileDto>(response)
     return Promise.resolve(profile)
-  } catch (error) {
-    return Promise.reject(error)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    return Promise.reject(new RestError('Failed to load public profile', error))
   }
 }
 
@@ -38,8 +44,9 @@ async function getProfile(): Promise<ProfileDto> {
     const response = await fetchFromApi('/api/profile')
     const profile = await getJSONIfResponseIsOk<ProfileDto>(response)
     return Promise.resolve(profile)
-  } catch (error) {
-    return Promise.reject(error)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    return Promise.reject(new RestError('Failed to load profile', error))
   }
 }
 
@@ -58,8 +65,9 @@ async function updateGeneralInformation(
     })
     const profile = await getJSONIfResponseIsOk<ProfileDto>(response)
     return Promise.resolve(profile)
-  } catch (error) {
-    return Promise.reject(error)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    return Promise.reject(new RestError('Failed to update CV profile', error))
   }
 }
 
@@ -74,8 +82,9 @@ async function saveWorkExperience(
     })
     const workExperience = await getJSONIfResponseIsOk<WorkExperienceDto>(response)
     return Promise.resolve(workExperience)
-  } catch (error) {
-    return Promise.reject(error)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    return Promise.reject(new RestError('Failed to save work experience', error))
   }
 }
 
@@ -86,8 +95,9 @@ async function deleteWorkExperience(id: number): Promise<void> {
     })
     await extractErrorIfResponseIsNotOk(response)
     return Promise.resolve()
-  } catch (error) {
-    return Promise.reject(error)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    return Promise.reject(new RestError('Failed to delete work experience', error))
   }
 }
 
@@ -100,8 +110,9 @@ async function saveEducation(educationUpdate: EducationUpdateDto): Promise<Educa
     })
     const education = await getJSONIfResponseIsOk<EducationDto>(response)
     return Promise.resolve(education)
-  } catch (error) {
-    return Promise.reject(error)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    return Promise.reject(new RestError('Failed to save education', error))
   }
 }
 
@@ -112,8 +123,9 @@ async function deleteEducation(id: number): Promise<void> {
     })
     await extractErrorIfResponseIsNotOk(response)
     return Promise.resolve()
-  } catch (error) {
-    return Promise.reject(error)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    return Promise.reject(new RestError('Failed to delete education', error))
   }
 }
 
@@ -126,8 +138,9 @@ async function saveSkill(skillUpdate: SkillUpdateDto): Promise<SkillDto> {
     })
     const skill = await getJSONIfResponseIsOk<SkillDto>(response)
     return Promise.resolve(skill)
-  } catch (error) {
-    return Promise.reject(error)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    return Promise.reject(new RestError('Failed to save skill', error))
   }
 }
 
@@ -138,18 +151,63 @@ async function deleteSkill(id: number): Promise<void> {
     })
     await extractErrorIfResponseIsNotOk(response)
     return Promise.resolve()
-  } catch (error) {
-    return Promise.reject(error)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    return Promise.reject(new RestError('Failed to delete skill', error))
+  }
+}
+
+async function saveProject(projectUpdate: ProjectUpdateDto): Promise<ProjectDto> {
+  try {
+    const response = await fetchFromApi('/api/profile/project', {
+      method: 'POST',
+      body: JSON.stringify(projectUpdate),
+      headers: commonHeaders()
+    })
+    const project = await getJSONIfResponseIsOk<ProjectDto>(response)
+    return Promise.resolve(project)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    return Promise.reject(new RestError('Failed to save project', error))
+  }
+}
+
+async function deleteProject(id: number): Promise<void> {
+  try {
+    const response = await fetchFromApi(`/api/profile/project/${id}`, {
+      method: 'DELETE'
+    })
+    await extractErrorIfResponseIsNotOk(response)
+    return Promise.resolve()
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    return Promise.reject(new RestError('Failed to delete project', error))
   }
 }
 
 async function getThumbnail(): Promise<ThumbnailDto> {
   try {
     const response = await fetchFromApi('/profile/picture/thumbnail')
-    const thumbnail = getJSONIfResponseIsOk<ThumbnailDto>(response)
+    const thumbnail = await getJSONIfResponseIsOk<ThumbnailDto>(response)
     return Promise.resolve(thumbnail)
-  } catch (error) {
-    return Promise.reject(error)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    return Promise.reject(new RestError('Failed to load thumbnail', error))
+  }
+}
+
+async function saveTheme(themeUpdate: ProfileThemeUpdateDto): Promise<ProfileThemeDto> {
+  try {
+    const response = await fetchFromApi('/api/profile/theme', {
+      method: 'POST',
+      body: JSON.stringify(themeUpdate),
+      headers: commonHeaders()
+    })
+    const updatedTheme = await getJSONIfResponseIsOk<ProfileThemeDto>(response)
+    return Promise.resolve(updatedTheme)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    return Promise.reject(new RestError('Failed to save theme', error))
   }
 }
 
@@ -165,5 +223,8 @@ export default {
   deleteEducation,
   saveSkill,
   deleteSkill,
-  getThumbnail
+  saveProject,
+  deleteProject,
+  getThumbnail,
+  saveTheme
 }

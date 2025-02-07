@@ -53,11 +53,12 @@ const vuetify = createVuetify({
       profile: {
         dark: false,
         colors: {
-          nav: '#f6f8fa',
-          background: '#ffffff',
-          border: '#d1d9e0',
-          'btn-primary': '#56aff5',
-          'btn-background': '#5660f5'
+          primary: '#4169E1',
+          secondary: '#202020',
+          background: '#FFFFFF',
+          surface: '#F4F4F4',
+          onPrimary: '#FFFFFF',
+          onBackground: '#202020'
         }
       }
     }

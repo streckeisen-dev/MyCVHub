@@ -2,6 +2,7 @@
   <v-app-bar
     role="navigation"
     aria-label="Header navigation"
+    :color="theme.surfaceColor"
   >
     <v-app-bar-title>
       {{ displayName }}
@@ -13,7 +14,7 @@
     </template>
   </v-app-bar>
 
-  <v-main>
+  <v-main :style="mainStyles">
     <v-container v-if="profile">
       <v-row>
         <v-col
@@ -88,10 +89,18 @@
             <education-container :values="profile.education" />
           </profile-section>
           <profile-section
+            v-if="profile.skills?.length > 0"
             :title="t('skills.title')"
             h2
           >
             <skills-container :values="profile.skills" />
+          </profile-section>
+          <profile-section
+            v-if="profile.projects?.length > 0"
+            :title="t('project.title')"
+            h2
+          >
+            <project-container :values="profile.projects" />
           </profile-section>
         </v-col>
       </v-row>
@@ -109,10 +118,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { PublicProfileDto } from '@/dto/PublicProfileDto'
-import profileApi from '@/api/ProfileApi'
 import ProfileApi from '@/api/ProfileApi'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import ProfileSection from '@/views/profile/components/ProfileSection.vue'
 import vuetify from '@/plugins/vuetify'
 import WorkExperienceContainer from '@/views/profile/components/work-experience/WorkExperienceContainer.vue'
@@ -125,12 +132,15 @@ import {
 import SkillsContainer from '@/views/profile/components/skill/SkillsContainer.vue'
 import EducationContainer from '@/views/profile/components/education/EducationContainer.vue'
 import { useI18n } from 'vue-i18n'
+import type { PublicProfileThemeDto } from '@/dto/PublicProfileThemeDto'
+import ProjectContainer from '@/views/profile/components/project/ProjectContainer.vue'
+import { RestError } from '@/api/RestError'
 
 const { t } = useI18n({
   useScope: 'global'
 })
 
-const props = defineProps<{ alias: string }>()
+const props = defineProps<{ username: string }>()
 const originalTheme = vuetify.theme.global.name.value
 vuetify.theme.global.name.value = 'profile'
 
@@ -138,6 +148,14 @@ const profile = ref<PublicProfileDto>()
 const isProfileLoading = ref(false)
 const loadingError = ref<string>()
 const defaultProfilePicture = ProfileApi.getDefaultProfilePicture()
+const theme = ref<PublicProfileThemeDto>({
+  backgroundColor: vuetify.theme.themes.value.profile.colors.background,
+  surfaceColor: vuetify.theme.themes.value.profile.colors.surface
+})
+
+const mainStyles = computed(() => {
+  return { background: theme.value.backgroundColor }
+})
 
 const displayName = computed(() => {
   if (profile.value) {
@@ -154,13 +172,15 @@ const profilePhoneLink = computed(() => `tel:${profile.value!!.phone}`)
 
 isProfileLoading.value = true
 try {
-  profile.value = await profileApi.getPublicProfile(props.alias)
-
-  // TODO: set theme colors according to profile
-  // vuetify.theme.themes.value.profile.colors.background = '#ff0000'
+  profile.value = await ProfileApi.getPublicProfile(props.username)
+  const profileTheme = profile.value.theme
+  if (profileTheme) {
+    theme.value.backgroundColor = profileTheme.backgroundColor
+    theme.value.surfaceColor = profileTheme.surfaceColor
+  }
 } catch (e) {
-  const error = e as ErrorDto
-  loadingError.value = error.message || t('error.genericMessage')
+  const error = (e as RestError).errorDto
+  loadingError.value = error?.message || t('error.genericMessage')
 } finally {
   isProfileLoading.value = false
 }

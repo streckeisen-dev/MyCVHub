@@ -1,16 +1,12 @@
-import { useLocale } from 'vuetify'
+import type { UseI18n } from '@/plugins/i18n.ts'
 
-export function toShortDate(dateString: string | undefined): string {
-  const locale = useLocale()
+export function toShortDate(dateString: string | undefined, i18n: UseI18n): string {
+  const { t, d } = i18n
 
   if (dateString == null) {
-    return locale.t('date.today')
+    return t('date.today')
   }
-  const date = new Date(dateString)
-  return date.toLocaleDateString(locale.current.value, {
-    month: 'short',
-    year: 'numeric'
-  })
+  return d(dateString, 'monthAndYear')
 }
 
 export function convertStringToDate(dateString: string | undefined): Date | undefined {
@@ -29,6 +25,13 @@ export function convertDateToString(date: Date | undefined): string | undefined 
   return undefined
 }
 
+
+/**
+ * Compare two dates by year and month in descending sort order, an undefined date is considered greater than any defined date
+ * @param dateA
+ * @param dateB
+ * @returns 0 if dates are equal, -1 if dateA is greater than dateB, 1 if dateA is less than dateB
+ */
 export function compareDatesByYearAndMonth(
   dateA: Date | undefined,
   dateB: Date | undefined

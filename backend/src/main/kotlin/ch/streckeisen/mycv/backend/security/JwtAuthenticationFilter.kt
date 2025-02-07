@@ -1,5 +1,6 @@
 package ch.streckeisen.mycv.backend.security
 
+import ch.streckeisen.mycv.backend.account.AccountStatus
 import ch.streckeisen.mycv.backend.account.auth.ACCESS_TOKEN_NAME
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -30,25 +31,40 @@ class JwtAuthenticationFilter(
         }
 
         try {
-            //val jwt = authHeader.substring(7)
-            val jwt = accessToken
-            val userEmail = jwtService.extractUsername(jwt)
+            val userEmail = jwtService.extractUsername(accessToken)
 
             val authentication = SecurityContextHolder.getContext().authentication
             if (userEmail != null && authentication == null) {
-                val userDetails = userDetailsService.loadUserByUsername(userEmail)
-
-                if (jwtService.isTokenValid(jwt, userDetails)) {
-                    val principal = MyCvPrincipal(userDetails.username!!, userDetails.applicantId)
-                    val authToken =
-                        UsernamePasswordAuthenticationToken(principal, null, userDetails.authorities)
-                    authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
-                    SecurityContextHolder.getContext().authentication = authToken
+                authenticateUser(userEmail, accessToken, request)
+            } else if (userEmail != null && authentication != null && authentication is UsernamePasswordAuthenticationToken) {
+                val principal = authentication.principal as MyCvPrincipal
+                if (principal.status != AccountStatus.VERIFIED) {
+                    authenticateUser(userEmail, accessToken, request)
                 }
             }
             filterChain.doFilter(request, response)
         } catch (ex: Exception) {
             handlerExceptionResolver.resolveException(request, response, null, ex)
         }
+    }
+
+    private fun authenticateUser(userEmail: String, accessToken: String, request: HttpServletRequest) {
+        userDetailsService.loadUserByUsernameAsResult(userEmail)
+            .onSuccess { userDetails ->
+                if (jwtService.isTokenValid(accessToken, userDetails)) {
+                    val principal = MyCvPrincipal(
+                        userDetails.username,
+                        userDetails.account.id!!,
+                        AccountStatus.ofAccount(userDetails.account)
+                    )
+                    val authToken =
+                        UsernamePasswordAuthenticationToken(principal, null, userDetails.authorities)
+                    authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
+                    SecurityContextHolder.getContext().authentication = authToken
+                }
+            }
+            .onFailure {
+                SecurityContextHolder.getContext().authentication = null
+            }
     }
 }

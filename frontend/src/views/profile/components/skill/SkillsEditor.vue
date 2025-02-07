@@ -37,12 +37,12 @@
 <script setup lang="ts">
 import { type PropType, ref } from 'vue'
 import profileApi from '@/api/ProfileApi'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import SkillsContainer from '@/views/profile/components/skill/SkillsContainer.vue'
 import EditSkillDialog from '@/views/profile/components/skill/EditSkillDialog.vue'
 import type { SkillDto } from '@/dto/SkillDto'
 import { useI18n } from 'vue-i18n'
 import ToastService from '@/services/ToastService'
+import { RestError } from '@/api/RestError'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -93,8 +93,8 @@ async function deleteSkill(id: number) {
     const index = skills.value.findIndex((e) => e.id === id)
     skills.value.splice(index, 1)
   } catch (e) {
-    const error = e as ErrorDto
-    const errorDetails = error.message || t('error.genericMessage')
+    const error = (e as RestError).errorDto
+    const errorDetails = error?.message || t('error.genericMessage')
     ToastService.error(t('skills.editor.deleteError'), errorDetails)
   }
 }
