@@ -30,12 +30,12 @@
 
 <script setup lang="ts">
 import accountApi from '@/api/AccountApi'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import { useI18n } from 'vue-i18n'
 import ToastService from '@/services/ToastService'
 import LoginStateService from '@/services/LoginStateService'
 import router from '@/router'
 import { AccountStatus } from '@/dto/AccountStatusDto'
+import { RestError } from '@/api/RestError'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -46,7 +46,7 @@ async function generateToken() {
     await accountApi.generateVerificationCode()
     ToastService.success(t('account.verification.resend.success'))
   } catch (e) {
-    const error = e as ErrorDto
+    const error = (e as RestError).errorDto
     const errorDetails = error?.message || t('error.genericMessage')
     ToastService.error(t('account.verification.resend.error'), errorDetails)
   }

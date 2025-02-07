@@ -59,13 +59,13 @@ import useVuelidate from '@vuelidate/core'
 import profileApi from '@/api/ProfileApi'
 import { convertDateToString, convertStringToDate } from '@/services/DateHelper'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import type { WorkExperienceUpdateDto } from '@/dto/WorkExperienceUpdateDto'
 import { useI18n } from 'vue-i18n'
 import { required, withI18nMessage } from '@/validation/validators'
 import { helpers } from '@vuelidate/validators'
 import FormButtons from '@/components/FormButtons.vue'
 import ToastService from '@/services/ToastService'
+import { RestError } from '@/api/RestError'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -132,6 +132,7 @@ const rules = {
 const form = useVuelidate<FormState>(rules, formState)
 
 const errorMessages = ref<ErrorMessages>({})
+
 function getErrors(attributeName: string): ComputedRef {
   return getErrorMessages(errorMessages, form, attributeName)
 }
@@ -169,7 +170,7 @@ async function save() {
     }
     errorMessages.value = {}
   } catch (e) {
-    const error = e as ErrorDto
+    const error = (e as RestError).errorDto
     errorMessages.value = error?.errors || {}
     if (Object.keys(errorMessages.value).length === 0) {
       const errorMessage = props.isEdit

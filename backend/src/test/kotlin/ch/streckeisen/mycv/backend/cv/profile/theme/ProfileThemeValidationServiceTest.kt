@@ -1,14 +1,11 @@
 package ch.streckeisen.mycv.backend.cv.profile.theme
 
-import ch.streckeisen.mycv.backend.exceptions.ValidationException
+import ch.streckeisen.mycv.backend.util.executeParameterizedTest
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 class ProfileThemeValidationServiceTest {
     private lateinit var profileThemeValidationService: ProfileThemeValidationService
@@ -21,16 +18,11 @@ class ProfileThemeValidationServiceTest {
     @ParameterizedTest
     @MethodSource("themeValidationDataProvider")
     fun testThemeValidation(themeUpdate: ProfileThemeUpdateDto, isValid: Boolean, numberOfErrors: Int) {
-        val result = profileThemeValidationService.validateThemeUpdate(themeUpdate)
-        if (isValid) {
-            assertTrue { result.isSuccess }
-        } else {
-            assertTrue { result.isFailure }
-            val ex = result.exceptionOrNull()
-            assertNotNull(ex)
-            assertTrue(ex is ValidationException)
-            assertEquals(numberOfErrors, ex.errors.size)
-        }
+        executeParameterizedTest(
+            themeUpdate,
+            isValid,
+            numberOfErrors
+        ) { profileThemeValidationService.validateThemeUpdate(it) }
     }
 
     companion object {

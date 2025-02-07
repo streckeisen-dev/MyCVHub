@@ -31,6 +31,11 @@ shared:
     educationEnd: "Education End"
     backgroundColor: "Background Color"
     surfaceColor: "Header Color"
+    projectStart: "Project Start"
+    projectEnd: "Project End"
+    role: "Role"
+    links: "Links"
+    url: "URL"
   
   validations: 
     required: "{label} must not be blank"
@@ -197,6 +202,16 @@ frontend:
       editError: "Failed to update education entry"
       deleteError: "Failed to delete education"
   
+  project:
+    title: "Projects"
+    noEntries: "No projects yet."
+    editor:
+      add: "Add Project"
+      edit: "Edit Project"
+      addError: "Failed to add project"
+      editError: "Failed to edit project"
+      deleteError: "Failed to delete project"
+  
   theme:
     title: "Theme"
     description: "By default, your CV profile is displayed in MyCVHub's light theme. Below, you can personalize the used theme colors to your taste.\nAim for colors that keep your text easy to read and professional.\n\nTips:\n- Background Color: A soft, neutral color can keep your profile looking clean.\n- Header Color: Try a slightly darker or contrasting color to highlight the header."
@@ -260,6 +275,7 @@ backend:
     dateInFuture: "{0} must not be in the future"
     numberTooSmall: "{0} must be greater than {1}"
     numberTooBig: "{0} must be less than {1}"
+    invalidUrl: "URL is invalid"
   
   workExperience:
     notFound: "Work Experience not found"
@@ -282,6 +298,11 @@ backend:
     accessDenied: "You don't have access to this education entry"
     validation:
       error: "Education validation failed"
+  project:
+    notFound: "Project not found"
+    accessDenied: "You don't have access to this project"
+    validation:
+      error: "Project validation failed"
   account:
     notFound: "Account not found"
     verification:

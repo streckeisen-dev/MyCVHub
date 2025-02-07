@@ -1,7 +1,7 @@
 package ch.streckeisen.mycv.backend.account
 
 import ch.streckeisen.mycv.backend.account.dto.AccountUpdateDto
-import ch.streckeisen.mycv.backend.exceptions.ValidationException
+import ch.streckeisen.mycv.backend.util.assertValidationResult
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.params.ParameterizedTest
@@ -10,9 +10,6 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.time.LocalDate
 import java.util.Optional
 import kotlin.test.BeforeTest
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 private const val EXISTING_USER_EMAIL = "existing.user@example.com"
 
@@ -41,18 +38,6 @@ class ApplicantAccountValidationServiceTest {
     ) {
         val result = applicantAccountValidationService.validateAccountUpdate(accountId, accountUpdate)
         assertValidationResult(result, isValid, numberOfErrors)
-    }
-
-    private fun assertValidationResult(result: Result<Unit>, isValid: Boolean, numberOfErrors: Int) {
-        if (isValid) {
-            assertTrue { result.isSuccess }
-        } else {
-            assertTrue { result.isFailure }
-            val throwable = result.exceptionOrNull()
-            assertNotNull(throwable)
-            assertTrue(throwable is ValidationException)
-            assertEquals(numberOfErrors, throwable.errors.size)
-        }
     }
 
     private fun existingApplicant(): ApplicantAccountEntity = ApplicantAccountEntity(

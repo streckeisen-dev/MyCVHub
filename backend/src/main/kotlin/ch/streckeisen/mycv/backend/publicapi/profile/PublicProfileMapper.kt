@@ -4,12 +4,15 @@ import ch.streckeisen.mycv.backend.cv.education.EducationEntity
 import ch.streckeisen.mycv.backend.cv.experience.WorkExperienceEntity
 import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import ch.streckeisen.mycv.backend.cv.profile.theme.ProfileThemeEntity
+import ch.streckeisen.mycv.backend.cv.project.ProjectEntity
+import ch.streckeisen.mycv.backend.cv.project.PublicProjectDto
+import ch.streckeisen.mycv.backend.cv.project.toDto
 import ch.streckeisen.mycv.backend.cv.skill.SkillEntity
 import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicAddressDto
 import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicEducationDto
 import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicProfileDto
-import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicSkillDto
 import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicProfileThemeDto
+import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicSkillDto
 import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicWorkExperienceDto
 
 fun ProfileEntity.toPublicDto(profilePicture: String): PublicProfileDto = PublicProfileDto(
@@ -30,6 +33,7 @@ fun ProfileEntity.toPublicDto(profilePicture: String): PublicProfileDto = Public
     workExperiences.map { it.toPublicDto(hideDescriptions) }.toList(),
     skills.map { it.toPublicDto() }.toList(),
     education.map { it.toPublicDto(hideDescriptions) }.toList(),
+    projects.map { it.toPublicDto(hideDescriptions) }.toList(),
     profileTheme?.toPublicDto()
 )
 
@@ -55,6 +59,15 @@ fun SkillEntity.toPublicDto() = PublicSkillDto(
     name,
     type,
     level
+)
+
+fun ProjectEntity.toPublicDto(hideDescription: Boolean) = PublicProjectDto(
+    name,
+    role,
+    description = if (hideDescription) null else description,
+    projectStart,
+    projectEnd,
+    links.map { it.toDto() }
 )
 
 fun ProfileThemeEntity.toPublicDto() = PublicProfileThemeDto(

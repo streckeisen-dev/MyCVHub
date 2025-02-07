@@ -61,8 +61,8 @@ import router from '@/router'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
 import type { ChangePasswordRequestDto } from '@/dto/ChangePasswordRequestDto'
 import accountApi from '@/api/AccountApi'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import ToastService from '@/services/ToastService'
+import { RestError } from '@/api/RestError'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -123,7 +123,7 @@ async function save() {
     ToastService.success(t('account.changePassword.success'))
     await router.push({ name: 'account' })
   } catch (e) {
-    const error = e as ErrorDto
+    const error = (e as RestError).errorDto
     errorMessages.value = error?.errors || {}
     if (Object.keys(errorMessages.value).length === 0) {
       const errorDetails = error?.message || t('error.genericMessage')
@@ -138,5 +138,3 @@ async function cancel() {
   await router.push({ name: 'account' })
 }
 </script>
-
-<style scoped lang="scss"></style>
