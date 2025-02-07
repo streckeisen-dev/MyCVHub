@@ -3,19 +3,19 @@ import type { ToastOptions } from 'vue-toastification/dist/types/types'
 import ToastMessage from '@/components/ToastMessage.vue'
 
 export type SuccessOptions = ToastOptions & {
-  type?: TYPE.SUCCESS | undefined
+  type: TYPE.SUCCESS | undefined
 }
 
 export type InfoOptions = ToastOptions & {
-  type?: TYPE.INFO | undefined
+  type: TYPE.INFO | undefined
 }
 
 export type WarningOptions = ToastOptions & {
-  type?: TYPE.WARNING | undefined
+  type: TYPE.WARNING | undefined
 }
 
 export type ErrorOptions = ToastOptions & {
-  type?: TYPE.ERROR | undefined
+  type: TYPE.ERROR | undefined
 }
 
 const displayToast = useToast()

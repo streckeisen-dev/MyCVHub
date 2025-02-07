@@ -47,8 +47,8 @@ import type { AccountDto } from '@/dto/AccountDto'
 import accountApi from '@/api/AccountApi'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { convertDateToString, convertStringToDate } from '@/services/DateHelper'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import ToastService from '@/services/ToastService'
+import { RestError } from '@/api/RestError'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -126,7 +126,7 @@ async function save() {
     ToastService.success(t('account.edit.success'))
     await router.push({ name: 'account' })
   } catch (e) {
-    const error = e as ErrorDto
+    const error = (e as RestError).errorDto
     errorMessages.value = error?.errors || {}
     if (Object.keys(errorMessages.value).length === 0) {
       const errorDetails = error?.message || t('error.genericMessage')

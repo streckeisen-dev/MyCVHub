@@ -1,15 +1,12 @@
 package ch.streckeisen.mycv.backend.cv.experience
 
-import ch.streckeisen.mycv.backend.exceptions.ValidationException
+import ch.streckeisen.mycv.backend.util.executeParameterizedTest
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.time.LocalDate
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 class WorkExperienceValidationServiceTest {
     private lateinit var workExperienceValidationService: WorkExperienceValidationService
@@ -26,15 +23,11 @@ class WorkExperienceValidationServiceTest {
         isValid: Boolean,
         numberOfErrors: Int
     ) {
-        val result = workExperienceValidationService.validateWorkExperience(workExperienceUpdate)
-
-        assertEquals(isValid, result.isSuccess)
-        if (!isValid) {
-            val ex = result.exceptionOrNull()
-            assertNotNull(ex)
-            assertTrue(ex is ValidationException)
-            assertEquals(numberOfErrors, ex.errors.size)
-        }
+        executeParameterizedTest(
+            workExperienceUpdate,
+            isValid,
+            numberOfErrors
+        ) { workExperienceValidationService.validateWorkExperience(workExperienceUpdate) }
     }
 
     companion object {

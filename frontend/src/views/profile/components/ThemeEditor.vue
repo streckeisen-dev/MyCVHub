@@ -115,9 +115,9 @@ import type { ProfileThemeDto } from '@/dto/ProfileThemeDto'
 import vuetify from '@/plugins/vuetify'
 import type { ProfileThemeUpdateDto } from '@/dto/ProfileThemeUpdateDto'
 import ProfileApi from '@/api/ProfileApi'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import type { ErrorMessages } from '@/services/FormHelper'
 import ToastService from '@/services/ToastService'
+import { RestError } from '@/api/RestError'
 
 const theme = defineModel<ProfileThemeDto | undefined>()
 
@@ -175,7 +175,7 @@ async function save() {
 
     errorMessages.value = {}
   } catch (e) {
-    const error = e as ErrorDto
+    const error = (e as RestError).errorDto
     errorMessages.value = error?.errors || {}
     if (Object.keys(errorMessages.value).length === 0) {
       const errorDetails = error?.message || t('error.genericMessage')
@@ -223,6 +223,7 @@ async function reset() {
 <style lang="scss">
 .theme-description {
   white-space: break-spaces;
+
   ul {
     margin-top: -45px;
     margin-bottom: -45px;

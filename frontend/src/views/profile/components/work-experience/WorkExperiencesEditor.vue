@@ -39,10 +39,10 @@ import type { WorkExperienceDto } from '@/dto/WorkExperienceDto'
 import { type PropType, ref } from 'vue'
 import EditWorkExperienceDialog from '@/views/profile/components/work-experience/EditWorkExperienceDialog.vue'
 import profileApi from '@/api/ProfileApi'
-import type { ErrorDto } from '@/dto/ErrorDto'
 import WorkExperienceContainer from '@/views/profile/components/work-experience/WorkExperienceContainer.vue'
 import { useI18n } from 'vue-i18n'
 import ToastService from '@/services/ToastService'
+import { RestError } from '@/api/RestError'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -93,7 +93,7 @@ async function deleteWorkExperience(id: number) {
     const index = workExperiences.value.findIndex((e) => e.id === id)
     workExperiences.value.splice(index, 1)
   } catch (e) {
-    const error = e as ErrorDto
+    const error = (e as RestError).errorDto
     const errorDetails = error?.message || t('error.genericMessage')
     ToastService.error(t('workExperience.editor.deleteError'), errorDetails)
   }
