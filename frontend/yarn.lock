@@ -460,10 +460,10 @@
   resolved "https://registry.yarnpkg.com/@eslint-community/regexpp/-/regexpp-4.12.1.tgz#cfc6cffe39df390a3841cde2abccf92eaa7ae0e0"
   integrity sha512-CCZCDJuduB9OUkFkY2IgppNZMi2lBQgD2qzwXkEia16cge2pijY/aXi96CJMquDMn3nJdlPV1A5KrJEXwfLNzQ==
 
-"@eslint/compat@^1.2.4":
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/@eslint/compat/-/compat-1.2.5.tgz#438f8bbe105341853469b2cf2d10b6321cadeb3a"
-  integrity sha512-5iuG/StT+7OfvhoBHPlmxkPA9om6aDUFgmD4+mWKAGsYt4vCe8rypneG03AuseyRHBmcCLXQtIH5S26tIoggLg==
+"@eslint/compat@^1.2.6":
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/@eslint/compat/-/compat-1.2.6.tgz#747ad2bde060582873cb486e03bfdf2945f0868d"
+  integrity sha512-k7HNCqApoDHM6XzT30zGoETj+D+uUcZUb+IVAJmar3u6bvHf7hhHJcWx09QHj4/a2qrKZMWU0E16tvkiAdv06Q==
 
 "@eslint/config-array@^0.19.0":
   version "0.19.1"
@@ -904,10 +904,10 @@
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.15.tgz#12d4af0ed17cc7600ce1f9980cec48fc17ad1e89"
   integrity sha512-w/P33JFeySuhN6JLkysYUK2gEmy9kHHFN7E8ro0tkfmlDOgxBDzWEZ/J8cWA+fHqFevpswDTFZnDx+R9lbL6xw==
 
-"@types/node@*", "@types/node@^22.10.3":
-  version "22.12.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.12.0.tgz#bf8af3b2af0837b5a62a368756ff2b705ae0048c"
-  integrity sha512-Fll2FZ1riMjNmlmJOdAyY5pUbkftXslB5DgEzlIuNaiWhXd00FhWxVC/r4yV/4wBb9JfImTu+jiSvXTkJ7F/gA==
+"@types/node@*", "@types/node@^22.13.0":
+  version "22.13.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.13.0.tgz#d376dd9a0ee2f9382d86c2d5d7beb4d198b4ea8c"
+  integrity sha512-ClIbNe36lawluuvq3+YYhnIN2CELi+6q8NpnM7PYp4hBn/TatfboPgVSm2rwKRfnV2M+Ty9GWDFI64KEe+kysA==
   dependencies:
     undici-types "~6.20.0"
 
@@ -1720,10 +1720,10 @@ csstype@^3.1.3:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.3.tgz#d80ff294d114fb0e6ac500fbf85b60137d7eff81"
   integrity sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==
 
-cypress@^14.0.0:
-  version "14.0.0"
-  resolved "https://registry.yarnpkg.com/cypress/-/cypress-14.0.0.tgz#a71cb0a243a0bfeb97b6973ab9c5291ca5288e93"
-  integrity sha512-kEGqQr23so5IpKeg/dp6GVi7RlHx1NmW66o2a2Q4wk9gRaAblLZQSiZJuDI8UMC4LlG5OJ7Q6joAiqTrfRNbTw==
+cypress@^14.0.1:
+  version "14.0.1"
+  resolved "https://registry.yarnpkg.com/cypress/-/cypress-14.0.1.tgz#8ecf8aab261213fe7ed6043cb7f8a5f662144733"
+  integrity sha512-gBAvKZE3f6eBaW1v8OtrwAFP90rjNZjjOO40M2KvOvmwVXk96Ps5Yjyck1EzGkXmNCaC/8kXFOY/1KD/wsaWpQ==
   dependencies:
     "@cypress/request" "^3.0.6"
     "@cypress/xvfb" "^1.2.4"
@@ -4124,10 +4124,10 @@ vue@^3.4, vue@^3.5.13:
     "@vue/server-renderer" "3.5.13"
     "@vue/shared" "3.5.13"
 
-vuetify@^3.7.6:
-  version "3.7.8"
-  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-3.7.8.tgz#fa07f07650e0fb1fd14af0c080bd4e82c0039fc4"
-  integrity sha512-67p7Ton7EikHKhzauAmpsV1HT/zA2DmG8hjcHmQrktGl1eBrRaQVE+idWLtbhO51jqpTsrKQK9+HuG0KRwIGYQ==
+vuetify@^3.7.9:
+  version "3.7.9"
+  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-3.7.9.tgz#a06c7d79fe1ee592ce620729d988c868f4e653eb"
+  integrity sha512-9pHu6ESdg/lYYCrdXb2uoLZGbw2bysWLaqMu2bzQPMTrMj1GfgcL0k/siTGkUa+o0cVWzvlP/cnjOFGMTxH3og==
 
 webidl-conversions@^7.0.0:
   version "7.0.0"
