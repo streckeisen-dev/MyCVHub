@@ -9,7 +9,12 @@ spring:
   jpa:
     generate-ddl: false
 
-  liquibase.change-log: db/changelog/db.changelog-master.xml
+  liquibase:
+    enabled: true
+    change-log: db/changelog/db.changelog-master.xml
+    database-change-log-lock-table: databasechangeloglock
+    database-change-log-table: databasechangelog
+    default-schema: public
 
   servlet.multipart:
     max-request-size: 2MB
