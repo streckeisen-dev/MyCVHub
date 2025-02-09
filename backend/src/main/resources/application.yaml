@@ -4,7 +4,11 @@ spring:
     url: ${MYCV_DATASOURCE}
     username: ${MYCV_DB_USERNAME}
     password: ${MYCV_DB_PASSWORD}
-    hikari.maximum-pool-size: 10
+    hikari:
+      maximum-pool-size: 9
+      minimum-idle: 2
+      connection-timeout: 30000
+      leak-detection-threshold: 5000
 
   jpa:
     generate-ddl: false
