@@ -4,12 +4,21 @@ spring:
     url: ${MYCV_DATASOURCE}
     username: ${MYCV_DB_USERNAME}
     password: ${MYCV_DB_PASSWORD}
-    hikari.maximum-pool-size: 10
+    hikari:
+      maximum-pool-size: 9
+      minimum-idle: 2
+      connection-timeout: 30000
+      leak-detection-threshold: 5000
 
   jpa:
     generate-ddl: false
 
-  liquibase.change-log: db/changelog/db.changelog-master.xml
+  liquibase:
+    enabled: true
+    change-log: db/changelog/db.changelog-master.xml
+    database-change-log-lock-table: databasechangeloglock
+    database-change-log-table: databasechangelog
+    default-schema: public
 
   servlet.multipart:
     max-request-size: 2MB
@@ -26,7 +35,7 @@ spring:
               - read:user
               - user:email
               - repo
-            redirect-uri: "{baseUrl}/api/auth/oauth2/callback/github"
+            redirect-uri: "https://mycvhub.ch/api/auth/oauth2/callback/github"
             authorization-grant-type: authorization_code
             client-name: GitHub
 

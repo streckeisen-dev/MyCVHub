@@ -12,7 +12,7 @@
 
 	<groupId>ch.streckeisen.my-cv</groupId>
 	<artifactId>backend</artifactId>
-	<version>1.2.0</version>
+	<version>1.2.4</version>
 	<name>my-cv-backend</name>
 
 	<dependencies>
