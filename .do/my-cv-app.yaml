@@ -8,7 +8,7 @@ domains:
 envs:
 - key: MYCV_DATASOURCE
   scope: RUN_AND_BUILD_TIME
-  value: jdbc:postgresql://db-postgresql-fra1-45654-do-user-17705918-0.e.db.ondigitalocean.com:25061/my-cv-app?sslmode=require
+  value: jdbc:postgresql://db-postgresql-fra1-45654-do-user-17705918-0.e.db.ondigitalocean.com:25060/my-cv?sslmode=require
 - key: MYCV_DB_USERNAME
   scope: RUN_AND_BUILD_TIME
   value: mycv-db-user
