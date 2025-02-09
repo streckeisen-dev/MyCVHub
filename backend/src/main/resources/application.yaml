@@ -35,7 +35,7 @@ spring:
               - read:user
               - user:email
               - repo
-            redirect-uri: "{baseUrl}/api/auth/oauth2/callback/github"
+            redirect-uri: "https://mycvhub.ch/api/auth/oauth2/callback/github"
             authorization-grant-type: authorization_code
             client-name: GitHub
 
