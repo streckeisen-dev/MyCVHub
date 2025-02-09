@@ -1,7 +1,9 @@
-spring.datasource:
-  url: jdbc:postgresql://localhost:5432/mycv
-  username: postgres
-  password: postgres
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mycv
+    username: postgres
+    password: postgres
+  security.oauth2.client.registration.github.redirect-uri: "{baseUrl}/api/auth/oauth2/callback/github"
 
 logging:
   file.name: ./logs/mycv.log
