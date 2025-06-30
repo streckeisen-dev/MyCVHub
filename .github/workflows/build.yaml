@@ -22,6 +22,9 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Install python modules
+        run: pip install PyYAML
+
       - name: Check I18n files
         working-directory: locales
         run: python check_keys.py
@@ -39,6 +42,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
+
+      - name: Install python modules
+        run: pip install PyYAML
 
       - name: Setup node
         uses: actions/setup-node@v4
@@ -104,6 +110,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
+
+      - name: Install python modules
+        run: pip install PyYAML
 
       - name: Setup Java
         uses: actions/setup-java@v4
