@@ -144,15 +144,13 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build-frontend
-    container:
-      image: cypress/browsers:22.13.1
-      options: --user 1001
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
+          install-command: yarn install
           working-directory: frontend
           component: true
       - name: Merge cypress reports
