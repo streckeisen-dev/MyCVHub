@@ -51,6 +51,9 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Enable corepack
+        run: corepack enable
+
       - name: Prepare i18n files
         working-directory: locales
         run: |
@@ -181,6 +184,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+
+      - name: Enable corepack
+        run: corepack enable
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
