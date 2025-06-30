@@ -30,6 +30,8 @@
     "vuetify": "^3.8.3"
   },
   "devDependencies": {
+    "@cypress/vite-dev-server": "^6.0.3",
+    "@cypress/vue": "^6.0.2",
     "@eslint/compat": "^1.2.9",
     "@intlify/unplugin-vue-i18n": "^6.0.8",
     "@mdi/font": "^7.4.47",
@@ -38,24 +40,23 @@
     "@types/lodash": "^4.17.16",
     "@types/node": "^22.15.3",
     "@vitejs/plugin-vue": "^5.2.3",
+    "@vitest/coverage-istanbul": "^3.1.2",
     "@vue/eslint-config-prettier": "^10.1.0",
     "@vue/eslint-config-typescript": "^14.5.0",
+    "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.7.0",
+    "cypress": "^14.3.2",
     "eslint": "^9.25.1",
     "eslint-plugin-vue": "^9.32.0",
+    "happy-dom": "^17.4.6",
+    "junit-report-merger": "^7.0.1",
     "prettier": "^3.5.3",
     "sass-embedded": "^1.87.0",
+    "ts-node": "^10.9.2",
     "typescript": "~5.8.3",
     "vite": "^6.3.4",
-    "vue-tsc": "^2.2.10",
     "vitest": "^3.1.2",
-    "@vue/test-utils": "^2.4.6",
-    "happy-dom": "^17.4.6",
-    "@vitest/coverage-istanbul": "^3.1.2",
-    "cypress": "^14.3.2",
-    "@cypress/vue": "^6.0.2",
-    "@cypress/vite-dev-server": "^6.0.3",
-    "ts-node": "^10.9.2",
-    "junit-report-merger": "^7.0.1"
-  }
+    "vue-tsc": "^2.2.10"
+  },
+  "packageManager": "yarn@4.9.2"
 }
