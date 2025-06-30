@@ -1,6 +1,7 @@
 package ch.streckeisen.mycv.backend.account.auth.oauth
 
 import ch.streckeisen.mycv.backend.account.auth.AuthTokenService
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Value
@@ -11,6 +12,8 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.stereotype.Component
 import java.util.Base64
+
+private val logger = KotlinLogging.logger {}
 
 @Component
 class OAuth2SuccessHandler(
@@ -40,6 +43,7 @@ class OAuth2SuccessHandler(
 
             else -> throw InternalAuthenticationServiceException("Unsupported oauth integration")
         }.getOrElse {
+            logger.error(it) { "OAuth2 authentication unsuccessful" }
             throw InternalAuthenticationServiceException("Failed to authenticate", it)
         }
 
