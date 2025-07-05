@@ -84,7 +84,7 @@
               <v-col
                 cols="12"
                 md="5"
-                lg="3"
+                xl="3"
               >
                 <v-btn
                   :text="t('account.profile.view')"
@@ -95,7 +95,7 @@
               <v-col
                 cols="12"
                 md="5"
-                lg="3"
+                xl="3"
               >
                 <v-btn
                   :text="t('account.profile.edit')"
@@ -111,14 +111,14 @@
               <v-col
                 cols="12"
                 md="5"
-                lg="3"
+                xl="3"
               >
                 {{ t('account.profile.notFound') }}
               </v-col>
               <v-col
                 cols="12"
                 md="5"
-                lg="3"
+                xl="3"
               >
                 <v-btn
                   :text="t('account.profile.create')"
@@ -142,7 +142,7 @@
               <v-col
                 cols="12"
                 md="5"
-                lg="3"
+                xl="3"
               >
                 <v-btn
                   :text="t('account.edit.title')"
@@ -154,7 +154,7 @@
                 v-if="account.hasPassword"
                 cols="12"
                 md="5"
-                lg="3"
+                xl="3"
               >
                 <v-btn
                   :text="t('account.edit.changePassword')"
@@ -179,7 +179,7 @@
               <v-col
                 cols="12"
                 md="5"
-                lg="3"
+                xl="3"
               >
                 <v-btn
                   :text="t('account.delete.title')"

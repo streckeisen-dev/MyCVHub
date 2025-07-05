@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated
 @Embeddable
 class ProjectLink(
     val url: String,
+    val displayName: String,
     @Enumerated(EnumType.STRING)
     val type: ProjectLinkType
 )

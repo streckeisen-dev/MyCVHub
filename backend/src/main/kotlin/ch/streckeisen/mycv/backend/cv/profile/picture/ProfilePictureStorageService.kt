@@ -22,6 +22,7 @@ private const val AUTHENTICATED_TYPE = "authenticated"
 
 private const val PROFILE_PICTURE_TRANSFORMATION = "profile_picture"
 private const val PROFILE_PICTURE_THUMBNAIL_TRANSFORMATION = "profile_picture_thumbnail"
+private const val CV_PICTURE_TRANSFORMATION = "cv_profile"
 
 @Service
 class ProfilePictureStorageService(
@@ -66,6 +67,26 @@ class ProfilePictureStorageService(
             "expires_at" to expiresAt,
             "timestamp" to (System.currentTimeMillis() / 1000L).toString(),
             "transformation" to "t_${PROFILE_PICTURE_THUMBNAIL_TRANSFORMATION}"
+        )
+
+        try {
+            cloudinary.signRequest(params, params)
+            val url = buildUrl(cloudinary.cloudinaryApiUrl("download", params), params)
+            return Result.success(ProfilePicture(filename, URI(url)))
+        } catch (ex: Exception) {
+            return Result.failure(ex)
+        }
+    }
+
+    fun getCVPicture(filename: String): Result<ProfilePicture> {
+        val expiresAt = Instant.now().plusSeconds(urlExpirationTime).epochSecond.toString()
+        val params = mapOf(
+            "public_id" to filename,
+            "format" to "jpeg",
+            "type" to AUTHENTICATED_TYPE,
+            "expires_at" to expiresAt,
+            "timestamp" to (System.currentTimeMillis() / 1000L).toString(),
+            "transformation" to "t_${CV_PICTURE_TRANSFORMATION}"
         )
 
         try {

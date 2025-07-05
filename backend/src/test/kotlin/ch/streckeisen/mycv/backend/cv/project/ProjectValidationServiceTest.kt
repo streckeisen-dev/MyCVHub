@@ -184,16 +184,18 @@ class ProjectValidationServiceTest {
                     links = listOf(
                         ProjectLinkUpdateDto(
                             url = null,
+                            displayName = null,
                             type = null
                         ),
                         ProjectLinkUpdateDto(
                             url = null,
+                            displayName = null,
                             type = null
                         )
                     )
                 ),
                 false,
-                8
+                10
             ),
             Arguments.of(
                 ProjectUpdateDto(
@@ -206,6 +208,26 @@ class ProjectValidationServiceTest {
                     links = listOf(
                         ProjectLinkUpdateDto(
                             url = "url",
+                            displayName = null,
+                            type = null
+                        )
+                    )
+                ),
+                false,
+                7
+            ),
+            Arguments.of(
+                ProjectUpdateDto(
+                    id = null,
+                    name = null,
+                    role = null,
+                    description = null,
+                    projectStart = null,
+                    projectEnd = null,
+                    links = listOf(
+                        ProjectLinkUpdateDto(
+                            url = VALID_URL,
+                            displayName = null,
                             type = null
                         )
                     )
@@ -223,13 +245,14 @@ class ProjectValidationServiceTest {
                     projectEnd = null,
                     links = listOf(
                         ProjectLinkUpdateDto(
-                            url = VALID_URL,
+                            url = null,
+                            displayName = "n".repeat(PROJECT_LINK_NAME_MAX_LENGTH + 1),
                             type = null
                         )
                     )
                 ),
                 false,
-                5
+                7
             ),
             Arguments.of(
                 ProjectUpdateDto(
@@ -242,12 +265,32 @@ class ProjectValidationServiceTest {
                     links = listOf(
                         ProjectLinkUpdateDto(
                             url = null,
+                            displayName = "name",
+                            type = null
+                        )
+                    )
+                ),
+                false,
+                6
+            ),
+            Arguments.of(
+                ProjectUpdateDto(
+                    id = null,
+                    name = null,
+                    role = null,
+                    description = null,
+                    projectStart = null,
+                    projectEnd = null,
+                    links = listOf(
+                        ProjectLinkUpdateDto(
+                            url = null,
+                            displayName = null,
                             type = ProjectLinkType.WEBSITE
                         )
                     )
                 ),
                 false,
-                5
+                6
             ),
             Arguments.of(
                 ProjectUpdateDto(
@@ -260,6 +303,7 @@ class ProjectValidationServiceTest {
                     links = listOf(
                         ProjectLinkUpdateDto(
                             url = VALID_URL,
+                            displayName = "name",
                             type = ProjectLinkType.WEBSITE
                         )
                     )
@@ -278,6 +322,7 @@ class ProjectValidationServiceTest {
                     links = listOf(
                         ProjectLinkUpdateDto(
                             url = VALID_URL,
+                            displayName = "name",
                             type = ProjectLinkType.WEBSITE
                         )
                     )

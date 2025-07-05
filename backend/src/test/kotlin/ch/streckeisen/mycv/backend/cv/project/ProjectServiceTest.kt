@@ -140,7 +140,7 @@ class ProjectServiceTest {
             description = "nd",
             projectStart = LocalDate.of(2024, 11, 5),
             projectEnd = LocalDate.of(2025, 1, 17),
-            links = listOf(ProjectLinkUpdateDto(url = "gh", type = ProjectLinkType.GITHUB))
+            links = listOf(ProjectLinkUpdateDto(url = "gh", displayName = "GitHub Link", type = ProjectLinkType.GITHUB))
         )
         val saveSlot = slot<ProjectEntity>()
         every { projectRepository.save(capture(saveSlot)) } returns mockk()
@@ -160,6 +160,7 @@ class ProjectServiceTest {
         assertEquals(LocalDate.of(2025, 1, 17), saveSlot.captured.projectEnd)
         assertEquals(1, saveSlot.captured.links.size)
         assertEquals("gh", saveSlot.captured.links[0].url)
+        assertEquals("GitHub Link", saveSlot.captured.links[0].displayName)
         assertEquals(ProjectLinkType.GITHUB, saveSlot.captured.links[0].type)
         assertEquals(30, saveSlot.captured.profile.id)
     }

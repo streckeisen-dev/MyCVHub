@@ -12,5 +12,6 @@ fun ProjectEntity.toDto() = ProjectDto(
 
 fun ProjectLink.toDto() = ProjectLinkDto(
     url = url,
+    displayName = displayName,
     type = type
 )
