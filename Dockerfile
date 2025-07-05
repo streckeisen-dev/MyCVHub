@@ -1,4 +1,7 @@
 FROM eclipse-temurin:21-jdk-alpine
+
+RUN apk add typst
+
 WORKDIR /app
 
 COPY ./backend/target/mycv.jar ./app.jar
