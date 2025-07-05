@@ -8,14 +8,19 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 
+private const val BIRTHDAY_FORMAT = "dd.MM.yyyy"
+private const val CV_DATE_FORMAT = "MMMM yyyy"
+
+private const val TODAY_MESSAGE = "$MYCV_KEY_PREFIX.date.today"
+
 fun ProfileEntity.toCVProfile(locale: Locale, messagesService: MessagesService): CVProfile {
-    val cvFormatter = DateTimeFormatter.ofPattern("MMMM yyyy", locale)
+    val cvDateFormatter = DateTimeFormatter.ofPattern(CV_DATE_FORMAT, locale)
     return CVProfile(
         language = locale.language,
         firstName = this.account.accountDetails!!.firstName,
         lastName = this.account.accountDetails.lastName,
         jobTitle = this.jobTitle,
-        bio = this.bio!!,
+        bio = this.bio,
         email = this.account.accountDetails.email,
         phone = this.account.accountDetails.phone,
         address = getAddressString(this.account.accountDetails),
@@ -24,9 +29,9 @@ fun ProfileEntity.toCVProfile(locale: Locale, messagesService: MessagesService):
             CVResumeEntry(
                 title = it.jobTitle,
                 location = it.location,
-                startDate = it.positionStart.format(cvFormatter),
-                endDate = it.positionEnd?.format(cvFormatter)
-                    ?: messagesService.getMessage("$MYCV_KEY_PREFIX.date.today"),
+                startDate = it.positionStart.format(cvDateFormatter),
+                endDate = it.positionEnd?.format(cvDateFormatter)
+                    ?: messagesService.getMessage(TODAY_MESSAGE),
                 institution = it.company,
                 it.description,
                 links = listOf()
@@ -40,9 +45,9 @@ fun ProfileEntity.toCVProfile(locale: Locale, messagesService: MessagesService):
             CVResumeEntry(
                 title = it.degreeName,
                 location = it.location,
-                startDate = it.educationStart.format(cvFormatter),
-                endDate = it.educationEnd?.format(cvFormatter)
-                    ?: messagesService.getMessage("$MYCV_KEY_PREFIX.date.today"),
+                startDate = it.educationStart.format(cvDateFormatter),
+                endDate = it.educationEnd?.format(cvDateFormatter)
+                    ?: messagesService.getMessage(TODAY_MESSAGE),
                 institution = it.institution,
                 description = it.description,
                 links = listOf()
@@ -52,9 +57,9 @@ fun ProfileEntity.toCVProfile(locale: Locale, messagesService: MessagesService):
             CVResumeEntry(
                 title = it.name,
                 location = "",
-                startDate = it.projectStart.format(cvFormatter),
-                endDate = it.projectEnd?.format(cvFormatter)
-                    ?: messagesService.getMessage("$MYCV_KEY_PREFIX.date.today"),
+                startDate = it.projectStart.format(cvDateFormatter),
+                endDate = it.projectEnd?.format(cvDateFormatter)
+                    ?: messagesService.getMessage(TODAY_MESSAGE),
                 institution = it.role,
                 description = it.description,
                 links = it.links.map { link -> CVLink(link.url, link.displayName, link.type.name) }
@@ -74,6 +79,6 @@ fun getAddressString(account: AccountDetailsEntity): String {
 }
 
 fun getBirthday(birthday: LocalDate): String {
-    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+    val formatter = DateTimeFormatter.ofPattern(BIRTHDAY_FORMAT)
     return birthday.format(formatter)
 }

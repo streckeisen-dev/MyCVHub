@@ -5,7 +5,7 @@ data class CVProfile(
     val firstName: String,
     val lastName: String,
     val jobTitle: String,
-    val bio: String,
+    val bio: String?,
     val email: String,
     val phone: String,
     val address: String,

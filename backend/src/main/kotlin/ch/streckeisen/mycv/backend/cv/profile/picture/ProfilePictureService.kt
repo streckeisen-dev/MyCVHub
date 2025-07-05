@@ -13,7 +13,10 @@ import java.io.BufferedInputStream
 private val allowedMediaTypes = listOf(MediaType.image("png"), MediaType.image("jpg"), MediaType.image("jpeg"))
 private val logger = KotlinLogging.logger { }
 
-private const val ILLEGAL_MEDIA_TYPE_ERROR_KEY = "${MYCV_KEY_PREFIX}.profile.validation.pictureIllegalMediaType"
+private const val ACCESS_DENIED_MESSAGE = "${MYCV_KEY_PREFIX}.profile.picture.accessDenied"
+private const val ILLEGAL_MEDIA_TYPE_MESSAGE = "${MYCV_KEY_PREFIX}.profile.validation.pictureIllegalMediaType"
+
+private const val PROFILE_PICTURE_FIELD = "profilePicture"
 
 @Service
 class ProfilePictureService(
@@ -22,7 +25,7 @@ class ProfilePictureService(
 ) {
     fun get(accountId: Long?, profile: ProfileEntity): Result<ProfilePicture> {
         if (!profile.isProfilePublic && profile.account.id != accountId) {
-            return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.profile.picture.accessDenied"))
+            return Result.failure(LocalizedException(ACCESS_DENIED_MESSAGE))
         }
 
         val profilePicture = profilePictureStorageService.get(profile.profilePicture)
@@ -33,7 +36,7 @@ class ProfilePictureService(
 
     fun getThumbnail(accountId: Long?, profile: ProfileEntity): Result<ProfilePicture> {
         if (profile.account.id != accountId) {
-            return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.profile.picture.accessDenied"))
+            return Result.failure(LocalizedException(ACCESS_DENIED_MESSAGE))
         }
 
         val profilePicture = profilePictureStorageService.getThumbnail(profile.profilePicture)
@@ -44,7 +47,7 @@ class ProfilePictureService(
 
     fun getCVPicture(accountId: Long?, profile: ProfileEntity): Result<ProfilePicture> {
         if (profile.account.id != accountId) {
-            return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.profile.picture.accessDenied"))
+            return Result.failure(LocalizedException(ACCESS_DENIED_MESSAGE))
         }
 
         val profilePicture = profilePictureStorageService.getCVPicture(profile.profilePicture)
@@ -55,12 +58,14 @@ class ProfilePictureService(
 
     fun store(accountId: Long, profilePicture: MultipartFile, oldProfilePicture: String?): Result<String> {
         if (profilePicture.isEmpty) {
-            return Result.failure(IllegalArgumentException(messagesService.requiredFieldMissingError("profilePicture")))
+            return Result.failure(IllegalArgumentException(messagesService.requiredFieldMissingError(
+                PROFILE_PICTURE_FIELD
+            )))
         }
 
         val mediaType = profilePictureStorageService.detectContentType(BufferedInputStream(profilePicture.inputStream))
         if (!allowedMediaTypes.contains(mediaType)) {
-            return Result.failure(IllegalArgumentException(messagesService.getMessage(ILLEGAL_MEDIA_TYPE_ERROR_KEY)))
+            return Result.failure(IllegalArgumentException(messagesService.getMessage(ILLEGAL_MEDIA_TYPE_MESSAGE)))
         }
 
         val savedProfilePicture = profilePictureStorageService.store(profilePicture)

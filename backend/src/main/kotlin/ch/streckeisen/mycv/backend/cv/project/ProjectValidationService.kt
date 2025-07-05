@@ -133,6 +133,9 @@ class ProjectValidationService(
             if (link.displayName.isNullOrBlank()) {
                 val error = messagesService.requiredFieldMissingError(DISPLAY_NAME_KEY)
                 validationErrorBuilder.addError("$PROJECT_LINK_KEY[$index].$DISPLAY_NAME_KEY", error)
+            } else if (link.displayName.length > PROJECT_LINK_NAME_MAX_LENGTH) {
+                val error = messagesService.fieldMaxLengthExceededError(DISPLAY_NAME_KEY, PROJECT_LINK_NAME_MAX_LENGTH)
+                validationErrorBuilder.addError("$PROJECT_LINK_KEY[$index].$DISPLAY_NAME_KEY", error)
             }
 
             if (link.type == null) {

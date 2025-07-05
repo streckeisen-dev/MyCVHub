@@ -1,5 +1,6 @@
 package ch.streckeisen.mycv.backend.cv.generator
 
+import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
 import ch.streckeisen.mycv.backend.exceptions.LocalizedException
@@ -23,6 +24,13 @@ import kotlin.io.path.pathString
 
 private val logger = KotlinLogging.logger { }
 
+private const val TEMPLATE_NOT_FOUND_MESSAGE = "$MYCV_KEY_PREFIX.cv.templateNotFound"
+private const val GENERATION_FAILED_MESSAGE = "$MYCV_KEY_PREFIX.cv.generationFailed"
+private const val INCOMPLETE_PROFILE_MESSAGE = "$MYCV_KEY_PREFIX.cv.incompleteProfile"
+
+private const val PROFILE_PICTURE_FILE_NAME = "profile.jpg"
+private const val PROFILE_JSON_FILE_NAME = "profile.json"
+
 @Service
 class CVGeneratorService(
     private val profileService: ProfileService,
@@ -40,10 +48,10 @@ class CVGeneratorService(
             val cvTemplate =
                 this.javaClass.classLoader.getResourceAsStream("ch/streckeisen/mycv/backend/cv/${cvStyle.cvTemplate}.typ")
             if (cvTemplate == null) {
-                return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.cv.templateNotFound"))
+                return Result.failure(LocalizedException(TEMPLATE_NOT_FOUND_MESSAGE))
             }
 
-            withContext(Dispatchers.IO) {
+            return withContext(Dispatchers.IO) {
                 cvTemplate.use { input ->
                     FileOutputStream(tempDir.resolve("${cvStyle.cvTemplate}.typ").toFile()).use { output ->
                         input.copyTo(output)
@@ -51,22 +59,34 @@ class CVGeneratorService(
                 }
 
                 profilePictureService.getCVPicture(accountId, profile)
-                    .onFailure { return@withContext Result.failure<ByteArray>(it) }
+                    .onFailure { return@withContext Result.failure(it) }
                     .onSuccess { profilePictureDto ->
                         profilePictureDto.uri.toURL().openStream().use {
-                            FileUtils.copyInputStreamToFile(it, tempDir.resolve("profile.jpg").toFile())
+                            FileUtils.copyInputStreamToFile(it, tempDir.resolve(PROFILE_PICTURE_FILE_NAME).toFile())
                         }
                     }
 
-                val cvProfile = profile.toCVProfile(LocaleContextHolder.getLocale(), messagesService)
-                val profileJson = tempDir.resolve("profile.json").createFile()
-                objectMapper.writeValue(profileJson.toFile(), cvProfile)
-            }
+                verifyProfileCompleteness(profile)
+                    .onFailure { return@withContext Result.failure(it) }
+                    .onSuccess {
+                        val cvProfile = profile.toCVProfile(LocaleContextHolder.getLocale(), messagesService)
+                        val profileJson = tempDir.resolve(PROFILE_JSON_FILE_NAME).createFile()
+                        objectMapper.writeValue(profileJson.toFile(), cvProfile)
+                    }
 
-            return compileCV(tempDir, cvStyle.cvTemplate, accountId)
+                return@withContext compileCV(tempDir, cvStyle.cvTemplate, accountId)
+            }
         } finally {
             FileUtils.deleteDirectory(tempDir.toFile())
         }
+    }
+
+    private fun verifyProfileCompleteness(profile: ProfileEntity): Result<Unit> {
+        if (profile.account.accountDetails == null) {
+            return Result.failure(LocalizedException(INCOMPLETE_PROFILE_MESSAGE))
+        }
+
+        return Result.success(Unit)
     }
 
     private suspend fun compileCV(dir: Path, template: String, accountId: Long): Result<ByteArray> =
@@ -86,10 +106,11 @@ class CVGeneratorService(
             val resultCode = process.exitValue()
             if (resultCode != 0) {
                 val error = process.errorStream.bufferedReader().use { it.readText() }
-                logger.error { "Error while generating CV: $error" }
-                return@withContext Result.failure(LocalizedException("ch.streckeisen.mycv.cv.generationFailed"))
+                logger.error { "[Accoun $accountId] Failed to generate CV: $error" }
+                return@withContext Result.failure(LocalizedException(GENERATION_FAILED_MESSAGE))
             }
             val bytes = dir.resolve("cv_${accountId}.pdf").toFile().readBytes()
+            logger.debug { "[Account $accountId] Successfully generated CV" }
             return@withContext Result.success(bytes)
         }
 }

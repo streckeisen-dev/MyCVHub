@@ -246,6 +246,25 @@ class ProjectValidationServiceTest {
                     links = listOf(
                         ProjectLinkUpdateDto(
                             url = null,
+                            displayName = "n".repeat(PROJECT_LINK_NAME_MAX_LENGTH + 1),
+                            type = null
+                        )
+                    )
+                ),
+                false,
+                7
+            ),
+            Arguments.of(
+                ProjectUpdateDto(
+                    id = null,
+                    name = null,
+                    role = null,
+                    description = null,
+                    projectStart = null,
+                    projectEnd = null,
+                    links = listOf(
+                        ProjectLinkUpdateDto(
+                            url = null,
                             displayName = "name",
                             type = null
                         )
