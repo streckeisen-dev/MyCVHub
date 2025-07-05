@@ -36,7 +36,7 @@ class ProjectService(
             description = projectUpdate.description!!,
             projectStart = projectUpdate.projectStart!!,
             projectEnd = projectUpdate.projectEnd,
-            links = projectUpdate.links?.map { ProjectLink(url = it.url!!, type = it.type!!) } ?: emptyList(),
+            links = projectUpdate.links?.map { ProjectLink(url = it.url!!, displayName = it.displayName!!, type = it.type!!) } ?: emptyList(),
             profile = profile
         )
         return Result.success(projectRepository.save(project))
