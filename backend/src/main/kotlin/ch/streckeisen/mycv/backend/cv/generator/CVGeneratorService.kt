@@ -20,7 +20,6 @@ import java.nio.file.Path
 import kotlin.io.path.createFile
 import kotlin.io.path.createTempDirectory
 import kotlin.io.path.pathString
-import kotlin.io.path.toPath
 
 private val logger = KotlinLogging.logger { }
 

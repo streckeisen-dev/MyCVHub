@@ -1,6 +1,6 @@
 FROM eclipse-temurin:21-jdk-alpine
 
-RUN apk add typst
+RUN apk add typst && apk cache clean
 
 WORKDIR /app
 
