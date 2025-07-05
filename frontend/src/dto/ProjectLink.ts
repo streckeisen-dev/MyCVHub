@@ -1,5 +1,6 @@
 export type ProjectLink = {
   url: string
+  displayName: string
   type: ProjectLinkType
 }
 

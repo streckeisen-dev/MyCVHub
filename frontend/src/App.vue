@@ -107,6 +107,23 @@
           <v-list-item
             v-if="accountApi.isUserLoggedIn()"
             link
+            prepend-icon="mdi-earth"
+            target="_blank"
+            :to="{ name: 'public-profile', params: { username }}"
+            :title="t('app.publicProfile')"
+          />
+
+          <v-list-item
+            v-if="accountApi.isUserLoggedIn()"
+            link
+            prepend-icon="mdi-file-account"
+            :to="{ name: 'generate-cv' }"
+            :title="t('app.generateCV')"
+          />
+
+          <v-list-item
+            v-if="accountApi.isUserLoggedIn()"
+            link
             prepend-icon="mdi-logout"
             :to="{ name: 'logout' }"
             :title="t('account.logout.action')"
@@ -200,6 +217,7 @@ const { t } = useI18n({
   useScope: 'global'
 })
 const locale = useLocale().current
+const username = ref<string>(' ')
 
 function localeClass(lang: string): ComputedRef {
   return computed(() => {
@@ -225,6 +243,9 @@ const profileThumbnail = ref<string>()
 
 watchEffect(async () => {
   if (accountApi.isUserLoggedIn()) {
+    accountApi.getAccountInfo().then((accountInfo) => {
+      username.value = accountInfo.username
+    })
     try {
       profileThumbnail.value = (await ProfileApi.getThumbnail()).thumbnailUrl
     } catch (e) {
@@ -232,6 +253,7 @@ watchEffect(async () => {
     }
   } else {
     profileThumbnail.value = undefined
+    username.value = ' '
   }
 })
 
