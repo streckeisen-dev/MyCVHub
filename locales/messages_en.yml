@@ -1,4 +1,6 @@
 shared:
+  date:
+    today: "Today"
   fields:
     username: "Username"
     password: "Password"
@@ -36,6 +38,7 @@ shared:
     role: "Role"
     links: "Links"
     url: "URL"
+    displayName: "Display Name"
   
   validations: 
     required: "{label} must not be blank"
@@ -56,9 +59,6 @@ frontend:
   error: 
     genericMessageTitle: "Oops, something went wrong"
     genericMessage: "An unexpected error occurred"
-
-  date: 
-    today: "Today"
   
   forms: 
     save: "Save"
@@ -70,6 +70,8 @@ frontend:
   
   app:
     home: "Home"
+    publicProfile: "Public Profile"
+    generateCV: "Download CV"
   
   home: 
     welcome: 
@@ -211,6 +213,16 @@ frontend:
       addError: "Failed to add project"
       editError: "Failed to edit project"
       deleteError: "Failed to delete project"
+
+  cv:
+    generate: "Download your CV as PDF"
+    intro: "Download you online CV, so you can add it to your job application."
+    style: "CV Design"
+    styleExplanation: "Choose the design which should be used to generate your PDF-CV."
+    select: "Select"
+    download: "Download"
+    styleError: "Could not load the available CV Designs"
+    generateError: "There was a problem while creating your PDF-CV"
   
   theme:
     title: "Theme"
@@ -338,6 +350,13 @@ backend:
     tokenRefresh:
       refreshTokenRequired: "Refresh token is required to refresh access"
     accessDenied: "You are not authorized to perform this operation"
+  cv:
+    templateNotFound: "CV template not found"
+    generationFailed: "Your PDF CV could not be generated"
+    style:
+      modern:
+        name: "Modern CV"
+        description: "<a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV</a> is a variation of the <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX template."
   exceptions:
     db: "A database error occurred. Please contact the administrator"
     expiredJwt: "Expired JWT token"

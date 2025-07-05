@@ -1,4 +1,6 @@
 shared:
+  date:
+    today: "Heute"
   fields:
     username: "Benutzername"
     password: "Passwort"
@@ -36,6 +38,7 @@ shared:
     role: "Rolle"
     links: "Links"
     url: "URL"
+    displayName: "Anzeigename"
 
   validations: 
     required: "{label} darf nicht leer sein"
@@ -56,9 +59,6 @@ frontend:
   error: 
     genericMessageTitle: "Ups, etwas ist schief gelaufen"
     genericMessage: "Ein unerwarteter Fehler ist aufgetreten"
-
-  date: 
-    today: "Heute"
   
   forms: 
     save: "Speichern"
@@ -70,6 +70,8 @@ frontend:
   
   app:
     home: "Start"
+    publicProfile: "Öffentliches Profile"
+    generateCV: "CV Herunterladen"
   
   home: 
     welcome: 
@@ -211,7 +213,17 @@ frontend:
       addError: "Projekte konnte nicht hinzugefügt werden"
       editError: "Projekt konnte nicht aktualisiert werden"
       deleteError: "Projekt konnte nicht gelöscht werden"
-  
+
+  cv:
+    generate: "Lade deinen CV als PDF herunter"
+    intro: "Lade deinen Online-CV herunter, um ihn deiner Bewerbung beizulegen."
+    style: "CV Design"
+    styleExplanation: "Wähle des Design, in dem dein PDF-CV erstellt werden soll."
+    select: "Auswählen"
+    download: "Herunterladen"
+    styleError: "Die verfügbaren CV Designs konnten nicht geladen werden"
+    generateError: "Beim Erstellen deines PDF-CV ist ein Problem aufgetreten"
+
   theme:
     title: "Thema"
     description: "Standardmäßig wird dein Lebenslauf im hellen Thema von MyCVHub angezeigt. Unten kannst du die verwendeten Farben nach deinem Geschmack anpassen.\nAchte auf Farben, die den Text gut lesbar und professionell machen.\n\nTipps:\n- Hintergrundfarbe: Eine weiche, neutrale Farbe kann dein Profil elegant aussehen lassen.\n- Farbe der Kopfzeile: Nimm eine etwas dunklere oder kontrastierende Farbe, um die Kopfzeile hervorzuheben."
@@ -337,7 +349,14 @@ backend:
       error: "Passwortänderung ist fehlgeschlagen"
     tokenRefresh:
       refreshTokenRequired: "Refresh Token wird benötigt für Token-Erneuerung"
-    accessDenied: "You are not authorized to perform this operation"
+    accessDenied: "Du bist nicht berechtigt diese Operation durchzuführen"
+  cv:
+    templateNotFound: "CV Vorlage nicht gefunden"
+    generationFailed: "Dein PDF CV konnte nicht generiert werden"
+    style:
+      modern:
+        name: "Modern CV"
+        description: "<a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV</a> ist eine Variante der <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX-Vorlage."
   exceptions:
     db: "Ein Datenbank-Fehler ist aufgetreten. Bitte kontaktiere den Administrator"
     expiredJwt: "Abgelaufenes JWT-Token"
