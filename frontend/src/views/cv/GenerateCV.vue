@@ -1,25 +1,26 @@
 <template>
   <v-main>
     <v-container>
-      <v-row>
-        <v-col cols="12">
-          <h2>{{ t('cv.generate') }}</h2>
+      <v-row align="center" justify="center">
+        <v-col cols="12" class="text-center">
+          <h1>{{ t('cv.generate') }}</h1>
           <p>{{ t('cv.intro') }}</p>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col cols="12">
-          <h3>{{ t('cv.style') }}</h3>
+      <v-row justify="center" align="center">
+        <v-col cols="12" class="text-center">
+          <h2>{{ t('cv.style') }}</h2>
           <p>{{ t('cv.styleExplanation') }}</p>
         </v-col>
         <v-col
+          v-for="style in cvStyles"
+          :key="style.key"
           cols="6"
           md="4"
           xl="2"
+          class="text-center"
         >
           <v-card
-            v-for="style in cvStyles"
-            :key="style.key"
             elevation="5"
             rounded
             variant="outlined"
@@ -38,9 +39,25 @@
             </v-card-actions>
           </v-card>
         </v-col>
+        <v-col
+          cols="6"
+          md="4"
+          xl="2"
+          class="text-center"
+        >
+          <v-card
+            elevation="5"
+            rounded
+            variant="outlined"
+          >
+            <v-img src="https://dummyimage.com/800x1000/ffffff/000000.jpg&text=Coming+Soon" />
+            <v-card-title>{{ t('cv.moreSoon') }}</v-card-title>
+            <v-card-text>{{ t('cv.moreSoonText') }}</v-card-text>
+          </v-card>
+        </v-col>
       </v-row>
-      <v-row>
-        <v-col cols="12">
+      <v-row justify="center" align="center">
+        <v-col cols="12" class="text-center">
           <v-btn
             color="primary"
             :disabled="selectedStyle == null"
@@ -130,7 +147,7 @@ function getStyleImage(cvStyle: string): string {
 
 <style scoped lang="scss">
 .cv-style.cv-style-selected {
-  border-color: rgb(var(--v-theme-primary));
+  border: 2px rgb(var(--v-theme-primary));
 }
 </style>
 

@@ -216,13 +216,15 @@ frontend:
 
   cv:
     generate: "Download your CV as PDF"
-    intro: "Download you online CV, so you can add it to your job application."
+    intro: "Create and download your professional CV, ready to include with your job applications."
     style: "CV Design"
-    styleExplanation: "Choose the design which should be used to generate your PDF-CV."
-    select: "Select"
-    download: "Download"
+    styleExplanation: "Select your preferred CV template below — your information will be formatted automatically in the design you choose."
+    select: "Choose This Design"
+    download: "Download Your CV"
     styleError: "Could not load the available CV Designs"
     generateError: "There was a problem while creating your PDF-CV"
+    moreSoon: "More coming soon..."
+    moreSoonText: "Soon you can choose from more CV designs."
   
   theme:
     title: "Theme"

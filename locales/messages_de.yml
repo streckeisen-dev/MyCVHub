@@ -216,13 +216,15 @@ frontend:
 
   cv:
     generate: "Lade deinen CV als PDF herunter"
-    intro: "Lade deinen Online-CV herunter, um ihn deiner Bewerbung beizulegen."
+    intro: "Erstelle deinen professionellen CV und lade ihn herunter, damit du ihn deinen Bewerbungen beilegen kannst"
     style: "CV Design"
-    styleExplanation: "Wähle des Design, in dem dein PDF-CV erstellt werden soll."
-    select: "Auswählen"
-    download: "Herunterladen"
+    styleExplanation: "Wähle unten das CV Design aus, das dir am besten gefällt. Deine Informationen werden automatisch im von dir gewählten Design formattiert."
+    select: "Wähle dieses Design"
+    download: "Lade deinen CV herunter"
     styleError: "Die verfügbaren CV Designs konnten nicht geladen werden"
     generateError: "Beim Erstellen deines PDF-CV ist ein Problem aufgetreten"
+    moreSoon: "Bald kommt mehr..."
+    moreSoonText: "Bald kommen mehr CV Designs aus denen du wählen kannst."
 
   theme:
     title: "Thema"
