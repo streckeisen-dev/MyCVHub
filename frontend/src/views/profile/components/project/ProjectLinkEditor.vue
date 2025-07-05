@@ -13,6 +13,14 @@
         />
       </v-col>
       <v-col cols="2">
+        <v-text-field
+          v-model="link.displayName"
+          :label="t('fields.displayName')"
+          outlined
+          :error-messages="getDisplayNameErrors(index).value"
+        />
+      </v-col>
+      <v-col cols="2">
         <v-select
           v-model="link.type"
           :items="Object.values(ProjectLinkType)"
@@ -79,6 +87,12 @@ function getURLErrors(index: number): ComputedRef {
   })
 }
 
+function getDisplayNameErrors(index: number): ComputedRef {
+  return computed(() => {
+    return getErrors(index).value.displayName
+  })
+}
+
 function getTypeErrors(index: number): ComputedRef {
   return computed(() => {
     return getErrors(index).value.type
@@ -88,6 +102,7 @@ function getTypeErrors(index: number): ComputedRef {
 function addLink() {
   model.value.push({
     type: undefined,
+    displayName: undefined,
     url: undefined
   })
 }

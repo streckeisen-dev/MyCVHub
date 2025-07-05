@@ -117,6 +117,14 @@ const router = createRouter({
       }
     },
     {
+      path: '/ui/cv',
+      name: 'generate-cv',
+      component: () => import('@/views/cv/GenerateCV.vue'),
+      meta: {
+        authRequired: true
+      }
+    },
+    {
       path: '/ui/privacy',
       name: 'privacy-policy',
       component: () => import('@/views/PrivacyPolicy.vue')

@@ -18,6 +18,7 @@ private const val PROJECT_END_FIELD_KEY = "projectEnd"
 private const val PROJECT_LINK_KEY = "links"
 private const val PROJECT_LINK_URL_KEY = "url"
 private const val PROJECT_LINK_TYPE_KEY = "type"
+private const val DISPLAY_NAME_KEY = "displayName"
 
 @Service
 class ProjectValidationService(
@@ -127,6 +128,14 @@ class ProjectValidationService(
                         else -> throw ex
                     }
                 }
+            }
+
+            if (link.displayName.isNullOrBlank()) {
+                val error = messagesService.requiredFieldMissingError(DISPLAY_NAME_KEY)
+                validationErrorBuilder.addError("$PROJECT_LINK_KEY[$index].$DISPLAY_NAME_KEY", error)
+            } else if (link.displayName.length > PROJECT_LINK_NAME_MAX_LENGTH) {
+                val error = messagesService.fieldMaxLengthExceededError(DISPLAY_NAME_KEY, PROJECT_LINK_NAME_MAX_LENGTH)
+                validationErrorBuilder.addError("$PROJECT_LINK_KEY[$index].$DISPLAY_NAME_KEY", error)
             }
 
             if (link.type == null) {
