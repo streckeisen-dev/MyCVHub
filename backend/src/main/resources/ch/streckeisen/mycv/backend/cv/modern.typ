@@ -22,11 +22,11 @@
     firstname: profile.firstName,
     lastname: profile.lastName,
     email: profile.email,
-    //homepage: "https://streckeisen.dev",
+    //homepage: "",
     phone: profile.phone,
-    //github: "lstreckeisen",
+    //github: "",
     birth: profile.birthday,
-    //linkedin: "lukas-streckeisen",
+    //linkedin: "",
     address: profile.address,
     positions: (
       profile.jobTitle,
@@ -51,13 +51,13 @@
   profile.bio
 }
 
-#if (profile.language == "de") [
-  = Erfahrung
-] else [
-  = Experience
-]
-
 #if (profile.at("workExperiences", default: none) != none) {
+  if (profile.language == "de") [
+    = Erfahrung
+  ] else [
+    = Experience
+  ]
+
   for experience in profile.workExperiences [
     #resume-entry(
       title: experience.title,
@@ -72,13 +72,13 @@
   ]
 }
 
-#if (profile.language == "de") [
-  = Ausbildung
-] else [
-  = Education
-]
-
 #if (profile.at("education", default: none) != none) {
+  if (profile.language == "de") [
+    = Ausbildung
+  ] else [
+    = Education
+  ]
+
   for edu in profile.education [
     #resume-entry(
       title: edu.title,
@@ -93,13 +93,13 @@
   ]
 }
 
-#if (profile.language == "de") [
-  = Projekte
-] else [
-  = Projects
-]
-
 #if (profile.at("projects", default: none) != none) {
+  if (profile.language == "de") [
+    = Projekte
+  ] else [
+    = Projects
+  ]
+
   for project in profile.projects [
     #resume-entry(
       title: project.title,
@@ -121,7 +121,6 @@
 }
 
 #if (profile.at("skills", default: none) != none) {
-
   if (profile.language == "de") [
     = Fähigkeiten
   ] else [
@@ -133,4 +132,3 @@
   }
 
 }
-
