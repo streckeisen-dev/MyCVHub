@@ -112,7 +112,6 @@ async function generateCV() {
   } finally {
     isGenerating.value = false
   }
-  // window.open(`/api/cv/generate?style=${selectedStyle.value}`, '_blank')
 }
 
 function cvStyleClasses(cvStyle: string): ComputedRef {
@@ -137,9 +136,7 @@ function getStyleImage(cvStyle: string): string {
 
 <!-- Unscoped styles required since v-html content is not getting scope ids -->
 <style lang="scss">
-.cv-style {
-  div.v-card-text > a {
-    text-decoration: underline;
-  }
+.cv-style div.v-card-text > a {
+  text-decoration: underline;
 }
 </style>
