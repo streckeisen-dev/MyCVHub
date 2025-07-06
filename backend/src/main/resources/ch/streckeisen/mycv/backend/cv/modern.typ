@@ -51,7 +51,7 @@
   profile.bio
 }
 
-#if (profile.at("workExperiences", default: none) != none) {
+#if (profile.at("workExperiences", default: none) != none and profile.workExperiences.len() > 0) {
   if (profile.language == "de") [
     = Erfahrung
   ] else [
@@ -72,7 +72,7 @@
   ]
 }
 
-#if (profile.at("education", default: none) != none) {
+#if (profile.at("education", default: none) != none and profile.education.len() > 0) {
   if (profile.language == "de") [
     = Ausbildung
   ] else [
@@ -93,7 +93,7 @@
   ]
 }
 
-#if (profile.at("projects", default: none) != none) {
+#if (profile.at("projects", default: none) != none and profile.projects.len() > 0) {
   if (profile.language == "de") [
     = Projekte
   ] else [
@@ -120,7 +120,7 @@
   ]
 }
 
-#if (profile.at("skills", default: none) != none) {
+#if (profile.at("skills", default: none) != none and profile.skills.len() > 0) {
   if (profile.language == "de") [
     = Fähigkeiten
   ] else [
