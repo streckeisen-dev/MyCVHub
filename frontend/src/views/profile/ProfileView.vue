@@ -48,6 +48,7 @@
           <profile-section
             v-if="profile.bio"
             :title="t('profile.aboutMe')"
+            class="profile-bio"
           >
             <p>{{ profile.bio }}</p>
           </profile-section>
@@ -194,6 +195,10 @@ onBeforeRouteLeave(
 </script>
 
 <style scoped>
+.profile-bio {
+  white-space: break-spaces;
+}
+
 .profile-picture {
   max-width: min(100%, 400px);
   height: auto;
