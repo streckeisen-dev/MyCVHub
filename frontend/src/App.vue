@@ -109,7 +109,7 @@
             link
             prepend-icon="mdi-earth"
             target="_blank"
-            :to="{ name: 'public-profile', params: { username }}"
+            :to="{ name: 'public-profile', params: { username } }"
             :title="t('app.publicProfile')"
           />
 
@@ -196,13 +196,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  type NavigationGuardNext,
-  type RouteLocationNormalized,
-  type RouteLocationNormalizedLoaded,
-  RouterLink,
-  RouterView
-} from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router'
 import { computed, type ComputedRef, ref, watchEffect } from 'vue'
 import { useLocale, useTheme } from 'vuetify'
 import accountApi from '@/api/AccountApi'
@@ -265,20 +259,10 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ({ 
   vuetifyTheme.global.name.value = matches ? 'dark' : 'light'
 })
 
-router.beforeEach(
-  async (
-    to: RouteLocationNormalized,
-    from: RouteLocationNormalizedLoaded,
-    next: NavigationGuardNext
-  ) => {
-    if (to.meta.authRequired && !accountApi.isUserLoggedIn()) {
-      next({ name: 'login', query: { redirect: to.fullPath } })
-    } else {
-      showNavigation.value = !(to.meta.hideNavigation || false)
-      next()
-    }
-  }
-)
+router.beforeEach((to, from, next) => {
+  showNavigation.value = !(to.meta.hideNavigation || false)
+  next()
+})
 </script>
 
 <style lang="scss" scoped>
