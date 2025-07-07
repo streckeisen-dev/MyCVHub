@@ -1,6 +1,9 @@
 FROM eclipse-temurin:21-jdk-alpine
 
-RUN apk add typst && apk cache clean
+RUN apk update \
+    && apk add typst \
+    && apk add font-awesome-free \
+    && apk cache clean
 
 WORKDIR /app
 
