@@ -145,6 +145,24 @@ class JwtAuthenticationFilterTest {
         jwtAuthenticationFilter.doFilter(request, response, filterChain)
 
         assertNull(SecurityContextHolder.getContext().authentication)
+        verify(exactly = 1) { filterChain.doFilter(any(), any()) }
+        verify(exactly = 0) { handlerExceptionResolver.resolveException(any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun testNonJwtException() {
+        val request = mockRequest()
+        val response = mockResponse()
+        val filterChain = mockFilterChain()
+        every { request.cookies } returns arrayOf(mockk {
+            every { name } returns ACCESS_TOKEN_NAME
+            every { value } returns "abcdefg"
+        })
+        every { jwtService.extractUsername(any()) } throws RuntimeException("Something went wrong")
+
+        jwtAuthenticationFilter.doFilter(request, response, filterChain)
+
+        assertNull(SecurityContextHolder.getContext().authentication)
         verify(exactly = 0) { filterChain.doFilter(any(), any()) }
         verify(exactly = 1) { handlerExceptionResolver.resolveException(any(), any(), any(), any()) }
     }
