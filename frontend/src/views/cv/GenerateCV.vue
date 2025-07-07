@@ -147,7 +147,7 @@ function getStyleImage(cvStyle: string): string {
 
 <style scoped lang="scss">
 .cv-style.cv-style-selected {
-  border: 2px rgb(var(--v-theme-primary));
+  border: 2px solid rgb(var(--v-theme-primary));
 }
 </style>
 
