@@ -2,6 +2,7 @@ package ch.streckeisen.mycv.backend.security
 
 import ch.streckeisen.mycv.backend.account.AccountStatus
 import ch.streckeisen.mycv.backend.account.auth.ACCESS_TOKEN_NAME
+import io.jsonwebtoken.JwtException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -43,7 +44,11 @@ class JwtAuthenticationFilter(
                 }
             }
             filterChain.doFilter(request, response)
+        } catch (_: JwtException) {
+            SecurityContextHolder.getContext().authentication = null
+            filterChain.doFilter(request, response)
         } catch (ex: Exception) {
+            logger.error("Failed to process authentication token", ex)
             handlerExceptionResolver.resolveException(request, response, null, ex)
         }
     }
