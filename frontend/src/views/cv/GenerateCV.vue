@@ -15,7 +15,8 @@
         <v-col
           v-for="style in cvStyles"
           :key="style.key"
-          cols="6"
+          cols="12"
+          sm="6"
           md="4"
           xl="2"
           class="text-center"
@@ -40,7 +41,8 @@
           </v-card>
         </v-col>
         <v-col
-          cols="6"
+          cols="12"
+          sm="6"
           md="4"
           xl="2"
           class="text-center"
@@ -147,7 +149,7 @@ function getStyleImage(cvStyle: string): string {
 
 <style scoped lang="scss">
 .cv-style.cv-style-selected {
-  border: 2px rgb(var(--v-theme-primary));
+  border: 2px solid rgb(var(--v-theme-primary));
 }
 </style>
 
