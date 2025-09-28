@@ -359,6 +359,9 @@ backend:
       modern:
         name: "Modern CV"
         description: "Eine leicht modifizierte Version der <a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV Vorlage</a>, welche eine Variante der <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX-Vorlage ist."
+      talendo:
+        name: "Talendo"
+        description: "Eine leicht modifizierte Version der CV Vorlage aus dem <a href=\"https://talendo.ch\">Talendo</a> Career Starter Magazin."
   exceptions:
     db: "Ein Datenbank-Fehler ist aufgetreten. Bitte kontaktiere den Administrator"
     expiredJwt: "Abgelaufenes JWT-Token"

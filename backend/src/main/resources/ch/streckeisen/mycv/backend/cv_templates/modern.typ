@@ -4,6 +4,7 @@ Changes: same formatting for firstname & lastname, increased skill category colu
 */
 
 #import "@preview/fontawesome:0.5.0": fa-icon
+#import "shared.typ": project_link
 
 #let color-darknight = rgb("#131A28")
 #let color-darkgray = rgb("#333333")
@@ -16,21 +17,6 @@ Changes: same formatting for firstname & lastname, increased skill category colu
 #let birth-icon = box(fa-icon("cake", fill: color-darknight))
 #let homepage-icon = box(fa-icon("home", fill: color-darknight))
 #let website-icon = box(fa-icon("globe", fill: color-darknight))
-
-#let project_link(projectLink) = [
-  #let linkIcon = "link"
-  #if (projectLink.type == "GITHUB") {
-    linkIcon = "github"
-  } else if (projectLink.type == "DOCUMENT") {
-    linkIcon = "file"
-  } else if (projectLink.type == "WEBSITE") {
-    linkIcon = "globe"
-  }
-  #fa-icon(linkIcon, fill: color-darkgray) #link(
-    projectLink.url,
-    projectLink.displayName,
-  )
-]
 
 #let profile = json("profile.json")
 
