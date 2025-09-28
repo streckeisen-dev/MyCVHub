@@ -18,7 +18,7 @@ Changes: same formatting for firstname & lastname, increased skill category colu
 #let homepage-icon = box(fa-icon("home", fill: color-darknight))
 #let website-icon = box(fa-icon("globe", fill: color-darknight))
 
-#let profile = json("test/profile.json")
+#let profile = json("profile.json")
 
 #let __justify_align(left_body, right_body) = {
   block[
@@ -414,7 +414,7 @@ Changes: same formatting for firstname & lastname, increased skill category colu
       profile.jobTitle,
     ),
   ),
-  profile-picture: image("test/profile.jpg"),
+  profile-picture: image("profile.jpg"),
   header-font: "Libertinus Serif",
   font: "Libertinus Serif",
   date: datetime.today().display(),
