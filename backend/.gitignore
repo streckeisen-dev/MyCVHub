@@ -4,6 +4,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 src/main/resources/messages*.properties
+src/main/resources/ch/streckeisen/mycv/backend/cv_templates/*.pdf
+src/main/resources/ch/streckeisen/mycv/backend/cv_templates/test
 
 logs/
 
