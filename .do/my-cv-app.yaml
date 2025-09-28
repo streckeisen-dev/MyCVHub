@@ -69,4 +69,8 @@ services:
     tag: latest
   instance_count: 2
   instance_size_slug: apps-s-1vcpu-1gb
+  log_destinations:
+  - logtail:
+      token: neBiX2R5DZP2FVKiA5BDAUat
+    name: Better Stack
   name: my-cv
