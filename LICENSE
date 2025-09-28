@@ -15,7 +15,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 --------------------------------------------------------------------------------
 
-**Third-Party Componentes**
+**Third-Party Components**
 
 The file "modern.typ" in the backend application resources folder is derived from the Typst template "modern-cv",
 which is licensed under the MIT License.
