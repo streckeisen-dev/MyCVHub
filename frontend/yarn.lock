@@ -5040,7 +5040,7 @@ __metadata:
     vite: "npm:^7.1.7"
     vite-plugin-vuetify: "npm:^2.1.2"
     vitest: "npm:^3.2.4"
-    vue: "npm:^3.2.25"
+    vue: "npm:^3.5.22"
     vue-i18n: "npm:^11.1.12"
     vue-router: "npm:^4.5.1"
     vue-toastification: "npm:^2.0.0-rc.5"
@@ -7042,24 +7042,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue@npm:^3.2.25":
-  version: 3.5.22
-  resolution: "vue@npm:3.5.22"
-  dependencies:
-    "@vue/compiler-dom": "npm:3.5.22"
-    "@vue/compiler-sfc": "npm:3.5.22"
-    "@vue/runtime-dom": "npm:3.5.22"
-    "@vue/server-renderer": "npm:3.5.22"
-    "@vue/shared": "npm:3.5.22"
-  peerDependencies:
-    typescript: "*"
-  peerDependenciesMeta:
-    typescript:
-      optional: true
-  checksum: 10c0/ceee900a627c2274985da4a6cf1ceb093d3b6c59cc9e9dee606aedd2147918078ccb21bc0a39aacbd29d84449491e46e4b188e4a9fb57ff6c6d146ccb1baf752
-  languageName: node
-  linkType: hard
-
 "vue@npm:^3.4":
   version: 3.5.13
   resolution: "vue@npm:3.5.13"
@@ -7075,6 +7057,24 @@ __metadata:
     typescript:
       optional: true
   checksum: 10c0/4bbb5caf3f04fed933b01c100804f3693ff902984a3152ea1359a972264fa3240f6551d32f0163a79c64df3715b4d6691818c9f652cdd41b2473c69e2b0a373d
+  languageName: node
+  linkType: hard
+
+"vue@npm:^3.5.22":
+  version: 3.5.22
+  resolution: "vue@npm:3.5.22"
+  dependencies:
+    "@vue/compiler-dom": "npm:3.5.22"
+    "@vue/compiler-sfc": "npm:3.5.22"
+    "@vue/runtime-dom": "npm:3.5.22"
+    "@vue/server-renderer": "npm:3.5.22"
+    "@vue/shared": "npm:3.5.22"
+  peerDependencies:
+    typescript: "*"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/ceee900a627c2274985da4a6cf1ceb093d3b6c59cc9e9dee606aedd2147918078ccb21bc0a39aacbd29d84449491e46e4b188e4a9fb57ff6c6d146ccb1baf752
   languageName: node
   linkType: hard
 
