@@ -61,7 +61,7 @@ const errorMessages = ref<ErrorMessages>({})
 
 try {
   account.value = await accountApi.getAccountInfo()
-} catch (ignore) {
+} catch {
   // ignore
 } finally {
   isLoading.value = false

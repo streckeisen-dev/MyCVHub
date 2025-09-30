@@ -121,7 +121,7 @@ async function generateCV() {
     a.download = 'cv.pdf'
     document.body.appendChild(a)
     a.click()
-    document.body.removeChild(a)
+    a.remove()
     window.URL.revokeObjectURL(fileURL)
   } catch (e) {
     const error = (e as RestError).errorDto

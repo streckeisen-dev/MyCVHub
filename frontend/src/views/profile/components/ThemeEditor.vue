@@ -173,6 +173,8 @@ async function save() {
     backgroundColor.value = updatedTheme.backgroundColor
     surfaceColor.value = updatedTheme.surfaceColor
 
+    ToastService.success(t('theme.saveSuccess'))
+
     errorMessages.value = {}
   } catch (e) {
     const error = (e as RestError).errorDto

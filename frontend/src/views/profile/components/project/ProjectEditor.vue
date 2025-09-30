@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { type PropType, ref } from 'vue'
+import { type PropType, ref, toRaw } from 'vue'
 import profileApi from '@/api/ProfileApi'
 import ProjectContainer from '@/views/profile/components/project/ProjectContainer.vue'
 import { useI18n } from 'vue-i18n'
@@ -67,7 +67,7 @@ function editProject(project: ProjectDto) {
   isEdit.value = true
   showEditDialog.value = true
   // deep copy to avoid changing project links of the original project directly
-  projectToEdit.value = JSON.parse(JSON.stringify(project))
+  projectToEdit.value = structuredClone(toRaw(project))
 }
 
 function onSaveNew(newEntry: ProjectDto) {

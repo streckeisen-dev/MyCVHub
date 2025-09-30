@@ -4,7 +4,7 @@
       v-for="(link, index) in model"
       :key="index"
     >
-      <v-col cols="8">
+      <v-col cols="6" sm="2" md="6">
         <v-text-field
           v-model="link.url"
           :label="t('fields.url')"
@@ -12,7 +12,7 @@
           :error-messages="getURLErrors(index).value"
         />
       </v-col>
-      <v-col cols="2">
+      <v-col cols="6" sm="3" md="2">
         <v-text-field
           v-model="link.displayName"
           :label="t('fields.displayName')"
@@ -20,7 +20,7 @@
           :error-messages="getDisplayNameErrors(index).value"
         />
       </v-col>
-      <v-col cols="2">
+      <v-col cols="6" sm="3" md="2">
         <v-select
           v-model="link.type"
           :items="Object.values(ProjectLinkType)"
@@ -28,7 +28,7 @@
           :error-messages="getTypeErrors(index).value"
         />
       </v-col>
-      <v-col cols="1">
+      <v-col cols="6" sm="2" md="1">
         <v-btn
           icon="mdi-minus"
           color="primary"
@@ -37,7 +37,7 @@
       </v-col>
       <v-col
         v-if="index === model.length - 1"
-        cols="1"
+        cols="12" sm="2" md="1"
       >
         <v-btn
           icon="mdi-plus"
