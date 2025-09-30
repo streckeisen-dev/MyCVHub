@@ -30,7 +30,7 @@
     "vuetify": "^3.10.3"
   },
   "devDependencies": {
-    "@cypress/vite-dev-server": "^7.0.0",
+    "@cypress/vite-dev-server": "^6.0.3",
     "@cypress/vue": "^6.0.2",
     "@eslint/compat": "^1.4.0",
     "@intlify/unplugin-vue-i18n": "^6.0.8",
@@ -54,7 +54,7 @@
     "sass-embedded": "^1.93.2",
     "ts-node": "^10.9.2",
     "typescript": "~5.9.2",
-    "vite": "^7.1.7",
+    "vite": "^6.3.6",
     "vitest": "^3.2.4",
     "vue-tsc": "^3.1.0"
   },
