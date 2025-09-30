@@ -1,7 +1,7 @@
 import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import Vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 
@@ -11,7 +11,7 @@ const i18nPlugin = VueI18nPlugin({})
 export default () =>
   defineConfig({
     plugins: [
-      vue(),
+      Vue(),
       vuetify(),
       i18nPlugin
     ],
