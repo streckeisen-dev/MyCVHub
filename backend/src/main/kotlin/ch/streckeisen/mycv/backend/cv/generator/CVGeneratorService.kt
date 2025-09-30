@@ -9,18 +9,14 @@ import ch.streckeisen.mycv.backend.locale.MessagesService
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import org.apache.commons.io.FileUtils
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.stereotype.Service
-import java.io.FileOutputStream
 import java.nio.file.Path
-import kotlin.io.path.createFile
-import kotlin.io.path.createTempDirectory
-import kotlin.io.path.pathString
+import kotlin.io.path.*
 
 private val logger = KotlinLogging.logger { }
 
@@ -46,17 +42,14 @@ class CVGeneratorService(
         val tempDir = createTempDirectory("cv_$accountId")
         try {
             val cvTemplate =
-                this.javaClass.classLoader.getResourceAsStream("ch/streckeisen/mycv/backend/cv/${cvStyle.cvTemplate}.typ")
+                this.javaClass.classLoader.getResource("ch/streckeisen/mycv/backend/cv_templates/")?.toURI()
             if (cvTemplate == null) {
                 return Result.failure(LocalizedException(TEMPLATE_NOT_FOUND_MESSAGE))
             }
 
             return withContext(Dispatchers.IO) {
-                cvTemplate.use { input ->
-                    FileOutputStream(tempDir.resolve("${cvStyle.cvTemplate}.typ").toFile()).use { output ->
-                        input.copyTo(output)
-                    }
-                }
+                @OptIn(ExperimentalPathApi::class)
+                Path.of(cvTemplate).copyToRecursively(tempDir, overwrite = true, followLinks = false)
 
                 profilePictureService.getCVPicture(accountId, profile)
                     .onFailure { return@withContext Result.failure(it) }
@@ -106,7 +99,7 @@ class CVGeneratorService(
             val resultCode = process.exitValue()
             if (resultCode != 0) {
                 val error = process.errorStream.bufferedReader().use { it.readText() }
-                logger.error { "[Accoun $accountId] Failed to generate CV: $error" }
+                logger.error { "[Account $accountId] Failed to generate CV: $error" }
                 return@withContext Result.failure(LocalizedException(GENERATION_FAILED_MESSAGE))
             }
             val bytes = dir.resolve("cv_${accountId}.pdf").toFile().readBytes()

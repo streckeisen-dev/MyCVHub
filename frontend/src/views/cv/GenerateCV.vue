@@ -40,7 +40,7 @@
             </v-card-actions>
           </v-card>
         </v-col>
-        <v-col
+        <!--<v-col
           cols="12"
           sm="6"
           md="4"
@@ -56,7 +56,7 @@
             <v-card-title>{{ t('cv.moreSoon') }}</v-card-title>
             <v-card-text>{{ t('cv.moreSoonText') }}</v-card-text>
           </v-card>
-        </v-col>
+        </v-col>-->
       </v-row>
       <v-row justify="center" align="center">
         <v-col cols="12" class="text-center">

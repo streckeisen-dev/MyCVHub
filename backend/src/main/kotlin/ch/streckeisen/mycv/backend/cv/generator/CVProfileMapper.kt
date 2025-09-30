@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 private const val BIRTHDAY_FORMAT = "dd.MM.yyyy"
-private const val CV_DATE_FORMAT = "MMMM yyyy"
+private const val CV_DATE_FORMAT = "MM.yyyy"
 
 private const val TODAY_MESSAGE = "$MYCV_KEY_PREFIX.date.today"
 
