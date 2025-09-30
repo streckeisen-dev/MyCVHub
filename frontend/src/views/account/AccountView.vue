@@ -235,7 +235,7 @@ const isAccountLoading = ref(true)
 const shouldDeleteAccount = ref(false)
 try {
   account.value = await accountApi.getAccountInfo()
-} catch (ignore) {
+} catch {
   // ignore
 } finally {
   isAccountLoading.value = false
