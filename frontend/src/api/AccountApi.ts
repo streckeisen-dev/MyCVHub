@@ -27,7 +27,7 @@ async function login(email: string, password: string): Promise<void> {
     return processAuthResponse(response)
   } catch (e) {
     const error = (e as RestError).errorDto
-    return Promise.reject(new RestError('Failed to login', error))
+    throw new RestError('Failed to login', error)
   }
 }
 
@@ -37,7 +37,7 @@ async function verifyLogin(): Promise<void> {
     return processAuthResponse(response)
   } catch (e) {
     const error = (e as RestError).errorDto
-    return Promise.reject(new RestError('Failed to verify login state', error))
+    throw new RestError('Failed to verify login state', error)
   }
 }
 
@@ -51,7 +51,7 @@ async function signUp(account: SignupRequestDto): Promise<void> {
     return processAuthResponse(response)
   } catch (e) {
     const error = (e as RestError).errorDto
-    return Promise.reject(new RestError('Failed to signup', error))
+    throw new RestError('Failed to signup', error)
   }
 }
 
@@ -65,7 +65,7 @@ async function oauthSignUp(oAuthSignUpRequest: OAuthSignUpRequestDto): Promise<v
     return processAuthResponse(response)
   } catch (e) {
     const error = (e as RestError).errorDto
-    return Promise.reject(new RestError('Failed to signup with OAuth', error))
+    throw new RestError('Failed to signup with OAuth', error)
   }
 }
 
@@ -79,7 +79,7 @@ async function changePassword(changePasswordRequest: ChangePasswordRequestDto): 
     await extractErrorIfResponseIsNotOk(response)
   } catch (e) {
     const error = (e as RestError).errorDto
-    return Promise.reject(new RestError('Failed to change password', error))
+    throw new RestError('Failed to change password', error)
   }
 }
 
@@ -90,22 +90,20 @@ async function update(accountUpdate: AccountUpdateDto): Promise<AccountDto> {
       body: JSON.stringify(accountUpdate),
       headers: commonHeaders()
     })
-    const updatedAccount = await getJSONIfResponseIsOk<AccountDto>(response)
-    return Promise.resolve(updatedAccount)
+    return await getJSONIfResponseIsOk<AccountDto>(response)
   } catch (e) {
     const error = (e as RestError).errorDto
-    return Promise.reject(new RestError('Failed to update account', error))
+    throw new RestError('Failed to update account', error)
   }
 }
 
 async function getAccountInfo(): Promise<AccountDto> {
   try {
     const response = await fetchFromApi('/account')
-    const account = await getJSONIfResponseIsOk<AccountDto>(response)
-    return Promise.resolve(account)
+    return await getJSONIfResponseIsOk<AccountDto>(response)
   } catch (e) {
     const error = (e as RestError).errorDto
-    return Promise.reject(new RestError('Failed to load account', error))
+    throw new RestError('Failed to load account', error)
   }
 }
 
@@ -123,10 +121,9 @@ async function logout(): Promise<void> {
       return Promise.reject(new RestError('Failed to perform logout'))
     }
     LoginStateService.loggedOut()
-    return Promise.resolve()
   } catch (e) {
     const error = (e as RestError).errorDto
-    return Promise.reject(new RestError('Failed to logout', error))
+    throw new RestError('Failed to logout', error)
   }
 }
 
@@ -135,10 +132,9 @@ async function loadAccountStatus(): Promise<void> {
     const response = await fetchFromApi('/account/status')
     const accountStatus = await getJSONIfResponseIsOk<AccountStatusDto>(response)
     LoginStateService.setAccountStatus(accountStatus.status)
-    return Promise.resolve()
   } catch (e) {
     const error = (e as RestError).errorDto
-    return Promise.reject(new RestError('Failed to load account status', error))
+    throw new RestError('Failed to load account status', error)
   }
 }
 
@@ -148,10 +144,9 @@ async function generateVerificationCode(): Promise<void> {
       method: 'POST'
     })
     await extractErrorIfResponseIsNotOk(response)
-    return Promise.resolve()
   } catch (e) {
     const error = (e as RestError).errorDto
-    return Promise.reject(new RestError('Failed to generate verification code', error))
+    throw new RestError('Failed to generate verification code', error)
   }
 }
 
@@ -169,10 +164,9 @@ async function verifyAccount(accountId: number, token: string): Promise<void> {
     if (isUserLoggedIn()) {
       LoginStateService.setAccountStatus(AccountStatus.VERIFIED)
     }
-    return Promise.resolve()
   } catch (e) {
     const error = (e as RestError).errorDto
-    return Promise.reject(new RestError('Failed to verify account', error))
+    throw new RestError('Failed to verify account', error)
   }
 }
 
@@ -183,10 +177,9 @@ async function deleteAccount(): Promise<void> {
       headers: commonHeaders()
     })
     await extractErrorIfResponseIsNotOk(response)
-    return Promise.resolve()
   } catch (e) {
     const error = (e as RestError).errorDto
-    return Promise.reject(new RestError('Failed to delete account', error))
+    throw new RestError('Failed to delete account', error)
   }
 }
 

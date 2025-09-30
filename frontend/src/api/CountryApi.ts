@@ -5,11 +5,10 @@ import { RestError } from '@/api/RestError'
 async function getCountries(): Promise<Array<CountryDto>> {
   try {
     const response = await fetchFromApi('/public/countries')
-    const countries = await getJSONIfResponseIsOk<Array<CountryDto>>(response)
-    return Promise.resolve(countries)
+    return await getJSONIfResponseIsOk<Array<CountryDto>>(response)
   } catch (e) {
     const error = (e as RestError).errorDto
-    return Promise.reject(new RestError('Failed to load countries', error))
+    throw new RestError('Failed to load countries', error)
   }
 }
 

@@ -231,6 +231,8 @@ frontend:
     description: "By default, your CV profile is displayed in MyCVHub's light theme. Below, you can personalize the used theme colors to your taste.\nAim for colors that keep your text easy to read and professional.\n\nTips:\n- Background Color: A soft, neutral color can keep your profile looking clean.\n- Header Color: Try a slightly darker or contrasting color to highlight the header."
     reset: "Reset to defaults"
     preview: "Preview"
+    saveSuccess: "Your theme settings have been saved"
+    saveError: "Your theme settings couldn't be saved"
   
   country:
     loadingError:

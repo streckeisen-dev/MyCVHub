@@ -9,11 +9,10 @@ import { RestError } from '@/api/RestError.ts'
 async function getCVStyles(): Promise<Array<CVStyleDto>> {
   try {
     const response = await fetchFromApi('/api/cv/styles')
-    const styles = await getJSONIfResponseIsOk<Array<CVStyleDto>>(response)
-    return Promise.resolve(styles)
+    return await getJSONIfResponseIsOk<Array<CVStyleDto>>(response)
   } catch (e) {
     const error = (e as RestError).errorDto
-    return Promise.reject(new RestError('Failed to load CV styles', error))
+    throw new RestError('Failed to load CV styles', error)
   }
 }
 
@@ -21,11 +20,10 @@ async function getCV(style: string): Promise<Blob | MediaSource> {
   try {
     const response = await fetchFromApi(`/api/cv/generate?style=${style}`)
     await extractErrorIfResponseIsNotOk(response)
-    const blob = await response.blob()
-    return Promise.resolve(blob)
+    return await response.blob()
   } catch (e) {
     const error = (e as RestError).errorDto
-    return Promise.reject(new RestError('Failed to generate CV', error))
+    throw new RestError('Failed to generate CV', error)
   }
 }
 

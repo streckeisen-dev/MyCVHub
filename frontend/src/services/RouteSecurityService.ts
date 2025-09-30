@@ -13,7 +13,7 @@ async function enforceRouteAccessPermissions(
   if (shouldLoadAccountStatus(accountStatus)) {
     try {
       await accountApi.loadAccountStatus()
-    } catch (error) {
+    } catch (ignore) {
       ToastService.error(vuetify.locale.t('account.verification.statusCheck.error'))
       next({ name: 'account-verification-pending' })
       return

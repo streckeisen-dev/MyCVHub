@@ -26,7 +26,7 @@ async function fetchFromApi(
     }
     return response
   } catch (error) {
-    return Promise.reject(new RestError('Failed to execute call', error as ErrorDto))
+    throw new RestError('Failed to execute call', error as ErrorDto)
   }
 }
 
@@ -40,7 +40,7 @@ async function refreshToken(): Promise<void> {
   } catch (e) {
     await router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
     const error = (e as RestError).errorDto
-    return Promise.reject(new RestError('', error))
+    throw new RestError('Token refresh failed', error)
   }
 }
 
@@ -50,7 +50,7 @@ async function getJSONIfResponseIsOk<T>(response: Response): Promise<T> {
     return response.json()
   } catch (e) {
     const error = (e as RestError).errorDto
-    return Promise.reject(new RestError('Failed to extract response body', error))
+    throw new RestError('Failed to extract response body', error)
   }
 }
 
@@ -60,11 +60,10 @@ async function extractErrorIfResponseIsNotOk(response: Response): Promise<void> 
       const error: ErrorDto = await response.json()
       error.status = response.status
       return Promise.reject(new RestError('Call failed', error))
-    } catch (error) {
-      return Promise.reject(new RestError('Failed to extract error'))
+    } catch (ignore) {
+      throw new RestError('Failed to extract error')
     }
   }
-  return Promise.resolve()
 }
 
 async function processAuthResponse(response: Response): Promise<void> {
@@ -76,9 +75,8 @@ async function processAuthResponse(response: Response): Promise<void> {
     }
     await extractErrorIfResponseIsNotOk(response)
     LoginStateService.successfulLogin()
-    return Promise.resolve()
   } catch (error) {
-    return Promise.reject(new RestError('Failed to execute call', error as ErrorDto))
+    throw new RestError('Failed to execute call', error as ErrorDto)
   }
 }
 

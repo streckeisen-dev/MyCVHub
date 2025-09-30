@@ -67,7 +67,7 @@ function editProject(project: ProjectDto) {
   isEdit.value = true
   showEditDialog.value = true
   // deep copy to avoid changing project links of the original project directly
-  projectToEdit.value = JSON.parse(JSON.stringify(project))
+  projectToEdit.value = structuredClone(project)
 }
 
 function onSaveNew(newEntry: ProjectDto) {
