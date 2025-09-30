@@ -60,7 +60,7 @@ async function extractErrorIfResponseIsNotOk(response: Response): Promise<void> 
       const error: ErrorDto = await response.json()
       error.status = response.status
       return Promise.reject(new RestError('Call failed', error))
-    } catch (ignore) {
+    } catch {
       throw new RestError('Failed to extract error')
     }
   }
