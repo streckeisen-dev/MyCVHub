@@ -103,7 +103,12 @@ class ProfileServiceTest {
         }
         profilePictureService = mockk()
         profileService =
-            ProfileService(profileRepository, profileValidationService, applicantAccountService, profilePictureService)
+            ProfileService(
+                profileRepository,
+                profileValidationService,
+                applicantAccountService,
+                profilePictureService
+            )
     }
 
     @Test
