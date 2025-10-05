@@ -28,11 +28,14 @@
   return ""
 }
 
-#let getEntryDescription(description) = {
-  let listItems = description.split("- ")
+#let getEntryDescription(description, hasLinks: false) = {
+  let listItems = description.split(regex("((^|\n)- )"))
   if (listItems.len() > 1) {
     list(..listItems.slice(1))
   } else {
     description
+    if (hasLinks) {
+      linebreak()
+    }
   }
 }
