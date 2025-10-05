@@ -21,13 +21,14 @@ import { computed, type Reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ValidatorFn } from '@vuelidate/core'
 import { withI18nMessage } from '@/validation/validators'
+import { KeyValueObject } from '@/model/KeyValueObject.ts'
 
 type PasswordData = {
   password?: string
   confirmPassword?: string
 }
 
-type ValidationRules = { [key: string]: { [validator: string]: ValidatorFn } }
+type ValidationRules = KeyValueObject<{ [validator: string]: ValidatorFn }>
 
 const formState = defineModel<Reactive<PasswordData>>('formState', {
   required: true
