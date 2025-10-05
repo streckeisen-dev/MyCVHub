@@ -2,9 +2,8 @@ package ch.streckeisen.mycv.backend.cv.profile.theme
 
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MessagesService
+import ch.streckeisen.mycv.backend.util.isValidHexColor
 import org.springframework.stereotype.Service
-
-private val colorRegex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})\$".toRegex()
 
 @Service
 class ProfileThemeValidationService(
@@ -31,7 +30,7 @@ class ProfileThemeValidationService(
             val error = messagesService.requiredFieldMissingError(fieldName)
             validationErrorBuilder.addError(fieldName, error)
         } else {
-            if (!colorRegex.matches(colorString)) {
+            if (!isValidHexColor(colorString)) {
                 val error =
                     messagesService.getMessage("ch.streckeisen.mycv.profile.theme.validation.invalidColor", fieldName)
                 validationErrorBuilder.addError(fieldName, error)
