@@ -367,7 +367,7 @@ backend:
       talendo:
         name: "Talendo"
         description: "Eine leicht modifizierte Version der CV Vorlage aus dem <a href=\"https://talendo.ch\">Talendo</a> Career Starter Magazin."
-        backgroundBanner: "Banner Hintergrundfarbe"
+        bannerBackground: "Banner Hintergrundfarbe"
     templateOptions:
       unsupported: "Vorlagen-Einstellungen sind mit diesem CV Stil nicht kompatibel."
       unknown: "Die Vorlagen-Einstellung gibt es nicht."
