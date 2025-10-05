@@ -1,21 +1,33 @@
 package ch.streckeisen.mycv.backend.cv.generator
 
 import ch.streckeisen.mycv.backend.account.AccountDetailsEntity
+import ch.streckeisen.mycv.backend.cv.education.EducationEntity
+import ch.streckeisen.mycv.backend.cv.experience.WorkExperienceEntity
 import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
+import ch.streckeisen.mycv.backend.cv.project.ProjectEntity
+import ch.streckeisen.mycv.backend.cv.skill.SkillEntity
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Locale
 
 private const val BIRTHDAY_FORMAT = "dd.MM.yyyy"
 private const val CV_DATE_FORMAT = "MM.yyyy"
 
 private const val TODAY_MESSAGE = "$MYCV_KEY_PREFIX.date.today"
 
-fun ProfileEntity.toCVProfile(locale: Locale, messagesService: MessagesService): CVProfile {
+fun ProfileEntity.toCVData(
+    locale: Locale,
+    messagesService: MessagesService,
+    workExperience: List<WorkExperienceEntity>,
+    education: List<EducationEntity>,
+    projects: List<ProjectEntity>,
+    skills: List<SkillEntity>,
+    templateOptions: Map<String, String>
+): CVData {
     val cvDateFormatter = DateTimeFormatter.ofPattern(CV_DATE_FORMAT, locale)
-    return CVProfile(
+    return CVData(
         language = locale.language,
         firstName = this.account.accountDetails!!.firstName,
         lastName = this.account.accountDetails.lastName,
@@ -25,8 +37,8 @@ fun ProfileEntity.toCVProfile(locale: Locale, messagesService: MessagesService):
         phone = this.account.accountDetails.phone,
         address = getAddressString(this.account.accountDetails),
         birthday = getBirthday(this.account.accountDetails.birthday),
-        workExperiences = this.workExperiences.map {
-            CVResumeEntry(
+        workExperiences = workExperience.map {
+            CVEntry(
                 title = it.jobTitle,
                 location = it.location,
                 startDate = it.positionStart.format(cvDateFormatter),
@@ -37,12 +49,12 @@ fun ProfileEntity.toCVProfile(locale: Locale, messagesService: MessagesService):
                 links = listOf()
             )
         },
-        skills = this.skills.groupBy { it.type }.entries
+        skills = skills.groupBy { it.type }.entries
             .map { entry ->
                 CVSkills(entry.key, entry.value.map { it.name })
             },
-        education = this.education.map {
-            CVResumeEntry(
+        education = education.map {
+            CVEntry(
                 title = it.degreeName,
                 location = it.location,
                 startDate = it.educationStart.format(cvDateFormatter),
@@ -53,8 +65,8 @@ fun ProfileEntity.toCVProfile(locale: Locale, messagesService: MessagesService):
                 links = listOf()
             )
         },
-        projects = this.projects.map {
-            CVResumeEntry(
+        projects = projects.map {
+            CVEntry(
                 title = it.name,
                 location = "",
                 startDate = it.projectStart.format(cvDateFormatter),
@@ -64,7 +76,8 @@ fun ProfileEntity.toCVProfile(locale: Locale, messagesService: MessagesService):
                 description = it.description,
                 links = it.links.map { link -> CVLink(link.url, link.displayName, link.type.name) }
             )
-        }
+        },
+        templateOptions
     )
 }
 

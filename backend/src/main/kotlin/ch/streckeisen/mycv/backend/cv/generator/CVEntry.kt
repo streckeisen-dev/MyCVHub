@@ -1,6 +1,6 @@
 package ch.streckeisen.mycv.backend.cv.generator
 
-data class CVResumeEntry(
+data class CVEntry(
     val title: String,
     val location: String,
     val startDate: String,

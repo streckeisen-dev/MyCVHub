@@ -1,6 +1,6 @@
 package ch.streckeisen.mycv.backend.cv.generator
 
-data class CVProfile(
+data class CVData(
     val language: String,
     val firstName: String,
     val lastName: String,
@@ -10,8 +10,9 @@ data class CVProfile(
     val phone: String,
     val address: String,
     val birthday: String,
-    val workExperiences: List<CVResumeEntry>,
+    val workExperiences: List<CVEntry>,
     val skills: List<CVSkills>,
-    val education: List<CVResumeEntry>,
-    val projects: List<CVResumeEntry>
+    val education: List<CVEntry>,
+    val projects: List<CVEntry>,
+    val templateOptions: Map<String, String>
 )
