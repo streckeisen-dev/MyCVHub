@@ -2822,10 +2822,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:~12.1.0":
-  version: 12.1.0
-  resolution: "commander@npm:12.1.0"
-  checksum: 10c0/6e1996680c083b3b897bfc1cfe1c58dfbcd9842fd43e1aaf8a795fbc237f65efcc860a3ef457b318e73f29a4f4a28f6403c3d653d021d960e4632dd45bde54a9
+"commander@npm:~14.0.0":
+  version: 14.0.1
+  resolution: "commander@npm:14.0.1"
+  checksum: 10c0/64439c0651ddd01c1d0f48c8f08e97c18a0a1fa693879451f1203ad01132af2c2aa85da24cf0d8e098ab9e6dc385a756be670d2999a3c628ec745c3ec124587b
   languageName: node
   linkType: hard
 
@@ -3727,7 +3727,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.12, fast-glob@npm:^3.3.2, fast-glob@npm:^3.3.3, fast-glob@npm:~3.3.0":
+"fast-glob@npm:^3.2.12, fast-glob@npm:^3.3.2, fast-glob@npm:^3.3.3":
   version: 3.3.3
   resolution: "fast-glob@npm:3.3.3"
   dependencies:
@@ -4598,17 +4598,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"junit-report-merger@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "junit-report-merger@npm:7.0.1"
+"junit-report-merger@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "junit-report-merger@npm:8.0.0"
   dependencies:
-    commander: "npm:~12.1.0"
-    fast-glob: "npm:~3.3.0"
+    commander: "npm:~14.0.0"
+    tinyglobby: "npm:^0.2.15"
     xmlbuilder2: "npm:3.1.1"
   bin:
     jrm: cli.js
     junit-report-merger: cli.js
-  checksum: 10c0/5b84eadda207c31dad8858d2f97c46117771a7def30ec21f6739a3810f4f6afb0dfc01e622b41f1540d61b0cd0adfe072e109e8fedf6adbd953b9f282bf36494
+  checksum: 10c0/088d6a53ce576fbde14fa11c906091bbbf43a0c49e92b19e4ff1d9a99d6b59605ee17141f50a5f761eb8a23f089e2934226370a566e5ad77c03061d6dca35cb9
   languageName: node
   linkType: hard
 
@@ -5031,7 +5031,7 @@ __metadata:
     eslint: "npm:^9.36.0"
     eslint-plugin-vue: "npm:^10.5.0"
     happy-dom: "npm:^18.0.1"
-    junit-report-merger: "npm:^7.0.1"
+    junit-report-merger: "npm:^8.0.0"
     lodash: "npm:^4.17.21"
     prettier: "npm:^3.6.2"
     sass-embedded: "npm:^1.93.2"
@@ -6402,7 +6402,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tinyglobby@npm:^0.2.13":
+"tinyglobby@npm:^0.2.13, tinyglobby@npm:^0.2.15":
   version: 0.2.15
   resolution: "tinyglobby@npm:0.2.15"
   dependencies:

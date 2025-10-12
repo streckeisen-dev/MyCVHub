@@ -49,7 +49,7 @@
     "eslint": "^9.36.0",
     "eslint-plugin-vue": "^10.5.0",
     "happy-dom": "^18.0.1",
-    "junit-report-merger": "^7.0.1",
+    "junit-report-merger": "^8.0.0",
     "prettier": "^3.6.2",
     "sass-embedded": "^1.93.2",
     "ts-node": "^10.9.2",
