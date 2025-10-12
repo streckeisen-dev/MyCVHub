@@ -33,7 +33,7 @@
     "@cypress/vite-dev-server": "^6.0.3",
     "@cypress/vue": "^6.0.2",
     "@eslint/compat": "^1.4.0",
-    "@intlify/unplugin-vue-i18n": "^6.0.8",
+    "@intlify/unplugin-vue-i18n": "^11.0.1",
     "@mdi/font": "^7.4.47",
     "@rushstack/eslint-patch": "^1.12.0",
     "@tsconfig/node22": "^22.0.2",
