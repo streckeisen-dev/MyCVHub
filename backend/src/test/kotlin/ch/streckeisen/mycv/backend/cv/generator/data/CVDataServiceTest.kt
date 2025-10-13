@@ -355,7 +355,7 @@ class CVDataServiceTest {
         "Current Project",
         "role",
         "description",
-        LocalDate.of(2020, 5, 1),
+        LocalDate.of(2020, 6, 1),
         null,
         emptyList(),
         mockk()
