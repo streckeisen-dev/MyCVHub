@@ -1,4 +1,4 @@
-package ch.streckeisen.mycv.backend.cv.generator
+package ch.streckeisen.mycv.backend.cv.generator.data
 
 data class CVLink(
     val url: String,
