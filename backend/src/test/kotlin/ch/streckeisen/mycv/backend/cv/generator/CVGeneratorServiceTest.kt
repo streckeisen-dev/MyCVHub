@@ -21,6 +21,9 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import kotlin.test.assertTrue
 
+private const val TALENDO_TEMPLATE = "talendo.typ"
+private const val OUTPUT_PDF = "cv_1.pdf"
+
 class CVGeneratorServiceTest {
     private lateinit var profileService: ProfileService
     private lateinit var profilePictureService: ProfilePictureService
@@ -86,7 +89,7 @@ class CVGeneratorServiceTest {
 
     @Test
     fun testCVGenerationWithoutCustomization() = runTest {
-        coEvery { typstService.compile(any(), eq("talendo.typ"), eq("cv_1.pdf")) } returns Result.success(ByteArray(10))
+        coEvery { typstService.compile(any(), eq(TALENDO_TEMPLATE), eq(OUTPUT_PDF)) } returns Result.success(ByteArray(10))
 
         val result = cvGeneratorService.generateCV(1, CVStyle.TALENDO, null, null, null, null, null)
 
@@ -95,7 +98,7 @@ class CVGeneratorServiceTest {
 
     @Test
     fun testCVGenerationWithWorkExperienceFilter() = runTest {
-        coEvery { typstService.compile(any(), eq("talendo.typ"), eq("cv_1.pdf")) } returns Result.success(ByteArray(10))
+        coEvery { typstService.compile(any(), eq(TALENDO_TEMPLATE), eq(OUTPUT_PDF)) } returns Result.success(ByteArray(10))
 
         val result = cvGeneratorService.generateCV(
             1,
@@ -112,7 +115,7 @@ class CVGeneratorServiceTest {
 
     @Test
     fun testCVGenerationWithWorkExperienceFilterAndNoEntries() = runTest {
-        coEvery { typstService.compile(any(), eq("talendo.typ"), eq("cv_1.pdf")) } returns Result.success(ByteArray(10))
+        coEvery { typstService.compile(any(), eq(TALENDO_TEMPLATE), eq(OUTPUT_PDF)) } returns Result.success(ByteArray(10))
 
         val result = cvGeneratorService.generateCV(
             1,
@@ -187,7 +190,7 @@ class CVGeneratorServiceTest {
 
     @Test
     fun testCVGenerationWithValidTemplateOptions() = runTest {
-        coEvery { typstService.compile(any(), eq("talendo.typ"), eq("cv_1.pdf")) } returns Result.success(ByteArray(10))
+        coEvery { typstService.compile(any(), eq(TALENDO_TEMPLATE), eq(OUTPUT_PDF)) } returns Result.success(ByteArray(10))
 
         val options = mapOf(CVStyle.TALENDO.options.first().key to "#FFFFFF")
 

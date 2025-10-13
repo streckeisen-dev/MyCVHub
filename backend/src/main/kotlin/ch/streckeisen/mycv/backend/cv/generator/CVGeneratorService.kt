@@ -137,20 +137,7 @@ class CVGeneratorService(
             if (option == null) {
                 validationErrorBuilder.addError("templateOptions.[$key]", UNKNOWN_TEMPLATE_OPTION)
             } else {
-                when (option.type) {
-                    CVStyleOptionType.COLOR -> {
-                        val color = templateOptions[key]!!
-                        if (!isValidHexColor(color)) {
-                            validationErrorBuilder.addError("templateOptions.[$key]", INVALID_TEMPLATE_OPTION)
-                        }
-                    }
-
-                    CVStyleOptionType.STRING -> {
-                        if (StringUtils.isBlank(templateOptions[key])) {
-                            validationErrorBuilder.addError("templateOptions.[$key]", MISSING_TEMPLATE_OPTION)
-                        }
-                    }
-                }
+                validateOption(option, templateOptions[key]!!, validationErrorBuilder)
             }
         }
 
@@ -158,5 +145,21 @@ class CVGeneratorService(
             return Result.failure(validationErrorBuilder.build(INVALID_TEMPLATE_OPTION))
         }
         return Result.success(Unit)
+    }
+
+    private fun validateOption(option: CVStyleOption, value: String, validationErrorBuilder: ValidationException.ValidationErrorBuilder) {
+        when (option.type) {
+            CVStyleOptionType.COLOR -> {
+                if (!isValidHexColor(value)) {
+                    validationErrorBuilder.addError("templateOptions.[${option.key}]", INVALID_TEMPLATE_OPTION)
+                }
+            }
+
+            CVStyleOptionType.STRING -> {
+                if (StringUtils.isBlank(value)) {
+                    validationErrorBuilder.addError("templateOptions.[${option.key}]", MISSING_TEMPLATE_OPTION)
+                }
+            }
+        }
     }
 }
