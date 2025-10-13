@@ -21,6 +21,14 @@ import java.time.LocalDate
 import java.util.Locale
 import kotlin.test.assertEquals
 
+private const val CURRENT_JOB_TITLE = "Current Job"
+private const val TECH_COMPANY = "Tech Inc."
+private const val TODAY = "Today"
+private const val FRAMEWORK_SKILLS = "Framework"
+private const val TECHNOLOGY_SKILLS = "Technology"
+private const val LANGUAGE_SKILLS = "Language"
+private const val CLOUD_PLATFORM_SKILLS = "Cloud Platform"
+
 class CVDataServiceTest {
     private lateinit var messagesService: MessagesService
     private lateinit var cvDataService: CVDataService
@@ -28,7 +36,7 @@ class CVDataServiceTest {
     @BeforeEach
     fun setup() {
         messagesService = mockk(relaxed = true) {
-            every { getMessage(eq("$MYCV_KEY_PREFIX.date.today")) } returns "Today"
+            every { getMessage(eq("$MYCV_KEY_PREFIX.date.today")) } returns TODAY
         }
         cvDataService = CVDataService(messagesService)
     }
@@ -284,11 +292,11 @@ class CVDataServiceTest {
         )
 
         val expectedEntry = CVEntry(
-            "Current Job",
+            CURRENT_JOB_TITLE,
             "Here",
             "05.2020",
-            "Today",
-            "Tech Inc.",
+            TODAY,
+            TECH_COMPANY,
             "",
             emptyList()
         )
@@ -304,8 +312,8 @@ class CVDataServiceTest {
 
     private fun currentJob() = WorkExperienceEntity(
         1,
-        "Current Job",
-        "Tech Inc.",
+        CURRENT_JOB_TITLE,
+        TECH_COMPANY,
         LocalDate.of(2020, 5, 1),
         null,
         "Here",
@@ -367,16 +375,16 @@ class CVDataServiceTest {
     )
 
     private fun skills() = listOf(
-        SkillEntity(1, "Spring Boot", "Framework", 60, mockk()),
-        SkillEntity(2, "Spring Data", "Framework", 50, mockk()),
-        SkillEntity(3, "Docker", "Technology", 50, mockk()),
-        SkillEntity(4, "Java", "Language", 70, mockk()),
-        SkillEntity(5, "Kotlin", "Language", 80, mockk()),
-        SkillEntity(6, "AWS", "Cloud Platform", 50, mockk()),
-        SkillEntity(7, "GCP", "Cloud Platform", 60, mockk()),
-        SkillEntity(8, "JavaScript", "Language", 80, mockk()),
-        SkillEntity(9, "TypeScript", "Language", 54, mockk()),
-        SkillEntity(10, "HTML", "Language", 50, mockk()),
+        SkillEntity(1, "Spring Boot", FRAMEWORK_SKILLS, 60, mockk()),
+        SkillEntity(2, "Spring Data", FRAMEWORK_SKILLS, 50, mockk()),
+        SkillEntity(3, "Docker", TECHNOLOGY_SKILLS, 50, mockk()),
+        SkillEntity(4, "Java", LANGUAGE_SKILLS, 70, mockk()),
+        SkillEntity(5, "Kotlin", LANGUAGE_SKILLS, 80, mockk()),
+        SkillEntity(6, "AWS", CLOUD_PLATFORM_SKILLS, 50, mockk()),
+        SkillEntity(7, "GCP", CLOUD_PLATFORM_SKILLS, 60, mockk()),
+        SkillEntity(8, "JavaScript", LANGUAGE_SKILLS, 80, mockk()),
+        SkillEntity(9, "TypeScript", LANGUAGE_SKILLS, 54, mockk()),
+        SkillEntity(10, "HTML", LANGUAGE_SKILLS, 50, mockk()),
     )
 
     private fun profile() = ProfileEntity(
@@ -430,11 +438,11 @@ class CVDataServiceTest {
         "25.06.1985",
         listOf(
             CVEntry(
-                "Current Job",
+                CURRENT_JOB_TITLE,
                 "Here",
                 "05.2020",
-                "Today",
-                "Tech Inc.",
+                TODAY,
+                TECH_COMPANY,
                 "Tech Stuff",
                 emptyList()
             ),
@@ -450,19 +458,19 @@ class CVDataServiceTest {
         ),
         listOf(
             CVSkills(
-                "Framework",
+                FRAMEWORK_SKILLS,
                 listOf("Spring Boot", "Spring Data"),
             ),
             CVSkills(
-                "Technology",
+                TECHNOLOGY_SKILLS,
                 listOf("Docker")
             ),
             CVSkills(
-                "Language",
+                LANGUAGE_SKILLS,
                 listOf("Kotlin", "JavaScript", "Java", "TypeScript", "HTML")
             ),
             CVSkills(
-                "Cloud Platform",
+                CLOUD_PLATFORM_SKILLS,
                 listOf("GCP", "AWS")
             )
         ),
@@ -481,8 +489,8 @@ class CVDataServiceTest {
             CVEntry(
                 "Current Project",
                 "",
-                "05.2020",
-                "Today",
+                "06.2020",
+                TODAY,
                 "role",
                 "description",
                 emptyList()

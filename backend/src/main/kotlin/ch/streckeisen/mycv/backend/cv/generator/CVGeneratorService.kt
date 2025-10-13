@@ -137,7 +137,12 @@ class CVGeneratorService(
             if (option == null) {
                 validationErrorBuilder.addError("templateOptions.[$key]", UNKNOWN_TEMPLATE_OPTION)
             } else {
-                validateOption(option, templateOptions[key]!!, validationErrorBuilder)
+                val value = templateOptions[key]
+                if (value == null) {
+                    validationErrorBuilder.addError("templateOptions.[$key]", MISSING_TEMPLATE_OPTION)
+                } else {
+                    validateOption(option, templateOptions[key]!!, validationErrorBuilder)
+                }
             }
         }
 
