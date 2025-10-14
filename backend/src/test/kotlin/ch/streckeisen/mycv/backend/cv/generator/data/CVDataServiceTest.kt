@@ -42,42 +42,42 @@ class CVDataServiceTest {
     }
 
     @Test
-    fun testPrepareWorkExperienceWithoutFilter() {
+    fun testFilterWorkExperienceWithoutFilter() {
         val experiences = workExperiences()
 
-        val result = cvDataService.prepareWorkExperiences(experiences, null)
+        val result = cvDataService.filterWorkExperiences(experiences, null)
 
         assertEquals(experiences.size, result.size)
         assertEquals(experiences, result)
     }
 
     @Test
-    fun testPrepareWorkExperienceWithIdFilter() {
+    fun testFilterWorkExperienceWithIdFilter() {
         val experiences = workExperiences()
         val includedItems = listOf(IncludedCVItem(1, true))
 
-        val result = cvDataService.prepareWorkExperiences(experiences, includedItems)
+        val result = cvDataService.filterWorkExperiences(experiences, includedItems)
 
         assertEquals(includedItems.size, result.size)
         assertEquals(listOf(experiences[0]), result)
     }
 
     @Test
-    fun testPrepareWorkExperienceWithIdFilterAndNoResults() {
+    fun testFilterWorkExperienceWithIdFilterAndNoResults() {
         val experiences = workExperiences()
         val includedItems = listOf<IncludedCVItem>()
 
-        val result = cvDataService.prepareWorkExperiences(experiences, includedItems)
+        val result = cvDataService.filterWorkExperiences(experiences, includedItems)
 
         assertEquals(0, result.size)
     }
 
     @Test
-    fun testPrepareWorkExperienceWithDescriptionFilter() {
+    fun testFilterWorkExperienceWithDescriptionFilter() {
         val experiences = workExperiences()
         val includedItems = listOf(IncludedCVItem(1, false), IncludedCVItem(2, true))
 
-        val result = cvDataService.prepareWorkExperiences(experiences, includedItems)
+        val result = cvDataService.filterWorkExperiences(experiences, includedItems)
 
         assertEquals(experiences.size, result.size)
 
@@ -102,41 +102,41 @@ class CVDataServiceTest {
     }
 
     @Test
-    fun testPrepareEducationWithoutFilter() {
+    fun testFilterEducationWithoutFilter() {
         val education = education()
 
-        val result = cvDataService.prepareEducation(education, null)
+        val result = cvDataService.filterEducation(education, null)
 
         assertEquals(education.size, result.size)
         assertEquals(education, result)
     }
 
     @Test
-    fun testPrepareEducationWithIdFilter() {
+    fun testFilterEducationWithIdFilter() {
         val education = education()
         val includedItems = listOf(IncludedCVItem(1, true))
 
-        val result = cvDataService.prepareEducation(education, includedItems)
+        val result = cvDataService.filterEducation(education, includedItems)
 
         assertEquals(includedItems.size, result.size)
         assertEquals(listOf(education[0]), result)
     }
 
     @Test
-    fun testPrepareEducationWithIdFilterAndNoResults() {
+    fun testFilterEducationWithIdFilterAndNoResults() {
         val education = education()
 
-        val result = cvDataService.prepareEducation(education, listOf())
+        val result = cvDataService.filterEducation(education, listOf())
 
         assertEquals(0, result.size)
     }
 
     @Test
-    fun testPrepareEducationWithDescriptionFilter() {
+    fun testFilterEducationWithDescriptionFilter() {
         val education = education()
         val includedItems = listOf(IncludedCVItem(1, false))
 
-        val result = cvDataService.prepareEducation(education, includedItems)
+        val result = cvDataService.filterEducation(education, includedItems)
 
         assertEquals(education.size, result.size)
 
@@ -160,41 +160,41 @@ class CVDataServiceTest {
     }
 
     @Test
-    fun testPrepareProjectsWithoutFilter() {
+    fun testFilterProjectsWithoutFilter() {
         val projects = projects()
 
-        val result = cvDataService.prepareProjects(projects, null)
+        val result = cvDataService.filterProjects(projects, null)
 
         assertEquals(projects.size, result.size)
         assertEquals(projects, result)
     }
 
     @Test
-    fun testPrepareProjectsWithIdFilter() {
+    fun testFilterProjectsWithIdFilter() {
         val projects = projects()
         val includedItems = listOf(IncludedCVItem(1, true))
 
-        val result = cvDataService.prepareProjects(projects, includedItems)
+        val result = cvDataService.filterProjects(projects, includedItems)
 
         assertEquals(includedItems.size, result.size)
         assertEquals(listOf(projects[0]), result)
     }
 
     @Test
-    fun testPrepareProjectsWithIdFilterAndNoResults() {
+    fun testFilterProjectsWithIdFilterAndNoResults() {
         val projects = projects()
 
-        val result = cvDataService.prepareProjects(projects, listOf())
+        val result = cvDataService.filterProjects(projects, listOf())
 
         assertEquals(0, result.size)
     }
 
     @Test
-    fun testPrepareProjectsWithDescriptionFilter() {
+    fun testFilterProjectsWithDescriptionFilter() {
         val projects = projects()
         val includedItems = listOf(IncludedCVItem(1, false), IncludedCVItem(2, true))
 
-        val result = cvDataService.prepareProjects(projects, includedItems)
+        val result = cvDataService.filterProjects(projects, includedItems)
 
         assertEquals(projects.size, result.size)
 
@@ -219,41 +219,41 @@ class CVDataServiceTest {
     }
 
     @Test
-    fun testPrepareSkillsWithoutFilter() {
+    fun testFilterSkillsWithoutFilter() {
         val skills = skills()
 
-        val result = cvDataService.prepareSkills(skills, null)
+        val result = cvDataService.filterSkills(skills, null)
 
         assertEquals(skills.size, result.size)
         assertEquals(skills, result)
     }
 
     @Test
-    fun testPrepareSkillsWithIdFilter() {
+    fun testFilterSkillsWithIdFilter() {
         val skills = skills()
         val includedItems = listOf(IncludedCVItem(1, true), IncludedCVItem(3, true))
 
-        val result = cvDataService.prepareSkills(skills, includedItems)
+        val result = cvDataService.filterSkills(skills, includedItems)
 
         assertEquals(includedItems.size, result.size)
         assertEquals(listOf(skills[0], skills[2]), result)
     }
 
     @Test
-    fun testPrepareSkillsWithIdFilterAndNoResults() {
+    fun testFilterSkillsWithIdFilterAndNoResults() {
         val skills = skills()
 
-        val result = cvDataService.prepareSkills(skills, listOf())
+        val result = cvDataService.filterSkills(skills, listOf())
 
         assertEquals(0, result.size)
     }
 
     @Test
-    fun testPrepareSkillsWithDescriptionFilter() {
+    fun testFilterSkillsWithDescriptionFilter() {
         val skills = skills()
         val includedItems = listOf(IncludedCVItem(1, false), IncludedCVItem(2, true))
 
-        val result = cvDataService.prepareSkills(skills, includedItems)
+        val result = cvDataService.filterSkills(skills, includedItems)
 
         assertEquals(includedItems.size, result.size)
         assertEquals(listOf(skills[0], skills[1]), result)
@@ -279,7 +279,7 @@ class CVDataServiceTest {
 
     @Test
     fun testCreateCVDataWithHiddenDescription() {
-        val workExperiences = cvDataService.prepareWorkExperiences(workExperiences(), listOf(IncludedCVItem(1, false)))
+        val workExperiences = cvDataService.filterWorkExperiences(workExperiences(), listOf(IncludedCVItem(1, false)))
 
         val cvData = cvDataService.createCVData(
             Locale.ENGLISH,

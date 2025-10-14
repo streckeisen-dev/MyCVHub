@@ -18,7 +18,12 @@ enum class CVStyle(
         "$MYCV_KEY_PREFIX.cv.style.talendo.name",
         "$MYCV_KEY_PREFIX.cv.style.talendo.description",
         listOf(
-            CVStyleOption("bannerBackground", "$MYCV_KEY_PREFIX.cv.style.talendo.bannerBackground", CVStyleOptionType.COLOR, "#000000")
+            CVStyleOption(
+                "bannerBackground",
+                "$MYCV_KEY_PREFIX.cv.style.talendo.bannerBackground",
+                CVStyleOptionType.COLOR,
+                "#000000"
+            )
         )
     );
 

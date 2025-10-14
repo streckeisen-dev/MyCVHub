@@ -227,6 +227,8 @@ frontend:
     moreSoonText: "Soon you can choose from more CV designs."
     showDescription: "Show description"
     noItemsSelected: "You need to select at least one CV item"
+    customizeContent: "Adjust CV Content"
+    customizeTemplate: "Customize Template"
   
   theme:
     title: "Theme"
@@ -372,6 +374,7 @@ backend:
       unsupported: "Template options are not supported for this CV style."
       unknown: "Unknown template option"
       invalid: "Invalid template option"
+      missing: "Missing template option"
   exceptions:
     db: "A database error occurred. Please contact the administrator"
     expiredJwt: "Expired JWT token"

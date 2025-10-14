@@ -82,7 +82,7 @@
             variant="text"
           >
             <v-icon icon="mdi-tune" />
-            Adjust CV Content
+            {{ t('cv.customizeContent') }}
           </v-btn>
           <v-treeview
             class="text-left"
@@ -117,7 +117,7 @@
             variant="text"
           >
             <v-icon icon="mdi-tune" />
-            Customize Template
+            {{ t('cv.customizeTemplate') }}
           </v-btn>
 
           <div v-if="customizeCVTemplate">
@@ -386,11 +386,8 @@ async function generateCV() {
   border: 2px solid rgb(var(--v-theme-primary));
 }
 
-.cv-customize-content {
-  align-self: start;
-}
-
-.cv-customize-template {
+.cv-customize-content,
+.cv-customize-template{
   align-self: start;
 }
 

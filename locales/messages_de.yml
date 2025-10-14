@@ -227,6 +227,8 @@ frontend:
     moreSoonText: "Bald kommen mehr CV Designs aus denen du wählen kannst."
     showDescription: "Beschreibung anzeigen"
     noItemsSelected: "Du musst mindestens ein CV Element auswählen"
+    customizeContent: "Inhalt anpassen"
+    customizeTemplate: "Vorlage personalisieren"
 
   theme:
     title: "Thema"
@@ -372,6 +374,7 @@ backend:
       unsupported: "Vorlagen-Einstellungen sind mit diesem CV Stil nicht kompatibel."
       unknown: "Die Vorlagen-Einstellung gibt es nicht."
       invalid: "Die Vorlagen-Einstellung ist ungültig."
+      missing: "Diese Vorlagen-Einstellung benötigt einen Wert."
   exceptions:
     db: "Ein Datenbank-Fehler ist aufgetreten. Bitte kontaktiere den Administrator"
     expiredJwt: "Abgelaufenes JWT-Token"

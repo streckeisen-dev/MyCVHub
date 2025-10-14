@@ -67,10 +67,10 @@ class CVGeneratorService(
         verifyProfileCompleteness(profile)
             .onFailure { return Result.failure(it) }
 
-        val workExperiences = cvDataService.prepareWorkExperiences(profile.workExperiences, includedWorkExperience)
-        val education = cvDataService.prepareEducation(profile.education, includedEduction)
-        val projects = cvDataService.prepareProjects(profile.projects, includedProjects)
-        val skills = cvDataService.prepareSkills(profile.skills, includedSkills)
+        val workExperiences = cvDataService.filterWorkExperiences(profile.workExperiences, includedWorkExperience)
+        val education = cvDataService.filterEducation(profile.education, includedEduction)
+        val projects = cvDataService.filterProjects(profile.projects, includedProjects)
+        val skills = cvDataService.filterSkills(profile.skills, includedSkills)
 
         val entryCount = workExperiences.size + education.size + projects.size + skills.size
         if (entryCount == 0) return Result.failure(LocalizedException(NO_CV_ENTRIES_MESSAGE))
@@ -152,7 +152,11 @@ class CVGeneratorService(
         return Result.success(Unit)
     }
 
-    private fun validateOption(option: CVStyleOption, value: String, validationErrorBuilder: ValidationException.ValidationErrorBuilder) {
+    private fun validateOption(
+        option: CVStyleOption,
+        value: String,
+        validationErrorBuilder: ValidationException.ValidationErrorBuilder
+    ) {
         when (option.type) {
             CVStyleOptionType.COLOR -> {
                 if (!isValidHexColor(value)) {

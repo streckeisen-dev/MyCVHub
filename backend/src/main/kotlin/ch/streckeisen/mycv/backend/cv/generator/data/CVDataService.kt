@@ -23,7 +23,7 @@ private const val TODAY_MESSAGE = "$MYCV_KEY_PREFIX.date.today"
 class CVDataService(
     val messagesService: MessagesService
 ) {
-    fun prepareWorkExperiences(
+    fun filterWorkExperiences(
         workExperiences: List<WorkExperienceEntity>,
         includedItems: List<IncludedCVItem>? = null
     ): List<WorkExperienceEntity> = workExperiences.filter { w ->
@@ -44,7 +44,7 @@ class CVDataService(
         } else w
     }
 
-    fun prepareEducation(
+    fun filterEducation(
         education: List<EducationEntity>,
         includedItems: List<IncludedCVItem>?
     ): List<EducationEntity> = education.filter { e ->
@@ -66,7 +66,7 @@ class CVDataService(
     }
 
 
-    fun prepareProjects(
+    fun filterProjects(
         projects: List<ProjectEntity>,
         includedItems: List<IncludedCVItem>?
     ): List<ProjectEntity> = projects.filter { p ->
@@ -87,7 +87,7 @@ class CVDataService(
         } else p
     }
 
-    fun prepareSkills(
+    fun filterSkills(
         skills: List<SkillEntity>,
         includedItems: List<IncludedCVItem>?
     ): List<SkillEntity> = skills.filter { s ->
