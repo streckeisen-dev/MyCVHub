@@ -67,6 +67,7 @@ import { computed } from 'vue'
 import SkillEntry from '@/views/profile/components/skill/SkillEntry.vue'
 import type { PublicSkillDto } from '@/dto/PublicSkillDto'
 import { useI18n } from 'vue-i18n'
+import { KeyValueObject } from '@/model/KeyValueObject.ts'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -82,7 +83,7 @@ const emit = defineEmits(['edit', 'delete'])
 const groupedSkills = computed(() => {
   return props.values.reduce(
     (
-      groups: { [key: string]: Array<SkillDto | PublicSkillDto> },
+      groups: KeyValueObject<Array<SkillDto | PublicSkillDto>>,
       skill: SkillDto | PublicSkillDto
     ) => {
       const group = groups[skill.type] || []

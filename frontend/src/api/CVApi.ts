@@ -1,10 +1,12 @@
 import { CVStyleDto } from '@/dto/CVStyleDto.ts'
 import {
+  commonHeaders,
   extractErrorIfResponseIsNotOk,
   fetchFromApi,
   getJSONIfResponseIsOk
 } from '@/api/ApiHelper.ts'
 import { RestError } from '@/api/RestError.ts'
+import { CVGenerationRequestDto } from '@/dto/CVGenerationRequestDto.ts'
 
 async function getCVStyles(): Promise<Array<CVStyleDto>> {
   try {
@@ -16,9 +18,13 @@ async function getCVStyles(): Promise<Array<CVStyleDto>> {
   }
 }
 
-async function getCV(style: string): Promise<Blob | MediaSource> {
+async function getCV(style: string, generationRequest: CVGenerationRequestDto): Promise<Blob | MediaSource> {
   try {
-    const response = await fetchFromApi(`/api/cv/generate?style=${style}`)
+    const response = await fetchFromApi(`/api/cv/generate?style=${style}`, {
+      method: 'POST',
+      body: JSON.stringify(generationRequest),
+      headers: commonHeaders()
+    })
     await extractErrorIfResponseIsNotOk(response)
     return await response.blob()
   } catch (e) {

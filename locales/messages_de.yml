@@ -40,12 +40,12 @@ shared:
     url: "URL"
     displayName: "Anzeigename"
 
-  validations: 
+  validations:
     required: "{label} darf nicht leer sein"
     email: "E-Mail ist nicht gültig"
     passwordValidator: "Passwort muss Anforderungen erfüllen"
     dateIsBeforeValidator: "{laterDate} muss nach {earlierDate} sein"
-  
+
   passwordRequirements:
     length: "Muss mindestens {length} Zeichen haben"
     whitespaces: "Darf keine Leerzeichen enthalten"
@@ -56,40 +56,40 @@ shared:
     match: "Passwörter müssen übereinstimmen"
 
 frontend:
-  error: 
+  error:
     genericMessageTitle: "Ups, etwas ist schief gelaufen"
     genericMessage: "Ein unerwarteter Fehler ist aufgetreten"
-  
-  forms: 
+
+  forms:
     save: "Speichern"
     cancel: "Abbrechen"
-  
+
   validations:
     fileSizeValidator: "Datei muss kleiner als {maxSize} MB sein"
     numberWithinRange: "{name} muss zwischen {min} und {max} sein"
-  
+
   app:
     home: "Start"
     publicProfile: "Öffentliches Profile"
     generateCV: "CV Herunterladen"
-  
-  home: 
-    welcome: 
+
+  home:
+    welcome:
       title: "Willkommen bei MyCVHub"
       message: "Erstellen und teile deinen professionellen Lebenslauf ganz einfach online!"
     getStarted: "Los geht's"
-    features: 
+    features:
       title: "Funktionen"
-      create: 
+      create:
         title: "Erstelle deinen Lebenslauf"
         description: "Erstelle mit einer benutzerfreundlichen Oberfläche ganz einfach einen professionellen Lebenslauf."
-      share: 
+      share:
         title: "Mit Link teilen"
         description: "Gib deinen Lebenslauf über einen Link an potenzielle Arbeitgeber weiter."
-    callToAction: 
+    callToAction:
       title: "Bereit deinen Online-Lebenslauf zu erstellen?"
       btn: "Jetzt anmelden"
-  
+
   account:
     title: "Account"
     personalData: "Persönliche Daten"
@@ -148,7 +148,7 @@ frontend:
       confirmationText: "Wenn du dein Account löschst, werden alle Account- und Lebenslaufdaten endgültig gelöscht. Du kannst deine Daten datanch nicht mehr wiederherstellen."
       success: "Dein Account wurde erfolgreich gelöscht"
       error: "Dein Account konnte nicht gelöscht werden"
-  
+
   profile:
     title: "Profil"
     aboutMe: "Über mich"
@@ -172,17 +172,17 @@ frontend:
       hideDescriptions: "Beschreibungen aus dem öffentlichen Profil ausblenden"
       hideDescriptionsHint: "Falls aktiviert, werden detaillierte Beschreibungen deiner Lebenslaufeinträge nicht in deinem Profil angezeigt"
       saveErrorTitle: "Dein Profil konnte nicht gespeichert werden"
-  
+
   workExperience:
-    title: "Arbeitserfahrung"
-    noEntries: "Noch keine Arbeitserfahrung."
+    title: "Berufserfahrung"
+    noEntries: "Noch keine Berufserfahrung."
     editor:
-      add: "Arbeitserfahrung hinzufügen"
-      edit: "Arbeitserfahrung bearbeiten"
-      addError: "Arbeitserfahrung konnte nicht hinzugefügt werden"
-      editError: "Arbeitserfahrung konnte nicht aktualisiert werden"
-      deleteError: "Arbeitserfahrung konnte nicht gelöscht werden"
-  
+      add: "Berufserfahrung hinzufügen"
+      edit: "Berufserfahrung bearbeiten"
+      addError: "Berufserfahrung konnte nicht hinzugefügt werden"
+      editError: "Berufserfahrung konnte nicht aktualisiert werden"
+      deleteError: "Berufserfahrung konnte nicht gelöscht werden"
+
   skills:
     title: "Fähigkeiten"
     noEntries: "Noch keine Fähigkeiten."
@@ -193,7 +193,7 @@ frontend:
       addError: "Fähigkeit konnte nicht hinzugefügt werden"
       editError: "Fähigkeit konnte nicht aktualisiert werden"
       deleteError: "Fähigkeit konnte nicht gelöscht werden"
-  
+
   education:
     title: "Ausbildung"
     noEntries: "Noch keine Ausbildungen."
@@ -203,7 +203,7 @@ frontend:
       addError: "Ausbildung konnte nicht hinzugefügt werden"
       editError: "Ausbildung konnte nicht aktualisiert werden"
       deleteError: "Ausbildung konnte nicht gelöscht werden"
-  
+
   project:
     title: "Projekte"
     noEntries: "Noch keine Projekte."
@@ -225,6 +225,10 @@ frontend:
     generateError: "Beim Erstellen deines PDF-CV ist ein Problem aufgetreten"
     moreSoon: "Bald kommt mehr..."
     moreSoonText: "Bald kommen mehr CV Designs aus denen du wählen kannst."
+    showDescription: "Beschreibung anzeigen"
+    noItemsSelected: "Du musst mindestens ein CV Element auswählen"
+    customizeContent: "Inhalt anpassen"
+    customizeTemplate: "Vorlage personalisieren"
 
   theme:
     title: "Thema"
@@ -233,55 +237,55 @@ frontend:
     preview: "Vorschau"
     saveSuccess: "Deine Einstellungen wurden gespeichert"
     saveError: "Deine Thema Einstellungen konnten nicht gespeichert werden"
-  
+
   country:
     loadingError:
       title: "Länder konnten nicht geladen werden"
       message: "Versuchen Sie es später noch einmal oder wenden Sie sich an den Administrator, wenn das Problem nicht behoben ist."
-  
+
   notFound:
     headline: "Wo willst du hin?"
     title: "404, Seite nicht gefunden"
     text: "Die Seite nach der du suchst gibt es nicht"
-  
-  privacy: 
+
+  privacy:
     title: "Datenschutzerklärung"
     description: "In dieser Datenschutzerklärung wird erläutert, wie MyCVHub personenbezogene Daten sammelt, verwendet und verwaltet."
-    intro: 
+    intro:
       title: "Einleitung"
       content: "In dieser Datenschutzerklärung wird erläutert, wie MyCVHub personenbezogene Daten von registrierten Benutzern sammelt, verwendet und verwaltet."
-    collection: 
+    collection:
       title: "Datenerhebung"
       content: "MyCVHub sammelt die folgenden persönlichen Informationen:"
-      profileInfo: 
+      profileInfo:
         title: "Profil Informationen"
-        content: "Name, Adresse, Telefonnummer und Inhalt des Lebenslaufs, wie von den Nutzern angegeben."  
-      profilePicture: 
+        content: "Name, Adresse, Telefonnummer und Inhalt des Lebenslaufs, wie von den Nutzern angegeben."
+      profilePicture:
         title: "Profil Bild"
         content: "Das Profilbild wird sicher bei unserem Drittanbieter, Cloudinary, gespeichert."
-    usage: 
+    usage:
       title: "Datenverwendung"
       content: "Die gesammelten Daten werden verwendet, um:"
       usage1: "Nutzern zu ermöglichen, ihre Lebensläufe zu erstellen, zu bearbeiten und zu teilen."
       usage2: "Nutzern zu ermöglichen, ihren Lebenslauf öffentlich zugänglich zu machen, wobei kontrolliert werden kann, welche Datenfelder (E-Mail, Telefon, Adresse) im öffentlichen Lebenslauf erscheinen."
-    storage: 
+    storage:
       title: "Datenspeicherung und -sicherheit"
-      userData: 
+      userData:
         title: "Benutzerdaten"
         content: "Persönliche Informationen werden sicher in unserer Datenbank gespeichert. Standardmäßig hat nur der Nutzer Zugang zu diesen Daten, es sei denn, er entscheidet sich dafür, bestimmte Informationen öffentlich zu machen. Der Entwickler hat nur zu Wartungszwecken begrenzten Zugriff auf die Datenbank."
-      pictures: 
+      pictures:
         title: "Profilbilder"
         content: "Profilbilder werden über Cloudinary, einen sicheren Drittanbieter, mit eingeschränktem Zugriff gespeichert und verwaltet, um den Datenschutz zu gewährleisten."
-    access: 
+    access:
       title: "Datenzugriff und Nutzerkontrolle"
       content: "MyCVHub bietet den Nutzern einen direkten Zugang zu ihren Daten. Die Nutzer können alle Informationen, einschließlich ihres Kontos und Profilbildes, direkt in der App anzeigen, bearbeiten und löschen. Es sind keine externen Datenzugriffsanfragen erforderlich."
-    sharing: 
+    sharing:
       title: "Datenweitergabe"
       content: "MyCVHub gibt keine Nutzerdaten an Dritte weiter, es sei denn, dies ist für die Medienspeicherung erforderlich. Öffentlich freigegebene Lebensläufe sind nur über den freigegebenen Link zugänglich und enthalten nur die Informationen, die der Nutzer als öffentlich gekennzeichnet hat."
-    thirdParty: 
+    thirdParty:
       title: "Nutzung von Diensten Dritter"
       content: "MyCVHub nutzt Cloudinary ausschließlich für die Speicherung und den Abruf von Profilbildern. Cloudinary hält sich an strenge Sicherheitsstandards, um die Privatsphäre und Sicherheit der gespeicherten Bilder zu gewährleisten."
-    contact: 
+    contact:
       title: "Kontaktinformationen"
       content: "Bei Fragen oder Anliegen kontaktieren Sie uns bitte unter"
 
@@ -357,6 +361,7 @@ backend:
   cv:
     templateNotFound: "CV Vorlage nicht gefunden"
     generationFailed: "Dein PDF CV konnte nicht generiert werden"
+    noCvEntries: "Es gibt keine CV Einträge um ein PDF zu generieren"
     style:
       modern:
         name: "Modern CV"
@@ -364,6 +369,12 @@ backend:
       talendo:
         name: "Talendo"
         description: "Eine leicht modifizierte Version der CV Vorlage aus dem <a href=\"https://talendo.ch\">Talendo</a> Career Starter Magazin."
+        bannerBackground: "Banner Hintergrundfarbe"
+    templateOptions:
+      unsupported: "Vorlagen-Einstellungen sind mit diesem CV Stil nicht kompatibel."
+      unknown: "Die Vorlagen-Einstellung gibt es nicht."
+      invalid: "Die Vorlagen-Einstellung ist ungültig."
+      missing: "Diese Vorlagen-Einstellung benötigt einen Wert."
   exceptions:
     db: "Ein Datenbank-Fehler ist aufgetreten. Bitte kontaktiere den Administrator"
     expiredJwt: "Abgelaufenes JWT-Token"

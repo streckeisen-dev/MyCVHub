@@ -1,7 +1,8 @@
 import { computed, type ComputedRef, type Ref } from 'vue'
 import type { ErrorObject, Validation } from '@vuelidate/core'
+import { KeyValueObject } from '@/model/KeyValueObject.ts'
 
-export type ErrorMessages = { [key: string]: string }
+export type ErrorMessages = KeyValueObject<string>
 
 export function getErrorMessages(
   errorMessages: Ref<ErrorMessages>,

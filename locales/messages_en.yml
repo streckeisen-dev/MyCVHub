@@ -225,6 +225,10 @@ frontend:
     generateError: "There was a problem while creating your PDF-CV"
     moreSoon: "More coming soon..."
     moreSoonText: "Soon you can choose from more CV designs."
+    showDescription: "Show description"
+    noItemsSelected: "You need to select at least one CV item"
+    customizeContent: "Adjust CV Content"
+    customizeTemplate: "Customize Template"
   
   theme:
     title: "Theme"
@@ -357,6 +361,7 @@ backend:
   cv:
     templateNotFound: "CV template not found"
     generationFailed: "Your PDF CV could not be generated"
+    noCvEntries: "There are no CV entries to generate a PDF"
     style:
       modern:
         name: "Modern CV"
@@ -364,6 +369,12 @@ backend:
       talendo:
         name: "Talendo"
         description: "A slightly modified version of the CV template from the <a href=\"https://talendo.ch\">Talendo</a> Career Starter magazine."
+        bannerBackground: "Banner Background Color"
+    templateOptions:
+      unsupported: "Template options are not supported for this CV style."
+      unknown: "Unknown template option"
+      invalid: "Invalid template option"
+      missing: "Missing template option"
   exceptions:
     db: "A database error occurred. Please contact the administrator"
     expiredJwt: "Expired JWT token"

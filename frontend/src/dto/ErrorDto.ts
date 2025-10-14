@@ -1,5 +1,7 @@
+import { KeyValueObject } from '@/model/KeyValueObject.ts'
+
 export type ErrorDto = {
   message: string
-  errors: { [key: string]: string }
+  errors: KeyValueObject<string>
   status: number
 }

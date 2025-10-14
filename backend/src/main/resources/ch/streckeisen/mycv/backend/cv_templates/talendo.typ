@@ -1,18 +1,16 @@
 #import "@preview/fontawesome:0.5.0": fa-icon
 #import "shared.typ": project_link, getTitle, getEntryDescription
 
+#let profile = json("profile.json")
+
 #set page(
   margin: (x: 5mm, y: 1cm),
   background: place(start, grid(
     columns: (7.5cm, auto),
-    block(fill: black, height: 100%, width: 100%)
+    block(fill: color.rgb(profile.templateOptions.bannerBackground), height: 100%, width: 100%)
   ))
 )
 #set text(font: "Helvetica", size: 10pt)
-
-#let personalInfoBackgroundColor = rgb(0, 0, 0)
-
-#let profile = json("profile.json")
 
 #let section-header(icon, title) = {
   let cells = (
@@ -49,7 +47,7 @@
     [
       #text(weight: "bold")[#institution, #location]#linebreak()
       #title #linebreak()
-      #if (description != none) {
+      #if (description != none and description != "") {
         lines += (description.len() / 55)
         getEntryDescription(description, hasLinks: hasLinks)
       }
