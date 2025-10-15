@@ -49,7 +49,6 @@ import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { convertDateToString, convertStringToDate } from '@/services/DateHelper'
 import ToastService from '@/services/ToastService'
 import { RestError } from '@/api/RestError'
-import LanguageService from '@/services/LanguageService.ts'
 import { useLocale } from 'vuetify'
 
 const { t } = useI18n({

@@ -5,7 +5,6 @@ import router from '@/router'
 import { RestError } from '@/api/RestError'
 import { AuthResponseDto } from '@/dto/AuthResponseDto.ts'
 import LanguageService from '@/services/LanguageService.ts'
-import { Ref } from 'vue'
 import { LocaleInstance } from 'vuetify/framework'
 
 async function fetchFromApi(
@@ -70,10 +69,13 @@ async function extractErrorIfResponseIsNotOk(response: Response): Promise<void> 
   }
 }
 
-async function processAuthResponse(response: Response, locale: LocaleInstance | undefined): Promise<void> {
+async function processAuthResponse(
+  response: Response,
+  locale: LocaleInstance | undefined
+): Promise<void> {
   try {
     if (response.status === 401) {
-      const error = await response.json() as ErrorDto
+      const error = (await response.json()) as ErrorDto
       LoginStateService.loggedOut()
       return Promise.reject(new RestError('Unauthorized', error))
     }
