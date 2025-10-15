@@ -339,6 +339,8 @@ backend:
       houseNumberEmpty: "Hausnummer muss 'null' sein oder einen Wert haben"
       countryLengthError: "Land muss ein ISO {0}-Buchstaben Ländercode sein"
       countryInvalid: "Ungültiger Ländercode"
+      languageInvalid: "Ungültiger Sprachcode"
+      languageLengthError: "Sprache muss ein ISO {0}-Buchstaben Sprachcode sein"
       password:
         encodingTooLong: "Verschlüsseltes Passwort überschreitet die Anzahl der erlaubten Zeichen"
         encodingError: "Passwortverschlüsselung fehlgeschlagen"

@@ -21,6 +21,7 @@ private const val EMPTY_HOUSE_NUMBER_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.hou
 private const val COUNTRY_LENGTH_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.countryLengthError"
 private const val COUNTRY_INVALID_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.countryInvalid"
 private const val LANGUAGE_INVALID_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.languageInvalid"
+private const val LANGUAGE_LENGTH_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.languageLengthError"
 private const val VALIDATION_ERROR_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.error"
 
 private const val USERNAME_FIELD_KEY = "username"
@@ -34,6 +35,7 @@ private const val HOUSE_NUMBER_FIELD_KEY = "houseNumber"
 private const val POSTCODE_FIELD_KEY = "postcode"
 private const val CITY_FIELD_KEY = "city"
 private const val COUNTRY_FIELD_KEY = "country"
+private const val LANGUAGE_FIELD_KEY = "language"
 
 @Service
 class ApplicantAccountValidationService(
@@ -129,7 +131,7 @@ class ApplicantAccountValidationService(
             }
 
             else -> {
-                val applicant = applicantAccountRepository.findByUsername(email)
+                val applicant = applicantAccountRepository.findByEmail(email)
                 if (applicant.isPresent && applicant.get().id != updateId) {
                     val error = messagesService.getMessage(EMAIL_TAKEN_KEY)
                     validationErrorBuilder.addError(EMAIL_FIELD_KEY, error)
@@ -239,8 +241,8 @@ class ApplicantAccountValidationService(
                 validationErrorBuilder.addError(COUNTRY_FIELD_KEY, error)
             }
 
-            country.length != COUNTRY_MAX_LENGTH -> {
-                val error = messagesService.getMessage(COUNTRY_LENGTH_KEY, COUNTRY_MAX_LENGTH.toString())
+            country.length != COUNTRY_LENGTH -> {
+                val error = messagesService.getMessage(COUNTRY_LENGTH_KEY, COUNTRY_LENGTH.toString())
                 validationErrorBuilder.addError(COUNTRY_FIELD_KEY, error)
             }
 
@@ -252,12 +254,15 @@ class ApplicantAccountValidationService(
     }
 
     fun validateLanguage(language: String?, validationErrorBuilder: ValidationException.ValidationErrorBuilder) {
-        if (StringUtils.isBlank(language)) {
-            val error = messagesService.requiredFieldMissingError("language")
-            validationErrorBuilder.addError("language", error)
+        if (language.isNullOrBlank()) {
+            val error = messagesService.requiredFieldMissingError(LANGUAGE_FIELD_KEY)
+            validationErrorBuilder.addError(LANGUAGE_FIELD_KEY, error)
+        } else if (language.length != LANGUAGE_LENGTH) {
+            val error = messagesService.getMessage(LANGUAGE_LENGTH_KEY, LANGUAGE_LENGTH.toString())
+            validationErrorBuilder.addError(LANGUAGE_FIELD_KEY, error)
         } else if (messagesService.getSupportedLanguages().contains(language).not()) {
             val error = messagesService.getMessage(LANGUAGE_INVALID_KEY)
-            validationErrorBuilder.addError("language", error)
+            validationErrorBuilder.addError(LANGUAGE_FIELD_KEY, error)
         }
     }
 
