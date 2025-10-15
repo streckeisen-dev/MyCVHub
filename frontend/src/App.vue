@@ -139,7 +139,7 @@
                 v-bind="props"
                 link
                 prepend-icon="mdi-web"
-                :title="languageDisplayName(locale)"
+                :title="languageDisplayName(locale.current.value)"
               />
             </template>
             <v-list-item
