@@ -15,5 +15,6 @@ data class SignupRequestDto(
     val city: String?,
     val country: String?,
     val password: String?,
-    val confirmPassword: String?
+    val confirmPassword: String?,
+    val language: String?
 )

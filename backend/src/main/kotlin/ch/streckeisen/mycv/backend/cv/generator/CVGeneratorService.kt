@@ -96,7 +96,6 @@ class CVGeneratorService(
                     }
 
                 val cvData = cvDataService.createCVData(
-                    LocaleContextHolder.getLocale(),
                     profile,
                     workExperiences,
                     education,

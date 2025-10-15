@@ -11,13 +11,15 @@ import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import LoginStateService from '@/services/LoginStateService'
 import { AccountStatus } from '@/dto/AccountStatusDto'
 import { RestError } from '@/api/RestError'
+import { useLocale } from 'vuetify'
 
 const { t } = useI18n({
   useScope: 'global'
 })
+const locale = useLocale()
 
 try {
-  await accountApi.verifyLogin()
+  await accountApi.verifyLogin(locale)
   await accountApi.loadAccountStatus()
   if (LoginStateService.getAccountStatus() === AccountStatus.INCOMPLETE) {
     await router.push({ name: 'oauth-signup' })

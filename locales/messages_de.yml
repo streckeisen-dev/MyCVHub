@@ -39,6 +39,7 @@ shared:
     links: "Links"
     url: "URL"
     displayName: "Anzeigename"
+    language: "Sprache"
 
   validations:
     required: "{label} darf nicht leer sein"
@@ -70,7 +71,7 @@ frontend:
 
   app:
     home: "Start"
-    publicProfile: "Öffentliches Profile"
+    publicProfile: "Öffentliches Profil"
     generateCV: "CV Herunterladen"
 
   home:
@@ -338,6 +339,8 @@ backend:
       houseNumberEmpty: "Hausnummer muss 'null' sein oder einen Wert haben"
       countryLengthError: "Land muss ein ISO {0}-Buchstaben Ländercode sein"
       countryInvalid: "Ungültiger Ländercode"
+      languageInvalid: "Ungültiger Sprachcode"
+      languageLengthError: "Sprache muss ein ISO {0}-Buchstaben Sprachcode sein"
       password:
         encodingTooLong: "Verschlüsseltes Passwort überschreitet die Anzahl der erlaubten Zeichen"
         encodingError: "Passwortverschlüsselung fehlgeschlagen"

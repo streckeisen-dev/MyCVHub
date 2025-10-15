@@ -69,19 +69,20 @@ class ApplicantAccountService(
                 accountUpdate.houseNumber,
                 accountUpdate.postcode!!,
                 accountUpdate.city!!,
-                accountUpdate.country!!
+                accountUpdate.country!!,
+                accountUpdate.language!!
             ),
             id = existingAccount.id,
             profile = existingAccount.profile,
             oauthIntegrations = existingAccount.oauthIntegrations,
             accountVerification = existingAccount.accountVerification
         )
-        applicantAccountRepository.save(account)
+        val result = applicantAccountRepository.save(account)
         if (!account.isVerified) {
             accountVerificationService.generateVerificationToken(accountId)
                 .onFailure { logger.error(it) { "[Account ${accountId}] Failed to generate new verification token for new email address" } }
         }
-        return Result.success(account)
+        return Result.success(result)
     }
 
     @Transactional

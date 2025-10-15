@@ -225,10 +225,13 @@ import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
 import router from '@/router'
 import toastService from '@/services/ToastService.ts'
 import { RestError } from '@/api/RestError'
+import { useLocale } from 'vuetify'
 
 const { t, d } = useI18n({
   useScope: 'global'
 })
+
+const locale = useLocale()
 
 const account = ref<AccountDto>()
 const isAccountLoading = ref(true)
@@ -253,7 +256,7 @@ async function deleteAccount() {
   hideDeleteConfirmation()
   try {
     await accountApi.deleteAccount()
-    await accountApi.logout()
+    await accountApi.logout(locale)
     toastService.success(t('account.delete.success'))
     await router.push({ name: 'home' })
   } catch (e) {

@@ -18,6 +18,7 @@ export type PublicProfileDto = {
   education: Array<PublicEducationDto>
   projects: Array<PublicProjectDto>
   theme?: PublicProfileThemeDto
+  language: string
 }
 
 export type PublicAddressDto = {

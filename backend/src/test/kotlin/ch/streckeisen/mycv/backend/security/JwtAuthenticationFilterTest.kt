@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.web.servlet.HandlerExceptionResolver
 import org.springframework.web.servlet.ModelAndView
+import java.util.Locale
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -83,7 +84,11 @@ class JwtAuthenticationFilterTest {
             every { id } returns userId
             every { username } returns userName
             every { isVerified } returns false
-            every { accountDetails } returns mockk()
+            every { accountDetails } returns mockk {
+                every { accountDetails } returns mockk {
+                    every { language } returns "en"
+                }
+            }
         })
         assertNull(SecurityContextHolder.getContext().authentication)
         every { request.cookies } returns arrayOf(mockk {
@@ -116,7 +121,7 @@ class JwtAuthenticationFilterTest {
             every { value } returns "abcdefg"
         })
         every { jwtService.extractUsername(eq("abcdefg")) } returns "username"
-        val authToken = UsernamePasswordAuthenticationToken(MyCvPrincipal("username", 1, AccountStatus.VERIFIED), null, listOf())
+        val authToken = UsernamePasswordAuthenticationToken(MyCvPrincipal("username", 1, AccountStatus.VERIFIED, Locale.ENGLISH), null, listOf())
         authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
         SecurityContextHolder.getContext().authentication = authToken
 

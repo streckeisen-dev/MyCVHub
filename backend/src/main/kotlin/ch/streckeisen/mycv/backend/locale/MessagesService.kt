@@ -3,6 +3,7 @@ package ch.streckeisen.mycv.backend.locale
 import org.springframework.context.MessageSource
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.stereotype.Service
+import java.util.Locale
 
 const val MYCV_KEY_PREFIX = "ch.streckeisen.mycv"
 const val DATA_FIELD_KEY_PREFIX = "${MYCV_KEY_PREFIX}.fields"
@@ -58,4 +59,7 @@ class MessagesService(
     fun invalidUrlError(url: String): String {
         return getMessage(VALIDATION_INVALID_URL_ERROR_KEY, url)
     }
+
+    fun getSupportedLanguages(): List<String> = listOf(Locale.ENGLISH, Locale.GERMAN)
+        .map { it.language }
 }

@@ -264,7 +264,6 @@ class CVDataServiceTest {
         val profile = profile()
 
         val cvData = cvDataService.createCVData(
-            Locale.ENGLISH,
             profile,
             workExperiences(),
             education(),
@@ -282,7 +281,6 @@ class CVDataServiceTest {
         val workExperiences = cvDataService.filterWorkExperiences(workExperiences(), listOf(IncludedCVItem(1, false)))
 
         val cvData = cvDataService.createCVData(
-            Locale.ENGLISH,
             profile(),
             workExperiences,
             education(),
@@ -422,6 +420,7 @@ class CVDataServiceTest {
             "12345",
             "city",
             "CH",
+            "en",
             1
         )
     )

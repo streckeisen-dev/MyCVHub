@@ -69,7 +69,8 @@ class OAuthIntegrationService(
             houseNumber = oauthSignupRequest.houseNumber,
             postcode = oauthSignupRequest.postcode,
             city = oauthSignupRequest.city,
-            country = oauthSignupRequest.country
+            country = oauthSignupRequest.country,
+            language = oauthSignupRequest.language
         )
         val account = accountService.update(accountId, accountUpdate)
             .getOrElse { return Result.failure(it) }

@@ -50,7 +50,7 @@ class CVGeneratorServiceTest {
         cvDataService = mockk(relaxed = true) {
             val delegate = CVDataService(mockk(relaxed = true))
             every { filterWorkExperiences(any(), any()) } answers { delegate.filterWorkExperiences(firstArg(), secondArg()) }
-            every { createCVData(any(), any(), any(), any(), any(), any(), any()) } returns CVData(
+            every { createCVData(any(), any(), any(), any(), any(), any()) } returns CVData(
                 "en",
                 "Test",
                 "User",
@@ -223,7 +223,8 @@ class CVGeneratorServiceTest {
             "4",
             "12345",
             "City",
-            "CH"
+            "CH",
+            "en"
         )
     )
 

@@ -3,6 +3,9 @@ import LoginStateService from '@/services/LoginStateService'
 import i18n from '@/plugins/i18n'
 import router from '@/router'
 import { RestError } from '@/api/RestError'
+import { AuthResponseDto } from '@/dto/AuthResponseDto.ts'
+import LanguageService from '@/services/LanguageService.ts'
+import { LocaleInstance } from 'vuetify/framework'
 
 async function fetchFromApi(
   path: string,
@@ -36,7 +39,7 @@ async function refreshToken(): Promise<void> {
     credentials: 'same-origin'
   })
   try {
-    return await processAuthResponse(refreshResponse)
+    return await processAuthResponse(refreshResponse, undefined)
   } catch (e) {
     await router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
     const error = (e as RestError).errorDto
@@ -66,14 +69,21 @@ async function extractErrorIfResponseIsNotOk(response: Response): Promise<void> 
   }
 }
 
-async function processAuthResponse(response: Response): Promise<void> {
+async function processAuthResponse(
+  response: Response,
+  locale: LocaleInstance | undefined
+): Promise<void> {
   try {
     if (response.status === 401) {
-      const error = await response.json() as ErrorDto
+      const error = (await response.json()) as ErrorDto
       LoginStateService.loggedOut()
       return Promise.reject(new RestError('Unauthorized', error))
     }
     await extractErrorIfResponseIsNotOk(response)
+    const authResponse = await getJSONIfResponseIsOk<AuthResponseDto>(response)
+    if (authResponse.language && locale) {
+      LanguageService.setLanguage(authResponse.language, locale, true)
+    }
     LoginStateService.successfulLogin()
   } catch (error) {
     throw new RestError('Failed to execute call', error as ErrorDto)

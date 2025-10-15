@@ -49,10 +49,13 @@ import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { convertDateToString, convertStringToDate } from '@/services/DateHelper'
 import ToastService from '@/services/ToastService'
 import { RestError } from '@/api/RestError'
+import { useLocale } from 'vuetify'
 
 const { t } = useI18n({
   useScope: 'global'
 })
+
+const locale = useLocale()
 
 const isLoading = ref(true)
 const isSaving = ref(false)
@@ -78,7 +81,8 @@ const formState = reactive<AccountEditorData>({
   houseNumber: account.value?.houseNumber,
   postcode: account.value?.postcode,
   city: account.value?.city,
-  country: account.value?.country
+  country: account.value?.country,
+  language: account.value?.language
 })
 
 const rules = {
@@ -95,7 +99,8 @@ const rules = {
   houseNumber: {},
   postcode: { required },
   city: { required },
-  country: { required }
+  country: { required },
+  language: { required }
 }
 
 const form = useVuelidate<AccountEditorData>(rules, formState)
@@ -117,12 +122,13 @@ async function save() {
     houseNumber: formState.houseNumber,
     postcode: formState.postcode,
     city: formState.city,
-    country: formState.country
+    country: formState.country,
+    language: formState.language
   }
 
   isSaving.value = true
   try {
-    await accountApi.update(accountUpdate)
+    await accountApi.update(accountUpdate, locale)
     ToastService.success(t('account.edit.success'))
     await router.push({ name: 'account' })
   } catch (e) {

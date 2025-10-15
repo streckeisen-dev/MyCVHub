@@ -39,6 +39,7 @@ shared:
     links: "Links"
     url: "URL"
     displayName: "Display Name"
+    language: "Language"
   
   validations: 
     required: "{label} must not be blank"
@@ -338,6 +339,8 @@ backend:
       houseNumberEmpty: "House number must be null or have a value"
       countryLengthError: "Country must be ISO {0} character country code"
       countryInvalid: "Invalid country code"
+      languageInvalid: "Invalid language code"
+      languageLengthError: "Language must be ISO {0} character language code"
       password:
         encodingTooLong: "Encoded password exceeds number of allowed characters"
         encodingError: "Password encoding failed"

@@ -38,12 +38,12 @@ class AuthenticationResource(
 
     @RequiresAccountStatus(AccountStatus.INCOMPLETE)
     @GetMapping("/login/verify")
-    fun verifyLogin(): ResponseEntity<Unit> {
+    fun verifyLogin(): ResponseEntity<AuthResponseDto> {
         val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipalOrNull()
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
         }
-        return ResponseEntity.ok().build()
+        return ResponseEntity.ok(AuthResponseDto(principal.locale?.language))
     }
 
     @PublicApi

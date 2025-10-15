@@ -70,7 +70,8 @@ class PublicProfileMapperTest {
                     null,
                     "p",
                     "c",
-                    "c"
+                    "c",
+                    "en"
                 ),
                 id = 1
             ),

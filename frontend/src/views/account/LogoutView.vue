@@ -14,14 +14,17 @@ import router from '@/router'
 import { useI18n } from 'vue-i18n'
 import ToastService from '@/services/ToastService'
 import { RestError } from '@/api/RestError'
+import { useLocale } from 'vuetify'
 
 const { t } = useI18n({
   useScope: 'global'
 })
 
+const locale = useLocale()
+
 if (accountApi.isUserLoggedIn()) {
   try {
-    await accountApi.logout()
+    await accountApi.logout(locale)
     setTimeout(async () => {
       await router.push({ name: 'home' })
     }, 2000)

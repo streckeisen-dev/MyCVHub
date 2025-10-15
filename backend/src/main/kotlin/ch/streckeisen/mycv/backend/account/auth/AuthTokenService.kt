@@ -29,7 +29,8 @@ class AuthTokenService(
                 accessToken,
                 accessTokenExpirationTime,
                 refreshToken,
-                refreshTokenExpirationTime
+                refreshTokenExpirationTime,
+                userDetails.account.accountDetails?.language
             )
         )
     }
@@ -66,7 +67,7 @@ class AuthTokenService(
                 headers.add(HttpHeaders.SET_COOKIE, accessCookie.toString())
                 ResponseEntity.ok()
                     .headers(headers)
-                    .body(AuthResponseDto(authData.accessToken, authData.accessTokenExpirationTime))
+                    .body(AuthResponseDto(authData.language))
             },
             onFailure = {
                 throw it
