@@ -7,7 +7,6 @@ import ch.streckeisen.mycv.backend.locale.MessagesService
 import com.google.i18n.phonenumbers.NumberParseException
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import org.apache.commons.validator.routines.EmailValidator
-import org.apache.tika.utils.StringUtils
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.util.Locale
@@ -253,16 +252,25 @@ class ApplicantAccountValidationService(
         }
     }
 
-    fun validateLanguage(language: String?, validationErrorBuilder: ValidationException.ValidationErrorBuilder) {
-        if (language.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(LANGUAGE_FIELD_KEY)
-            validationErrorBuilder.addError(LANGUAGE_FIELD_KEY, error)
-        } else if (language.length != LANGUAGE_LENGTH) {
-            val error = messagesService.getMessage(LANGUAGE_LENGTH_KEY, LANGUAGE_LENGTH.toString())
-            validationErrorBuilder.addError(LANGUAGE_FIELD_KEY, error)
-        } else if (messagesService.getSupportedLanguages().contains(language).not()) {
-            val error = messagesService.getMessage(LANGUAGE_INVALID_KEY)
-            validationErrorBuilder.addError(LANGUAGE_FIELD_KEY, error)
+    fun validateLanguage(
+        language: String?, validationErrorBuilder:
+        ValidationException.ValidationErrorBuilder
+    ) {
+        when {
+            language.isNullOrBlank() -> {
+                val error = messagesService.requiredFieldMissingError(LANGUAGE_FIELD_KEY)
+                validationErrorBuilder.addError(LANGUAGE_FIELD_KEY, error)
+            }
+
+            language.length != LANGUAGE_LENGTH -> {
+                val error = messagesService.getMessage(LANGUAGE_LENGTH_KEY, LANGUAGE_LENGTH.toString())
+                validationErrorBuilder.addError(LANGUAGE_FIELD_KEY, error)
+            }
+
+            messagesService.getSupportedLanguages().contains(language).not() -> {
+                val error = messagesService.getMessage(LANGUAGE_INVALID_KEY)
+                validationErrorBuilder.addError(LANGUAGE_FIELD_KEY, error)
+            }
         }
     }
 
