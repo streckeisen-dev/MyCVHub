@@ -234,7 +234,6 @@ function changeLocale(lang: string) {
 }
 
 function languageDisplayName(lang: string): string | undefined {
-  console.log(lang)
   return new Intl.DisplayNames([lang], { type: 'language' }).of(lang)
 }
 

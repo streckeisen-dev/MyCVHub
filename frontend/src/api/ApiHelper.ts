@@ -81,7 +81,6 @@ async function processAuthResponse(
     }
     await extractErrorIfResponseIsNotOk(response)
     const authResponse = await getJSONIfResponseIsOk<AuthResponseDto>(response)
-    console.log('Auth response:', authResponse)
     if (authResponse.language && locale) {
       LanguageService.setLanguage(authResponse.language, locale, true)
     }

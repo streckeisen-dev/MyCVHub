@@ -132,7 +132,6 @@ async function save() {
     ToastService.success(t('account.edit.success'))
     await router.push({ name: 'account' })
   } catch (e) {
-    console.log(e)
     const error = (e as RestError).errorDto
     errorMessages.value = error?.errors || {}
     if (Object.keys(errorMessages.value).length === 0) {
