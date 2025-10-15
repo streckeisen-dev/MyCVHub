@@ -13,8 +13,10 @@ import type { ChangePasswordRequestDto } from '@/dto/ChangePasswordRequestDto'
 import { AccountStatus, type AccountStatusDto } from '@/dto/AccountStatusDto'
 import type { OAuthSignUpRequestDto } from '@/dto/OAuthSignUpRequestDto'
 import { RestError } from '@/api/RestError'
+import LanguageService from '@/services/LanguageService.ts'
+import { LocaleInstance } from 'vuetify/framework'
 
-async function login(email: string, password: string): Promise<void> {
+async function login(email: string, password: string, locale: LocaleInstance): Promise<void> {
   try {
     const response = await fetch('/api/auth/login', {
       method: 'POST',
@@ -24,45 +26,45 @@ async function login(email: string, password: string): Promise<void> {
       }),
       headers: commonHeaders()
     })
-    return processAuthResponse(response)
+    return processAuthResponse(response, locale)
   } catch (e) {
     const error = (e as RestError).errorDto
     throw new RestError('Failed to login', error)
   }
 }
 
-async function verifyLogin(): Promise<void> {
+async function verifyLogin(locale: LocaleInstance): Promise<void> {
   try {
     const response = await fetchFromApi('/auth/login/verify')
-    return processAuthResponse(response)
+    return processAuthResponse(response, locale)
   } catch (e) {
     const error = (e as RestError).errorDto
     throw new RestError('Failed to verify login state', error)
   }
 }
 
-async function signUp(account: SignupRequestDto): Promise<void> {
+async function signUp(account: SignupRequestDto, locale: LocaleInstance): Promise<void> {
   try {
     const response = await fetch('/api/auth/signup', {
       method: 'POST',
       body: JSON.stringify(account),
       headers: commonHeaders()
     })
-    return processAuthResponse(response)
+    return processAuthResponse(response, locale)
   } catch (e) {
     const error = (e as RestError).errorDto
     throw new RestError('Failed to signup', error)
   }
 }
 
-async function oauthSignUp(oAuthSignUpRequest: OAuthSignUpRequestDto): Promise<void> {
+async function oauthSignUp(oAuthSignUpRequest: OAuthSignUpRequestDto, locale: LocaleInstance): Promise<void> {
   try {
     const response = await fetch('/api/oauth/signup', {
       method: 'POST',
       body: JSON.stringify(oAuthSignUpRequest),
       headers: commonHeaders()
     })
-    return processAuthResponse(response)
+    return processAuthResponse(response, locale)
   } catch (e) {
     const error = (e as RestError).errorDto
     throw new RestError('Failed to signup with OAuth', error)
@@ -83,14 +85,16 @@ async function changePassword(changePasswordRequest: ChangePasswordRequestDto): 
   }
 }
 
-async function update(accountUpdate: AccountUpdateDto): Promise<AccountDto> {
+async function update(accountUpdate: AccountUpdateDto, locale: LocaleInstance): Promise<AccountDto> {
   try {
     const response = await fetchFromApi('/account', {
       method: 'POST',
       body: JSON.stringify(accountUpdate),
       headers: commonHeaders()
     })
-    return await getJSONIfResponseIsOk<AccountDto>(response)
+    const account = await getJSONIfResponseIsOk<AccountDto>(response)
+    LanguageService.setLanguage(account.language, locale, true)
+    return account
   } catch (e) {
     const error = (e as RestError).errorDto
     throw new RestError('Failed to update account', error)
@@ -111,7 +115,7 @@ function isUserLoggedIn(): boolean {
   return LoginStateService.isLoggedIn()
 }
 
-async function logout(): Promise<void> {
+async function logout(locale: LocaleInstance): Promise<void> {
   try {
     const response = await fetch('/api/auth/logout', {
       method: 'POST'
@@ -121,6 +125,7 @@ async function logout(): Promise<void> {
       return Promise.reject(new RestError('Failed to perform logout'))
     }
     LoginStateService.loggedOut()
+    LanguageService.setLanguage(LanguageService.getLanguage(), locale)
   } catch (e) {
     const error = (e as RestError).errorDto
     throw new RestError('Failed to logout', error)

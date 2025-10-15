@@ -10,4 +10,5 @@ export type AccountEditorData = {
   postcode?: string
   city?: string
   country?: string
+  language?: string
 }

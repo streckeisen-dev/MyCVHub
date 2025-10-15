@@ -136,13 +136,16 @@ import { useI18n } from 'vue-i18n'
 import type { PublicProfileThemeDto } from '@/dto/PublicProfileThemeDto'
 import ProjectContainer from '@/views/profile/components/project/ProjectContainer.vue'
 import { RestError } from '@/api/RestError'
+import { useLocale } from 'vuetify'
 
 const { t } = useI18n({
   useScope: 'global'
 })
+const locale = useLocale()
 
 const props = defineProps<{ username: string }>()
 const originalTheme = vuetify.theme.global.name.value
+const originalLocale = locale.current.value
 vuetify.theme.global.name.value = 'profile'
 
 const profile = ref<PublicProfileDto>()
@@ -174,6 +177,7 @@ const profilePhoneLink = computed(() => `tel:${profile.value!!.phone}`)
 isProfileLoading.value = true
 try {
   profile.value = await ProfileApi.getPublicProfile(props.username)
+  locale.current.value = profile.value.language
   const profileTheme = profile.value.theme
   if (profileTheme) {
     theme.value.backgroundColor = profileTheme.backgroundColor
@@ -189,6 +193,7 @@ try {
 onBeforeRouteLeave(
   (to: RouteLocationNormalized, from: RouteLocationNormalizedLoaded, next: NavigationGuardNext) => {
     vuetify.theme.global.name.value = originalTheme
+    locale.current.value = originalLocale
     next()
   }
 )

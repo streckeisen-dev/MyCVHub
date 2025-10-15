@@ -46,6 +46,7 @@ import type { AccountEditorData } from '@/dto/AccountEditorData'
 import type { OAuthSignUpRequestDto } from '@/dto/OAuthSignUpRequestDto'
 import FormButtons from '@/components/FormButtons.vue'
 import { RestError } from '@/api/RestError'
+import { useLocale } from 'vuetify'
 
 if (LoginStateService.getAccountStatus() !== AccountStatus.INCOMPLETE) {
   await router.push({ name: 'account' })
@@ -54,6 +55,7 @@ if (LoginStateService.getAccountStatus() !== AccountStatus.INCOMPLETE) {
 const { t } = useI18n({
   useScope: 'global'
 })
+const locale = useLocale()
 
 const errorMessages = ref<ErrorMessages>({})
 
@@ -73,7 +75,8 @@ const rules = reactive<ValidationArgs>({
   houseNumber: {},
   postcode: { required },
   city: { required },
-  country: { required }
+  country: { required },
+  language: { required }
 })
 
 const form = useVuelidate<AccountEditorData>(rules, formState)
@@ -95,11 +98,12 @@ async function signUp() {
     houseNumber: formState.houseNumber,
     postcode: formState.postcode,
     city: formState.city,
-    country: formState.country
+    country: formState.country,
+    language: formState.language
   }
 
   try {
-    await accountApi.oauthSignUp(account)
+    await accountApi.oauthSignUp(account, locale)
     errorMessages.value = {}
     LoginStateService.setAccountStatus(AccountStatus.UNVERIFIED)
     await router.push({ name: 'account' })
@@ -116,7 +120,7 @@ async function signUp() {
 async function cancelSignup() {
   try {
     await accountApi.deleteAccount()
-    await accountApi.logout()
+    await accountApi.logout(locale)
     await router.push({ name: 'home' })
   } catch (e) {
     const error = (e as RestError).errorDto

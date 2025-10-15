@@ -67,10 +67,13 @@ import { useI18n } from 'vue-i18n'
 import { required } from '@/validation/validators'
 import ToastService from '@/services/ToastService'
 import { RestError } from '@/api/RestError'
+import { useLocale } from 'vuetify'
 
 const { t } = useI18n({
   useScope: 'global'
 })
+
+const locale = useLocale()
 
 const props = defineProps<{
   redirect?: string
@@ -125,7 +128,7 @@ async function login() {
   }
 
   try {
-    await accountApi.login(formState.email!, formState.password!)
+    await accountApi.login(formState.email!, formState.password!, locale)
     await forwardAfterSuccessfulLogin()
   } catch (e) {
     const error = (e as RestError).errorDto

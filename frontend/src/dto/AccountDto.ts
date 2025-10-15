@@ -10,6 +10,7 @@ export type AccountDto = {
   postcode: string
   city: string
   country: string
+  language: string
   hasProfile: boolean,
   hasPassword: boolean
 }

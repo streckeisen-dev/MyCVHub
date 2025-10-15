@@ -10,4 +10,5 @@ export type OAuthSignUpRequestDto = {
   postcode?: string
   city?: string
   country?: string
+  language?: string
 }

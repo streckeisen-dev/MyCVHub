@@ -83,6 +83,7 @@ import AccountEditor from '@/views/account/AccountEditor.vue'
 import PasswordRequirements from '@/views/account/PasswordRequirements.vue'
 import ToastService from '@/services/ToastService'
 import { RestError } from '@/api/RestError'
+import { useLocale } from 'vuetify'
 
 if (accountApi.isUserLoggedIn()) {
   await router.push({ name: 'home' })
@@ -91,6 +92,8 @@ if (accountApi.isUserLoggedIn()) {
 const { t } = useI18n({
   useScope: 'global'
 })
+
+const locale = useLocale()
 
 const errorMessages = ref<ErrorMessages>({})
 
@@ -174,7 +177,7 @@ async function signUp() {
   }
 
   try {
-    await accountApi.signUp(account)
+    await accountApi.signUp(account, locale)
     errorMessages.value = {}
     await router.push({ name: 'account' })
   } catch (e) {

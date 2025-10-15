@@ -9,5 +9,6 @@ export type AccountUpdateDto = {
   houseNumber?: string
   postcode?: string
   city?: string
-  country?: string
+  country?: string,
+  language?: string
 }

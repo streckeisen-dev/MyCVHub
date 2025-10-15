@@ -39,6 +39,7 @@ shared:
     links: "Links"
     url: "URL"
     displayName: "Anzeigename"
+    language: "Sprache"
 
   validations:
     required: "{label} darf nicht leer sein"
@@ -70,7 +71,7 @@ frontend:
 
   app:
     home: "Start"
-    publicProfile: "Öffentliches Profile"
+    publicProfile: "Öffentliches Profil"
     generateCV: "CV Herunterladen"
 
   home:

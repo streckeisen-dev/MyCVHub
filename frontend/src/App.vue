@@ -31,15 +31,16 @@
           v-if="vuetify.display.mdAndUp.value"
           class="language-selector"
         >
-          <v-menu class="language-selector-menu">
+          <v-menu class="language-selector-menu" :disabled="LanguageService.isAccountLanguage()">
             <template v-slot:activator="{ props }">
               <v-btn
                 prepend-icon="mdi-web"
-                :text="languageDisplayName(locale)"
+                :text="languageDisplayName(locale.current.value)"
                 v-bind="props"
                 size="large"
                 variant="flat"
                 style="text-transform: none"
+                @click="onLanguageClicked"
               />
             </template>
             <v-list>
@@ -210,24 +211,30 @@ import ProfileApi from '@/api/ProfileApi'
 const { t } = useI18n({
   useScope: 'global'
 })
-const locale = useLocale().current
+const locale = useLocale()
 const username = ref<string>(' ')
 
 function localeClass(lang: string): ComputedRef {
   return computed(() => {
     return {
-      'current-locale': locale.value === lang
+      'current-locale': locale.current.value === lang
     }
   })
 }
 
+function onLanguageClicked() {
+  if (LanguageService.isAccountLanguage()) {
+    router.push({ name: 'edit-account' })
+  }
+}
+
 function changeLocale(lang: string) {
   isNavMenuOpen.value = false
-  locale.value = lang
-  LanguageService.setLanguage(lang)
+  LanguageService.setLanguage(lang, locale)
 }
 
 function languageDisplayName(lang: string): string | undefined {
+  console.log(lang)
   return new Intl.DisplayNames([lang], { type: 'language' }).of(lang)
 }
 

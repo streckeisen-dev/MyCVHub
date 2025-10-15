@@ -39,6 +39,7 @@ shared:
     links: "Links"
     url: "URL"
     displayName: "Display Name"
+    language: "Language"
   
   validations: 
     required: "{label} must not be blank"

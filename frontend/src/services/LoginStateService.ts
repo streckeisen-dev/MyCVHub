@@ -1,4 +1,5 @@
 import { AccountStatus } from '@/dto/AccountStatusDto'
+import { toBoolean } from '@/services/BooleanHelper.ts'
 
 export const AUTH_STATE_KEY = 'my-cv-login-state'
 export const ACCOUNT_STATUS_KEY = 'my-cv-account-status'
@@ -24,15 +25,7 @@ function setAccountStatus(accountStatus: AccountStatus) {
   localStorage.setItem(ACCOUNT_STATUS_KEY, String(accountStatus))
 }
 
-function toBoolean(s: string | undefined | null): boolean | undefined {
-  if (s === 'true') {
-    return true
-  }
-  if (s === 'false') {
-    return false
-  }
-  return undefined
-}
+
 
 export default {
   successfulLogin,

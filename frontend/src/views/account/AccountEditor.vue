@@ -105,10 +105,7 @@
             :error-messages="cityErrors"
           />
         </v-col>
-        <v-col
-          cols="12"
-          sm="12"
-        >
+        <v-col cols="12">
           <v-autocomplete
             v-model="formState.country"
             :label="t('fields.country')"
@@ -118,6 +115,16 @@
             :error-messages="countryErrors"
           />
         </v-col>
+        <v-col cols="12">
+          <v-autocomplete
+            v-model="formState.language"
+            :label="t('fields.language')"
+            :items="languages"
+            item-title="displayName"
+            item-value="key"
+            :error-messages="languageErrors"
+          />
+        </v-col>
       </v-row>
     </v-col>
   </v-row>
@@ -125,7 +132,7 @@
 
 <script setup lang="ts">
 import { VDateInput } from 'vuetify/labs/components'
-import { type ComputedRef, type Reactive, ref, watch } from 'vue'
+import { computed, type ComputedRef, type Reactive, ref, watch } from 'vue'
 import type { AccountEditorData } from '@/dto/AccountEditorData'
 import type { Validation } from '@vuelidate/core'
 import { type ErrorMessages, getErrorMessages } from '@/services/FormHelper'
@@ -134,6 +141,8 @@ import type { CountryDto } from '@/dto/CountryDto'
 import countryApi from '@/api/CountryApi'
 import { useLocale } from 'vuetify'
 import toastService from '@/services/ToastService'
+import i18n from '@/plugins/i18n.ts'
+import LanguageService from '@/services/LanguageService.ts'
 
 const { t } = useI18n({
   useScope: 'global'
@@ -141,6 +150,7 @@ const { t } = useI18n({
 
 const form = defineModel<Validation>('form', { required: true })
 const formState = defineModel<Reactive<AccountEditorData>>('formState', { required: true })
+formState.value.language = LanguageService.getLanguage()
 const errorMessages = defineModel<ErrorMessages>('errorMessages', { required: true })
 
 const countries = ref<Array<CountryDto>>([])
@@ -155,6 +165,15 @@ await loadCountries()
 
 watch(useLocale().current, async () => {
   await loadCountries()
+})
+
+const languages = computed(() => {
+  return i18n.global.availableLocales.map(locale => {
+    return {
+      key: locale,
+      displayName: new Intl.DisplayNames([locale], { type: 'language' }).of(locale)
+    }
+  })
 })
 
 function getErrors(attributeName: string): ComputedRef {
@@ -172,4 +191,5 @@ const houseNumberErrors = getErrors('houseNumber')
 const postcodeErrors = getErrors('postcode')
 const cityErrors = getErrors('city')
 const countryErrors = getErrors('country')
+const languageErrors = getErrors('language')
 </script>
