@@ -13,5 +13,6 @@ data class AccountUpdateDto(
     val houseNumber: String?,
     val postcode: String?,
     val city: String?,
-    val country: String?
+    val country: String?,
+    val language: String?
 )

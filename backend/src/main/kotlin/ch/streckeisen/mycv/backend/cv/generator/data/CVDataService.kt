@@ -9,6 +9,7 @@ import ch.streckeisen.mycv.backend.cv.project.ProjectEntity
 import ch.streckeisen.mycv.backend.cv.skill.SkillEntity
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
+import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -95,7 +96,6 @@ class CVDataService(
     }
 
     fun createCVData(
-        locale: Locale,
         profile: ProfileEntity,
         workExperience: List<WorkExperienceEntity>,
         education: List<EducationEntity>,
@@ -103,6 +103,7 @@ class CVDataService(
         skills: List<SkillEntity>,
         templateOptions: Map<String, String>
     ): CVData {
+        val locale = LocaleContextHolder.getLocale()
         val cvDateFormatter = DateTimeFormatter.ofPattern(CV_DATE_FORMAT, locale)
         return CVData(
             language = locale.language,

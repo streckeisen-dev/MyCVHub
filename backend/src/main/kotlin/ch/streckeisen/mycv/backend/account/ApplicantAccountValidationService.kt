@@ -7,6 +7,7 @@ import ch.streckeisen.mycv.backend.locale.MessagesService
 import com.google.i18n.phonenumbers.NumberParseException
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import org.apache.commons.validator.routines.EmailValidator
+import org.apache.tika.utils.StringUtils
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.util.Locale
@@ -19,6 +20,7 @@ private const val PHONE_INVALID_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.phoneInv
 private const val EMPTY_HOUSE_NUMBER_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.houseNumberEmpty"
 private const val COUNTRY_LENGTH_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.countryLengthError"
 private const val COUNTRY_INVALID_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.countryInvalid"
+private const val LANGUAGE_INVALID_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.languageInvalid"
 private const val VALIDATION_ERROR_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.error"
 
 private const val USERNAME_FIELD_KEY = "username"
@@ -54,6 +56,7 @@ class ApplicantAccountValidationService(
         validateCountry(accountUpdate.country, validationErrorBuilder)
         validatePhone(accountUpdate.phone, accountUpdate.country, validationErrorBuilder)
         validateBirthday(accountUpdate.birthday, validationErrorBuilder)
+        validateLanguage(accountUpdate.language, validationErrorBuilder)
 
         return checkValidationResult(validationErrorBuilder)
     }
@@ -245,6 +248,16 @@ class ApplicantAccountValidationService(
                 val error = messagesService.getMessage(COUNTRY_INVALID_KEY)
                 validationErrorBuilder.addError(COUNTRY_FIELD_KEY, error)
             }
+        }
+    }
+
+    fun validateLanguage(language: String?, validationErrorBuilder: ValidationException.ValidationErrorBuilder) {
+        if (StringUtils.isBlank(language)) {
+            val error = messagesService.requiredFieldMissingError("language")
+            validationErrorBuilder.addError("language", error)
+        } else if (messagesService.getSupportedLanguages().contains(language).not()) {
+            val error = messagesService.getMessage(LANGUAGE_INVALID_KEY)
+            validationErrorBuilder.addError("language", error)
         }
     }
 

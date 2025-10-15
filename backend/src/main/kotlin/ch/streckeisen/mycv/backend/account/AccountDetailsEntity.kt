@@ -21,6 +21,7 @@ class AccountDetailsEntity(
     val postcode: String,
     val city: String,
     val country: String,
+    val language: String,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

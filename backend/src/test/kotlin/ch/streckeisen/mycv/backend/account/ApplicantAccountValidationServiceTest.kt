@@ -1,6 +1,7 @@
 package ch.streckeisen.mycv.backend.account
 
 import ch.streckeisen.mycv.backend.account.dto.AccountUpdateDto
+import ch.streckeisen.mycv.backend.locale.MessagesService
 import ch.streckeisen.mycv.backend.util.assertValidationResult
 import io.mockk.every
 import io.mockk.mockk
@@ -15,6 +16,7 @@ private const val EXISTING_USER_EMAIL = "existing.user@example.com"
 
 class ApplicantAccountValidationServiceTest {
     private lateinit var applicantAccountRepository: ApplicantAccountRepository
+    private lateinit var messagesService: MessagesService
     private lateinit var applicantAccountValidationService: ApplicantAccountValidationService
 
     @BeforeTest
@@ -24,8 +26,12 @@ class ApplicantAccountValidationServiceTest {
             every { findByUsername(not(eq(EXISTING_USER_EMAIL))) } returns Optional.empty()
         }
 
+        messagesService = mockk(relaxed = true) {
+            every { getSupportedLanguages() } returns listOf("en", "de")
+        }
+
         applicantAccountValidationService =
-            ApplicantAccountValidationService(applicantAccountRepository, mockk(relaxed = true))
+            ApplicantAccountValidationService(applicantAccountRepository, messagesService)
     }
 
     @ParameterizedTest
@@ -55,7 +61,8 @@ class ApplicantAccountValidationServiceTest {
             "124a",
             "29742",
             "Real City",
-            "CH"
+            "CH",
+            "de"
         ),
         id = 1
     )
@@ -65,9 +72,9 @@ class ApplicantAccountValidationServiceTest {
         fun updateAccountValidationDataProvider() = listOf(
             Arguments.of(
                 1,
-                AccountUpdateDto(null, null, null, null, null, null, null, null, null, null, null),
+                AccountUpdateDto(null, null, null, null, null, null, null, null, null, null, null, null),
                 false,
-                10
+                11
             ),
             Arguments.of(
                 2,
@@ -82,7 +89,8 @@ class ApplicantAccountValidationServiceTest {
                     null,
                     "pc",
                     "c",
-                    "CH"
+                    "CH",
+                    "de"
                 ),
                 false,
                 1
@@ -100,7 +108,8 @@ class ApplicantAccountValidationServiceTest {
                     null,
                     "pc",
                     "c",
-                    "CH"
+                    "CH",
+                    "de"
                 ),
                 true,
                 0
@@ -118,7 +127,8 @@ class ApplicantAccountValidationServiceTest {
                     null,
                     "pc",
                     "c",
-                    "CH"
+                    "CH",
+                    "de"
                 ),
                 true,
                 0

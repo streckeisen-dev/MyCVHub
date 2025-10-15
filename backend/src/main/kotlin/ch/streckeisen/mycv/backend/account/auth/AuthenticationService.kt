@@ -126,7 +126,8 @@ class AuthenticationService(
                 signupRequest.houseNumber,
                 signupRequest.postcode!!,
                 signupRequest.city!!,
-                signupRequest.country!!
+                signupRequest.country!!,
+                signupRequest.language!!
             )
         )
         val account = applicantAccountRepository.save(applicantAccount)

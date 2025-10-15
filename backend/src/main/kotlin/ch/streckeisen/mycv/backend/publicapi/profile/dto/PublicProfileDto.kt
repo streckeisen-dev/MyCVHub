@@ -15,5 +15,6 @@ data class PublicProfileDto(
     val skills: List<PublicSkillDto>,
     val education: List<PublicEducationDto>,
     val projects: List<PublicProjectDto>,
-    val theme: PublicProfileThemeDto?
+    val theme: PublicProfileThemeDto?,
+    val language: String
 )

@@ -98,6 +98,14 @@ class AuthenticationValidationServiceTest {
                     secondArg()
                 )
             }
+
+            every { validateLanguage(eq(VALID_ATTRIBUTE), any()) } just Runs
+            every { validateLanguage(eq(INVALID_ATTRIBUTE), any()) } answers {
+                mockValidationError(
+                    "language",
+                    secondArg()
+                )
+            }
         }
         passwordEncoder = mockk {
             every { matches(any(), any()) } returns false
@@ -165,32 +173,34 @@ class AuthenticationValidationServiceTest {
                     INVALID_ATTRIBUTE,
                     INVALID_ATTRIBUTE,
                     null,
-                    null
+                    null,
+                    INVALID_ATTRIBUTE
+                ),
+                false,
+                14
+            ),
+            Arguments.of(
+                SignupRequestDto(
+                    VALID_ATTRIBUTE,
+                    INVALID_ATTRIBUTE,
+                    INVALID_ATTRIBUTE,
+                    INVALID_ATTRIBUTE,
+                    INVALID_ATTRIBUTE,
+                    null,
+                    INVALID_ATTRIBUTE,
+                    INVALID_ATTRIBUTE,
+                    INVALID_ATTRIBUTE,
+                    INVALID_ATTRIBUTE,
+                    INVALID_ATTRIBUTE,
+                    null,
+                    null,
+                    INVALID_ATTRIBUTE
                 ),
                 false,
                 13
             ),
             Arguments.of(
                 SignupRequestDto(
-                    VALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    null
-                ),
-                false,
-                12
-            ),
-            Arguments.of(
-                SignupRequestDto(
                     INVALID_ATTRIBUTE,
                     VALID_ATTRIBUTE,
                     INVALID_ATTRIBUTE,
@@ -203,10 +213,11 @@ class AuthenticationValidationServiceTest {
                     INVALID_ATTRIBUTE,
                     INVALID_ATTRIBUTE,
                     null,
-                    null
+                    null,
+                    INVALID_ATTRIBUTE
                 ),
                 false,
-                12
+                13
             ),
             Arguments.of(
                 SignupRequestDto(
@@ -222,10 +233,11 @@ class AuthenticationValidationServiceTest {
                     INVALID_ATTRIBUTE,
                     INVALID_ATTRIBUTE,
                     null,
-                    null
+                    null,
+                    INVALID_ATTRIBUTE
                 ),
                 false,
-                12
+                13
             ),
             Arguments.of(
                 SignupRequestDto(
@@ -241,10 +253,11 @@ class AuthenticationValidationServiceTest {
                     INVALID_ATTRIBUTE,
                     INVALID_ATTRIBUTE,
                     null,
-                    null
+                    null,
+                    INVALID_ATTRIBUTE
                 ),
                 false,
-                12
+                13
             ),
             Arguments.of(
                 SignupRequestDto(
@@ -260,10 +273,11 @@ class AuthenticationValidationServiceTest {
                     INVALID_ATTRIBUTE,
                     INVALID_ATTRIBUTE,
                     null,
-                    null
+                    null,
+                    INVALID_ATTRIBUTE
                 ),
                 false,
-                12
+                13
             ),
             Arguments.of(
                 SignupRequestDto(
@@ -279,10 +293,11 @@ class AuthenticationValidationServiceTest {
                     INVALID_ATTRIBUTE,
                     INVALID_ATTRIBUTE,
                     null,
-                    null
+                    null,
+                    INVALID_ATTRIBUTE
                 ),
                 false,
-                12
+                13
             ),
             Arguments.of(
                 SignupRequestDto(
@@ -298,10 +313,11 @@ class AuthenticationValidationServiceTest {
                     INVALID_ATTRIBUTE,
                     INVALID_ATTRIBUTE,
                     null,
-                    null
+                    null,
+                    INVALID_ATTRIBUTE
                 ),
                 false,
-                12
+                13
             ),
             Arguments.of(
                 SignupRequestDto(
@@ -317,10 +333,11 @@ class AuthenticationValidationServiceTest {
                     INVALID_ATTRIBUTE,
                     INVALID_ATTRIBUTE,
                     null,
-                    null
+                    null,
+                    INVALID_ATTRIBUTE
                 ),
                 false,
-                12
+                13
             ),
             Arguments.of(
                 SignupRequestDto(
@@ -336,10 +353,11 @@ class AuthenticationValidationServiceTest {
                     INVALID_ATTRIBUTE,
                     INVALID_ATTRIBUTE,
                     null,
-                    null
+                    null,
+                    INVALID_ATTRIBUTE
                 ),
                 false,
-                12
+                13
             ),
             Arguments.of(
                 SignupRequestDto(
@@ -355,10 +373,11 @@ class AuthenticationValidationServiceTest {
                     VALID_ATTRIBUTE,
                     INVALID_ATTRIBUTE,
                     null,
-                    null
+                    null,
+                    INVALID_ATTRIBUTE
                 ),
                 false,
-                12
+                13
             ),
             Arguments.of(
                 SignupRequestDto(
@@ -374,10 +393,31 @@ class AuthenticationValidationServiceTest {
                     INVALID_ATTRIBUTE,
                     VALID_ATTRIBUTE,
                     null,
-                    null
+                    null,
+                    INVALID_ATTRIBUTE
                 ),
                 false,
-                12
+                13
+            ),
+            Arguments.of(
+                SignupRequestDto(
+                    INVALID_ATTRIBUTE,
+                    INVALID_ATTRIBUTE,
+                    INVALID_ATTRIBUTE,
+                    INVALID_ATTRIBUTE,
+                    INVALID_ATTRIBUTE,
+                    null,
+                    INVALID_ATTRIBUTE,
+                    INVALID_ATTRIBUTE,
+                    INVALID_ATTRIBUTE,
+                    INVALID_ATTRIBUTE,
+                    INVALID_ATTRIBUTE,
+                    null,
+                    null,
+                    VALID_ATTRIBUTE
+                ),
+                false,
+                13
             ),
             Arguments.of(
                 SignupRequestDto(
@@ -393,7 +433,8 @@ class AuthenticationValidationServiceTest {
                     VALID_ATTRIBUTE,
                     VALID_ATTRIBUTE,
                     VALID_TEST_PW,
-                    VALID_TEST_PW
+                    VALID_TEST_PW,
+                    VALID_ATTRIBUTE
                 ),
                 true,
                 0

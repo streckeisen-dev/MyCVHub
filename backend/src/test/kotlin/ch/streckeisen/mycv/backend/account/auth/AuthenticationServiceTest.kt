@@ -40,6 +40,7 @@ private val existingAccount = ApplicantAccountEntity(
         "29742",
         "Real City",
         "CH",
+        "de"
     ),
     id = 1,
 )
@@ -60,10 +61,12 @@ private val validSignupRequest = SignupRequestDto(
     "City",
     "CH",
     VALID_TEST_PASSWORD,
-    VALID_TEST_PASSWORD
+    VALID_TEST_PASSWORD,
+    "en"
 )
 
 private val invalidSignupRequest = SignupRequestDto(
+    null,
     null,
     null,
     null,

@@ -79,6 +79,7 @@ class AuthenticationValidationService(
             signupRequest.confirmPassword,
             validationErrorBuilder
         )
+        applicantAccountValidationService.validateLanguage(signupRequest.language, validationErrorBuilder)
 
         if (validationErrorBuilder.hasErrors()) {
             return Result.failure(validationErrorBuilder.build(messagesService.getMessage(SIGNUP_VALIDATION_ERROR_KEY)))

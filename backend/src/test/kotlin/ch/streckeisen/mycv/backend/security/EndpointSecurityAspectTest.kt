@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
 import java.lang.reflect.Method
+import java.util.Locale
 import kotlin.test.assertTrue
 
 class EndpointSecurityAspectTest {
@@ -357,7 +358,7 @@ class EndpointSecurityAspectTest {
 
         private fun mockPrincipal(status: AccountStatus): UsernamePasswordAuthenticationToken {
             return mockk {
-                every { principal } returns MyCvPrincipal("user", 1, status)
+                every { principal } returns MyCvPrincipal("user", 1, status, Locale.ENGLISH)
                 every { isAuthenticated } returns true
             }
         }

@@ -31,11 +31,12 @@ private val EXISTING_ACCOUNT = ApplicantAccountEntity(
         "29742",
         "Real City",
         "CH",
+        "de"
     ),
     id = 1,
 )
 
-private val INVALID_ACCOUNT_UPDATE = AccountUpdateDto(null, null, null, null, null, null, null, null, null, null, null)
+private val INVALID_ACCOUNT_UPDATE = AccountUpdateDto(null, null, null, null, null, null, null, null, null, null, null, null)
 private val VALID_ACCOUNT_UPDATE = AccountUpdateDto(
     "username",
     "fN",
@@ -47,7 +48,8 @@ private val VALID_ACCOUNT_UPDATE = AccountUpdateDto(
     null,
     "pc",
     "ct",
-    "DE"
+    "DE",
+    "de"
 )
 
 class ApplicantAccountServiceTest {
@@ -79,7 +81,8 @@ class ApplicantAccountServiceTest {
                     null,
                     "123",
                     "NewCity",
-                    "CH"
+                    "CH",
+                    "de"
                 )
             )
         }

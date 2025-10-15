@@ -32,7 +32,8 @@ private val existingAccount =
             houseNumber = null,
             postcode = "code",
             city = "city",
-            country = "CH"
+            country = "CH",
+            language = "en"
         ),
         id = 1,
         profile = ProfileEntity(
@@ -64,7 +65,8 @@ private val existingAccountWithoutProfile =
             houseNumber = null,
             postcode = "code",
             city = "city",
-            country = "CH"
+            country = "CH",
+            "en"
         ),
         id = 3,
         profile = null

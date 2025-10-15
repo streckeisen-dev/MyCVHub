@@ -34,7 +34,8 @@ fun ProfileEntity.toPublicDto(profilePicture: String): PublicProfileDto = Public
     skills.map { it.toPublicDto() }.toList(),
     education.map { it.toPublicDto(hideDescriptions) }.toList(),
     projects.map { it.toPublicDto(hideDescriptions) }.toList(),
-    profileTheme?.toPublicDto()
+    profileTheme?.toPublicDto(),
+    account.accountDetails.language
 )
 
 fun EducationEntity.toPublicDto(hideDescription: Boolean) = PublicEducationDto(

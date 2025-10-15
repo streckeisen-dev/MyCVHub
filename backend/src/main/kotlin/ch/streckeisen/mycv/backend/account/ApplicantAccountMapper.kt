@@ -14,6 +14,7 @@ fun ApplicantAccountEntity.toAccountDto(): AccountDto = AccountDto(
     accountDetails.postcode,
     accountDetails.city,
     accountDetails.country,
+    accountDetails.language,
     profile != null,
     password != null
 )
