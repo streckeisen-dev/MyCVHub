@@ -260,17 +260,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cypress/vite-dev-server@npm:^6.0.3":
-  version: 6.0.3
-  resolution: "@cypress/vite-dev-server@npm:6.0.3"
+"@cypress/vite-dev-server@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@cypress/vite-dev-server@npm:7.0.0"
   dependencies:
     debug: "npm:^4.3.4"
     find-up: "npm:6.3.0"
     node-html-parser: "npm:5.3.3"
     semver: "npm:^7.7.1"
   peerDependencies:
-    cypress: ">=14.0.0"
-  checksum: 10c0/704ebe619c98281bb7b659ab22aa4cfb6f59d8c367fa43256350449708dc47db412f6d529bae1841e4245d7a47d4d4593625112e57e7fe3b314d95d4ef1c3ce7
+    cypress: ">=15.0.0"
+  checksum: 10c0/5026de9c2c6e2aece91a7984f358eb3a3f05803fd50aa7eb5d9578fc0713ec213807995afcc730592edfe5119c42daf56604d43dbaccaba189bce1372b83e721
   languageName: node
   linkType: hard
 
@@ -5175,7 +5175,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "my-cv-frontend@workspace:."
   dependencies:
-    "@cypress/vite-dev-server": "npm:^6.0.3"
+    "@cypress/vite-dev-server": "npm:^7.0.0"
     "@cypress/vue": "npm:^6.0.2"
     "@eslint/compat": "npm:^1.4.0"
     "@intlify/unplugin-vue-i18n": "npm:^11.0.1"
