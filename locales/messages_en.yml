@@ -90,6 +90,11 @@ frontend:
     callToAction: 
       title: "Ready to create your online CV?"
       btn: "Sign up now"
+
+  dashboard:
+    title: "Dashboard"
+    profile: "Your CV profile"
+    noProfile: "You don't have a profile yet. Create one and start building your CV."
   
   account:
     title: "Account"
@@ -144,11 +149,19 @@ frontend:
         error: "Failed to re-send verification email"
       success: "Successfully verified your email"
       error: "Failed to verify your email"
-    delete:
-      title: "Delete Account"
-      confirmationText: "If you go ahead and delete your account, all your account and CV data will be deleted permanently. You will not be able to recover your data."
-      success: "Your account was successfully deleted"
-      error: "Failed to delete your account"
+    security:
+      title: "Security"
+      authType: "Authentication Method"
+      userPw: "Username and Password"
+      oauthMethod: "3rd-Party Login"
+      oauth: 'Linked Accounts'
+    accountMgmt:
+      title: "Account Management"
+      delete:
+        action: "Delete Account"
+        confirmationText: "If you go ahead and delete your account, all your account and CV data will be deleted permanently. You will not be able to recover your data."
+        success: "Your account was successfully deleted"
+        error: "Failed to delete your account"
   
   profile:
     title: "Profile"
@@ -172,6 +185,7 @@ frontend:
       publicAddressHint: "If enabled, your address will be shown in your profile"
       hideDescriptions: "Hide descriptions from public profile"
       hideDescriptionsHint: "If enabled, detailed descriptions of your CV entries won't be shown in your profile"
+      saveSuccessTitle: "Successfully saved profile"
       saveErrorTitle: "Failed to save profile"
   
   workExperience:
@@ -233,7 +247,7 @@ frontend:
   
   theme:
     title: "Theme"
-    description: "By default, your CV profile is displayed in MyCVHub's light theme. Below, you can personalize the used theme colors to your taste.\nAim for colors that keep your text easy to read and professional.\n\nTips:\n- Background Color: A soft, neutral color can keep your profile looking clean.\n- Header Color: Try a slightly darker or contrasting color to highlight the header."
+    description: "By default, your public CV profile is displayed in MyCVHub's light theme. Below, you can personalize the used theme colors to your taste.\nAim for colors that keep your text easy to read and professional.\n\nTips:\n- Background Color: A soft, neutral color can keep your profile looking clean.\n- Header Color: Try a slightly darker or contrasting color to highlight the header."
     reset: "Reset to defaults"
     preview: "Preview"
     saveSuccess: "Your theme settings have been saved"
@@ -289,6 +303,9 @@ frontend:
     contact:
       title: "Contact Information"
       content: "For questions or concerns, please contact us at"
+  unauthorized:
+    headline: "Unauthorized"
+    title: "You don't have permission to access this page!"
 
 backend:
   validations:
