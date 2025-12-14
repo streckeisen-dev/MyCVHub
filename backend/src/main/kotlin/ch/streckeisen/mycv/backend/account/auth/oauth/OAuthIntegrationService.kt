@@ -127,7 +127,7 @@ class OAuthIntegrationService(
     private fun createIncompleteOAuthAccount(
         username: String,
         oauthType: OAuthType,
-        oauthId: String
+        oauthId: String,
     ): Result<ApplicantAccountEntity> {
         authenticationValidationService.validateOAuthSignupRequest(username)
             .onFailure { return Result.failure(it) }

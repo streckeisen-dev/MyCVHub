@@ -1,6 +1,5 @@
 package ch.streckeisen.mycv.backend.account.auth
 
-import ch.streckeisen.mycv.backend.account.dto.AuthResponseDto
 import ch.streckeisen.mycv.backend.security.JwtService
 import ch.streckeisen.mycv.backend.security.UserDetailsServiceImpl
 import io.jsonwebtoken.JwtException
@@ -51,7 +50,7 @@ class AuthTokenService(
     fun createAccessCookie(accessToken: String, expiresIn: Long) =
         createCookie(ACCESS_TOKEN_NAME, accessToken, "/", expiresIn)
 
-    fun handleAuthTokenResult(authTokens: Result<AuthTokens>): ResponseEntity<AuthResponseDto> {
+    fun handleAuthTokenResult(authTokens: Result<AuthTokens>): ResponseEntity<Unit> {
         return authTokens.fold(
             onSuccess = { authData ->
                 val refreshCookie =
@@ -67,7 +66,7 @@ class AuthTokenService(
                 headers.add(HttpHeaders.SET_COOKIE, accessCookie.toString())
                 ResponseEntity.ok()
                     .headers(headers)
-                    .body(AuthResponseDto(authData.language))
+                    .body(Unit)
             },
             onFailure = {
                 throw it

@@ -21,7 +21,7 @@ class OAuthResource(
 ) {
     @RequiresAccountStatus(AccountStatus.INCOMPLETE, exact = true)
     @PostMapping("/signup")
-    fun oauthSignup(@RequestBody oauthSignupRequest: OAuthSignupRequestDto): ResponseEntity<AuthResponseDto> {
+    fun oauthSignup(@RequestBody oauthSignupRequest: OAuthSignupRequestDto): ResponseEntity<Unit> {
         val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
         val signupResult = oAuthIntegrationService.completeSignup(principal.id, oauthSignupRequest)
         return authTokenService.handleAuthTokenResult(signupResult)
