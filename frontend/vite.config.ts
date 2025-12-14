@@ -1,43 +1,37 @@
-import { fileURLToPath, URL } from 'node:url'
-
 import { defineConfig } from 'vite'
-import Vue from '@vitejs/plugin-vue'
-import vuetify from 'vite-plugin-vuetify'
-import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
-
-const i18nPlugin = VueI18nPlugin({})
+import react from '@vitejs/plugin-react'
+import tsconfigPaths from 'vite-tsconfig-paths'
+import tailwindcss from '@tailwindcss/vite'
 
 // https://vitejs.dev/config/
-export default () =>
-  defineConfig({
-    plugins: [
-      Vue(),
-      vuetify(),
-      i18nPlugin
-    ],
-    resolve: {
-      alias: {
-        '@': fileURLToPath(new URL('./src', import.meta.url))
+export default defineConfig({
+  plugins: [
+    react(),
+    tsconfigPaths(),
+    tailwindcss()
+  ],
+  server: {
+    port: 3000,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
       }
-    },
-    server: {
-      port: 3000,
-      proxy: {
-        '/api': {
-          target: 'http://localhost:8080',
-          changeOrigin: true
-        }
-      }
-    },
-    css: {
-      preprocessorOptions: {
-        scss: {
-          api: 'modern'
-        }
-      }
-    },
-    build: {
-      target: 'esnext',
-      minify: 'esbuild'
     }
-  })
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            // random number between 1 and 4
+            const random = Math.floor(Math.random() * 4) + 1
+            return `vendor-${random}`
+
+          }
+          return null
+        }
+      }
+    }
+  }
+})

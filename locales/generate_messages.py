@@ -124,7 +124,7 @@ args = parser.parse_args()
 
 try:
     generate_type = args.type  # Command-line parameter for generating files
-    frontend_output_dir = '../frontend-react/public/locales/'  # Path to output JSON for frontend
+    frontend_output_dir = '../frontend/public/locales/'  # Path to output JSON for frontend
     backend_output_dir = '../backend/src/main/resources/'  # Relative output directory for backend .properties files
     key_prefix = 'ch.streckeisen.mycv'  # Prefix for backend keys
     fallback_locale = 'en'
