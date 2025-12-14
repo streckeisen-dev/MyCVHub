@@ -11,7 +11,7 @@
     "test": "vitest run --dom",
     "test-watch": "vitest --reporter=default",
     "test-coverage": "vitest run --coverage",
-    "cypress": "node --loader ts-node/esm node_modules/.bin/cypress open",
+    "cypress": "cypress open",
     "cypress:results:merge": "jrm ./cypress/component-results.xml \"./cypress/results/*.xml\""
   },
   "dependencies": {
