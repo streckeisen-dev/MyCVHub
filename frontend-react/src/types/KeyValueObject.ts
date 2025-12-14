@@ -1,0 +1,1 @@
+export type KeyValueObject<V> = Record<string, V>;

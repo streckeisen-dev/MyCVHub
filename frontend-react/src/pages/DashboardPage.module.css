@@ -1,0 +1,16 @@
+.profileCard {
+    align-items: center;
+}
+
+.profileCard a {
+    min-height: 20px;
+    height: min-content;
+    min-width: 40px;
+    width: min-content;
+    padding: 10px 0;
+}
+
+.profileCard a > svg {
+    height: 15px;
+    width: 15px;
+}
