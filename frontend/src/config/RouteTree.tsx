@@ -8,7 +8,7 @@ import { KeyValueObject } from '@/types/KeyValueObject.ts'
 import { NotFoundPage } from '@/pages/NotFoundPage.tsx'
 import LoginPage from '@/pages/account/LoginPage.tsx'
 import { LogoutPage } from '@/pages/account/LogoutPage.tsx'
-import { DashboardPage } from '@/pages/DashboardPage.tsx'
+import { DashboardPage } from '@/pages/dashboard/DashboardPage.tsx'
 import { AccountPage } from '@/pages/account/AccountPage.tsx'
 import { EditAccountPage } from '@/pages/account/EditAccountPage.tsx'
 import { OAuthSuccessPage } from '@/pages/account/oauth/OAuthSuccessPage.tsx'
@@ -29,7 +29,7 @@ import { SecurityCheck } from '@/components/security/SecurityCheck.tsx'
 type MyCvRouteObject = Omit<RouteObject, 'children'> & {
   id: string;
   requiresAuth?: boolean;
-  minAuthLevel?: AuthLevel | undefined;
+  minAuthLevel?: AuthLevel;
   children?: MyCvRouteObject[];
 };
 

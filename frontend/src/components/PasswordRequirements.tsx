@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next'
 import { h4 } from '@/styles/primitives.ts'
 import { PasswordFormState } from '@/components/PasswordForm.tsx'
 
-export interface PasswordRequirementsProps {
+export type PasswordRequirementsProps = Readonly<{
   state: PasswordFormState;
-}
+}>
 
 export function PasswordRequirements(
   props: PasswordRequirementsProps
@@ -21,8 +21,7 @@ export function PasswordRequirements(
         if (state.password == null) {
           return false
         }
-        const pw = state.password as string
-        return pw.length >= 8
+        return state.password.length >= 8
       }
     },
     {
@@ -32,7 +31,7 @@ export function PasswordRequirements(
         if (state.password == null) {
           return false
         }
-        const pw = state.password as string
+        const pw = state.password
         return pw != '' && !pw.includes(' ')
       }
     },
@@ -43,8 +42,7 @@ export function PasswordRequirements(
         if (state.password == null) {
           return false
         }
-        const pw = state.password as string
-        return /\d/.test(pw)
+        return /\d/.test(state.password)
       }
     },
     {
@@ -54,8 +52,7 @@ export function PasswordRequirements(
         if (state.password == null) {
           return false
         }
-        const pw = state.password as string
-        return /\W/.test(pw)
+        return /\W/.test(state.password)
       }
     },
     {
@@ -65,7 +62,7 @@ export function PasswordRequirements(
         if (state.password == null) {
           return false
         }
-        const pw = state.password as string
+        const pw = state.password
         return pw.toLowerCase() !== pw
       }
     },
@@ -76,7 +73,7 @@ export function PasswordRequirements(
         if (state.password == null) {
           return false
         }
-        const pw = state.password as string
+        const pw = state.password
         return pw.toUpperCase() !== pw
       }
     },
@@ -87,8 +84,7 @@ export function PasswordRequirements(
         if (state.password == null) {
           return false
         }
-        const pw = state.password as string
-        return pw === state.confirmPassword
+        return state.password === state.confirmPassword
       }
     }
   ]

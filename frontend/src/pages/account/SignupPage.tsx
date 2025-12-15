@@ -50,7 +50,7 @@ export function SignupPage(): ReactNode {
     }
   }, [])
 
-  function handleAccountChange(name: string, value: unknown | undefined) {
+  function handleAccountChange(name: string, value: unknown) {
     setAccountFormState((prev) => {
       return {
         ...prev,

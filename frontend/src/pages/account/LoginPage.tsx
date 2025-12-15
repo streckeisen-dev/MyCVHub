@@ -6,13 +6,14 @@ import AccountApi from '@/api/AccountApi.ts'
 import { RestError } from '@/types/RestError.ts'
 import { FaGithub } from 'react-icons/fa'
 import { AuthorizationContext } from '@/context/AuthorizationContext.tsx'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 
 export default function LoginPage(): JSX.Element {
   const { t, i18n } = useTranslation()
   const { user, handleUserUpdate } = use(AuthorizationContext)
   const navigate = useNavigate()
+  const params = useParams()
 
   useEffect(() => {
     if (user) {
@@ -48,13 +49,8 @@ export default function LoginPage(): JSX.Element {
   }
 
   function loginWith(provider: string) {
-    const loginPath = `/api/auth/oauth2/authorization/${provider}`
-    /*if (props.redirect) {
-      window.location.href = `${loginPath}?redirect=${props.redirect}`
-    } else {
-      window.location.href = loginPath
-    }*/
-    window.location.href = loginPath
+    const redirect = params.redirect ? decodeURIComponent(params.redirect) : ''
+    globalThis.location.href = `/api/auth/oauth2/authorization/${provider}${redirect}`
   }
 
   return (

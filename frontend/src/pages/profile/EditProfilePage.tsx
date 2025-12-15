@@ -33,14 +33,11 @@ export function EditProfilePage(): ReactNode {
     loadProfile()
   }, [])
 
-  return isLoading ? (
-    <Spinner />
-  ) : !profile ? (
-    <Empty
-      headline={t('error.genericMessageTitle')}
-      title={t('profile.loadingError')}
-    />
-  ) : (
+  const content = profile ? (
     <ProfileEditor initialValue={profile} />
+  ) : (
+    <Empty headline={t('error.genericMessageTitle')} title={t('profile.loadingError')} />
   )
+
+  return isLoading ? <Spinner /> : content
 }

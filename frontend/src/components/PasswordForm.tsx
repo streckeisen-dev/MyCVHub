@@ -5,17 +5,17 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa6'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 
 export interface PasswordFormState {
-  password?: string | undefined;
-  confirmPassword?: string | undefined;
+  password: string | undefined
+  confirmPassword: string | undefined
 }
 
-export interface PasswordFormProps {
+export type PasswordFormProps = Readonly<{
   state: PasswordFormState;
   onChange: (name: string, value: string | undefined) => void;
   errorMessages: ErrorMessages;
-}
+}>
 
-export function PasswordInput(props: InputProps): ReactNode {
+export function PasswordInput(props: Readonly<InputProps>): ReactNode {
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
   function toggleShowPassword() {

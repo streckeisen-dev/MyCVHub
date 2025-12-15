@@ -7,10 +7,10 @@ const CONTACT_EMAIL = 'contact@mycvhub.ch'
 
 const UL_CLASSES = 'list-disc ml-4'
 
-interface PolicySectionProps {
+type PolicySectionProps = Readonly<{
   title: string;
   content: ReactNode;
-}
+}>
 
 function PolicySection(props: PolicySectionProps): ReactNode {
   const {title, content} = props

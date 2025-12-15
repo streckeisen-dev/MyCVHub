@@ -2,14 +2,7 @@ import React, { PropsWithChildren, useEffect, useState } from 'react'
 import { centerSection, h2, h3 } from '@/styles/primitives.ts'
 import { useTranslation } from 'react-i18next'
 import { AccountDto } from '@/types/AccountDto.ts'
-import {
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  CircularProgress
-} from '@heroui/react'
+import { Button, Card, CardBody, CardFooter, CardHeader, CircularProgress } from '@heroui/react'
 import AccountApi from '@/api/AccountApi.ts'
 import { Empty } from '@/components/Empty.tsx'
 import { Attribute, AttributeList } from '@/components/AttributeList.tsx'
@@ -20,11 +13,7 @@ import { Link } from 'react-router-dom'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import { formatDate } from '@/helpers/DateHelper.ts'
 
-function getPersonalDataAttributes(
-  t: TFunction,
-  lang: string,
-  account: AccountDto
-): Attribute[] {
+function getPersonalDataAttributes(t: TFunction, lang: string, account: AccountDto): Attribute[] {
   return [
     {
       name: t('fields.firstName'),
@@ -49,10 +38,7 @@ function getPersonalDataAttributes(
   ]
 }
 
-function getAddressAttributes(
-  t: TFunction,
-  account: AccountDto
-): Attribute[] {
+function getAddressAttributes(t: TFunction, account: AccountDto): Attribute[] {
   return [
     {
       name: t('fields.street'),
@@ -77,10 +63,7 @@ function getAddressAttributes(
   ]
 }
 
-function getSecurityAttributes(
-  t: TFunction,
-  account: AccountDto
-): Attribute[] {
+function getSecurityAttributes(t: TFunction, account: AccountDto): Attribute[] {
   const authTypes: string[] = []
   if (account.hasPassword) {
     authTypes.push(t('account.security.userPw'))
@@ -97,19 +80,22 @@ function getSecurityAttributes(
   if (account.oauthIntegrations.length > 0) {
     attributes.push({
       name: t('account.security.oauth'),
-      value: account.oauthIntegrations.map(integration => integration.provider).map(provider => provider === 'GITHUB' ? 'GitHub': provider).join(', ')
+      value: account.oauthIntegrations
+        .map((integration) => integration.provider)
+        .map((provider) => (provider === 'GITHUB' ? 'GitHub' : provider))
+        .join(', ')
     })
   }
   return attributes
 }
 
 type AccountTileProps = PropsWithChildren & {
-  title: string;
-  action?: React.ReactNode | undefined;
-};
+  title: string
+  action?: React.ReactNode
+}
 
 function AccountTile(props: AccountTileProps): React.ReactNode {
-  const {title, action, children} = props
+  const { title, action, children } = props
   return (
     <Card className="w-full p-3 md:p-5 lg:p-10">
       <CardHeader>
@@ -131,8 +117,6 @@ export function AccountPage(): React.ReactNode {
       try {
         const result = await AccountApi.getAccount(i18n.language)
         setAccount(result)
-      } catch (_ignore) {
-        // ignore
       } finally {
         setIsLoading(false)
       }
@@ -140,55 +124,48 @@ export function AccountPage(): React.ReactNode {
     loadAccount()
   }, [])
 
-  return (
-    <section className={centerSection()}>
-      {isLoading ? (
-        <CircularProgress />
-      ) : !account ? (
-        <Empty
-          headline={t('account.loadingError.title')}
-          title={t('account.loadingError.text')}
-        />
-      ) : (
-        <>
-          <h2 className={h2()}>{t('account.title')}</h2>
-          <Button
-            className="self-end"
-            color="primary"
-            startContent={<FaEdit />}
-            as={Link}
-            to={getRoutePath(RouteId.EditAccount)}
-          >
-            {t('account.edit.title')}
-          </Button>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
-            <AccountTile title={t('account.personalData')}>
-              <AttributeList
-                attributes={getPersonalDataAttributes(t, i18n.language, account)}
-              />
-            </AccountTile>
-            <AccountTile title={t('account.address')}>
-              <AttributeList attributes={getAddressAttributes(t, account)} />
-            </AccountTile>
-            <AccountTile
-              title={t('account.security.title')}
-              action={
-                account.hasPassword && (
-                  <Button className="w-min self-end" color="primary" as={Link} to={getRoutePath(RouteId.ChangePassword)}>
-                    {t('account.edit.changePassword')}
-                  </Button>
-                )
-              }
-            >
-              <AttributeList attributes={getSecurityAttributes(t, account)} />
-            </AccountTile>
-            <AccountTile
-              title={t('account.accountMgmt.title')}
-              action={<AccountDeleteButton />}
-            />
-          </div>
-        </>
-      )}
-    </section>
+  const content = account ? (
+    <>
+      <h2 className={h2()}>{t('account.title')}</h2>
+      <Button
+        className="self-end"
+        color="primary"
+        startContent={<FaEdit />}
+        as={Link}
+        to={getRoutePath(RouteId.EditAccount)}
+      >
+        {t('account.edit.title')}
+      </Button>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
+        <AccountTile title={t('account.personalData')}>
+          <AttributeList attributes={getPersonalDataAttributes(t, i18n.language, account)} />
+        </AccountTile>
+        <AccountTile title={t('account.address')}>
+          <AttributeList attributes={getAddressAttributes(t, account)} />
+        </AccountTile>
+        <AccountTile
+          title={t('account.security.title')}
+          action={
+            account.hasPassword && (
+              <Button
+                className="w-min self-end"
+                color="primary"
+                as={Link}
+                to={getRoutePath(RouteId.ChangePassword)}
+              >
+                {t('account.edit.changePassword')}
+              </Button>
+            )
+          }
+        >
+          <AttributeList attributes={getSecurityAttributes(t, account)} />
+        </AccountTile>
+        <AccountTile title={t('account.accountMgmt.title')} action={<AccountDeleteButton />} />
+      </div>
+    </>
+  ) : (
+    <Empty headline={t('account.loadingError.title')} title={t('account.loadingError.text')} />
   )
+
+  return <section className={centerSection()}>{isLoading ? <CircularProgress /> : content}</section>
 }

@@ -2,14 +2,7 @@ import { FormEvent, ReactNode, useState } from 'react'
 import { ProfileThemeDto } from '@/types/ProfileThemeDto.ts'
 import { useTranslation } from 'react-i18next'
 import { ColorState } from 'react-color'
-import {
-  addToast,
-  Button,
-  Form,
-  Navbar,
-  NavbarBrand,
-  NavbarContent
-} from '@heroui/react'
+import { addToast, Button, Form, Navbar, NavbarBrand, NavbarContent } from '@heroui/react'
 import { h4 } from '@/styles/primitives.ts'
 import { ColorPicker } from '@/components/ColorPicker.tsx'
 import { ProfileThemeUpdateDto } from '@/types/ProfileThemeUpdateDto.ts'
@@ -19,9 +12,9 @@ import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { RestError } from '@/types/RestError.ts'
 import { getMatchingTextColor } from '@/styles/TextColor.ts'
 
-export interface ThemeEditorProps {
-  initialValue: ProfileThemeDto | undefined;
-}
+export type ThemeEditorProps = Readonly<{
+  initialValue: ProfileThemeDto | undefined
+}>
 
 export function ThemeEditor(props: ThemeEditorProps): ReactNode {
   const { t, i18n } = useTranslation()

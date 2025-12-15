@@ -1,22 +1,15 @@
 import { ReactNode, useState } from 'react'
 import { SkillDto } from '@/types/SkillDto.ts'
-import {
-  SkillList,
-  SkillModificationEvent
-} from '@/pages/profile/editor/skill/SkillList.tsx'
+import { SkillList, SkillModificationEvent } from '@/pages/profile/editor/skill/SkillList.tsx'
 import { addToast, Button } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
-import {
-  EditSkillModal,
-  SkillFormData
-} from '@/pages/profile/editor/skill/EditSkillModal.tsx'
+import { EditSkillModal, SkillFormData } from '@/pages/profile/editor/skill/EditSkillModal.tsx'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { RestError } from '@/types/RestError.ts'
-import { ListModificationEvent } from '@/pages/profile/editor/CvListEntry.tsx'
 
-export interface SkillEditorProps {
-  initialValue: SkillDto[];
-}
+export type SkillEditorProps = Readonly<{
+  initialValue: SkillDto[]
+}>
 
 export function SkillEditor(props: SkillEditorProps): ReactNode {
   const { t, i18n } = useTranslation()
@@ -39,10 +32,10 @@ export function SkillEditor(props: SkillEditorProps): ReactNode {
     setSkills((prev) => [...prev.filter((s) => s.id !== skill.id), skill])
   }
 
-  const handleDelete: ListModificationEvent = async (id: number) => {
+  async function handleDelete(id: number) {
     try {
       await ProfileApi.deleteSkill(id, i18n.language)
-      setSkills((prev) => [...prev.filter((s) => s.id !== id)])
+      setSkills((prev) => prev.filter((s) => s.id !== id))
     } catch (e) {
       const error = (e as RestError).errorDto
       addToast({
@@ -65,12 +58,7 @@ export function SkillEditor(props: SkillEditorProps): ReactNode {
           {t('skills.editor.add')}
         </Button>
       </div>
-      <SkillList
-        skills={skills}
-        hasActions
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      <SkillList skills={skills} hasActions onEdit={handleEdit} onDelete={handleDelete} />
       {isEditing && (
         <EditSkillModal
           isOpen={true}

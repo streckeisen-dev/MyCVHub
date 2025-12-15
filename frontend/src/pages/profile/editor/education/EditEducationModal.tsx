@@ -59,7 +59,7 @@ export function EditEducationModal(props: EditEducationModalProps): ReactNode {
     updateData(name, value)
   }
 
-  function updateData(name: string, value: unknown | undefined) {
+  function updateData(name: string, value: unknown) {
     setData((prev) => {
       return {
         ...prev,

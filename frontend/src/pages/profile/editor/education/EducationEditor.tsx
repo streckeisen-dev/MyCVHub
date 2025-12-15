@@ -6,7 +6,6 @@ import {
   EducationModificationEvent
 } from '@/pages/profile/editor/education/EducationList.tsx'
 import { EducationDto } from '@/types/EducationDto.ts'
-import { ListModificationEvent } from '@/pages/profile/editor/CvListEntry.tsx'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { RestError } from '@/types/RestError.ts'
 import {
@@ -15,9 +14,9 @@ import {
 } from '@/pages/profile/editor/education/EditEducationModal.tsx'
 import { stringToCalendarDate } from '@/helpers/DateHelper.ts'
 
-export interface EducationEditorProps {
-  initialValue: EducationDto[];
-}
+export type EducationEditorProps = Readonly<{
+  initialValue: EducationDto[]
+}>
 
 function toFormData(education: EducationDto): EducationFormData {
   return {
@@ -45,10 +44,10 @@ export function EducationEditor(props: EducationEditorProps): ReactNode {
     setIsEditing(true)
   }
 
-  const handleDelete: ListModificationEvent = async (id) => {
+  async function handleDelete(id: number) {
     try {
       await ProfileApi.deleteEducation(id, i18n.language)
-      setEducation((prev) => [...prev.filter((e) => e.id !== id)])
+      setEducation((prev) => prev.filter((e) => e.id !== id))
     } catch (e) {
       const error = (e as RestError).errorDto
       addToast({
@@ -66,7 +65,6 @@ export function EducationEditor(props: EducationEditorProps): ReactNode {
   }
 
   function handleModalClose() {
-    console.log('CLOSE')
     setIsEditing(false)
     setEditingEducation(undefined)
   }
@@ -78,12 +76,7 @@ export function EducationEditor(props: EducationEditorProps): ReactNode {
           {t('education.editor.add')}
         </Button>
       </div>
-      <EducationList
-        education={education}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        hasActions
-      />
+      <EducationList education={education} onEdit={handleEdit} onDelete={handleDelete} hasActions />
       {isEditing && (
         <EditEducationModal
           isOpen={true}

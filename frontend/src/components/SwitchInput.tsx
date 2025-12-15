@@ -1,11 +1,12 @@
 import { ReactNode } from 'react'
 import { Switch, SwitchProps } from '@heroui/react'
 
-export type SwitchInputProps = Omit<Omit<SwitchProps, 'onChange'>, 'name'> & {
-  name: string;
-  hint?: string | undefined;
-  onChange?: (name: string, val: boolean) => void;
-};
+export type SwitchInputProps = Readonly<Omit<Omit<SwitchProps, 'onChange'>, 'name'> & {
+    name: string
+    hint?: string
+    onChange?: (name: string, val: boolean) => void
+  }
+>
 
 export function SwitchInput(props: SwitchInputProps): ReactNode {
   const { name, hint, onChange, ...switchProps } = props

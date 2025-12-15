@@ -37,7 +37,9 @@ export function toAccountEditorData(account: AccountDto): AccountEditorData {
   }
 }
 
-function CountrySelect(props: Omit<AutocompleteProps, 'children'>): ReactNode {
+function CountrySelect(
+  props: Readonly<Omit<AutocompleteProps, 'children'>>
+): ReactNode {
   const { t, i18n } = useTranslation()
   const [countries, setCountries] = useState<CountryDto[]>([])
 
@@ -46,8 +48,7 @@ function CountrySelect(props: Omit<AutocompleteProps, 'children'>): ReactNode {
       try {
         const countries = await CountryApi.getCountries(i18n.language)
         setCountries(countries)
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (e) {
+      } catch (_e) {
         addToast({
           title: t('country.loadingError.title'),
           description: t('country.loadingError.message'),
@@ -61,19 +62,17 @@ function CountrySelect(props: Omit<AutocompleteProps, 'children'>): ReactNode {
   return (
     <Autocomplete label={t('fields.country')} {...props}>
       {countries.map((country) => (
-        <AutocompleteItem key={country.countryCode}>
-          {country.name}
-        </AutocompleteItem>
+        <AutocompleteItem key={country.countryCode}>{country.name}</AutocompleteItem>
       ))}
     </Autocomplete>
   )
 }
 
-export interface AccountFormProps {
-  state: AccountEditorData;
-  onChange: (name: string, value: unknown | undefined) => void;
-  errorMessages: ErrorMessages;
-}
+export type AccountFormProps = Readonly<{
+  state: AccountEditorData
+  onChange: (name: string, value: unknown) => void
+  errorMessages: ErrorMessages
+}>
 
 export function AccountForm(props: AccountFormProps): React.ReactNode {
   const { t } = useTranslation()

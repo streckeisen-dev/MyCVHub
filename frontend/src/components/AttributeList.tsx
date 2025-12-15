@@ -5,9 +5,9 @@ export interface Attribute {
   value: string;
 }
 
-export interface AttributeListProps {
+export type AttributeListProps = Readonly<{
   attributes: Attribute[];
-}
+}>
 
 export function AttributeList(props: AttributeListProps) {
   const { attributes } = props

@@ -18,9 +18,7 @@ function groupSkills(
   return groups
 }
 
-function sortSkillTypes(
-  groupedSkills: KeyValueObject<SkillDto[] | PublicSkillDto[]>
-) {
+function sortSkillTypes(groupedSkills: KeyValueObject<SkillDto[] | PublicSkillDto[]>) {
   return (aKey: string, bKey: string) => {
     const aSum = getSkillSum(groupedSkills[aKey])
     const bSum = getSkillSum(groupedSkills[bKey])
@@ -35,10 +33,7 @@ function sortSkillTypes(
   }
 }
 
-function sortSkills(
-  a: SkillDto | PublicSkillDto,
-  b: SkillDto | PublicSkillDto
-): number {
+function sortSkills(a: SkillDto | PublicSkillDto, b: SkillDto | PublicSkillDto): number {
   if (a.level > b.level) {
     return -1
   } else if (a.level < b.level) {
@@ -48,26 +43,28 @@ function sortSkills(
   }
 }
 
-export type SkillModificationEvent = (skill: SkillDto) => void;
+export type SkillModificationEvent = (skill: SkillDto) => void
 
 export interface SkillListProps {
-  skills: SkillDto[] | PublicSkillDto[];
-  hasActions?: boolean;
-  onEdit?: SkillModificationEvent;
-  onDelete?: ListModificationEvent;
+  skills: SkillDto[] | PublicSkillDto[]
+  hasActions?: boolean
+  onEdit?: SkillModificationEvent
+  onDelete?: ListModificationEvent
 }
 
 function getSkillSum(skills: SkillDto[] | PublicSkillDto[]): number {
   return skills.reduce((sum: number, skill: SkillDto | PublicSkillDto) => {
-    return (sum += skill.level)
+    return sum + skill.level
   }, 0)
 }
 
 export function SkillList(props: SkillListProps): ReactNode {
   const { t } = useTranslation()
 
-  const groupedSkills: KeyValueObject<SkillDto[] | PublicSkillDto[]> =
-    props.skills.reduce(groupSkills, {})
+  const groupedSkills: KeyValueObject<SkillDto[] | PublicSkillDto[]> = props.skills.reduce(
+    groupSkills,
+    {}
+  )
 
   return props.skills.length === 0 ? (
     <div className="w-full text-center">{t('skills.noEntires')}</div>
@@ -91,24 +88,19 @@ export function SkillList(props: SkillListProps): ReactNode {
   )
 }
 
-interface SkillEntryProps {
-  skill: SkillDto | PublicSkillDto;
-  hasActions: boolean;
-  onEdit: SkillModificationEvent | undefined;
-  onDelete: ListModificationEvent | undefined;
-}
+type SkillEntryProps = Readonly<{
+  skill: SkillDto | PublicSkillDto
+  hasActions: boolean
+  onEdit: SkillModificationEvent | undefined
+  onDelete: ListModificationEvent | undefined
+}>
 
 function SkillEntry(props: SkillEntryProps): ReactNode {
   const { hasActions, skill, onEdit, onDelete } = props
 
-  const nameClasses = hasActions
-    ? 'col-span-4 lg:col-span-2'
-    : 'col-span-6 lg:col-span-4'
-  const levelClasses = hasActions
-    ? 'col-span-8 lg:col-span-8'
-    : 'col-span-6 lg:col-span-8'
-  const buttonClasses =
-    'col-span-2 md:col-span-1 w-min rounded-full lg:justify-self-end min-w-1'
+  const nameClasses = hasActions ? 'col-span-4 lg:col-span-2' : 'col-span-6 lg:col-span-4'
+  const levelClasses = hasActions ? 'col-span-8 lg:col-span-8' : 'col-span-6 lg:col-span-8'
+  const buttonClasses = 'col-span-2 md:col-span-1 w-min rounded-full lg:justify-self-end min-w-1'
 
   function handleEdit() {
     if (onEdit && (skill as SkillDto).id) {
@@ -125,25 +117,13 @@ function SkillEntry(props: SkillEntryProps): ReactNode {
   return (
     <div className="grid grid-cols-12 gap-x-2 gap-y-4 items-center">
       <p className={nameClasses}>{skill.name}</p>
-      <Progress
-        className={levelClasses}
-        aria-label="Skill Level"
-        value={skill.level}
-      />
+      <Progress className={levelClasses} aria-label="Skill Level" value={skill.level} />
       {hasActions && (
         <>
-          <Button
-            color="primary"
-            className={buttonClasses}
-            onPress={handleEdit}
-          >
+          <Button color="primary" className={buttonClasses} onPress={handleEdit}>
             <FaPen />
           </Button>
-          <Button
-            color="danger"
-            className={buttonClasses}
-            onPress={handleDelete}
-          >
+          <Button color="danger" className={buttonClasses} onPress={handleDelete}>
             <FaTrash />
           </Button>
         </>

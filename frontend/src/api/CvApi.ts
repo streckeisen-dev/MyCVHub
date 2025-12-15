@@ -28,7 +28,10 @@ async function getCV(
       body: JSON.stringify(generationRequest)
     })
     await extractErrorIfResponseIsNotOk(response)
-    return await response.blob()
+    console.log('no error')
+    const blob = await response.blob()
+    console.log('blob', blob)
+    return blob
   } catch (e) {
     const error = (e as RestError).errorDto
     throw new RestError('Failed to generate CV', error)

@@ -17,7 +17,7 @@ export interface CvContent {
   skills: SelectedCvContent[];
 }
 
-export interface CvCustomizationViewProps {
+export type CvCustomizationViewProps = Readonly<{
   content: {
     workExperience: WorkExperienceDto[];
     education: EducationDto[];
@@ -26,7 +26,7 @@ export interface CvCustomizationViewProps {
   };
   value: CvContent;
   onChange: (content: CvContent) => void;
-}
+}>
 
 function groupSkills(
   groups: KeyValueObject<SkillDto[]>,
@@ -134,8 +134,7 @@ export function CvContentCustomizationView(props: CvCustomizationViewProps) {
                 return {
                   id: skill.id,
                   title: skill.name,
-                  selected:
-                    value.skills.find((s) => s.id === skill.id) != null
+                  selected: value.skills.some((s) => s.id === skill.id)
                 }
               })
             }

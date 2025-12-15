@@ -6,7 +6,6 @@ import {
   WorkExperienceList,
   WorkExperienceModificationEvent
 } from '@/pages/profile/editor/workExperience/WorkExperienceList.tsx'
-import { ListModificationEvent } from '@/pages/profile/editor/CvListEntry.tsx'
 import {
   EditWorkExperienceModal,
   WorkExperienceFormData
@@ -15,9 +14,9 @@ import { stringToCalendarDate } from '@/helpers/DateHelper.ts'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { RestError } from '@/types/RestError.ts'
 
-export interface WorkExperienceEditorProps {
-  initialValue: WorkExperienceDto[];
-}
+export type WorkExperienceEditorProps = Readonly<{
+  initialValue: WorkExperienceDto[]
+}>
 
 function toFormData(workExperience: WorkExperienceDto): WorkExperienceFormData {
   return {
@@ -31,11 +30,9 @@ function toFormData(workExperience: WorkExperienceDto): WorkExperienceFormData {
   }
 }
 
-export function WorkExperienceEditor(
-  props: WorkExperienceEditorProps
-): ReactNode {
+export function WorkExperienceEditor(props: WorkExperienceEditorProps): ReactNode {
   const { t, i18n } = useTranslation()
-  const {initialValue} = props
+  const { initialValue } = props
   const [workExperiences, setWorkExperiences] = useState<WorkExperienceDto[]>(initialValue)
   const [isEditing, setIsEditing] = useState(false)
   const [editingWorkExperience, setEditingWorkExperience] = useState<
@@ -51,10 +48,10 @@ export function WorkExperienceEditor(
     setEditingWorkExperience(toFormData(workExperience))
   }
 
-  const handleDelete: ListModificationEvent = async (id) => {
+  async function handleDelete(id: number) {
     try {
       await ProfileApi.deleteWorkExperience(id, i18n.language)
-      setWorkExperiences((prev) => [...prev.filter((w) => w.id !== id)])
+      setWorkExperiences((prev) => prev.filter((w) => w.id !== id))
     } catch (e) {
       const error = (e as RestError).errorDto
       addToast({
@@ -72,10 +69,7 @@ export function WorkExperienceEditor(
 
   function handleSaved(workExperience: WorkExperienceDto) {
     setWorkExperiences((prev) => {
-      return [
-        ...prev.filter((w) => w.id !== workExperience.id),
-        workExperience
-      ]
+      return [...prev.filter((w) => w.id !== workExperience.id), workExperience]
     })
   }
 

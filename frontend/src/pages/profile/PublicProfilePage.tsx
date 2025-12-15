@@ -54,15 +54,7 @@ export function PublicProfilePage(): ReactNode {
   const contentTextColor = getMatchingTextColor(backgroundColor)
   const name = `${profile?.firstName} ${profile?.lastName}`
 
-  return isLoading ? (
-    <Spinner />
-  ) : !profile ? (
-    <Empty
-      headline={t('profile.notFound.headline')}
-      title={t('profile.notFound.title')}
-      text={loadingError}
-    />
-  ) : (
+  const content = profile ? (
     <div className="relative flex flex-col h-screen">
       <Navbar
         maxWidth="full"
@@ -77,7 +69,7 @@ export function PublicProfilePage(): ReactNode {
         </NavbarBrand>
       </Navbar>
       <main
-        className="w-full mx-auto flex-grow pt-16 px-6 lg:px-15 lg:pb-10"
+        className="w-full mx-auto pt-16 px-6 lg:px-15 lg:pb-10"
         style={{
           backgroundColor: backgroundColor,
           color: contentTextColor
@@ -102,11 +94,7 @@ export function PublicProfilePage(): ReactNode {
             )}
 
             {(profile.phone != null || profile.address != null || profile.email != null) && (
-              <ContactInfo
-                profile={profile}
-                textColor={contentTextColor}
-                t={t}
-              />
+              <ContactInfo profile={profile} textColor={contentTextColor} t={t} />
             )}
           </section>
           <div className="col-span-12 lg:col-span-6 flex flex-col gap-4">
@@ -138,7 +126,17 @@ export function PublicProfilePage(): ReactNode {
         </div>
       </main>
     </div>
+  ) : (
+    <Empty
+      headline={t('profile.notFound.headline')}
+      title={t('profile.notFound.title')}
+      text={loadingError}
+    />
   )
+
+  return isLoading ? (
+    <Spinner />
+  ) : content
 }
 
 interface ContactInfoProps {

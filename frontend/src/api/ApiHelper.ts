@@ -45,7 +45,7 @@ export async function fetchFromApi(
      credentials: 'same-origin'
    })
    try {
-     return extractErrorIfResponseIsNotOk(refreshResponse)
+     return await extractErrorIfResponseIsNotOk(refreshResponse)
    } catch (e) {
      const error = (e as RestError).errorDto
      throw new RestError('Token refresh failed', error)

@@ -2,10 +2,10 @@ import { ReactNode } from 'react'
 import { Button } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 
-export interface FormButtonsProps {
+export type FormButtonsProps = Readonly<{
   onCancel: () => void;
   isSaving: boolean
-}
+}>
 
 export function FormButtons(props: FormButtonsProps): ReactNode {
   const { t } = useTranslation()

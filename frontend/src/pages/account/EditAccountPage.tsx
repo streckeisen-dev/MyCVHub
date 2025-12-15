@@ -30,9 +30,6 @@ export function EditAccountPage(): React.ReactNode {
       try {
         const result = await AccountApi.getAccount(i18n.language)
         setAccountEditorData(toAccountEditorData(result))
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (ignore) {
-        // ignore
       } finally {
         setIsLoading(false)
       }
@@ -49,7 +46,7 @@ export function EditAccountPage(): React.ReactNode {
 
     const updateRequest: AccountUpdateDto = {
       ...accountEditorData,
-      houseNumber: accountEditorData.houseNumber !== '' ? accountEditorData.houseNumber : undefined,
+      houseNumber: accountEditorData.houseNumber === '' ? undefined : accountEditorData.houseNumber,
       birthday: toDateString(accountEditorData.birthday)
     }
 
@@ -73,7 +70,7 @@ export function EditAccountPage(): React.ReactNode {
     }
   }
 
-  function handleChange(name: string, value: unknown | undefined) {
+  function handleChange(name: string, value: unknown) {
     setAccountEditorData((prev) => {
       return {
         ...prev,
@@ -86,34 +83,21 @@ export function EditAccountPage(): React.ReactNode {
     navigate(getRoutePath(RouteId.Account))
   }
 
-  return (
-    <section className={centerSection()}>
-      {isLoading ? (
-        <Spinner />
-      ) : !accountEditorData ? (
-        <Empty
-          headline={t('account.loadingError.title')}
-          title={t('account.loadingError.text')}
+  const content = accountEditorData ? (
+    <>
+      <h1 className={title()}>{t('account.edit.title')}</h1>
+      <Form className={twoColumnForm()} onSubmit={handleSave}>
+        <AccountForm
+          state={accountEditorData}
+          onChange={handleChange}
+          errorMessages={errorMessages}
         />
-      ) : (
-        <>
-          <h1 className={title()}>{t('account.edit.title')}</h1>
-          <Form
-            className={twoColumnForm()}
-            onSubmit={handleSave}
-          >
-            <AccountForm
-              state={accountEditorData}
-              onChange={handleChange}
-              errorMessages={errorMessages}
-            />
-            <FormButtons
-              onCancel={handleCancel}
-              isSaving={isSaving}
-            />
-          </Form>
-        </>
-      )}
-    </section>
+        <FormButtons onCancel={handleCancel} isSaving={isSaving} />
+      </Form>
+    </>
+  ) : (
+    <Empty headline={t('account.loadingError.title')} title={t('account.loadingError.text')} />
   )
+
+  return <section className={centerSection()}>{isLoading ? <Spinner /> : content}</section>
 }

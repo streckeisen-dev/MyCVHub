@@ -1,23 +1,15 @@
-import {
-  fromDate,
-  getLocalTimeZone,
-  toCalendarDate
-} from '@internationalized/date'
+import { fromDate, getLocalTimeZone, toCalendarDate } from '@internationalized/date'
 import { CalendarDate } from '@heroui/react'
 import moment from 'moment/moment'
 
-export function stringToCalendarDate(
-  date: string | undefined
-): CalendarDate | null {
+export function stringToCalendarDate(date: string | undefined): CalendarDate | null {
   if (!date || date === '') {
     return null
   }
   return toCalendarDate(fromDate(new Date(date), getLocalTimeZone()))
 }
 
-export function toDateString(
-  date: CalendarDate | null
-): string | undefined {
+export function toDateString(date: CalendarDate | null): string | undefined {
   if (!date) {
     return undefined
   }
@@ -26,11 +18,10 @@ export function toDateString(
 
 export function formatDate(dateString: string, lang: string): string {
   const date = moment(dateString)
-  switch (lang) {
-    case 'de':
-      return date.format('DD.MM.YYYY')
-    default:
-      return date.format('MM/DD/YYYY')
+  if (lang === 'de') {
+    return date.format('DD.MM.YYYY')
+  } else {
+    return date.format('MM/DD/YYYY')
   }
 }
 
@@ -40,16 +31,6 @@ export function convertStringToDate(dateString: string | undefined): Date | unde
   }
   return undefined
 }
-
-/*export function convertDateToString(date: Date | undefined): string | undefined {
-  if (date) {
-    const month = date.getMonth() < 9 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
-    const day = date.getDate() <= 9 ? `0${date.getDate()}` : date.getDate()
-    return `${date.getFullYear()}-${month}-${day}`
-  }
-  return undefined
-}*/
-
 
 /**
  * Compare two dates by year and month in descending sort order, an undefined date is considered greater than any defined date

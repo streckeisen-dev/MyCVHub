@@ -95,6 +95,7 @@ frontend:
     title: "Dashboard"
     profile: "Your CV profile"
     noProfile: "You don't have a profile yet. Create one and start building your CV."
+    loadingError: "Couldn't load dashboard"
   
   account:
     title: "Account"

@@ -15,10 +15,10 @@ export interface SkillLeaf {
   selected: boolean;
 }
 
-export interface SkillTreeRootProps {
+export type SkillTreeRootProps = Readonly<{
   content: SkillCategories[];
   onChange: (selected: SelectedCvContent[]) => void;
-}
+}>
 
 export function SkillTreeRoot(props: SkillTreeRootProps): ReactNode {
   const { t } = useTranslation()
@@ -114,12 +114,12 @@ export function SkillTreeRoot(props: SkillTreeRootProps): ReactNode {
   )
 }
 
-interface SkillCategoryLeafProps {
+type SkillCategoryLeafProps = Readonly<{
   title: string;
   content: SkillLeaf[];
   onSelect: (selected: number[]) => void;
   onDeselect: (deselected: number[]) => void;
-}
+}>
 
 function SkillCategoryLeaf(props: SkillCategoryLeafProps): ReactNode {
   const {title, content, onSelect, onDeselect} = props

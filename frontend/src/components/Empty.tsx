@@ -1,10 +1,10 @@
 import { centerSection, h2, h4 } from '@/styles/primitives.ts'
 
-export interface EmptyProps {
+export type EmptyProps = Readonly<{
   headline: string
   title?: string
   text?: string
-}
+}>
 
 export function Empty(props: EmptyProps) {
   const { headline, title, text } = props

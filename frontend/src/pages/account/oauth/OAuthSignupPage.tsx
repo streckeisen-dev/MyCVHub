@@ -66,7 +66,7 @@ export function OAuthSignupPage(): ReactNode {
     setIsSaving(true)
     const request: OAuthSignUpRequestDto = {
       ...accountData,
-      houseNumber: accountData.houseNumber !== '' ? accountData.houseNumber : undefined,
+      houseNumber: accountData.houseNumber === '' ? undefined : accountData.houseNumber,
       birthday: toDateString(accountData.birthday)
     }
     try {

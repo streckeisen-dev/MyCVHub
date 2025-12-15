@@ -4,22 +4,22 @@ import { Checkbox, Switch } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 
 export interface SelectedCvContent {
-  id: number;
-  includeDescription: boolean;
+  id: number
+  includeDescription: boolean
 }
 
 export interface CvContentTreeLeaf {
-  id: number;
-  title: string;
-  selected: boolean;
-  includeDescription: boolean;
+  id: number
+  title: string
+  selected: boolean
+  includeDescription: boolean
 }
 
-export interface CvContentTreeRootProps {
-  title: string;
-  content: CvContentTreeLeaf[];
-  onChange: (selected: SelectedCvContent[]) => void;
-}
+export type CvContentTreeRootProps = Readonly<{
+  title: string
+  content: CvContentTreeLeaf[]
+  onChange: (selected: SelectedCvContent[]) => void
+}>
 
 function toSelectedCvContent(leaf: CvContentTreeLeaf): SelectedCvContent {
   return {
@@ -55,9 +55,7 @@ export function CvContentTreeRoot(props: CvContentTreeRootProps) {
         }
       ])
     } else {
-      onChange(
-        content.filter((l) => l.id !== id && l.selected).map(toSelectedCvContent)
-      )
+      onChange(content.filter((l) => l.id !== id && l.selected).map(toSelectedCvContent))
     }
   }
 
@@ -78,25 +76,18 @@ export function CvContentTreeRoot(props: CvContentTreeRootProps) {
         <Checkbox
           isSelected={isRootSelected}
           onValueChange={handleRootChange}
-          isIndeterminate={
-            !isRootSelected && content.some((leaf) => leaf.selected)
-          }
+          isIndeterminate={!isRootSelected && content.some((leaf) => leaf.selected)}
         />
         <p>{title}</p>
       </div>
       {isExpanded && (
         <div>
           {content.map((leaf) => (
-            <div
-              key={leaf.id}
-              className="grid grid-cols-[12%_5%_auto_30%] gap-3 p-2 items-center"
-            >
+            <div key={leaf.id} className="grid grid-cols-[12%_5%_auto_30%] gap-3 p-2 items-center">
               <span></span>
               <Checkbox
                 isSelected={leaf.selected}
-                onValueChange={(isSelected) =>
-                  handleLeafChange(leaf.id, isSelected)
-                }
+                onValueChange={(isSelected) => handleLeafChange(leaf.id, isSelected)}
               />
               <p>{leaf.title}</p>
               <Switch

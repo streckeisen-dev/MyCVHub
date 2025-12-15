@@ -24,9 +24,9 @@ interface GeneralProfileInfo {
   hideDescriptions?: boolean;
 }
 
-export interface GeneralEditorProps {
+export type GeneralEditorProps = Readonly<{
   initialValue: GeneralProfileInfo;
-}
+}>
 
 export function GeneralEditor(props: GeneralEditorProps): ReactNode {
   const { t, i18n } = useTranslation()
@@ -48,7 +48,7 @@ export function GeneralEditor(props: GeneralEditorProps): ReactNode {
     updateValue(name, value)
   }
 
-  function updateValue(name: string, value: unknown | undefined) {
+  function updateValue(name: string, value: unknown) {
     setInfo((prev) => {
       return {
         ...prev,

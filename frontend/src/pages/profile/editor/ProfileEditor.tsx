@@ -14,10 +14,10 @@ import { ThemeEditor } from '@/pages/profile/editor/theme/ThemeEditor.tsx'
 import { SkillEditor } from '@/pages/profile/editor/skill/SkillEditor.tsx'
 
 interface TabConfiguration {
-  key: Key;
-  title: string;
-  content: ReactNode;
-  show: boolean;
+  key: Key
+  title: string
+  content: ReactNode
+  show: boolean
 }
 
 const EMPTY_PROFILE: ProfileDto = {
@@ -36,16 +36,17 @@ const EMPTY_PROFILE: ProfileDto = {
   theme: undefined
 }
 
-export interface ProfileEditorProps {
-  initialValue?: ProfileDto | undefined;
-  onSaved?: () => void;
-}
+export type ProfileEditorProps = Readonly<{
+  initialValue?: ProfileDto
+  onSaved?: () => void
+}>
 
 export function ProfileEditor(props: ProfileEditorProps): ReactNode {
   const { t } = useTranslation()
   const { initialValue } = props
   const navigate = useNavigate()
   const profile = initialValue ?? EMPTY_PROFILE
+  const location = useLocation()
 
   const tabConfig: TabConfiguration[] = [
     {
@@ -101,9 +102,7 @@ export function ProfileEditor(props: ProfileEditorProps): ReactNode {
 
   const availableTabs = tabConfig.map((c) => c.key)
 
-  const selectedTab =
-    availableTabs.find((k) => k === useLocation().hash?.replace('#', ''))
-    ?? 'general'
+  const selectedTab = availableTabs.find((k) => k === location.hash?.replace('#', '')) ?? 'general'
 
   function handleTabChange(key: Key) {
     navigate(`#${key}`)
@@ -112,9 +111,7 @@ export function ProfileEditor(props: ProfileEditorProps): ReactNode {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <Button startContent={<FaArrowLeftLong />}>
-          {t('profile.editor.back')}
-        </Button>
+        <Button startContent={<FaArrowLeftLong />}>{t('profile.editor.back')}</Button>
       </div>
       <h2 className={h2()}>{t('profile.title')}</h2>
       <Tabs onSelectionChange={handleTabChange} selectedKey={selectedTab}>

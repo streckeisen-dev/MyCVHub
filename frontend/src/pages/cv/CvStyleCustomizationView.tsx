@@ -4,11 +4,11 @@ import { ColorPicker } from '@/components/ColorPicker.tsx'
 import { Input } from '@heroui/react'
 import { CVStyleOptionType } from '@/types/CVStyleOptionType.ts'
 
-export interface CvStyleCustomizationViewProps {
+export type CvStyleCustomizationViewProps = Readonly<{
   options: CVStyleOptionDto[];
   value: KeyValueObject<string>;
   onChange: (name: string, value: string) => void;
-}
+}>
 
 export function CvStyleCustomizationView(props: CvStyleCustomizationViewProps) {
   const {options, value, onChange} = props

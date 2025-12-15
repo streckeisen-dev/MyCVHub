@@ -43,10 +43,10 @@ export interface WorkExperienceFormData {
   location: string;
 }
 
-export type EditWorkExperienceModalProps = Omit<ModalProps, 'children'> & {
+export type EditWorkExperienceModalProps = Readonly<Omit<ModalProps, 'children'> & {
   onSaved: (update: WorkExperienceDto) => void;
   initialValue: WorkExperienceFormData | undefined;
-};
+}>;
 
 export function EditWorkExperienceModal(
   props: EditWorkExperienceModalProps
@@ -63,7 +63,7 @@ export function EditWorkExperienceModal(
     updateData(name, value)
   }
 
-  function updateData(name: string, value: unknown | undefined) {
+  function updateData(name: string, value: unknown) {
     setData((prev) => {
       return {
         ...prev,

@@ -11,7 +11,6 @@ import {
   ProjectList,
   ProjectModificationEvent
 } from '@/pages/profile/editor/project/ProjectList.tsx'
-import { ListModificationEvent } from '@/pages/profile/editor/CvListEntry.tsx'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { RestError } from '@/types/RestError.ts'
 import { v7 as uuid } from 'uuid'
@@ -21,7 +20,7 @@ function toFormData(project: ProjectDto): ProjectFormData {
     ...project,
     projectStart: stringToCalendarDate(project.projectStart),
     projectEnd: stringToCalendarDate(project.projectEnd),
-    links: project.links.map(link => {
+    links: project.links.map((link) => {
       return {
         ...link,
         uiId: uuid()
@@ -30,17 +29,15 @@ function toFormData(project: ProjectDto): ProjectFormData {
   }
 }
 
-export interface ProjectEditorProps {
-  initialValue: ProjectDto[];
-}
+export type ProjectEditorProps = Readonly<{
+  initialValue: ProjectDto[]
+}>
 
 export function ProjectEditor(props: ProjectEditorProps): ReactNode {
   const { t, i18n } = useTranslation()
   const { initialValue } = props
   const [projects, setProjects] = useState<ProjectDto[]>(initialValue)
-  const [editingProject, setEditingProject] = useState<
-    ProjectFormData | undefined
-  >()
+  const [editingProject, setEditingProject] = useState<ProjectFormData | undefined>()
   const [isEditing, setIsEditing] = useState(false)
 
   function handleAdd() {
@@ -52,7 +49,7 @@ export function ProjectEditor(props: ProjectEditorProps): ReactNode {
     setIsEditing(true)
   }
 
-  const handleDelete: ListModificationEvent = async (id) => {
+  async function handleDelete(id: number) {
     try {
       await ProfileApi.deleteProject(id, i18n.language)
       setProjects((prev) => prev.filter((p) => p.id !== id))
@@ -72,10 +69,7 @@ export function ProjectEditor(props: ProjectEditorProps): ReactNode {
   }
 
   function handleSaved(project: ProjectDto) {
-    setProjects((prev) => [
-      ...prev.filter((p) => p.id !== project.id),
-      project
-    ])
+    setProjects((prev) => [...prev.filter((p) => p.id !== project.id), project])
   }
 
   return (
@@ -85,12 +79,7 @@ export function ProjectEditor(props: ProjectEditorProps): ReactNode {
           {t('project.editor.add')}
         </Button>
       </div>
-      <ProjectList
-        projects={projects}
-        hasActions
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      <ProjectList projects={projects} hasActions onEdit={handleEdit} onDelete={handleDelete} />
       {isEditing && (
         <EditProjectModal
           isOpen={true}

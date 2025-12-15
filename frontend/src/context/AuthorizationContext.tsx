@@ -29,7 +29,7 @@ export const AuthorizationContext = createContext<AuthorizationContextValue>({
   handleLogout: () => { /* empty */ }
 })
 
-export function AuthorizationProvider(props: PropsWithChildren): ReactNode {
+export function AuthorizationProvider(props: Readonly<PropsWithChildren>): ReactNode {
   const { i18n } = useTranslation()
   const {children} = props
 

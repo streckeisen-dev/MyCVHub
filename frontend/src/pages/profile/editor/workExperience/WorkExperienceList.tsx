@@ -47,15 +47,10 @@ export function WorkExperienceList(props: WorkExperienceListProps): ReactNode {
     }
   }
 
-  return !props.workExperiences.length ? (
-    <div className="w-full text-center">{t('workExperience.noEntries')}</div>
-  ) : (
+  return props.workExperiences.length ? (
     props.workExperiences.sort(sortExperience).map((experience) => (
       <CvListEntry
-        key={
-          (experience as WorkExperienceDto).id ||
-          `${experience.jobTitle}@${experience.company}`
-        }
+        key={(experience as WorkExperienceDto).id || `${experience.jobTitle}@${experience.company}`}
         value={{
           id: (experience as WorkExperienceDto).id,
           title: experience.jobTitle,
@@ -70,5 +65,7 @@ export function WorkExperienceList(props: WorkExperienceListProps): ReactNode {
         hasActions={props.hasActions}
       />
     ))
+  ) : (
+    <div className="w-full text-center">{t('workExperience.noEntries')}</div>
   )
 }

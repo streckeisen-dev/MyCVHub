@@ -95,6 +95,7 @@ frontend:
     title: "Dashboard"
     profile: "Dein CV Profil"
     noProfile: "Du hast noch kein Profil. Erstelle eines und baue deinen Lebenslauf."
+    loadingError: "Das Dashboard konnte nicht geladen werden"
 
   account:
     title: "Account"
