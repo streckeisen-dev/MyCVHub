@@ -1,4 +1,4 @@
-import { CalendarDate } from '@heroui/react'
+import { CalendarDate } from '@internationalized/date'
 
 export interface AccountEditorData {
   username: string | undefined;

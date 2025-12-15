@@ -1,5 +1,4 @@
-import { fromDate, getLocalTimeZone, toCalendarDate } from '@internationalized/date'
-import { CalendarDate } from '@heroui/react'
+import { fromDate, getLocalTimeZone, toCalendarDate, CalendarDate } from '@internationalized/date'
 import moment from 'moment/moment'
 
 export function stringToCalendarDate(date: string | undefined): CalendarDate | null {

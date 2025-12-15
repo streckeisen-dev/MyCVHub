@@ -1,6 +1,5 @@
 import {
   addToast,
-  CalendarDate,
   Form,
   Input,
   Modal,
@@ -17,7 +16,7 @@ import { WorkExperienceDto } from '@/types/WorkExperienceDto.ts'
 import { WorkExperienceUpdateDto } from '@/types/WorkExperienceUpdateDto.ts'
 import { toDateString } from '@/helpers/DateHelper.ts'
 import { FormButtons } from '@/components/FormButtons.tsx'
-import { getLocalTimeZone, today } from '@internationalized/date'
+import { getLocalTimeZone, today, CalendarDate } from '@internationalized/date'
 import { DateInput } from '@/components/DateInput.tsx'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import ProfileApi from '@/api/ProfileApi.ts'

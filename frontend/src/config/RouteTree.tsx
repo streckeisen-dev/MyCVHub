@@ -226,7 +226,6 @@ function toRouteObject(route: MyCvRouteObject): RouteObject {
 }
 
 export const ROUTES = ROUTE_DEFINITIONS.map(toRouteObject)
-console.log('ROUTES', ROUTES)
 
 type NodesToUnion<T> = T extends readonly (infer N)[]
   ? N extends MyCvRouteObject

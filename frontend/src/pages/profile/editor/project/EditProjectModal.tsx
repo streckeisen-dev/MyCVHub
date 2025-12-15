@@ -3,7 +3,6 @@ import {
   Autocomplete,
   AutocompleteItem,
   Button,
-  CalendarDate,
   Form,
   Input,
   Modal,
@@ -20,7 +19,7 @@ import { FormButtons } from '@/components/FormButtons.tsx'
 import { ChangeEvent, FormEvent, useState } from 'react'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { DateInput } from '@/components/DateInput.tsx'
-import { getLocalTimeZone, today } from '@internationalized/date'
+import { getLocalTimeZone, today, CalendarDate } from '@internationalized/date'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { ProjectUpdateDto } from '@/types/ProjectUpdateDto.ts'
 import { toDateString } from '@/helpers/DateHelper.ts'

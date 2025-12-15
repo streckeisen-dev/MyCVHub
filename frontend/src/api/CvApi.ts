@@ -28,9 +28,7 @@ async function getCV(
       body: JSON.stringify(generationRequest)
     })
     await extractErrorIfResponseIsNotOk(response)
-    console.log('no error')
     const blob = await response.blob()
-    console.log('blob', blob)
     return blob
   } catch (e) {
     const error = (e as RestError).errorDto

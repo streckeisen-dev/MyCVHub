@@ -1,8 +1,8 @@
 import { ChangeEvent, FormEvent, ReactNode, useState } from 'react'
 import {
   addToast,
-  CalendarDate,
-  Form, Input,
+  Form,
+  Input,
   Modal,
   ModalBody,
   ModalContent,
@@ -19,7 +19,7 @@ import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { RestError } from '@/types/RestError.ts'
 import { DateInput } from '@/components/DateInput.tsx'
 import { h3 } from '@/styles/primitives.ts'
-import { getLocalTimeZone, today } from '@internationalized/date'
+import { getLocalTimeZone, today, CalendarDate } from '@internationalized/date'
 
 const EMPTY_EDUCATION: EducationFormData = {
   id: undefined,
