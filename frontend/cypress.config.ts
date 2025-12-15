@@ -6,11 +6,17 @@ export default defineConfig({
       framework: "react",
       bundler: "vite",
     },
-    reporter: 'junit',
+    reporter: "junit",
     reporterOptions: {
-      mochaFile: 'cypress/results/component-results.[suiteName].xml'
+      mochaFile: "cypress/results/component-results.[suiteName].xml",
     },
-    specPattern: 'cypress/components/**/*.cy.tsx',
-    supportFile: 'cypress/support/component.ts'
+    specPattern: "cypress/components/**/*.cy.tsx",
+    supportFile: "cypress/support/component.ts",
+  },
+
+  e2e: {
+    setupNodeEvents(on, config) {
+      // implement node event listeners here
+    },
   },
 });
