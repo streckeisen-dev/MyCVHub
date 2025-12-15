@@ -106,10 +106,7 @@ async function logout(locale: string): Promise<void> {
       method: 'POST'
     })
 
-    if (!response.ok) {
-      return Promise.reject(new RestError('Failed to perform logout'))
-    }
-    return Promise.resolve()
+    await extractErrorIfResponseIsNotOk(response)
   } catch (e) {
     const error = (e as RestError).errorDto
     throw new RestError('Failed to logout', error)

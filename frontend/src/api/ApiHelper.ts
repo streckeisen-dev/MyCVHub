@@ -64,13 +64,14 @@ export async function fetchFromApi(
 
  export async function extractErrorIfResponseIsNotOk(response: Response): Promise<void> {
    if (!response.ok) {
+     let error: ErrorDto
      try {
-       const error: ErrorDto = await response.json()
+       error = await response.json()
        error.status = response.status
-       return Promise.reject(new RestError('Call failed', error))
      } catch {
        throw new RestError('Failed to extract error')
      }
+     throw new RestError('Call failed', error)
    }
  }
 

@@ -139,11 +139,11 @@ export function PublicProfilePage(): ReactNode {
   ) : content
 }
 
-interface ContactInfoProps {
+type ContactInfoProps = Readonly<{
   profile: PublicProfileDto;
   textColor: string;
   t: TFunction;
-}
+}>
 
 function ContactInfo(props: ContactInfoProps): ReactNode {
   const {profile, textColor, t} = props
