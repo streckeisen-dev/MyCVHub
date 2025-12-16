@@ -1,7 +1,7 @@
 import { FormEvent, ReactNode, useState } from 'react'
 import { ProfileThemeDto } from '@/types/ProfileThemeDto.ts'
 import { useTranslation } from 'react-i18next'
-import { addToast, Button, Form, Navbar, NavbarBrand, NavbarContent } from '@heroui/react'
+import { Button, Form, Navbar, NavbarBrand, NavbarContent } from '@heroui/react'
 import { h4 } from '@/styles/primitives.ts'
 import { ColorPicker } from '@/components/ColorPicker.tsx'
 import { ProfileThemeUpdateDto } from '@/types/ProfileThemeUpdateDto.ts'
@@ -11,6 +11,8 @@ import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { RestError } from '@/types/RestError.ts'
 import { getMatchingTextColor } from '@/styles/TextColor.ts'
 import { ColorResult } from 'react-color'
+import { addSuccessToast } from '@/helpers/ToastHelper.ts'
+import { extractFormErrors } from '@/helpers/FormHelper.ts'
 
 export type ThemeEditorProps = Readonly<{
   initialValue: ProfileThemeDto | undefined
@@ -57,22 +59,10 @@ export function ThemeEditor(props: ThemeEditorProps): ReactNode {
 
     try {
       await ProfileApi.saveTheme(update, i18n.language)
-      addToast({
-        title: t('theme.saveSuccess'),
-        timeout: 2500,
-        color: 'success'
-      })
+      addSuccessToast(t('theme.saveSuccess'))
     } catch (e) {
       const error = (e as RestError).errorDto
-      const messages = error?.errors ?? {}
-      setErrorMessages(messages)
-      if (Object.keys(messages).length === 0) {
-        addToast({
-          title: t('theme.saveError'),
-          description: error?.message ?? t('error.genericMessage'),
-          color: 'danger'
-        })
-      }
+      extractFormErrors(error, t('theme.saveError'), setErrorMessages, t)
     } finally {
       if (isReset) {
         setIsResetting(false)

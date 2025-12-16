@@ -1,5 +1,4 @@
 import {
-  addToast,
   Autocomplete,
   AutocompleteItem,
   Button,
@@ -19,7 +18,7 @@ import { FormButtons } from '@/components/FormButtons.tsx'
 import { ChangeEvent, FormEvent, useState } from 'react'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { DateInput } from '@/components/DateInput.tsx'
-import { getLocalTimeZone, today, CalendarDate } from '@internationalized/date'
+import { CalendarDate, getLocalTimeZone, today } from '@internationalized/date'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { ProjectUpdateDto } from '@/types/ProjectUpdateDto.ts'
 import { toDateString } from '@/helpers/DateHelper.ts'
@@ -28,6 +27,7 @@ import { ProjectLinkType } from '@/types/ProjectLink.ts'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
 import { v7 as uuid } from 'uuid'
 import { RestError } from '@/types/RestError.ts'
+import { extractFormErrors } from '@/helpers/FormHelper.ts'
 
 const EMPTY_PROJECT: ProjectFormData = {
   id: undefined,
@@ -40,26 +40,26 @@ const EMPTY_PROJECT: ProjectFormData = {
 }
 
 export interface ProjectFormData {
-  id: number | undefined;
-  name: string;
-  role: string;
-  description: string;
-  projectStart: CalendarDate | null;
-  projectEnd: CalendarDate | null;
-  links: ProjectLinkData[];
+  id: number | undefined
+  name: string
+  role: string
+  description: string
+  projectStart: CalendarDate | null
+  projectEnd: CalendarDate | null
+  links: ProjectLinkData[]
 }
 
 interface ProjectLinkData {
-  uiId: string;
-  url: string;
-  displayName: string;
-  type: string;
+  uiId: string
+  url: string
+  displayName: string
+  type: string
 }
 
 export type EditProjectModalProps = Omit<ModalProps, 'children'> & {
-  initialValue: ProjectFormData | undefined;
-  onSaved: (project: ProjectDto) => void;
-};
+  initialValue: ProjectFormData | undefined
+  onSaved: (project: ProjectDto) => void
+}
 
 export function EditProjectModal(props: EditProjectModalProps) {
   const { t, i18n } = useTranslation()
@@ -115,18 +115,10 @@ export function EditProjectModal(props: EditProjectModalProps) {
       onSaved(updated)
     } catch (e) {
       const error = (e as RestError).errorDto
-      const messages = error?.errors ?? {}
-      setErrorMessages(messages)
-      if (Object.keys(messages).length === 0) {
-        const errorMessage = initialValue
-          ? t('project.editor.editError')
-          : t('project.editor.addError')
-        addToast({
-          title: errorMessage,
-          description: error?.message ?? t('error.genericMessage'),
-          color: 'danger'
-        })
-      }
+      const errorMessage = initialValue
+        ? t('project.editor.editError')
+        : t('project.editor.addError')
+      extractFormErrors(error, errorMessage, setErrorMessages, t)
     } finally {
       setIsSaving(false)
     }
@@ -202,9 +194,7 @@ export function EditProjectModal(props: EditProjectModalProps) {
           <>
             <ModalHeader>
               <h3 className={h3()}>
-                {initialValue
-                  ? t('project.editor.edit')
-                  : t('project.editor.add')}
+                {initialValue ? t('project.editor.edit') : t('project.editor.add')}
               </h3>
             </ModalHeader>
             <ModalBody>
@@ -293,9 +283,7 @@ export function EditProjectModal(props: EditProjectModalProps) {
                         className="col-span-12 sm:col-span-4 lg:col-span-3"
                         label={t('fields.type')}
                         selectedKey={link.type}
-                        onSelectionChange={(key) =>
-                          handleLinkTypeChange(link.uiId, key as string)
-                        }
+                        onSelectionChange={(key) => handleLinkTypeChange(link.uiId, key as string)}
                         isRequired
                         isInvalid={errorMessages[`links[${linkIndex}].type`] != null}
                         errorMessage={errorMessages[`links[${linkIndex}].type`]}

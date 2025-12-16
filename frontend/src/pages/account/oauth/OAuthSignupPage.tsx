@@ -1,7 +1,7 @@
 import { FormEvent, ReactNode, use, useState } from 'react'
 import { centerSection, title, twoColumnForm } from '@/styles/primitives.ts'
 import { useTranslation } from 'react-i18next'
-import { addToast, Form } from '@heroui/react'
+import { Form } from '@heroui/react'
 import { AccountForm } from '@/components/AccountForm.tsx'
 import { AccountEditorData } from '@/types/AccountEditorData.ts'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
@@ -13,6 +13,8 @@ import AccountApi from '@/api/AccountApi.ts'
 import { OAuthSignUpRequestDto } from '@/types/OAuthSignUpRequestDto.ts'
 import { toDateString } from '@/helpers/DateHelper.ts'
 import { AuthorizationContext } from '@/context/AuthorizationContext.tsx'
+import { addErrorToast } from '@/helpers/ToastHelper.ts'
+import { extractFormErrors } from '@/helpers/FormHelper.ts'
 
 export function OAuthSignupPage(): ReactNode {
   const { t, i18n } = useTranslation()
@@ -52,11 +54,10 @@ export function OAuthSignupPage(): ReactNode {
       navigate(getRoutePath(RouteId.Home))
     } catch (e) {
       const error = (e as RestError).errorDto
-      addToast({
-        title: t('account.accountMgmt.delete.error'),
-        description: error?.message ?? t('error.genericMessage'),
-        color: 'danger'
-      })
+      addErrorToast(
+        t('account.accountMgmt.delete.error'),
+        error?.message ?? t('error.genericMessage')
+      )
     }
   }
 
@@ -75,15 +76,7 @@ export function OAuthSignupPage(): ReactNode {
       navigate(getRoutePath(RouteId.Dashboard))
     } catch (e) {
       const error = (e as RestError).errorDto
-      const messages = error?.errors ?? {}
-      setErrorMessages(messages)
-      if (Object.keys(messages).length === 0) {
-        addToast({
-          title: t('account.signup.error'),
-          description: error?.message ?? t('error.genericMessage'),
-          color: 'danger'
-        })
-      }
+      extractFormErrors(error, t('account.signup.error'), setErrorMessages, t)
     } finally {
       setIsSaving(false)
     }

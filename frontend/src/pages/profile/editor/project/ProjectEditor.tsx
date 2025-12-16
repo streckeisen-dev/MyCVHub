@@ -5,7 +5,7 @@ import {
   ProjectFormData
 } from '@/pages/profile/editor/project/EditProjectModal.tsx'
 import { stringToCalendarDate } from '@/helpers/DateHelper.ts'
-import { addToast, Button } from '@heroui/react'
+import { Button } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import {
   ProjectList,
@@ -14,6 +14,7 @@ import {
 import ProfileApi from '@/api/ProfileApi.ts'
 import { RestError } from '@/types/RestError.ts'
 import { v7 as uuid } from 'uuid'
+import { addErrorToast } from '@/helpers/ToastHelper.ts'
 
 function toFormData(project: ProjectDto): ProjectFormData {
   return {
@@ -55,11 +56,7 @@ export function ProjectEditor(props: ProjectEditorProps): ReactNode {
       setProjects((prev) => prev.filter((p) => p.id !== id))
     } catch (e) {
       const error = (e as RestError).errorDto
-      addToast({
-        title: t('project.editor.deleteError'),
-        description: error?.message ?? t('error.genericMessage'),
-        color: 'danger'
-      })
+      addErrorToast(t('project.editor.deleteError'), error?.message ?? t('error.genericMessage'))
     }
   }
 

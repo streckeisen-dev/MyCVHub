@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import {
-  addToast,
   Button,
   Modal,
   ModalBody,
@@ -15,6 +14,7 @@ import { RestError } from '@/types/RestError.ts'
 import { FaTrash } from 'react-icons/fa6'
 import { useNavigate } from 'react-router-dom'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
+import { addErrorToast } from '@/helpers/ToastHelper.ts'
 
 export function AccountDeleteButton(): React.ReactNode {
   const { t, i18n } = useTranslation()
@@ -29,11 +29,10 @@ export function AccountDeleteButton(): React.ReactNode {
       navigate(getRoutePath(RouteId.Logout))
     } catch (e) {
       const error = (e as RestError).errorDto
-      addToast({
-        title: t('account.accountMgmt.delete.error'),
-        description: error?.message ?? t('error.genericMessage'),
-        color: 'danger'
-      })
+      addErrorToast(
+        t('account.accountMgmt.delete.error'),
+        error?.message ?? t('error.genericMessage')
+      )
     } finally {
       setIsDeleting(false)
     }
@@ -58,11 +57,7 @@ export function AccountDeleteButton(): React.ReactNode {
                 <Button color="default" variant="light" onPress={onClose}>
                   {t('forms.cancel')}
                 </Button>
-                <Button
-                  color="danger"
-                  onPress={handleDelete}
-                  isLoading={isDeleting}
-                >
+                <Button color="danger" onPress={handleDelete} isLoading={isDeleting}>
                   {t('account.accountMgmt.delete.action')}
                 </Button>
               </ModalFooter>

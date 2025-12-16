@@ -7,7 +7,7 @@ import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import { AccountEditorData } from '@/types/AccountEditorData.ts'
 import { PasswordForm, PasswordFormState } from '@/components/PasswordForm.tsx'
 import { AccountForm } from '@/components/AccountForm.tsx'
-import { addToast, Form } from '@heroui/react'
+import { Form } from '@heroui/react'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { FormButtons } from '@/components/FormButtons.tsx'
 import { PasswordRequirements } from '@/components/PasswordRequirements.tsx'
@@ -15,6 +15,7 @@ import { toDateString } from '@/helpers/DateHelper.ts'
 import AccountApi from '@/api/AccountApi.ts'
 import { SignupRequestDto } from '@/types/SignUpRequestDto.ts'
 import { RestError } from '@/types/RestError.ts'
+import { extractFormErrors } from '@/helpers/FormHelper.ts'
 
 export function SignupPage(): ReactNode {
   const { t, i18n } = useTranslation()
@@ -33,12 +34,10 @@ export function SignupPage(): ReactNode {
     city: '',
     country: 'CH'
   })
-  const [passwordFormState, setPasswordFormState] = useState<PasswordFormState>(
-    {
-      password: '',
-      confirmPassword: ''
-    }
-  )
+  const [passwordFormState, setPasswordFormState] = useState<PasswordFormState>({
+    password: '',
+    confirmPassword: ''
+  })
   const [isSaving, setIsSaving] = useState<boolean>(false)
   const [errorMessages, setErrorMessages] = useState<ErrorMessages>({})
 
@@ -90,10 +89,7 @@ export function SignupPage(): ReactNode {
 
     const request: SignupRequestDto = {
       ...accountFormState,
-      houseNumber:
-        accountFormState.houseNumber === ''
-          ? undefined
-          : accountFormState.houseNumber,
+      houseNumber: accountFormState.houseNumber === '' ? undefined : accountFormState.houseNumber,
       birthday: toDateString(accountFormState.birthday),
       ...passwordFormState
     }
@@ -104,14 +100,7 @@ export function SignupPage(): ReactNode {
       navigate(getRoutePath(RouteId.Dashboard))
     } catch (e) {
       const error = (e as RestError).errorDto
-      const messages = error?.errors ?? {}
-      setErrorMessages(messages)
-      if (Object.keys(messages).length === 0) {
-        addToast({
-          title: t('account.signup.error'),
-          description: error?.message ?? t('error.genericMessage')
-        })
-      }
+      extractFormErrors(error, t('account.signup.error'), setErrorMessages, t)
     } finally {
       setIsSaving(false)
     }

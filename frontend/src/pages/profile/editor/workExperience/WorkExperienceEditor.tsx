@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { addToast, Button } from '@heroui/react'
+import { Button } from '@heroui/react'
 import { WorkExperienceDto } from '@/types/WorkExperienceDto.ts'
 import {
   WorkExperienceList,
@@ -13,6 +13,7 @@ import {
 import { stringToCalendarDate } from '@/helpers/DateHelper.ts'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { RestError } from '@/types/RestError.ts'
+import { addErrorToast } from '@/helpers/ToastHelper.ts'
 
 export type WorkExperienceEditorProps = Readonly<{
   initialValue: WorkExperienceDto[]
@@ -54,11 +55,10 @@ export function WorkExperienceEditor(props: WorkExperienceEditorProps): ReactNod
       setWorkExperiences((prev) => prev.filter((w) => w.id !== id))
     } catch (e) {
       const error = (e as RestError).errorDto
-      addToast({
-        title: t('workExperience.editor.deleteError'),
-        description: error?.message ?? t('error.genericMessage'),
-        color: 'danger'
-      })
+      addErrorToast(
+        t('workExperience.editor.deleteError'),
+        error?.message ?? t('error.genericMessage')
+      )
     }
   }
 

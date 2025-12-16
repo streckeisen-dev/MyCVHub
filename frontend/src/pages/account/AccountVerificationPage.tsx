@@ -1,6 +1,6 @@
 import { ReactNode, use, useEffect, useState } from 'react'
 import { centerSection } from '@/styles/primitives.ts'
-import { addToast, Spinner } from '@heroui/react'
+import { Spinner } from '@heroui/react'
 import { Empty } from '@/components/Empty.tsx'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -9,6 +9,7 @@ import { AccountVerificationRequestDto } from '@/types/AccountVerificationReques
 import { AuthorizationContext } from '@/context/AuthorizationContext.tsx'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import { RestError } from '@/types/RestError.ts'
+import { addErrorToast, addSuccessToast } from '@/helpers/ToastHelper.ts'
 
 export function AccountVerificationPage(): ReactNode {
   const { t, i18n } = useTranslation()
@@ -33,20 +34,12 @@ export function AccountVerificationPage(): ReactNode {
         }
 
         await AccountApi.verifyAccount(request, i18n.language)
-        addToast({
-          title: t('account.verification.success'),
-          timeout: 2500,
-          color: 'success'
-        })
+        addSuccessToast(t('account.verification.success'))
         handleUserUpdate()
         navigate(getRoutePath(RouteId.Dashboard))
       } catch (e) {
         const error = (e as RestError).errorDto
-        addToast({
-          title: t('account.verification.error'),
-          description: error?.message ?? t('error.genericMessage'),
-          color: 'danger'
-        })
+        addErrorToast(t('account.verification.error'), error?.message ?? t('error.genericMessage'))
       } finally {
         setIsLoading(false)
       }
@@ -56,11 +49,7 @@ export function AccountVerificationPage(): ReactNode {
 
   return (
     <section className={centerSection()}>
-      {
-        isLoading
-        ? <Spinner />
-        : <Empty headline={t('account.verification.error')} />
-      }
+      {isLoading ? <Spinner /> : <Empty headline={t('account.verification.error')} />}
     </section>
   )
 }

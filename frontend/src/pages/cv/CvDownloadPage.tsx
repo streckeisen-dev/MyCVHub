@@ -2,15 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { centerSection, h3, h4 } from '@/styles/primitives.ts'
 import { useEffect, useState } from 'react'
 import { CVStyleDto, CVStyleOptionDto } from '@/types/CVStyleDto.ts'
-import {
-  addToast,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Spinner
-} from '@heroui/react'
+import { Button, Card, CardBody, CardFooter, CardHeader, Spinner } from '@heroui/react'
 import { Empty } from '@/components/Empty.tsx'
 import CvApi from '@/api/CvApi.ts'
 import { ProfileDto } from '@/types/ProfileDto.ts'
@@ -21,10 +13,7 @@ import modernCvStyle from '@/assets/cv_styles/modern.jpg'
 import { KeyValueObject } from '@/types/KeyValueObject.ts'
 import sanitizeHtml from 'sanitize-html'
 import { FaSliders } from 'react-icons/fa6'
-import {
-  CvContent,
-  CvContentCustomizationView
-} from '@/pages/cv/CvContentCustomizationView.tsx'
+import { CvContent, CvContentCustomizationView } from '@/pages/cv/CvContentCustomizationView.tsx'
 import { CvStyleCustomizationView } from '@/pages/cv/CvStyleCustomizationView.tsx'
 import { CVGenerationRequestDto } from '@/types/CVGenerationRequestDto.ts'
 import { WorkExperienceDto } from '@/types/WorkExperienceDto.ts'
@@ -32,6 +21,7 @@ import { EducationDto } from '@/types/EducationDto.ts'
 import { ProjectDto } from '@/types/ProjectDto.ts'
 import { SkillDto } from '@/types/SkillDto.ts'
 import { SelectedCvContent } from '@/pages/cv/CvContentTreeRoot.tsx'
+import { addErrorToast } from '@/helpers/ToastHelper.ts'
 
 function sanitize(html: string): string {
   return sanitizeHtml(html, {
@@ -39,9 +29,7 @@ function sanitize(html: string): string {
   })
 }
 
-function getStyleDefaultOptions(
-  options: CVStyleOptionDto[]
-): KeyValueObject<string> {
+function getStyleDefaultOptions(options: CVStyleOptionDto[]): KeyValueObject<string> {
   const data: KeyValueObject<string> = {}
   for (const option of options) {
     data[option.key] = option.default
@@ -49,7 +37,9 @@ function getStyleDefaultOptions(
   return data
 }
 
-function toSelectedCvContent(o: WorkExperienceDto | EducationDto | ProjectDto | SkillDto): SelectedCvContent {
+function toSelectedCvContent(
+  o: WorkExperienceDto | EducationDto | ProjectDto | SkillDto
+): SelectedCvContent {
   return {
     id: o.id,
     includeDescription: true
@@ -62,9 +52,7 @@ export function CvDownloadPage() {
   const [cvStyles, setCvStyles] = useState<CVStyleDto[]>()
   const [isLoading, setIsLoading] = useState(true)
   const [profile, setProfile] = useState<ProfileDto>()
-  const [selectedCvStyleKey, setSelectedCvStyleKey] = useState<
-    string | undefined
-  >()
+  const [selectedCvStyleKey, setSelectedCvStyleKey] = useState<string | undefined>()
   const selectedCvStyle: CVStyleDto | undefined = cvStyles?.find(
     (style) => style.key === selectedCvStyleKey
   )
@@ -76,9 +64,7 @@ export function CvDownloadPage() {
     projects: [],
     skills: []
   })
-  const [cvStyleOptions, setCvStyleOptions] = useState<KeyValueObject<string>>(
-    {}
-  )
+  const [cvStyleOptions, setCvStyleOptions] = useState<KeyValueObject<string>>({})
   const [isGenerating, setIsGenerating] = useState<boolean>(false)
 
   const cvStyleImages: KeyValueObject<string> = {
@@ -108,11 +94,7 @@ export function CvDownloadPage() {
         })
       } catch (e) {
         const error = (e as RestError).errorDto
-        addToast({
-          title: t('profile.loadingError'),
-          description: error?.message ?? t('error.genericMessage'),
-          color: 'danger'
-        })
+        addErrorToast(t('profile.loadingError'), error?.message ?? t('error.genericMessage'))
       }
     }
 
@@ -121,7 +103,7 @@ export function CvDownloadPage() {
   }, [])
 
   function toggleCustomizeContent() {
-    setCustomizeContent(prev => {
+    setCustomizeContent((prev) => {
       const newVal = !prev
       if (!newVal && profile) {
         setCvContent({
@@ -157,12 +139,13 @@ export function CvDownloadPage() {
     if (!selectedCvStyleKey) {
       return
     }
-    const hasCvItems = cvContent.projects.length > 0 || cvContent.workExperience.length > 0 || cvContent.education.length > 0 || cvContent.skills.length > 0
+    const hasCvItems =
+      cvContent.projects.length > 0 ||
+      cvContent.workExperience.length > 0 ||
+      cvContent.education.length > 0 ||
+      cvContent.skills.length > 0
     if (customizeContent && !hasCvItems) {
-      addToast({
-        title: t('cv.noItemsSelected'),
-        color: 'danger'
-      })
+      addErrorToast(t('cv.noItemsSelected'))
       return
     }
 
@@ -186,11 +169,7 @@ export function CvDownloadPage() {
       globalThis.URL.revokeObjectURL(fileURL)
     } catch (e) {
       const error = (e as RestError).errorDto
-      addToast({
-        title: t('cv.generateError'),
-        description: error?.message ?? t('error.genericMessage'),
-        color: 'danger'
-      })
+      addErrorToast(t('cv.generateError'), error?.message ?? t('error.genericMessage'))
     } finally {
       setIsGenerating(false)
     }
@@ -219,9 +198,7 @@ export function CvDownloadPage() {
             <CardBody className="flex flex-col gap-2">
               <img src={cvStyleImages[cvStyle.key]} alt={`Example of ${cvStyle.name} CV style`} />
               <p
-                className={
-                    'text-default-600'
-                }
+                className={/* eslint-disable-next-line @eslint-react/dom/no-dangerously-set-innerhtml */ 'text-default-600'}
                 dangerouslySetInnerHTML={{
                   __html: sanitize(cvStyle.description)
                 }}
@@ -291,7 +268,5 @@ export function CvDownloadPage() {
     <Empty headline={t('cv.styleError')} />
   )
 
-  return isLoading ? (
-    <Spinner />
-  ) : content
+  return isLoading ? <Spinner /> : content
 }

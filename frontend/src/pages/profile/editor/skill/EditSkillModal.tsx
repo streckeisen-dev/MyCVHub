@@ -1,5 +1,4 @@
 import {
-  addToast,
   Autocomplete,
   AutocompleteItem,
   Form,
@@ -20,6 +19,7 @@ import ProfileApi from '@/api/ProfileApi.ts'
 import { SkillUpdateDto } from '@/types/SkillUpdateDto.ts'
 import { SkillDto } from '@/types/SkillDto.ts'
 import { RestError } from '@/types/RestError.ts'
+import { extractFormErrors } from '@/helpers/FormHelper.ts'
 
 const EMPTY_SKILL: SkillFormData = {
   id: undefined,
@@ -29,17 +29,17 @@ const EMPTY_SKILL: SkillFormData = {
 }
 
 export interface SkillFormData {
-  id: number | undefined;
-  name: string;
-  type: string;
-  level: number;
+  id: number | undefined
+  name: string
+  type: string
+  level: number
 }
 
 export type EditSkillModalProps = Omit<ModalProps, 'children'> & {
-  initialValue: SkillFormData | undefined;
-  existingTypes: string[];
-  onSaved: (skill: SkillDto) => void;
-};
+  initialValue: SkillFormData | undefined
+  existingTypes: string[]
+  onSaved: (skill: SkillDto) => void
+}
 
 export function EditSkillModal(props: EditSkillModalProps) {
   const { t, i18n } = useTranslation()
@@ -76,17 +76,8 @@ export function EditSkillModal(props: EditSkillModalProps) {
       }
     } catch (e) {
       const error = (e as RestError).errorDto
-      const messages = error?.errors ?? {}
-      setErrorMessages(messages)
-      if (Object.keys(messages).length === 0) {
-        addToast({
-          title: initialValue
-            ? t('skills.editor.editError')
-            : t('skills.editor.addError'),
-          description: error?.message ?? t('error.genericMessage'),
-          color: 'danger'
-        })
-      }
+      const errorMessage = initialValue ? t('skills.editor.editError') : t('skills.editor.addError')
+      extractFormErrors(error, errorMessage, setErrorMessages, t)
     } finally {
       setIsSaving(false)
     }
@@ -99,9 +90,7 @@ export function EditSkillModal(props: EditSkillModalProps) {
           <>
             <ModalHeader>
               <h3 className={h3()}>
-                {initialValue
-                  ? t('skills.editor.edit')
-                  : t('skills.editor.add')}
+                {initialValue ? t('skills.editor.edit') : t('skills.editor.add')}
               </h3>
             </ModalHeader>
             <ModalBody>
@@ -142,9 +131,7 @@ export function EditSkillModal(props: EditSkillModalProps) {
                     onChange={(val) => updateData('level', val)}
                   />
                   {errorMessages.level && (
-                    <p className="text-danger text-small">
-                      {errorMessages.level}
-                    </p>
+                    <p className="text-danger text-small">{errorMessages.level}</p>
                   )}
                 </div>
 

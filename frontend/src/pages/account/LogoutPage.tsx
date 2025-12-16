@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import AccountApi from '@/api/AccountApi.ts'
 import { RestError } from '@/types/RestError.ts'
-import { addToast } from '@heroui/react'
+import { addErrorToast } from '@/helpers/ToastHelper.ts'
 
 export function LogoutPage(): React.ReactNode {
   const { t, i18n } = useTranslation()
@@ -25,11 +25,7 @@ export function LogoutPage(): React.ReactNode {
         navigate(getRoutePath(RouteId.Home))
       } catch (e) {
         const error = (e as RestError).errorDto
-        addToast({
-          title: t('account.logout.error'),
-          description: error?.message ?? t('error.genericMessage'),
-          color: 'danger'
-        })
+        addErrorToast(t('account.logout.error'), error?.message ?? t('error.genericMessage'))
         // eslint-disable-next-line @eslint-react/web-api/no-leaked-timeout
         setTimeout(() => {
           navigate(-1)

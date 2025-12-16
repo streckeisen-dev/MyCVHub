@@ -1,6 +1,5 @@
 import React, { ChangeEvent, ReactNode, useEffect, useState } from 'react'
 import {
-  addToast,
   Autocomplete,
   AutocompleteItem,
   AutocompleteProps,
@@ -19,6 +18,7 @@ import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { AccountDto } from '@/types/AccountDto.ts'
 import { stringToCalendarDate } from '@/helpers/DateHelper.ts'
 import { getLocalTimeZone, today } from '@internationalized/date'
+import { addErrorToast } from '@/helpers/ToastHelper.ts'
 
 export function toAccountEditorData(account: AccountDto): AccountEditorData {
   return {
@@ -37,9 +37,7 @@ export function toAccountEditorData(account: AccountDto): AccountEditorData {
   }
 }
 
-function CountrySelect(
-  props: Readonly<Omit<AutocompleteProps, 'children'>>
-): ReactNode {
+function CountrySelect(props: Readonly<Omit<AutocompleteProps, 'children'>>): ReactNode {
   const { t, i18n } = useTranslation()
   const [countries, setCountries] = useState<CountryDto[]>([])
 
@@ -49,11 +47,7 @@ function CountrySelect(
         const countries = await CountryApi.getCountries(i18n.language)
         setCountries(countries)
       } catch (_e) {
-        addToast({
-          title: t('country.loadingError.title'),
-          description: t('country.loadingError.message'),
-          color: 'danger'
-        })
+        addErrorToast(t('country.loadingError.title'), t('country.loadingError.message'))
       }
     }
     loadCountries()

@@ -1,5 +1,4 @@
 import {
-  addToast,
   Form,
   Input,
   Modal,
@@ -16,11 +15,12 @@ import { WorkExperienceDto } from '@/types/WorkExperienceDto.ts'
 import { WorkExperienceUpdateDto } from '@/types/WorkExperienceUpdateDto.ts'
 import { toDateString } from '@/helpers/DateHelper.ts'
 import { FormButtons } from '@/components/FormButtons.tsx'
-import { getLocalTimeZone, today, CalendarDate } from '@internationalized/date'
+import { CalendarDate, getLocalTimeZone, today } from '@internationalized/date'
 import { DateInput } from '@/components/DateInput.tsx'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { RestError } from '@/types/RestError.ts'
+import { extractFormErrors } from '@/helpers/FormHelper.ts'
 
 const EMPTY_WORK_EXPERIENCE: WorkExperienceFormData = {
   id: undefined,
@@ -33,23 +33,23 @@ const EMPTY_WORK_EXPERIENCE: WorkExperienceFormData = {
 }
 
 export interface WorkExperienceFormData {
-  id: number | undefined;
-  company: string;
-  jobTitle: string;
-  description: string;
-  positionStart: CalendarDate | null;
-  positionEnd: CalendarDate | null;
-  location: string;
+  id: number | undefined
+  company: string
+  jobTitle: string
+  description: string
+  positionStart: CalendarDate | null
+  positionEnd: CalendarDate | null
+  location: string
 }
 
-export type EditWorkExperienceModalProps = Readonly<Omit<ModalProps, 'children'> & {
-  onSaved: (update: WorkExperienceDto) => void;
-  initialValue: WorkExperienceFormData | undefined;
-}>;
+export type EditWorkExperienceModalProps = Readonly<
+  Omit<ModalProps, 'children'> & {
+    onSaved: (update: WorkExperienceDto) => void
+    initialValue: WorkExperienceFormData | undefined
+  }
+>
 
-export function EditWorkExperienceModal(
-  props: EditWorkExperienceModalProps
-): ReactNode {
+export function EditWorkExperienceModal(props: EditWorkExperienceModalProps): ReactNode {
   const { t, i18n } = useTranslation()
   const { initialValue, onSaved, onClose, ...modalProps } = props
   const [data, setData] = useState<WorkExperienceFormData>(initialValue ?? EMPTY_WORK_EXPERIENCE)
@@ -88,28 +88,17 @@ export function EditWorkExperienceModal(
 
     setIsSaving(true)
     try {
-      const updated = await ProfileApi.saveWorkExperience(
-        update,
-        i18n.language
-      )
+      const updated = await ProfileApi.saveWorkExperience(update, i18n.language)
       if (onClose) {
         onClose()
       }
       onSaved(updated)
     } catch (e) {
       const error = (e as RestError).errorDto
-      const messages = error?.errors ?? {}
-      setErrorMessages(messages)
-      if (Object.keys(messages).length === 0) {
-        const errorMessage = initialValue
-          ? t('workExperience.editor.editError')
-          : t('workExperience.editor.addError')
-        addToast({
-          title: errorMessage,
-          description: error?.message ?? t('error.genericMessage'),
-          color: 'danger'
-        })
-      }
+      const errorMessage = initialValue
+        ? t('workExperience.editor.editError')
+        : t('workExperience.editor.addError')
+      extractFormErrors(error, errorMessage, setErrorMessages, t)
     } finally {
       setIsSaving(false)
     }
@@ -122,9 +111,7 @@ export function EditWorkExperienceModal(
           <>
             <ModalHeader>
               <h3 className={h3()}>
-                {initialValue
-                  ? t('workExperience.editor.edit')
-                  : t('workExperience.editor.add')}
+                {initialValue ? t('workExperience.editor.edit') : t('workExperience.editor.add')}
               </h3>
             </ModalHeader>
             <ModalBody>

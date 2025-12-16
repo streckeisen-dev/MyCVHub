@@ -1,5 +1,5 @@
 import { ReactNode, useState } from 'react'
-import { addToast, Button } from '@heroui/react'
+import { Button } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import {
   EducationList,
@@ -13,6 +13,7 @@ import {
   EducationFormData
 } from '@/pages/profile/editor/education/EditEducationModal.tsx'
 import { stringToCalendarDate } from '@/helpers/DateHelper.ts'
+import { addErrorToast } from '@/helpers/ToastHelper.ts'
 
 export type EducationEditorProps = Readonly<{
   initialValue: EducationDto[]
@@ -50,11 +51,7 @@ export function EducationEditor(props: EducationEditorProps): ReactNode {
       setEducation((prev) => prev.filter((e) => e.id !== id))
     } catch (e) {
       const error = (e as RestError).errorDto
-      addToast({
-        title: t('education.editor.deleteError'),
-        description: error?.message ?? t('error.genericMessage'),
-        color: 'danger'
-      })
+      addErrorToast(t('education.editor.deleteError'), error?.message ?? t('error.genericMessage'))
     }
   }
 

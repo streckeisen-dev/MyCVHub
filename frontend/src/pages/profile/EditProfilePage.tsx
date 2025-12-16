@@ -2,10 +2,11 @@ import { ReactNode, useEffect, useState } from 'react'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { useTranslation } from 'react-i18next'
 import { ProfileDto } from '@/types/ProfileDto.ts'
-import { addToast, Spinner } from '@heroui/react'
+import { Spinner } from '@heroui/react'
 import { Empty } from '@/components/Empty.tsx'
 import { ProfileEditor } from '@/pages/profile/editor/ProfileEditor.tsx'
 import { RestError } from '@/types/RestError.ts'
+import { addErrorToast } from '@/helpers/ToastHelper.ts'
 
 export function EditProfilePage(): ReactNode {
   const { t, i18n } = useTranslation()
@@ -21,10 +22,7 @@ export function EditProfilePage(): ReactNode {
         const error = (e as RestError).errorDto
         const loadingError = error?.message ?? t('error.genericMessage')
         if (loadingError) {
-          addToast({
-            title: loadingError,
-            color: 'danger'
-          })
+          addErrorToast(loadingError)
         }
       } finally {
         setIsLoading(false)

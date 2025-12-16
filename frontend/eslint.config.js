@@ -4,6 +4,7 @@ import tseslint from 'typescript-eslint'
 import eslintReact from '@eslint-react/eslint-plugin'
 
 export default defineConfig({
+  ignores: ["**/*.config.ts"],
   files: ["**/*.ts", "**/*.tsx"],
   extends: [
     eslint.configs.recommended,

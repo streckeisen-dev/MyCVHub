@@ -1,13 +1,13 @@
 import { ChangeEvent, FormEvent, ReactNode, useState } from 'react'
 import {
-  addToast,
   Form,
   Input,
   Modal,
   ModalBody,
   ModalContent,
   ModalHeader,
-  ModalProps, Textarea
+  ModalProps,
+  Textarea
 } from '@heroui/react'
 import { EducationDto } from '@/types/EducationDto.ts'
 import { useTranslation } from 'react-i18next'
@@ -19,7 +19,8 @@ import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { RestError } from '@/types/RestError.ts'
 import { DateInput } from '@/components/DateInput.tsx'
 import { h3 } from '@/styles/primitives.ts'
-import { getLocalTimeZone, today, CalendarDate } from '@internationalized/date'
+import { CalendarDate, getLocalTimeZone, today } from '@internationalized/date'
+import { extractFormErrors } from '@/helpers/FormHelper.ts'
 
 const EMPTY_EDUCATION: EducationFormData = {
   id: undefined,
@@ -42,13 +43,13 @@ export interface EducationFormData {
 }
 
 export type EditEducationModalProps = Omit<ModalProps, 'children'> & {
-  initialValue: EducationFormData | undefined,
+  initialValue: EducationFormData | undefined
   onSaved: (education: EducationDto) => void
 }
 
 export function EditEducationModal(props: EditEducationModalProps): ReactNode {
   const { t, i18n } = useTranslation()
-  const { initialValue, onSaved, onClose, ...modalProps} = props
+  const { initialValue, onSaved, onClose, ...modalProps } = props
   const [data, setData] = useState<EducationFormData>(initialValue ?? EMPTY_EDUCATION)
   const [isSaving, setIsSaving] = useState(false)
   const [errorMessages, setErrorMessages] = useState<ErrorMessages>({})
@@ -73,7 +74,7 @@ export function EditEducationModal(props: EditEducationModalProps): ReactNode {
       } as ErrorMessages
     })
   }
-  
+
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setIsSaving(true)
@@ -93,97 +94,95 @@ export function EditEducationModal(props: EditEducationModalProps): ReactNode {
       onSaved(updated)
     } catch (e) {
       const error = (e as RestError).errorDto
-      const messages = error?.errors ?? {}
-      setErrorMessages(messages)
-      if (Object.keys(messages).length === 0) {
-        const errorMessage = initialValue
-          ? t('education.editor.editError')
-          : t('education.editor.addError')
-        addToast({
-          title: errorMessage,
-          description: error?.message ?? t('error.genericMessage'),
-          color: 'danger'
-        })
-      }
+      const errorMessage = initialValue
+        ? t('education.editor.editError')
+        : t('education.editor.addError')
+      extractFormErrors(error, errorMessage, setErrorMessages, t)
     } finally {
       setIsSaving(false)
-    } 
+    }
   }
-  
-  return <Modal className="w-full p-5" onClose={onClose} {...modalProps} >
-    <ModalContent>
-      {(onClose) => <>
-        <ModalHeader>
-          <h3 className={h3()}>{initialValue ? t('education.editor.edit') : t('education.editor.add')}</h3>
-        </ModalHeader>
-        <ModalBody>
-          <Form onSubmit={handleSubmit} className="flex flex-col gap-6">
-            <Input
-              name="institution"
-              label={t('fields.institution')}
-              value={data.institution}
-              onChange={handleChange}
-              isInvalid={errorMessages.institution != null}
-              errorMessage={errorMessages.institution}
-              isRequired
-            />
 
-            <Input
-              name="location"
-              label={t('fields.location')}
-              value={data.location}
-              onChange={handleChange}
-              isInvalid={errorMessages.location != null}
-              errorMessage={errorMessages.location}
-              isRequired
-            />
+  return (
+    <Modal className="w-full p-5" onClose={onClose} {...modalProps}>
+      <ModalContent>
+        {(onClose) => (
+          <>
+            <ModalHeader>
+              <h3 className={h3()}>
+                {initialValue ? t('education.editor.edit') : t('education.editor.add')}
+              </h3>
+            </ModalHeader>
+            <ModalBody>
+              <Form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                <Input
+                  name="institution"
+                  label={t('fields.institution')}
+                  value={data.institution}
+                  onChange={handleChange}
+                  isInvalid={errorMessages.institution != null}
+                  errorMessage={errorMessages.institution}
+                  isRequired
+                />
 
-            <Input
-              name="degreeName"
-              label={t('fields.degreeName')}
-              value={data.degreeName}
-              onChange={handleChange}
-              isInvalid={errorMessages.degreeName != null}
-              errorMessage={errorMessages.degreeName}
-              isRequired
-            />
+                <Input
+                  name="location"
+                  label={t('fields.location')}
+                  value={data.location}
+                  onChange={handleChange}
+                  isInvalid={errorMessages.location != null}
+                  errorMessage={errorMessages.location}
+                  isRequired
+                />
 
-            <DateInput
-              name="educationStart"
-              label={t('fields.educationStart')}
-              value={data.educationStart}
-              onChange={(val) => updateData('educationStart', val)}
-              isInvalid={errorMessages.educationStart != null}
-              errorMessage={errorMessages.educationStart}
-              isRequired
-              maxValue={today(getLocalTimeZone())}
-            />
+                <Input
+                  name="degreeName"
+                  label={t('fields.degreeName')}
+                  value={data.degreeName}
+                  onChange={handleChange}
+                  isInvalid={errorMessages.degreeName != null}
+                  errorMessage={errorMessages.degreeName}
+                  isRequired
+                />
 
-            <DateInput
-              name="educationEnd"
-              label={t('fields.educationEnd')}
-              value={data.educationEnd}
-              onChange={(val) => updateData('educationEnd', val)}
-              isInvalid={errorMessages.educationEnd != null}
-              errorMessage={errorMessages.educationEnd}
-              isClearable
-              onClear={() => updateData('educationEnd', null)}
-              maxValue={today(getLocalTimeZone())}
-            />
+                <DateInput
+                  name="educationStart"
+                  label={t('fields.educationStart')}
+                  value={data.educationStart}
+                  onChange={(val) => updateData('educationStart', val)}
+                  isInvalid={errorMessages.educationStart != null}
+                  errorMessage={errorMessages.educationStart}
+                  isRequired
+                  maxValue={today(getLocalTimeZone())}
+                />
 
-            <Textarea
-              name="description"
-              label={t('fields.description')}
-              value={data.description}
-              onChange={handleChange}
-              isInvalid={errorMessages.description != null}
-              errorMessage={errorMessages.description}
-            />
+                <DateInput
+                  name="educationEnd"
+                  label={t('fields.educationEnd')}
+                  value={data.educationEnd}
+                  onChange={(val) => updateData('educationEnd', val)}
+                  isInvalid={errorMessages.educationEnd != null}
+                  errorMessage={errorMessages.educationEnd}
+                  isClearable
+                  onClear={() => updateData('educationEnd', null)}
+                  maxValue={today(getLocalTimeZone())}
+                />
 
-            <FormButtons onCancel={onClose} isSaving={isSaving} />
-          </Form>
-        </ModalBody>
-      </>}
-    </ModalContent>   
-  </Modal>
+                <Textarea
+                  name="description"
+                  label={t('fields.description')}
+                  value={data.description}
+                  onChange={handleChange}
+                  isInvalid={errorMessages.description != null}
+                  errorMessage={errorMessages.description}
+                />
+
+                <FormButtons onCancel={onClose} isSaving={isSaving} />
+              </Form>
+            </ModalBody>
+          </>
+        )}
+      </ModalContent>
+    </Modal>
+  )
 }

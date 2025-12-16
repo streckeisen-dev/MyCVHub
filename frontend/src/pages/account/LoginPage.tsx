@@ -1,6 +1,6 @@
 import { FormEvent, JSX, use, useEffect, useState } from 'react'
 import { title } from '@/styles/primitives.ts'
-import { addToast, Button, Form, Input } from '@heroui/react'
+import { Button, Form, Input } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import AccountApi from '@/api/AccountApi.ts'
 import { RestError } from '@/types/RestError.ts'
@@ -8,6 +8,7 @@ import { FaGithub } from 'react-icons/fa'
 import { AuthorizationContext } from '@/context/AuthorizationContext.tsx'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
+import { addErrorToast } from '@/helpers/ToastHelper.ts'
 
 export default function LoginPage(): JSX.Element {
   const { t, i18n } = useTranslation()
@@ -30,19 +31,11 @@ export default function LoginPage(): JSX.Element {
     const data = Object.fromEntries(new FormData(e.currentTarget))
 
     try {
-      await AccountApi.login(
-        data.username as string,
-        data.password as string,
-        i18n.language
-      )
+      await AccountApi.login(data.username as string, data.password as string, i18n.language)
       handleUserUpdate()
     } catch (e) {
       const error = (e as RestError).errorDto
-      addToast({
-        title: t('account.login.error'),
-        description: error?.message ?? t('error.genericMessage'),
-        color: 'danger'
-      })
+      addErrorToast(t('account.login.error'), error?.message ?? t('error.genericMessage'))
     } finally {
       setIsLoggingIn(false)
     }
@@ -75,12 +68,7 @@ export default function LoginPage(): JSX.Element {
           type="password"
         />
 
-        <Button
-          type="submit"
-          color="primary"
-          className="w-full"
-          isLoading={isLoggingIn}
-        >
+        <Button type="submit" color="primary" className="w-full" isLoading={isLoggingIn}>
           {t('account.login.action')}
         </Button>
 

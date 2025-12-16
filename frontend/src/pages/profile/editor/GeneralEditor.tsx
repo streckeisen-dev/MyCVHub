@@ -1,36 +1,38 @@
 import { ChangeEvent, FormEvent, ReactNode, useState } from 'react'
-import {useTranslation} from 'react-i18next'
-import {useNavigate} from 'react-router-dom'
-import {ErrorMessages} from '@/types/ErrorMessages.ts'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import defaultProfilePicture from '@/assets/default_profile_picture.png'
-import {getRoutePath, RouteId} from '@/config/RouteTree.tsx'
-import {ProfileUpdateRequestDto} from '@/types/ProfileUpdateRequestDto.ts'
+import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
+import { ProfileUpdateRequestDto } from '@/types/ProfileUpdateRequestDto.ts'
 import ProfileApi from '@/api/ProfileApi.ts'
-import {RestError} from '@/types/RestError.ts'
-import {addToast, Form, Input, Textarea} from '@heroui/react'
-import {twoColumnForm} from '@/styles/primitives.ts'
-import {SwitchInput} from '@/components/SwitchInput.tsx'
-import {FaCamera} from 'react-icons/fa6'
-import {FormButtons} from '@/components/FormButtons.tsx'
+import { RestError } from '@/types/RestError.ts'
+import { Form, Input, Textarea } from '@heroui/react'
+import { twoColumnForm } from '@/styles/primitives.ts'
+import { SwitchInput } from '@/components/SwitchInput.tsx'
+import { FaCamera } from 'react-icons/fa6'
+import { FormButtons } from '@/components/FormButtons.tsx'
+import { addSuccessToast } from '@/helpers/ToastHelper.ts'
+import { extractFormErrors } from '@/helpers/FormHelper.ts'
 
 interface GeneralProfileInfo {
-  profilePicture?: string;
-  jobTitle?: string;
-  bio?: string;
-  isProfilePublic?: boolean;
-  isEmailPublic?: boolean;
-  isPhonePublic?: boolean;
-  isAddressPublic?: boolean;
-  hideDescriptions?: boolean;
+  profilePicture?: string
+  jobTitle?: string
+  bio?: string
+  isProfilePublic?: boolean
+  isEmailPublic?: boolean
+  isPhonePublic?: boolean
+  isAddressPublic?: boolean
+  hideDescriptions?: boolean
 }
 
 export type GeneralEditorProps = Readonly<{
-  initialValue: GeneralProfileInfo;
+  initialValue: GeneralProfileInfo
 }>
 
 export function GeneralEditor(props: GeneralEditorProps): ReactNode {
   const { t, i18n } = useTranslation()
-  const {initialValue} = props
+  const { initialValue } = props
   const navigate = useNavigate()
 
   const [info, setInfo] = useState<GeneralProfileInfo>(initialValue)
@@ -40,7 +42,7 @@ export function GeneralEditor(props: GeneralEditorProps): ReactNode {
 
   const profilePicture = uploadedProfilePicture
     ? URL.createObjectURL(uploadedProfilePicture)
-    : info.profilePicture ?? defaultProfilePicture
+    : (info.profilePicture ?? defaultProfilePicture)
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const name = e.currentTarget.name
@@ -75,27 +77,13 @@ export function GeneralEditor(props: GeneralEditorProps): ReactNode {
       profilePicture: uploadedProfilePicture
     }
     try {
-      const result = await ProfileApi.saveGeneralInformation(
-        update,
-        i18n.language
-      )
+      const result = await ProfileApi.saveGeneralInformation(update, i18n.language)
       setInfo({ ...result })
       setUploadedProfilePicture(undefined)
-      addToast({
-        title: t('profile.editor.saveSuccessTitle'),
-        color: 'success'
-      })
+      addSuccessToast(t('profile.editor.saveSuccessTitle'))
     } catch (e) {
       const error = (e as RestError).errorDto
-      const messages = error?.errors ?? {}
-      setErrorMessages(messages)
-      if (Object.keys(messages).length === 0) {
-        addToast({
-          title: t('profile.editor.saveErrorTitle'),
-          description: error?.message ?? t('error.genericMessage'),
-          color: 'danger'
-        })
-      }
+      extractFormErrors(error, t('profile.editor.saveErrorTitle'), setErrorMessages, t)
     } finally {
       setIsSaving(false)
     }
@@ -190,9 +178,7 @@ export function GeneralEditor(props: GeneralEditorProps): ReactNode {
             isInvalid={errorMessages.profilePicture != null}
             errorMessage={errorMessages.profilePicture}
           />
-          <p className="text-gray-400 ml-2">
-            {t('profile.editor.pictureHint')}
-          </p>
+          <p className="text-gray-400 ml-2">{t('profile.editor.pictureHint')}</p>
         </div>
       </div>
       <FormButtons onCancel={handleCancel} isSaving={isSaving} />

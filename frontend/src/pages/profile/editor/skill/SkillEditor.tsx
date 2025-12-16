@@ -1,11 +1,12 @@
 import { ReactNode, useState } from 'react'
 import { SkillDto } from '@/types/SkillDto.ts'
 import { SkillList, SkillModificationEvent } from '@/pages/profile/editor/skill/SkillList.tsx'
-import { addToast, Button } from '@heroui/react'
+import { Button } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import { EditSkillModal, SkillFormData } from '@/pages/profile/editor/skill/EditSkillModal.tsx'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { RestError } from '@/types/RestError.ts'
+import { addErrorToast } from '@/helpers/ToastHelper.ts'
 
 export type SkillEditorProps = Readonly<{
   initialValue: SkillDto[]
@@ -38,11 +39,7 @@ export function SkillEditor(props: SkillEditorProps): ReactNode {
       setSkills((prev) => prev.filter((s) => s.id !== id))
     } catch (e) {
       const error = (e as RestError).errorDto
-      addToast({
-        title: t('skills.editor.deleteError'),
-        description: error?.message ?? t('error.genericMessage'),
-        color: 'danger'
-      })
+      addErrorToast(t('skills.editor.deleteError'), error?.message ?? t('error.genericMessage'))
     }
   }
 

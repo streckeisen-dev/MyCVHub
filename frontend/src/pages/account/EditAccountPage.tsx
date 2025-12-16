@@ -2,7 +2,7 @@ import React, { FormEvent, use, useEffect, useState } from 'react'
 import { centerSection, title, twoColumnForm } from '@/styles/primitives.ts'
 import { useTranslation } from 'react-i18next'
 import AccountApi from '@/api/AccountApi.ts'
-import { addToast, Form, Spinner } from '@heroui/react'
+import { Form, Spinner } from '@heroui/react'
 import { Empty } from '@/components/Empty.tsx'
 import { AccountForm, toAccountEditorData } from '@/components/AccountForm.tsx'
 import { toDateString } from '@/helpers/DateHelper.ts'
@@ -14,6 +14,7 @@ import { RestError } from '@/types/RestError.ts'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { AuthorizationContext } from '@/context/AuthorizationContext.tsx'
 import { FormButtons } from '@/components/FormButtons.tsx'
+import { extractFormErrors } from '@/helpers/FormHelper.ts'
 
 export function EditAccountPage(): React.ReactNode {
   const { t, i18n } = useTranslation()
@@ -56,15 +57,7 @@ export function EditAccountPage(): React.ReactNode {
       navigate(getRoutePath(RouteId.Account))
     } catch (e) {
       const error = (e as RestError).errorDto
-      const messages = error?.errors ?? {}
-      setErrorMessages(messages)
-      if (Object.keys(messages).length === 0) {
-        addToast({
-          title: t('account.edit.error'),
-          description: error?.message ?? t('error.genericMessage'),
-          color: 'danger'
-        })
-      }
+      extractFormErrors(error, t('account.edit.error'), setErrorMessages, t)
     } finally {
       setIsSaving(false)
     }
