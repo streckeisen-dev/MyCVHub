@@ -1,10 +1,10 @@
 import { FormButtons } from '@/components/FormButtons.tsx'
 
-describe('<FormButtons />', () => {
-  function dummyHandleCancel() {
-    // empty
-  }
+function dummyHandleCancel() {
+  // empty
+}
 
+describe('<FormButtons />', () => {
   it('triggers cancel on cancel-click', () => {
     const handleCancel = cy.spy().as('handleCancel')
     cy.mount(<FormButtons onCancel={handleCancel} isSaving={false} />)
