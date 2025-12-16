@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next'
 import {
   CvContentTreeRoot,
   SelectedCvContent
-} from '@/pages/cv/CvContentTreeRoot.tsx'
-import { SkillTreeRoot } from '@/pages/cv/SkillTreeRoot.tsx'
+} from '@/components/cv/CvContentTreeRoot.tsx'
+import { SkillTreeRoot } from '@/components/cv/SkillTreeRoot.tsx'
 import { KeyValueObject } from '@/types/KeyValueObject.ts'
 
 export interface CvContent {

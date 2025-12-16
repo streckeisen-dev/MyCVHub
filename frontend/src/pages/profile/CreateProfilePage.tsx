@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ProfileEditor } from '@/pages/profile/editor/ProfileEditor.tsx'
+import { ProfileEditor } from '@/components/profile/editor/ProfileEditor.tsx'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { useNavigate } from 'react-router-dom'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'

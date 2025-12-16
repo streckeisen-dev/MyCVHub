@@ -3,14 +3,14 @@ import { ProjectDto } from '@/types/ProjectDto.ts'
 import {
   EditProjectModal,
   ProjectFormData
-} from '@/pages/profile/editor/project/EditProjectModal.tsx'
+} from '@/components/profile/editor/project/EditProjectModal.tsx'
 import { stringToCalendarDate } from '@/helpers/DateHelper.ts'
 import { Button } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import {
   ProjectList,
   ProjectModificationEvent
-} from '@/pages/profile/editor/project/ProjectList.tsx'
+} from '@/components/profile/editor/project/ProjectList.tsx'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { RestError } from '@/types/RestError.ts'
 import { v7 as uuid } from 'uuid'

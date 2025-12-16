@@ -1,5 +1,5 @@
 import { ReactNode, useState } from 'react'
-import { SelectedCvContent } from '@/pages/cv/CvContentTreeRoot.tsx'
+import { SelectedCvContent } from '@/components/cv/CvContentTreeRoot.tsx'
 import { Checkbox } from '@heroui/react'
 import { FaCaretDown, FaCaretRight } from 'react-icons/fa6'
 import { useTranslation } from 'react-i18next'

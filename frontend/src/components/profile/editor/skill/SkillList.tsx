@@ -6,7 +6,7 @@ import { PublicSkillDto } from '@/types/PublicSkillDto.ts'
 import { h5 } from '@/styles/primitives.ts'
 import { Button, Progress } from '@heroui/react'
 import { FaPen, FaTrash } from 'react-icons/fa6'
-import { ListModificationEvent } from '@/pages/profile/editor/CvListEntry.tsx'
+import { ListModificationEvent } from '@/components/profile/editor/CvListEntry.tsx'
 
 function groupSkills(
   groups: KeyValueObject<(SkillDto | PublicSkillDto)[]>,

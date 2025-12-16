@@ -1,6 +1,6 @@
 import { CVStyleOptionDto } from '@/types/CVStyleDto.ts'
 import { KeyValueObject } from '@/types/KeyValueObject.ts'
-import { ColorPicker } from '@/components/ColorPicker.tsx'
+import { ColorPicker } from '@/components/input/ColorPicker.tsx'
 import { Input } from '@heroui/react'
 import { CVStyleOptionType } from '@/types/CVStyleOptionType.ts'
 

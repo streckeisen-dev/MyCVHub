@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import {
   CvListEntry,
   ListModificationEvent
-} from '@/pages/profile/editor/CvListEntry.tsx'
+} from '@/components/profile/editor/CvListEntry.tsx'
 import { FaFile, FaGithub, FaGlobe, FaLink } from 'react-icons/fa6'
 import { ProjectLinkType } from '@/types/ProjectLink.ts'
 import { IconType } from 'react-icons'

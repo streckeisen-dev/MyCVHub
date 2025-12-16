@@ -4,14 +4,14 @@ import { useTranslation } from 'react-i18next'
 import {
   EducationList,
   EducationModificationEvent
-} from '@/pages/profile/editor/education/EducationList.tsx'
+} from '@/components/profile/editor/education/EducationList.tsx'
 import { EducationDto } from '@/types/EducationDto.ts'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { RestError } from '@/types/RestError.ts'
 import {
   EditEducationModal,
   EducationFormData
-} from '@/pages/profile/editor/education/EditEducationModal.tsx'
+} from '@/components/profile/editor/education/EditEducationModal.tsx'
 import { stringToCalendarDate } from '@/helpers/DateHelper.ts'
 import { addErrorToast } from '@/helpers/ToastHelper.ts'
 

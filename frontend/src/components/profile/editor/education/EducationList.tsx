@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import {
   CvListEntry,
   ListModificationEvent
-} from '@/pages/profile/editor/CvListEntry.tsx'
+} from '@/components/profile/editor/CvListEntry.tsx'
 import { PublicEducationDto } from '@/types/PublicEducationDto.ts'
 import { sortByStartAndEndDate } from '@/helpers/SortHelper.ts'
 

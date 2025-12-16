@@ -9,9 +9,9 @@ import { Link } from 'react-router-dom'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import { FaPen } from 'react-icons/fa6'
 
-import classes from '../DashboardPage.module.css'
-import { UnverifiedPage } from '@/pages/dashboard/UnverifiedPage.tsx'
-import { DashboardCard } from '@/pages/dashboard/DashboardCard.tsx'
+import classes from './DashboardPage.module.css'
+import { UnverifiedView } from '@/components/dashboard/UnverifiedView.tsx'
+import { DashboardCard } from '@/components/dashboard/DashboardCard.tsx'
 
 type DashboardContentProps = Readonly<{
   info: DashboardInfoDto
@@ -114,7 +114,7 @@ export function DashboardPage(): ReactNode {
     <>
       <h1 className={title()}>{t('dashboard.title')}</h1>
 
-      {info.isVerified ? <DashboardContent info={info} /> : <UnverifiedPage />}
+      {info.isVerified ? <DashboardContent info={info} /> : <UnverifiedView />}
     </>
   ) : (
     <Empty headline={t('dashboard.loadingError')} />

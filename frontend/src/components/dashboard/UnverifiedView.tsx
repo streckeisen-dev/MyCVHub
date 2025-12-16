@@ -6,7 +6,7 @@ import { RestError } from '@/types/RestError.ts'
 import { h3 } from '@/styles/primitives.ts'
 import { addErrorToast, addSuccessToast } from '@/helpers/ToastHelper.ts'
 
-export function UnverifiedPage(): ReactNode {
+export function UnverifiedView(): ReactNode {
   const { t, i18n } = useTranslation()
 
   async function handleGenerateToken() {

@@ -5,11 +5,11 @@ import { WorkExperienceDto } from '@/types/WorkExperienceDto.ts'
 import {
   WorkExperienceList,
   WorkExperienceModificationEvent
-} from '@/pages/profile/editor/workExperience/WorkExperienceList.tsx'
+} from '@/components/profile/editor/workExperience/WorkExperienceList.tsx'
 import {
   EditWorkExperienceModal,
   WorkExperienceFormData
-} from '@/pages/profile/editor/workExperience/EditWorkExperienceModal.tsx'
+} from '@/components/profile/editor/workExperience/EditWorkExperienceModal.tsx'
 import { stringToCalendarDate } from '@/helpers/DateHelper.ts'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { RestError } from '@/types/RestError.ts'

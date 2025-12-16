@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { h4 } from '@/styles/primitives.ts'
-import { PasswordFormState } from '@/components/PasswordForm.tsx'
+import { PasswordFormState } from '@/components/account/PasswordForm.tsx'
 
 export type PasswordRequirementsProps = Readonly<{
   state: PasswordFormState;
