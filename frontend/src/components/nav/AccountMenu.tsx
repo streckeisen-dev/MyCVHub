@@ -1,36 +1,30 @@
-import {
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-  User
-} from '@heroui/react'
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, User } from '@heroui/react'
 
 import DefaultAvatar from '@/assets/default_profile_picture_thumbnail.png'
 import { OverlayPlacement } from '@heroui/aria-utils'
-import { JSX, use } from 'react'
+import { ReactNode, use } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AuthorizationContext } from '@/context/AuthorizationContext.tsx'
 import { getRoutePath, RouteId, SITE_CONFIG } from '@/config/RouteTree.tsx'
 
 interface AccountMenuProps {
-  dropdownPlacement?: OverlayPlacement;
+  dropdownPlacement?: OverlayPlacement
+  onNavigate?: () => void
 }
 
 const defaultValue: AccountMenuProps = {
-  dropdownPlacement: 'bottom-end'
+  dropdownPlacement: 'bottom-end',
+  onNavigate: undefined
 }
 
-export function AccountMenu(
-  props: AccountMenuProps = defaultValue
-): JSX.Element {
+export function AccountMenu(props: AccountMenuProps = defaultValue): ReactNode {
   const { t } = useTranslation()
   const { user } = use(AuthorizationContext)
+  const { dropdownPlacement, onNavigate } = props
 
   const loginButton = (
-    <Button as={Link} to={getRoutePath(RouteId.Login)} color="primary">
+    <Button as={Link} to={getRoutePath(RouteId.Login)} color="primary" onPress={onNavigate}>
       {t('account.login.action')}
     </Button>
   )
@@ -42,13 +36,14 @@ export function AccountMenu(
       as={Link}
       href={item.href}
       startContent={item.icon}
+      onPress={onNavigate}
     >
       {t(item.label)}
     </DropdownItem>
   ))
 
   const menu = (
-    <Dropdown placement={props.dropdownPlacement}>
+    <Dropdown placement={dropdownPlacement}>
       <DropdownTrigger>
         <User
           avatarProps={{

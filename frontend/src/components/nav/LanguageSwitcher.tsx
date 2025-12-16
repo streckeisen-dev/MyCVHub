@@ -3,8 +3,13 @@ import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@
 import { useTranslation } from 'react-i18next'
 import { SUPPOERTED_LANGUAGES } from '@/config/Languages.ts'
 
-export function LanguageSwitcher(): React.ReactNode {
+export type LanguageSwitcherProps = Readonly<{
+  className?: string
+}>
+
+export function LanguageSwitcher(props: LanguageSwitcherProps): React.ReactNode {
   const {i18n} = useTranslation()
+  const { className } = props
 
   function changeLanguage(lang: string) {
     i18n.changeLanguage(lang)
@@ -13,7 +18,7 @@ export function LanguageSwitcher(): React.ReactNode {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button variant="bordered">
+        <Button variant="bordered" className={className}>
           {SUPPOERTED_LANGUAGES.find(lang => lang.key === i18n.language)?.name ?? i18n.language}
         </Button>
       </DropdownTrigger>
