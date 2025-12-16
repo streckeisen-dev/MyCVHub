@@ -1,15 +1,14 @@
-import { describe } from 'vitest'
+import { describe, expect } from 'vitest'
 import {
   compareDatesByYearAndMonth,
   convertStringToDate,
   formatDate,
   stringToCalendarDate,
   toDateString
-} from '../../src/helpers/DateHelper'
+} from '@/helpers/DateHelper.ts'
 import { CalendarDate } from '@internationalized/date'
 
 describe('DateHelper tests', () => {
-  
   describe('stringToCalendarDate tests', () => {
     it('stringToCalendarDate should return null for undefined value', () => {
       const result = stringToCalendarDate(undefined)

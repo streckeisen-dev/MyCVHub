@@ -1,5 +1,5 @@
-import { describe } from 'vitest'
-import { SortByStartAndEndData, sortByStartAndEndDate } from '../../src/helpers/SortHelper'
+import { describe, expect } from 'vitest'
+import { SortByStartAndEndData, sortByStartAndEndDate } from '@/helpers/SortHelper.ts'
 
 describe('SortHelper tests', () => {
   it('sortByStartAndEndDate should sort end before start', ()=> {
