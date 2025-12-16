@@ -13,4 +13,10 @@ class UiController {
     fun forwardUiRequests(): String {
         return "forward:/index.html"
     }
+
+    @RequestMapping("/")
+    @PublicApi
+    fun redirectToUi(): String {
+        return "redirect:/ui/"
+    }
 }

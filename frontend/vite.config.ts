@@ -24,10 +24,7 @@ export default defineConfig({
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            // random number between 1 and 4
-            const random = Math.floor(Math.random() * 5) + 1
-            return `vendor-${random}`
-
+            return 'vendor'
           }
           return null
         }

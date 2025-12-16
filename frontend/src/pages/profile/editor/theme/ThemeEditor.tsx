@@ -1,7 +1,6 @@
 import { FormEvent, ReactNode, useState } from 'react'
 import { ProfileThemeDto } from '@/types/ProfileThemeDto.ts'
 import { useTranslation } from 'react-i18next'
-import { ColorState } from 'react-color'
 import { addToast, Button, Form, Navbar, NavbarBrand, NavbarContent } from '@heroui/react'
 import { h4 } from '@/styles/primitives.ts'
 import { ColorPicker } from '@/components/ColorPicker.tsx'
@@ -11,6 +10,7 @@ import { ProfileTheme } from '@/config/ProfileTheme.ts'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { RestError } from '@/types/RestError.ts'
 import { getMatchingTextColor } from '@/styles/TextColor.ts'
+import { ColorResult } from 'react-color'
 
 export type ThemeEditorProps = Readonly<{
   initialValue: ProfileThemeDto | undefined
@@ -30,11 +30,11 @@ export function ThemeEditor(props: ThemeEditorProps): ReactNode {
   const [isResetting, setIsResetting] = useState<boolean>(false)
   const [errorMessages, setErrorMessages] = useState<ErrorMessages>({})
 
-  function handleBackgroundColorChange(color: ColorState) {
+  function handleBackgroundColorChange(color: ColorResult) {
     setBackgroundColor(color.hex)
   }
 
-  function handleSurfaceColorChange(color: ColorState) {
+  function handleSurfaceColorChange(color: ColorResult) {
     setSurfaceColor(color.hex)
   }
 
