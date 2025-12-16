@@ -1,0 +1,5 @@
+export enum AuthLevel {
+  INCOMPLETE = 'INCOMPLETE',
+  UNVERIFIED = 'UNVERIFIED',
+  VERIFIED = 'VERIFIED',
+}

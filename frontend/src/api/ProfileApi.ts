@@ -1,41 +1,26 @@
-import type { PublicProfileDto } from '@/dto/PublicProfileDto'
-import { commonHeaders, extractErrorIfResponseIsNotOk, fetchFromApi, getJSONIfResponseIsOk } from '@/api/ApiHelper'
-import type { ProfileDto } from '@/dto/ProfileDto'
-import type { ProfileUpdateRequestDto } from '@/dto/ProfileUpdateRequestDto'
-import type { WorkExperienceUpdateDto } from '@/dto/WorkExperienceUpdateDto'
-import type { WorkExperienceDto } from '@/dto/WorkExperienceDto'
-import type { EducationUpdateDto } from '@/dto/EducationUpdateDto'
-import type { EducationDto } from '@/dto/EducationDto'
-import type { SkillUpdateDto } from '@/dto/SkillUpdateDto'
-import type { SkillDto } from '@/dto/SkillDto'
-import type { ThumbnailDto } from '@/dto/ThumbnailDto'
-import type { ProfileThemeUpdateDto } from '@/dto/ProfileThemeUpdateDto'
-import type { ProfileThemeDto } from '@/dto/ProfileThemeDto'
-import { ProjectUpdateDto } from '@/dto/ProjectUpdateDto'
-import { ProjectDto } from '@/dto/ProjectDto'
-import { RestError } from '@/api/RestError'
+import { ProfileDto } from '@/types/ProfileDto.ts'
+import {
+  extractErrorIfResponseIsNotOk,
+  fetchFromApi,
+  getJSONIfResponseIsOk
+} from '@/api/ApiHelper.ts'
+import { RestError } from '@/types/RestError.ts'
+import { ProfileUpdateRequestDto } from '@/types/ProfileUpdateRequestDto.ts'
+import { WorkExperienceUpdateDto } from '@/types/WorkExperienceUpdateDto.ts'
+import { WorkExperienceDto } from '@/types/WorkExperienceDto.ts'
+import { EducationUpdateDto } from '@/types/EducationUpdateDto.ts'
+import { EducationDto } from '@/types/EducationDto.ts'
+import { ProjectUpdateDto } from '@/types/ProjectUpdateDto.ts'
+import { ProjectDto } from '@/types/ProjectDto.ts'
+import { SkillUpdateDto } from '@/types/SkillUpdateDto.ts'
+import { SkillDto } from '@/types/SkillDto.ts'
+import { ProfileThemeUpdateDto } from '@/types/ProfileThemeUpdateDto.ts'
+import { ProfileThemeDto } from '@/types/ProfileThemeDto.ts'
+import { PublicProfileDto } from '@/types/PublicProfileDto.ts'
 
-async function getPublicProfile(username: string): Promise<PublicProfileDto> {
+async function getProfile(locale: string): Promise<ProfileDto> {
   try {
-    const response = await fetchFromApi(`/api/public/profile/${username}`)
-    return await getJSONIfResponseIsOk<PublicProfileDto>(response)
-  } catch (e) {
-    const error = (e as RestError).errorDto
-    throw new RestError('Failed to load public profile', error)
-  }
-}
-
-function getDefaultProfilePicture(): string {
-  return new URL('@/assets/default_profile_picture.png', import.meta.url).toString()
-}
-
-function getDefaultProfilePictureThumbnail(): string {
-  return new URL('@/assets/default_profile_picture_thumbnail.png', import.meta.url).toString()
-}
-
-async function getProfile(): Promise<ProfileDto> {
-  try {
-    const response = await fetchFromApi('/api/profile')
+    const response = await fetchFromApi('/profile', locale)
     return await getJSONIfResponseIsOk<ProfileDto>(response)
   } catch (e) {
     const error = (e as RestError).errorDto
@@ -43,18 +28,19 @@ async function getProfile(): Promise<ProfileDto> {
   }
 }
 
-async function updateGeneralInformation(
-  profileUpdate: ProfileUpdateRequestDto
-): Promise<ProfileDto> {
+async function saveGeneralInformation(profileUpdate: ProfileUpdateRequestDto, locale: string): Promise<ProfileDto> {
   const formData = new FormData()
   formData.append('data', JSON.stringify(profileUpdate))
   if (profileUpdate.profilePicture) {
     formData.append('profilePicture', profileUpdate.profilePicture)
   }
+  const headers = new Headers()
+  headers.append('Content-Type', '')
   try {
-    const response = await fetchFromApi('/api/profile', {
+    const response = await fetchFromApi('/profile', locale, {
       method: 'POST',
-      body: formData
+      body: formData,
+      headers: headers
     })
     return await getJSONIfResponseIsOk<ProfileDto>(response)
   } catch (e) {
@@ -64,13 +50,13 @@ async function updateGeneralInformation(
 }
 
 async function saveWorkExperience(
-  workExperienceUpdate: WorkExperienceUpdateDto
+  workExperienceUpdate: WorkExperienceUpdateDto,
+  locale: string
 ): Promise<WorkExperienceDto> {
   try {
-    const response = await fetchFromApi('/api/profile/work-experience', {
+    const response = await fetchFromApi('/profile/work-experience', locale, {
       method: 'POST',
-      body: JSON.stringify(workExperienceUpdate),
-      headers: commonHeaders()
+      body: JSON.stringify(workExperienceUpdate)
     })
     return await getJSONIfResponseIsOk<WorkExperienceDto>(response)
   } catch (e) {
@@ -79,9 +65,9 @@ async function saveWorkExperience(
   }
 }
 
-async function deleteWorkExperience(id: number): Promise<void> {
+async function deleteWorkExperience(id: number, locale: string): Promise<void> {
   try {
-    const response = await fetchFromApi(`/api/profile/work-experience/${id}`, {
+    const response = await fetchFromApi(`/profile/work-experience/${id}`, locale, {
       method: 'DELETE'
     })
     await extractErrorIfResponseIsNotOk(response)
@@ -91,12 +77,11 @@ async function deleteWorkExperience(id: number): Promise<void> {
   }
 }
 
-async function saveEducation(educationUpdate: EducationUpdateDto): Promise<EducationDto> {
+async function saveEducation(educationUpdate: EducationUpdateDto, locale: string): Promise<EducationDto> {
   try {
-    const response = await fetchFromApi('/api/profile/education', {
+    const response = await fetchFromApi('/profile/education', locale, {
       method: 'POST',
-      body: JSON.stringify(educationUpdate),
-      headers: commonHeaders()
+      body: JSON.stringify(educationUpdate)
     })
     return await getJSONIfResponseIsOk<EducationDto>(response)
   } catch (e) {
@@ -105,9 +90,9 @@ async function saveEducation(educationUpdate: EducationUpdateDto): Promise<Educa
   }
 }
 
-async function deleteEducation(id: number): Promise<void> {
+async function deleteEducation(id: number, locale: string): Promise<void> {
   try {
-    const response = await fetchFromApi(`/api/profile/education/${id}`, {
+    const response = await fetchFromApi(`/profile/education/${id}`, locale, {
       method: 'DELETE'
     })
     await extractErrorIfResponseIsNotOk(response)
@@ -117,38 +102,11 @@ async function deleteEducation(id: number): Promise<void> {
   }
 }
 
-async function saveSkill(skillUpdate: SkillUpdateDto): Promise<SkillDto> {
+async function saveProject(projectUpdate: ProjectUpdateDto, locale: string): Promise<ProjectDto> {
   try {
-    const response = await fetchFromApi('/api/profile/skill', {
+    const response = await fetchFromApi('/profile/project', locale, {
       method: 'POST',
-      body: JSON.stringify(skillUpdate),
-      headers: commonHeaders()
-    })
-    return await getJSONIfResponseIsOk<SkillDto>(response)
-  } catch (e) {
-    const error = (e as RestError).errorDto
-    throw new RestError('Failed to save skill', error)
-  }
-}
-
-async function deleteSkill(id: number): Promise<void> {
-  try {
-    const response = await fetchFromApi(`/api/profile/skill/${id}`, {
-      method: 'DELETE'
-    })
-    await extractErrorIfResponseIsNotOk(response)
-  } catch (e) {
-    const error = (e as RestError).errorDto
-    throw new RestError('Failed to delete skill', error)
-  }
-}
-
-async function saveProject(projectUpdate: ProjectUpdateDto): Promise<ProjectDto> {
-  try {
-    const response = await fetchFromApi('/api/profile/project', {
-      method: 'POST',
-      body: JSON.stringify(projectUpdate),
-      headers: commonHeaders()
+      body: JSON.stringify(projectUpdate)
     })
     return await getJSONIfResponseIsOk<ProjectDto>(response)
   } catch (e) {
@@ -157,9 +115,9 @@ async function saveProject(projectUpdate: ProjectUpdateDto): Promise<ProjectDto>
   }
 }
 
-async function deleteProject(id: number): Promise<void> {
+async function deleteProject(id: number, locale: string): Promise<void> {
   try {
-    const response = await fetchFromApi(`/api/profile/project/${id}`, {
+    const response = await fetchFromApi(`/profile/project/${id}`, locale, {
       method: 'DELETE'
     })
     await extractErrorIfResponseIsNotOk(response)
@@ -169,22 +127,36 @@ async function deleteProject(id: number): Promise<void> {
   }
 }
 
-async function getThumbnail(): Promise<ThumbnailDto> {
+async function saveSkill(skillUpdate: SkillUpdateDto, locale: string): Promise<SkillDto> {
   try {
-    const response = await fetchFromApi('/profile/picture/thumbnail')
-    return await getJSONIfResponseIsOk<ThumbnailDto>(response)
+    const response = await fetchFromApi('/profile/skill', locale, {
+      method: 'POST',
+      body: JSON.stringify(skillUpdate)
+    })
+    return await getJSONIfResponseIsOk<SkillDto>(response)
   } catch (e) {
     const error = (e as RestError).errorDto
-    throw new RestError('Failed to load thumbnail', error)
+    throw new RestError('Failed to save skill', error)
   }
 }
 
-async function saveTheme(themeUpdate: ProfileThemeUpdateDto): Promise<ProfileThemeDto> {
+async function deleteSkill(id: number, locale: string): Promise<void> {
   try {
-    const response = await fetchFromApi('/api/profile/theme', {
+    const response = await fetchFromApi(`/profile/skill/${id}`, locale, {
+      method: 'DELETE'
+    })
+    await extractErrorIfResponseIsNotOk(response)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    throw new RestError('Failed to delete skill', error)
+  }
+}
+
+async function saveTheme(themeUpdate: ProfileThemeUpdateDto, locale: string): Promise<ProfileThemeDto> {
+  try {
+    const response = await fetchFromApi('/profile/theme', locale, {
       method: 'POST',
-      body: JSON.stringify(themeUpdate),
-      headers: commonHeaders()
+      body: JSON.stringify(themeUpdate)
     })
     return await getJSONIfResponseIsOk<ProfileThemeDto>(response)
   } catch (e) {
@@ -193,20 +165,27 @@ async function saveTheme(themeUpdate: ProfileThemeUpdateDto): Promise<ProfileThe
   }
 }
 
+async function getPublicProfile(username: string, locale: string): Promise<PublicProfileDto> {
+  try {
+    const response = await fetchFromApi(`/public/profile/${username}`, locale)
+    return await getJSONIfResponseIsOk<PublicProfileDto>(response)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    throw new RestError('Failed to load public profile', error)
+  }
+}
+
 export default {
-  getPublicProfile,
-  getDefaultProfilePicture,
-  getDefaultProfilePictureThumbnail,
   getProfile,
-  updateGeneralInformation,
+  saveGeneralInformation,
   saveWorkExperience,
   deleteWorkExperience,
   saveEducation,
   deleteEducation,
-  saveSkill,
-  deleteSkill,
   saveProject,
   deleteProject,
-  getThumbnail,
-  saveTheme
+  saveSkill,
+  deleteSkill,
+  saveTheme,
+  getPublicProfile
 }

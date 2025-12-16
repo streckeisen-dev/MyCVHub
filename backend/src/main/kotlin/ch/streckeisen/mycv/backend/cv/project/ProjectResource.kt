@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 class ProjectResource(
     private val projectService: ProjectService
 ) {
-    @PostMapping()
+    @PostMapping
     fun saveProject(@RequestBody updateRequest: ProjectUpdateDto): ResponseEntity<ProjectDto> {
         val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
 
@@ -31,7 +31,7 @@ class ProjectResource(
     }
 
     @DeleteMapping("{id}")
-    fun deleteProject(@PathVariable("id") id: Long): ResponseEntity<Unit> {
+    fun deleteProject(@PathVariable id: Long): ResponseEntity<Unit> {
         val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
 
         return projectService.delete(principal.id, id)

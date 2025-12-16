@@ -19,7 +19,7 @@ private val logger = KotlinLogging.logger {}
 class OAuth2SuccessHandler(
     private val authTokenService: AuthTokenService,
     private val oAuthIntegrationService: OAuthIntegrationService,
-    @Value("\${my-cv.frontend.base-url}")
+    @param:Value(value = $$"${my-cv.frontend.base-url}")
     private val frontendBaseUrl: String,
 ) : AuthenticationSuccessHandler {
     override fun onAuthenticationSuccess(

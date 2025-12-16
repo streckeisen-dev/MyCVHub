@@ -25,28 +25,13 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 //
-
-import { mount } from 'cypress/vue'
-import mockI18n from '../../tests/mock/mockI18n'
-import { mockVuetify } from '../../tests/mock/mockVuetify'
-
-declare global {
-  namespace Cypress {
-    interface Chainable {
-      mountInApp(component: any, options?: Record<string, any>): Chainable<any>
-    }
-  }
-}
-
-Cypress.Commands.add('mountInApp', (component, options = {}) => {
-  return mount(component, {
-    global: {
-      plugins: [mockI18n, mockVuetify],
-      ...options.global
-    },
-    ...options
-  }).then(({ wrapper }) => {
-    cy.viewport(1200, 800)
-    return cy.wrap(wrapper).as('vue')
-  })
-})
+// declare global {
+//   namespace Cypress {
+//     interface Chainable {
+//       login(email: string, password: string): Chainable<void>
+//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
+//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
+//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
+//     }
+//   }
+// }

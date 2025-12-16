@@ -127,16 +127,16 @@ class OAuthIntegrationService(
     private fun createIncompleteOAuthAccount(
         username: String,
         oauthType: OAuthType,
-        oauthId: String
+        oauthId: String,
     ): Result<ApplicantAccountEntity> {
         authenticationValidationService.validateOAuthSignupRequest(username)
             .onFailure { return Result.failure(it) }
 
         val oauthAccount = ApplicantAccountEntity(
-            username,
-            null,
-            true,
-            false
+            username = username,
+            password = null,
+            isOAuthUser = true,
+            isVerified = false
         )
         val account = applicantAccountRepository.save(oauthAccount)
         addOAuthIntegration(account, oauthId, oauthType)

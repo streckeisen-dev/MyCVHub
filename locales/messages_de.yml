@@ -91,6 +91,12 @@ frontend:
       title: "Bereit deinen Online-Lebenslauf zu erstellen?"
       btn: "Jetzt anmelden"
 
+  dashboard:
+    title: "Dashboard"
+    profile: "Dein CV Profil"
+    noProfile: "Du hast noch kein Profil. Erstelle eines und baue deinen Lebenslauf."
+    loadingError: "Das Dashboard konnte nicht geladen werden"
+
   account:
     title: "Account"
     personalData: "Persönliche Daten"
@@ -144,11 +150,19 @@ frontend:
         error: "Die Verifizierungs-E-Mail konnte nicht verschickt werden"
       success: "Deine E-Mail Addresse wurde erfolgreich verifiziert"
       error: "Deine E-Mail Addresse konnte nicht verifiziert werden"
-    delete:
-      title: "Account löschen"
-      confirmationText: "Wenn du dein Account löschst, werden alle Account- und Lebenslaufdaten endgültig gelöscht. Du kannst deine Daten datanch nicht mehr wiederherstellen."
-      success: "Dein Account wurde erfolgreich gelöscht"
-      error: "Dein Account konnte nicht gelöscht werden"
+    security:
+      title: "Sicherheit"
+      authType: "Anmeldemethode"
+      userPw: "Benutzername und Passwort"
+      oauthMethod: "Drittanbieter-Anmeldung"
+      oauth: 'Verlinkte Accounts'
+    accountMgmt:
+      title: "Account Verwaltung"
+      delete:
+        action: "Account löschen"
+        confirmationText: "Wenn du dein Account löschst, werden alle Account- und Lebenslaufdaten endgültig gelöscht. Du kannst deine Daten datanch nicht mehr wiederherstellen."
+        success: "Dein Account wurde erfolgreich gelöscht"
+        error: "Dein Account konnte nicht gelöscht werden"
 
   profile:
     title: "Profil"
@@ -173,6 +187,7 @@ frontend:
       hideDescriptions: "Beschreibungen aus dem öffentlichen Profil ausblenden"
       hideDescriptionsHint: "Falls aktiviert, werden detaillierte Beschreibungen deiner Lebenslaufeinträge nicht in deinem Profil angezeigt"
       saveErrorTitle: "Dein Profil konnte nicht gespeichert werden"
+      saveSuccessTitle: "Dein Profile wurde erfolgreich gespeichert"
 
   workExperience:
     title: "Berufserfahrung"
@@ -232,12 +247,12 @@ frontend:
     customizeTemplate: "Vorlage personalisieren"
 
   theme:
-    title: "Thema"
-    description: "Standardmäßig wird dein Lebenslauf im hellen Thema von MyCVHub angezeigt. Unten kannst du die verwendeten Farben nach deinem Geschmack anpassen.\nAchte auf Farben, die den Text gut lesbar und professionell machen.\n\nTipps:\n- Hintergrundfarbe: Eine weiche, neutrale Farbe kann dein Profil elegant aussehen lassen.\n- Farbe der Kopfzeile: Nimm eine etwas dunklere oder kontrastierende Farbe, um die Kopfzeile hervorzuheben."
+    title: "Design"
+    description: "Standardmäßig wird dein Lebenslauf im hellen Design von MyCVHub angezeigt. Unten kannst du die verwendeten Farben nach deinem Geschmack anpassen.\nAchte auf Farben, die den Text gut lesbar und professionell machen.\n\nTipps:\n- Hintergrundfarbe: Wähle eine weiche, neutrale Farbe um dein Profil elegant aussehen zu lassen.\n- Kopfzeilenfarbe: Nimm eine Farbe die etwas kontrast zur Hintergrundfarbe erstellt, um die Kopfzeile hervorzuheben."
     reset: "Auf Standards zurücksetzen"
     preview: "Vorschau"
-    saveSuccess: "Deine Einstellungen wurden gespeichert"
-    saveError: "Deine Thema Einstellungen konnten nicht gespeichert werden"
+    saveSuccess: "Deine Design Einstellungen wurden gespeichert"
+    saveError: "Deine Design Einstellungen konnten nicht gespeichert werden"
 
   country:
     loadingError:
@@ -289,6 +304,10 @@ frontend:
     contact:
       title: "Kontaktinformationen"
       content: "Bei Fragen oder Anliegen kontaktieren Sie uns bitte unter"
+
+  unauthorized:
+    headline: "Nicht Autorisiert"
+    title: "Du hast keine Berechtigung um auf diese Seite zuzugreifen!"
 
 backend:
   validations:

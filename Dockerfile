@@ -10,5 +10,9 @@ WORKDIR /app
 COPY ./backend/target/mycv.jar ./app.jar
 COPY ./frontend/dist ./static
 
+RUN addgroup -S nonroot \
+    && adduser -S nonroot -G nonroot
+USER nonroot
+
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]

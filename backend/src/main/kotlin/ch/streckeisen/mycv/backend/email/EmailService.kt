@@ -14,7 +14,7 @@ private val logger = KotlinLogging.logger { }
 class EmailService(
     private val mailSender: JavaMailSender,
     private val emailTemplateService: EmailTemplateService,
-    @Value("\${spring.mail.username}")
+    @param:Value($$"${spring.mail.username}")
     private val senderEmail: String
 ) {
 

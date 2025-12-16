@@ -1,82 +1,97 @@
+import { AccountDto } from '@/types/AccountDto.ts'
+import { AccountUpdateDto } from '@/types/AccountUpdateDto.ts'
+import { AuthResponseDto } from '@/types/AuthResponseDto.ts'
 import {
-  commonHeaders,
   extractErrorIfResponseIsNotOk,
   fetchFromApi,
-  getJSONIfResponseIsOk,
-  processAuthResponse
-} from '@/api/ApiHelper'
-import type { AccountDto } from '@/dto/AccountDto'
-import LoginStateService from '@/services/LoginStateService'
-import type { SignupRequestDto } from '@/dto/SignUpRequestDto'
-import type { AccountUpdateDto } from '@/dto/AccountUpdateDto'
-import type { ChangePasswordRequestDto } from '@/dto/ChangePasswordRequestDto'
-import { AccountStatus, type AccountStatusDto } from '@/dto/AccountStatusDto'
-import type { OAuthSignUpRequestDto } from '@/dto/OAuthSignUpRequestDto'
-import { RestError } from '@/api/RestError'
-import LanguageService from '@/services/LanguageService.ts'
-import { LocaleInstance } from 'vuetify/framework'
+  getJSONIfResponseIsOk
+} from '@/api/ApiHelper.ts'
+import { RestError } from '@/types/RestError.ts'
+import { ChangePasswordRequestDto } from '@/types/ChangePasswordRequestDto.ts'
+import { SignupRequestDto } from '@/types/SignUpRequestDto.ts'
+import { AccountVerificationRequestDto } from '@/types/AccountVerificationRequestDto.ts'
+import { OAuthSignUpRequestDto } from '@/types/OAuthSignUpRequestDto.ts'
 
-async function login(email: string, password: string, locale: LocaleInstance): Promise<void> {
+async function login(username: string | undefined, password: string | undefined, locale: string): Promise<void> {
   try {
-    const response = await fetch('/api/auth/login', {
+    const response = await fetchFromApi('/auth/login', locale, {
       method: 'POST',
       body: JSON.stringify({
-        username: email,
+        username: username,
         password: password
-      }),
-      headers: commonHeaders()
+      })
     })
-    return processAuthResponse(response, locale)
+    return extractErrorIfResponseIsNotOk(response)
   } catch (e) {
     const error = (e as RestError).errorDto
     throw new RestError('Failed to login', error)
   }
 }
 
-async function verifyLogin(locale: LocaleInstance): Promise<void> {
+async function signUp(signupRequest: SignupRequestDto, locale: string): Promise<void> {
   try {
-    const response = await fetchFromApi('/auth/login/verify')
-    return processAuthResponse(response, locale)
-  } catch (e) {
-    const error = (e as RestError).errorDto
-    throw new RestError('Failed to verify login state', error)
-  }
-}
-
-async function signUp(account: SignupRequestDto, locale: LocaleInstance): Promise<void> {
-  try {
-    const response = await fetch('/api/auth/signup', {
+    const response = await fetchFromApi('/auth/signup', locale, {
       method: 'POST',
-      body: JSON.stringify(account),
-      headers: commonHeaders()
+      body: JSON.stringify(signupRequest)
     })
-    return processAuthResponse(response, locale)
+    return extractErrorIfResponseIsNotOk(response)
   } catch (e) {
     const error = (e as RestError).errorDto
     throw new RestError('Failed to signup', error)
   }
 }
 
-async function oauthSignUp(oAuthSignUpRequest: OAuthSignUpRequestDto, locale: LocaleInstance): Promise<void> {
+async function oauthSignUp(oAuthSignUpRequest: OAuthSignUpRequestDto, locale: string): Promise<void> {
   try {
-    const response = await fetch('/api/oauth/signup', {
+    const response = await fetchFromApi('/oauth/signup', locale, {
       method: 'POST',
-      body: JSON.stringify(oAuthSignUpRequest),
-      headers: commonHeaders()
+      body: JSON.stringify(oAuthSignUpRequest)
     })
-    return processAuthResponse(response, locale)
+    return extractErrorIfResponseIsNotOk(response)
   } catch (e) {
     const error = (e as RestError).errorDto
     throw new RestError('Failed to signup with OAuth', error)
   }
 }
 
-async function changePassword(changePasswordRequest: ChangePasswordRequestDto): Promise<void> {
+async function verifyLogin(locale: string): Promise<AuthResponseDto> {
   try {
-    const response = await fetchFromApi('/account/change-password', {
+    const response = await fetchFromApi('/auth/login/verify', locale)
+    return await getJSONIfResponseIsOk<AuthResponseDto>(response)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    throw new RestError('Failed to verify login state', error)
+  }
+}
+
+async function getAccount(locale: string): Promise<AccountDto> {
+  try {
+    const response = await fetchFromApi('/account', locale)
+    return await getJSONIfResponseIsOk<AccountDto>(response)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    throw new RestError('Failed to load account', error)
+  }
+}
+
+async function updateAccount(updateRequest: AccountUpdateDto, locale: string): Promise<AccountDto> {
+  try {
+    const response = await fetchFromApi('/account', locale, {
       method: 'POST',
-      body: JSON.stringify(changePasswordRequest),
-      headers: commonHeaders()
+      body: JSON.stringify(updateRequest)
+    })
+    return await getJSONIfResponseIsOk<AccountDto>(response)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    throw new RestError('Failed to update account', error)
+  }
+}
+
+async function changePassword(changePasswordRequest: ChangePasswordRequestDto, locale: string): Promise<void> {
+  try {
+    const response = await fetchFromApi('/auth/change-password', locale, {
+      method: 'POST',
+      body: JSON.stringify(changePasswordRequest)
     })
     await extractErrorIfResponseIsNotOk(response)
   } catch (e) {
@@ -85,67 +100,34 @@ async function changePassword(changePasswordRequest: ChangePasswordRequestDto): 
   }
 }
 
-async function update(accountUpdate: AccountUpdateDto, locale: LocaleInstance): Promise<AccountDto> {
+async function logout(locale: string): Promise<void> {
   try {
-    const response = await fetchFromApi('/account', {
-      method: 'POST',
-      body: JSON.stringify(accountUpdate),
-      headers: commonHeaders()
-    })
-    const account = await getJSONIfResponseIsOk<AccountDto>(response)
-    LanguageService.setLanguage(account.language, locale, true)
-    return account
-  } catch (e) {
-    const error = (e as RestError).errorDto
-    throw new RestError('Failed to update account', error)
-  }
-}
-
-async function getAccountInfo(): Promise<AccountDto> {
-  try {
-    const response = await fetchFromApi('/account')
-    return await getJSONIfResponseIsOk<AccountDto>(response)
-  } catch (e) {
-    const error = (e as RestError).errorDto
-    throw new RestError('Failed to load account', error)
-  }
-}
-
-function isUserLoggedIn(): boolean {
-  return LoginStateService.isLoggedIn()
-}
-
-async function logout(locale: LocaleInstance): Promise<void> {
-  try {
-    const response = await fetch('/api/auth/logout', {
+    const response = await fetchFromApi('/auth/logout', locale, {
       method: 'POST'
     })
 
-    if (!response.ok) {
-      return Promise.reject(new RestError('Failed to perform logout'))
-    }
-    LoginStateService.loggedOut()
-    LanguageService.setLanguage(LanguageService.getLanguage(), locale)
+    await extractErrorIfResponseIsNotOk(response)
   } catch (e) {
     const error = (e as RestError).errorDto
     throw new RestError('Failed to logout', error)
   }
 }
 
-async function loadAccountStatus(): Promise<void> {
+async function deleteAccount(locale: string): Promise<void> {
   try {
-    const response = await fetchFromApi('/account/status')
-    const accountStatus = await getJSONIfResponseIsOk<AccountStatusDto>(response)
-    LoginStateService.setAccountStatus(accountStatus.status)
+    const response = await fetchFromApi('/account', locale, {
+      method: 'DELETE'
+    })
+    await extractErrorIfResponseIsNotOk(response)
   } catch (e) {
     const error = (e as RestError).errorDto
-    throw new RestError('Failed to load account status', error)
+    throw new RestError('Failed to delete account', error)
   }
 }
 
-async function generateVerificationCode(): Promise<void> {
+async function generateVerificationCode(locale: string): Promise<void> {
   try {
-    const response = await fetchFromApi('/account/verification/generate', {
+    const response = await fetchFromApi('/account/verification/generate', locale, {
       method: 'POST'
     })
     await extractErrorIfResponseIsNotOk(response)
@@ -155,51 +137,29 @@ async function generateVerificationCode(): Promise<void> {
   }
 }
 
-async function verifyAccount(accountId: number, token: string): Promise<void> {
+async function verifyAccount(request: AccountVerificationRequestDto, locale: string): Promise<void> {
   try {
-    const response = await fetchFromApi('/account/verification', {
+    const response = await fetchFromApi('/account/verification', locale, {
       method: 'POST',
-      body: JSON.stringify({
-        id: accountId,
-        token
-      }),
-      headers: commonHeaders()
+      body: JSON.stringify(request)
     })
     await extractErrorIfResponseIsNotOk(response)
-    if (isUserLoggedIn()) {
-      LoginStateService.setAccountStatus(AccountStatus.VERIFIED)
-    }
   } catch (e) {
     const error = (e as RestError).errorDto
     throw new RestError('Failed to verify account', error)
   }
 }
 
-async function deleteAccount(): Promise<void> {
-  try {
-    const response = await fetchFromApi('/account', {
-      method: 'DELETE',
-      headers: commonHeaders()
-    })
-    await extractErrorIfResponseIsNotOk(response)
-  } catch (e) {
-    const error = (e as RestError).errorDto
-    throw new RestError('Failed to delete account', error)
-  }
-}
-
 export default {
   login,
-  verifyLogin,
   signUp,
   oauthSignUp,
+  verifyLogin,
+  getAccount,
+  updateAccount,
   changePassword,
-  update,
-  isUserLoggedIn,
   logout,
-  getAccountInfo,
-  loadAccountStatus,
+  deleteAccount,
   generateVerificationCode,
-  verifyAccount,
-  deleteAccount
+  verifyAccount
 }
