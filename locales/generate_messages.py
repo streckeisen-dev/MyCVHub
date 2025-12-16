@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import yaml
 import json
 import os
@@ -54,8 +56,9 @@ def write_frontend_json(locales, output_dir):
         merged_data = convert_params_to_double_curly(merged_data)
 
         # Define the output path for each language
-        output_file = os.path.join(output_dir, os.path.join(lang, "translation.json"))
+        output_file: str = os.path.join(output_dir, os.path.join(lang, "translation.json"))
 
+        Path(output_file).parent.mkdir(exist_ok=True, parents=True)
         # Write the merged data to the JSON file
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(merged_data, f, ensure_ascii=False, indent=2)
