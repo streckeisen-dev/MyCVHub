@@ -2,7 +2,6 @@ package ch.streckeisen.mycv.backend.account.auth.oauth
 
 import ch.streckeisen.mycv.backend.account.AccountStatus
 import ch.streckeisen.mycv.backend.account.auth.AuthTokenService
-import ch.streckeisen.mycv.backend.account.dto.AuthResponseDto
 import ch.streckeisen.mycv.backend.account.dto.OAuthSignupRequestDto
 import ch.streckeisen.mycv.backend.security.annotations.RequiresAccountStatus
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipal

@@ -14,7 +14,7 @@ private val logger = KotlinLogging.logger {}
 @Service
 class GithubService(
     restClientBuilder: RestClient.Builder,
-    @Value("\${my-cv.github.api-base-url}") private val baseUrl: String,
+    @param:Value($$"${my-cv.github.api-base-url}") private val baseUrl: String,
 ) {
     private val restClient = restClientBuilder.baseUrl(baseUrl).build()
 

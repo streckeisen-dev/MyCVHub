@@ -112,10 +112,10 @@ class AuthenticationService(
             .getOrElse { return Result.failure(it) }
 
         val applicantAccount = ApplicantAccountEntity(
-            signupRequest.username!!,
-            encodedPassword,
-            false,
-            false,
+            username = signupRequest.username!!,
+            password = encodedPassword,
+            isOAuthUser = false,
+            isVerified = false,
             accountDetails = AccountDetailsEntity(
                 signupRequest.firstName!!,
                 signupRequest.lastName!!,

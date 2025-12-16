@@ -13,7 +13,6 @@ import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 private const val BIRTHDAY_FORMAT = "dd.MM.yyyy"
 private const val CV_DATE_FORMAT = "MM.yyyy"

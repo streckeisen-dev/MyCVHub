@@ -26,7 +26,7 @@ class ApplicationSecurityConfig(
     private val messagesService: MessagesService,
     private val oAuth2SuccessHandler: OAuth2SuccessHandler,
     private val clientRegistrationRepository: ClientRegistrationRepository,
-    @Value("\${my-cv.frontend.base-url}")
+    @param:Value($$"${my-cv.frontend.base-url}")
     private val frontendBaseUrl: String
 ) {
 

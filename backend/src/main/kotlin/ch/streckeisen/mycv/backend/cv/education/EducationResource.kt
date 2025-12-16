@@ -31,7 +31,7 @@ class EducationResource(
     }
 
     @DeleteMapping("{id}")
-    fun deleteEducation(@PathVariable("id") id: Long): ResponseEntity<Unit> {
+    fun deleteEducation(@PathVariable id: Long): ResponseEntity<Unit> {
         val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
 
         return educationService.delete(principal.id, id)

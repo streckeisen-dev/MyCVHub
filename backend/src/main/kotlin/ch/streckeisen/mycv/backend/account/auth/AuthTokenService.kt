@@ -44,10 +44,10 @@ class AuthTokenService(
         return Result.success(username!!)
     }
 
-    fun createRefreshCookie(refreshToken: String, expiresIn: Long) =
+    fun createRefreshCookie(refreshToken: String, expiresIn: Long): ResponseCookie =
         createCookie(REFRESH_TOKEN_NAME, refreshToken, "/api/auth/refresh", expiresIn)
 
-    fun createAccessCookie(accessToken: String, expiresIn: Long) =
+    fun createAccessCookie(accessToken: String, expiresIn: Long): ResponseCookie =
         createCookie(ACCESS_TOKEN_NAME, accessToken, "/", expiresIn)
 
     fun handleAuthTokenResult(authTokens: Result<AuthTokens>): ResponseEntity<Unit> {
