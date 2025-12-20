@@ -1,8 +1,8 @@
 import { Fragment, ReactNode } from 'react'
-import { SkillDto } from '@/types/SkillDto.ts'
+import { SkillDto } from '@/types/profile/skill/SkillDto.ts'
 import { useTranslation } from 'react-i18next'
 import { KeyValueObject } from '@/types/KeyValueObject.ts'
-import { PublicSkillDto } from '@/types/PublicSkillDto.ts'
+import { PublicSkillDto } from '@/types/profile/skill/PublicSkillDto.ts'
 import { h5 } from '@/styles/primitives.ts'
 import { Button, Progress } from '@heroui/react'
 import { FaPen, FaTrash } from 'react-icons/fa6'
@@ -100,7 +100,6 @@ function SkillEntry(props: SkillEntryProps): ReactNode {
 
   const nameClasses = hasActions ? 'col-span-4 lg:col-span-2' : 'col-span-6 lg:col-span-4'
   const levelClasses = hasActions ? 'col-span-8 lg:col-span-8' : 'col-span-6 lg:col-span-8'
-  const buttonClasses = 'col-span-2 md:col-span-1 w-min rounded-full lg:justify-self-end min-w-1'
 
   function handleEdit() {
     if (onEdit && (skill as SkillDto).id) {
@@ -119,14 +118,14 @@ function SkillEntry(props: SkillEntryProps): ReactNode {
       <p className={nameClasses}>{skill.name}</p>
       <Progress className={levelClasses} aria-label="Skill Level" value={skill.level} />
       {hasActions && (
-        <>
-          <Button color="primary" className={buttonClasses} onPress={handleEdit}>
+        <div className="col-span-12 lg:col-span-2 flex gap-3 justify-end">
+          <Button isIconOnly radius="full" color="primary" onPress={handleEdit}>
             <FaPen />
           </Button>
-          <Button color="danger" className={buttonClasses} onPress={handleDelete}>
+          <Button isIconOnly radius="full" color="danger" onPress={handleDelete}>
             <FaTrash />
           </Button>
-        </>
+        </div>
       )}
     </div>
   )

@@ -1,8 +1,11 @@
 package ch.streckeisen.mycv.backend.dashboard
 
 import ch.streckeisen.mycv.backend.account.AccountStatus
+import ch.streckeisen.mycv.backend.application.ApplicationService
+import ch.streckeisen.mycv.backend.application.dto.toDto
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
 import ch.streckeisen.mycv.backend.exceptions.LocalizedException
+import ch.streckeisen.mycv.backend.locale.MessagesService
 import ch.streckeisen.mycv.backend.security.annotations.RequiresAccountStatus
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
 import org.springframework.http.ResponseEntity
@@ -14,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/dashboard")
 class DashboardResource(
-    private val profileService: ProfileService
+    private val profileService: ProfileService,
+    private val applicationService: ApplicationService,
+    private val messagesService: MessagesService
 ) {
 
     @GetMapping
@@ -23,33 +28,38 @@ class DashboardResource(
         val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
 
         val isVerified = principal.status.permissionValue > AccountStatus.UNVERIFIED.permissionValue
-        return profileService.getProfileStats(principal.id)
+        val profileInfo = profileService.getProfileStats(principal.id)
             .fold(
                 onSuccess = { stats ->
-                    ResponseEntity.ok(
-                        DashboardInfoDto(
-                            isVerified = isVerified,
-                            profile = ProfileInfoDto(
-                                experienceCount = stats.experienceCount,
-                                educationCount = stats.educationCount,
-                                projectCount = stats.projectCount,
-                                skillCount = stats.skillCount
-                            )
-                        )
+                    ProfileInfoDto(
+                        experienceCount = stats.experienceCount,
+                        educationCount = stats.educationCount,
+                        projectCount = stats.projectCount,
+                        skillCount = stats.skillCount
                     )
                 },
                 onFailure = {
                     if (it is LocalizedException) {
-                        ResponseEntity.ok(
-                            DashboardInfoDto(
-                                isVerified = isVerified,
-                                profile = null
-                            )
-                        )
+                        null
                     } else {
                         throw it
                     }
                 }
             )
+
+        val applicationStats = applicationService.getApplicationStats(principal.id)
+            .fold(
+                onSuccess = { stats ->
+                    stats.map { stat -> ApplicationInfoDto(stat.status.toDto(messagesService), stat.count) }
+                },
+                onFailure = { throw it }
+            )
+
+        val dashboardInfo = DashboardInfoDto(
+            isVerified = isVerified,
+            profile = profileInfo,
+            applications = applicationStats
+        )
+        return ResponseEntity.ok(dashboardInfo)
     }
 }

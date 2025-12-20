@@ -9,11 +9,11 @@ import {
   ModalProps,
   Textarea
 } from '@heroui/react'
-import { EducationDto } from '@/types/EducationDto.ts'
+import { EducationDto } from '@/types/profile/education/EducationDto.ts'
 import { useTranslation } from 'react-i18next'
 import { FormButtons } from '@/components/FormButtons.tsx'
 import ProfileApi from '@/api/ProfileApi.ts'
-import { EducationUpdateDto } from '@/types/EducationUpdateDto.ts'
+import { EducationUpdateDto } from '@/types/profile/education/EducationUpdateDto.ts'
 import { toDateString } from '@/helpers/DateHelper.ts'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { RestError } from '@/types/RestError.ts'

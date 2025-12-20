@@ -1,8 +1,8 @@
-import { CVStyleOptionDto } from '@/types/CVStyleDto.ts'
+import { CVStyleOptionDto } from '@/types/cv/CVStyleDto.ts'
 import { KeyValueObject } from '@/types/KeyValueObject.ts'
 import { ColorPicker } from '@/components/input/ColorPicker.tsx'
 import { Input } from '@heroui/react'
-import { CVStyleOptionType } from '@/types/CVStyleOptionType.ts'
+import { CVStyleOptionType } from '@/types/cv/CVStyleOptionType.ts'
 
 export type CvStyleCustomizationViewProps = Readonly<{
   options: CVStyleOptionDto[];

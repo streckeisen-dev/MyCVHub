@@ -1,6 +1,6 @@
 import { fetchFromApi, getJSONIfResponseIsOk } from '@/api/ApiHelper.ts'
 import { RestError } from '@/types/RestError.ts'
-import { DashboardInfoDto } from '@/types/DashboardInfoDto.ts'
+import { DashboardInfoDto } from '@/types/dashboard/DashboardInfoDto.ts'
 
 async function getDashboardInfo(locale: string): Promise<DashboardInfoDto> {
   try {

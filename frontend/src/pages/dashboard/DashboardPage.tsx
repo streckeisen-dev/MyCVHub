@@ -1,17 +1,18 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { centerSection, title } from '@/styles/primitives.ts'
-import { DashboardInfoDto } from '@/types/DashboardInfoDto.ts'
+import { DashboardInfoDto } from '@/types/dashboard/DashboardInfoDto.ts'
 import DashboardApi from '@/api/DashboardApi.ts'
 import { useTranslation } from 'react-i18next'
 import { Button, Divider, Spinner } from '@heroui/react'
 import { Empty } from '@/components/Empty.tsx'
 import { Link } from 'react-router-dom'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
-import { FaPen } from 'react-icons/fa6'
 
 import classes from './DashboardPage.module.css'
 import { UnverifiedView } from '@/components/dashboard/UnverifiedView.tsx'
 import { DashboardCard } from '@/components/dashboard/DashboardCard.tsx'
+import { ProfileStat } from '@/components/dashboard/ProfileStat.tsx'
+import { ApplicationStat } from '@/components/dashboard/ApplicationStat.tsx'
 
 type DashboardContentProps = Readonly<{
   info: DashboardInfoDto
@@ -24,71 +25,85 @@ function DashboardContent(props: DashboardContentProps): ReactNode {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
       {info.profile ? (
-        <DashboardCard
-          title={t('dashboard.profile')}
-          content={
-            <div className="flex flex-col gap-4">
-              <div className={`grid grid-cols-[75%_auto_auto] ${classes.profileCard}`}>
-                <Divider className="col-span-3" />
-                <p>{t('workExperience.title')}</p>
-                <p>{info.profile.experienceCount}</p>
-                <Link to={getRoutePath(RouteId.EditProfile, 'experience')}>
-                  <FaPen />
-                </Link>
+        <DashboardCard title={t('dashboard.profile')}>
+          <div className="flex flex-col gap-4">
+            <div className={`grid grid-cols-[75%_auto_auto] ${classes.profileCard}`}>
+              <Divider className="col-span-3" />
 
-                <Divider className="col-span-3" />
+              <ProfileStat
+                title={t('workExperience.title')}
+                count={info.profile.experienceCount}
+                type="experience"
+              />
 
-                <p>{t('education.title')}</p>
-                <p>{info.profile.educationCount}</p>
-                <Link to={getRoutePath(RouteId.EditProfile, 'education')}>
-                  <FaPen />
-                </Link>
+              <ProfileStat
+                title={t('education.title')}
+                count={info.profile.educationCount}
+                type="education"
+              />
 
-                <Divider className="col-span-3" />
+              <ProfileStat
+                title={t('project.title')}
+                count={info.profile.educationCount}
+                type="projects"
+              />
 
-                <p>{t('project.title')}</p>
-                <p>{info.profile.projectCount}</p>
-                <Link to={getRoutePath(RouteId.EditProfile, 'projects')}>
-                  <FaPen />
-                </Link>
-
-                <Divider className="col-span-3" />
-
-                <p>{t('skills.title')}</p>
-                <p>{info.profile.skillCount}</p>
-                <Link to={getRoutePath(RouteId.EditProfile, 'skills')}>
-                  <FaPen />
-                </Link>
-
-                <Divider className="col-span-3" />
-              </div>
-              <div>
-                <Button color="primary" as={Link} to={getRoutePath(RouteId.EditProfile)}>
-                  {t('account.profile.edit')}
-                </Button>
-              </div>
+              <ProfileStat
+                title={t('skills.title')}
+                count={info.profile.skillCount}
+                type="skills"
+              />
             </div>
-          }
-        />
+
+            <Button
+              className="w-min"
+              color="primary"
+              as={Link}
+              to={getRoutePath(RouteId.EditProfile)}
+            >
+              {t('account.profile.edit')}
+            </Button>
+          </div>
+        </DashboardCard>
       ) : (
-        <DashboardCard
-          title={t('dashboard.profile')}
-          content={
-            <div className="flex flex-col gap-2">
-              <p>{t('dashboard.noProfile')}</p>
-              <Button
-                color="primary"
-                className="w-min"
-                as={Link}
-                to={getRoutePath(RouteId.CreateProfile)}
-              >
-                {t('account.profile.create')}
-              </Button>
-            </div>
-          }
-        />
+        <DashboardCard title={t('dashboard.profile')}>
+          <div className="flex flex-col gap-2">
+            <p>{t('dashboard.noProfile')}</p>
+            <Button
+              color="primary"
+              className="w-min"
+              as={Link}
+              to={getRoutePath(RouteId.CreateProfile)}
+            >
+              {t('account.profile.create')}
+            </Button>
+          </div>
+        </DashboardCard>
       )}
-      <DashboardCard title={'Job Application Tracking'} content={<p>Coming Soon</p>} />
+      <DashboardCard title={t('dashboard.applications')}>
+        {info.applications.length > 0 ? (
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-1.5">
+              <Divider className="col-span-2" />
+              {info.applications
+                .sort((a, b) => b.count - a.count)
+                .map((stat) => (
+                  <ApplicationStat key={stat.status.key} stat={stat} />
+                ))}
+            </div>
+            <Button
+              className="w-min"
+              color="primary"
+              as={Link}
+              to={getRoutePath(RouteId.ApplicationsOverview)}
+            >
+              {t('dashboard.viewApplications')}
+            </Button>
+          </div>
+        ) : (
+          <p>{t('application.noEntries')}</p>
+        )}
+      </DashboardCard>
     </div>
   )
 }
@@ -120,12 +135,5 @@ export function DashboardPage(): ReactNode {
     <Empty headline={t('dashboard.loadingError')} />
   )
 
-  return (
-    <section className={centerSection()}>
-      {isLoading ? (
-        <Spinner />
-      ) : content
-      }
-    </section>
-  )
+  return <section className={centerSection()}>{isLoading ? <Spinner /> : content}</section>
 }

@@ -1,5 +1,5 @@
 import { ReactNode, useState } from 'react'
-import { SkillDto } from '@/types/SkillDto.ts'
+import { SkillDto } from '@/types/profile/skill/SkillDto.ts'
 import { SkillList, SkillModificationEvent } from '@/components/profile/editor/skill/SkillList.tsx'
 import { Button } from '@heroui/react'
 import { useTranslation } from 'react-i18next'

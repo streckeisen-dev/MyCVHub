@@ -3345,6 +3345,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-stately/data@npm:^3.15.0":
+  version: 3.15.0
+  resolution: "@react-stately/data@npm:3.15.0"
+  dependencies:
+    "@react-types/shared": "npm:^3.32.1"
+    "@swc/helpers": "npm:^0.5.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
+  checksum: 10c0/3f5fb59cabe92c0750a6c86e04c8469d53b48ab53e90a3db00eb9e9097e85029b3ff28800b49273a2c0ad19fbe02101ca0d160c026eae36630ea52f8906df238
+  languageName: node
+  linkType: hard
+
 "@react-stately/datepicker@npm:3.15.2, @react-stately/datepicker@npm:^3.15.2":
   version: 3.15.2
   resolution: "@react-stately/datepicker@npm:3.15.2"
@@ -4374,6 +4386,22 @@ __metadata:
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
   checksum: 10c0/a996a745e6c5d60292f36731dd41341339d4eeed8180bb09226e5c8d23759067692b1d88e5d91d72ee83dfc00d3aca8e7bd43ea120516c17922cbcb7c3e252db
+  languageName: node
+  linkType: hard
+
+"@types/lodash.debounce@npm:^4":
+  version: 4.0.9
+  resolution: "@types/lodash.debounce@npm:4.0.9"
+  dependencies:
+    "@types/lodash": "npm:*"
+  checksum: 10c0/9fbb24e5e52616faf60ba5c82d8c6517f4b86fc6e9ab353b4c56c0760f63d9bf53af3f2d8f6c37efa48090359fb96dba1087d497758511f6c40677002191d042
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:*":
+  version: 4.17.21
+  resolution: "@types/lodash@npm:4.17.21"
+  checksum: 10c0/73cb006e047d8871e9d63f3a165543bf16c44a5b6fe3f9f6299e37cb8d67a7b1d55ac730959a81f9def510fd07232ff7e30e05413e5d5a12793baad84ebe36c3
   languageName: node
   linkType: hard
 
@@ -7395,6 +7423,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.debounce@npm:^4.0.8":
+  version: 4.0.8
+  resolution: "lodash.debounce@npm:4.0.8"
+  checksum: 10c0/762998a63e095412b6099b8290903e0a8ddcb353ac6e2e0f2d7e7d03abd4275fe3c689d88960eb90b0dde4f177554d51a690f22a343932ecbc50a5d111849987
+  languageName: node
+  linkType: hard
+
 "lodash.merge@npm:^4.6.2":
   version: 4.6.2
   resolution: "lodash.merge@npm:4.6.2"
@@ -9135,10 +9170,12 @@ __metadata:
     "@heroui/react": "npm:^2.8.6"
     "@heroui/use-theme": "npm:2.1.10"
     "@react-aria/visually-hidden": "npm:3.8.28"
+    "@react-stately/data": "npm:^3.15.0"
     "@react-types/shared": "npm:3.32.1"
     "@tailwindcss/postcss": "npm:4.1.18"
     "@tailwindcss/vite": "npm:4.1.18"
     "@types/jest": "npm:^30.0.0"
+    "@types/lodash.debounce": "npm:^4"
     "@types/node": "npm:24.10.4"
     "@types/react": "npm:19.2.7"
     "@types/react-color": "npm:^3.0.13"
@@ -9155,6 +9192,7 @@ __metadata:
     i18next-browser-languagedetector: "npm:^8.2.0"
     i18next-http-backend: "npm:^3.0.2"
     junit-report-merger: "npm:^9.0.3"
+    lodash.debounce: "npm:^4.0.8"
     moment: "npm:^2.30.1"
     postcss: "npm:8.5.6"
     prettier: "npm:3.7.4"

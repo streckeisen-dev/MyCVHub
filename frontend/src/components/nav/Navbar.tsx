@@ -26,6 +26,7 @@ import classes from './Navbar.module.css'
 import { use, useState } from 'react'
 import { AuthorizationContext } from '@/context/AuthorizationContext.tsx'
 import { SITE_CONFIG } from '@/config/RouteTree.tsx'
+import { ExternalLink } from '@/components/ExternalLink.tsx'
 
 export const Navbar = () => {
   const { t } = useTranslation()
@@ -38,7 +39,12 @@ export const Navbar = () => {
   }
 
   return (
-    <HeroUINavbar maxWidth="full" position="sticky" isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
+    <HeroUINavbar
+      maxWidth="full"
+      position="sticky"
+      isMenuOpen={isMenuOpen}
+      onMenuOpenChange={setIsMenuOpen}
+    >
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand className="gap-3 max-w-fit">
           <Link className="flex justify-start items-center gap-1" color="foreground" href="/">
@@ -46,7 +52,7 @@ export const Navbar = () => {
             <p className="font-bold text-inherit">MyCVHub</p>
           </Link>
         </NavbarBrand>
-        <div className="hidden lg:flex gap-4 justify-start ml-2">
+        <div className="hidden xl:flex gap-4 justify-start ml-2">
           {SITE_CONFIG.navItems
             .filter((item) => item.predicate(user))
             .map((item) => (
@@ -70,29 +76,22 @@ export const Navbar = () => {
         </div>
       </NavbarContent>
 
-      <NavbarContent className="hidden sm:flex basis-1/5 sm:basis-full" justify="end">
-        <NavbarItem className="flex">
+      <NavbarContent className="basis-1/5 sm:basis-full" justify="end">
+        <NavbarItem className="hidden sm:flex">
           <AccountMenu />
         </NavbarItem>
         <NavbarItem className="flex gap-2">
-          <Link isExternal href={SITE_CONFIG.links.github} title="GitHub">
+          <ExternalLink href={SITE_CONFIG.links.github} title="GitHub">
             <FaGithub className="text-default-500" size={25} />
-          </Link>
+          </ExternalLink>
           <ThemeSwitch />
         </NavbarItem>
         {user == null && (
-          <NavbarItem>
+          <NavbarItem className="hidden sm:flex">
             <LanguageSwitcher />
           </NavbarItem>
         )}
-      </NavbarContent>
-
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <Link isExternal href={SITE_CONFIG.links.github}>
-          <FaGithub className="text-default-500" size={25} />
-        </Link>
-        <ThemeSwitch />
-        <NavbarMenuToggle />
+        <NavbarMenuToggle className="xl:hidden" />
       </NavbarContent>
 
       <NavbarMenu>
@@ -120,11 +119,11 @@ export const Navbar = () => {
             ))}
         </div>
 
-        <div className="flex flex-col grow justify-end">
+        <div className="flex sm:hidden flex-col grow justify-end">
           <Divider />
           <div className="mx-4 my-2 flex gap-2">
             <AccountMenu dropdownPlacement="top" onNavigate={handleLinkClick} />
-            <LanguageSwitcher className="ml-auto"/>
+            {user == null && <LanguageSwitcher className="ml-auto" />}
           </div>
         </div>
       </NavbarMenu>

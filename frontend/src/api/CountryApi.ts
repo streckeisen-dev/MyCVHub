@@ -1,4 +1,4 @@
-import { CountryDto } from '@/types/CountryDto.ts'
+import { CountryDto } from '@/types/country/CountryDto.ts'
 import { fetchFromApi, getJSONIfResponseIsOk } from '@/api/ApiHelper.ts'
 import { RestError } from '@/types/RestError.ts'
 

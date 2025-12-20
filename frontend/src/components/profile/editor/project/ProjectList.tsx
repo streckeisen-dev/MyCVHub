@@ -1,20 +1,14 @@
-import { ProjectDto } from '@/types/ProjectDto.ts'
+import { ProjectDto } from '@/types/profile/project/ProjectDto.ts'
 import { useTranslation } from 'react-i18next'
-import {
-  CvListEntry,
-  ListModificationEvent
-} from '@/components/profile/editor/CvListEntry.tsx'
+import { CvListEntry, ListModificationEvent } from '@/components/profile/editor/CvListEntry.tsx'
 import { FaFile, FaGithub, FaGlobe, FaLink } from 'react-icons/fa6'
-import { ProjectLinkType } from '@/types/ProjectLink.ts'
+import { ProjectLinkType } from '@/types/profile/project/ProjectLink.ts'
 import { IconType } from 'react-icons'
-import { Link } from '@heroui/react'
 import { sortByStartAndEndDate } from '@/helpers/SortHelper.ts'
-import { PublicProjectDto } from '@/types/PublicProjectDto.ts'
+import { PublicProjectDto } from '@/types/profile/project/PublicProjectDto.ts'
+import { ExternalLink } from '@/components/ExternalLink.tsx'
 
-function sortProjects(
-  a: ProjectDto | PublicProjectDto,
-  b: ProjectDto | PublicProjectDto
-): number {
+function sortProjects(a: ProjectDto | PublicProjectDto, b: ProjectDto | PublicProjectDto): number {
   return sortByStartAndEndDate(
     {
       start: a.projectStart,
@@ -27,13 +21,13 @@ function sortProjects(
   )
 }
 
-export type ProjectModificationEvent = (project: ProjectDto) => void;
+export type ProjectModificationEvent = (project: ProjectDto) => void
 
 export interface ProjectListProps {
-  projects: ProjectDto[] | PublicProjectDto[];
-  hasActions?: boolean;
-  onEdit?: ProjectModificationEvent;
-  onDelete?: ListModificationEvent;
+  projects: ProjectDto[] | PublicProjectDto[]
+  hasActions?: boolean
+  onEdit?: ProjectModificationEvent
+  onDelete?: ListModificationEvent
 }
 
 export function ProjectList(props: ProjectListProps) {
@@ -73,9 +67,9 @@ export function ProjectList(props: ProjectListProps) {
             }
 
             return (
-              <Link key={1} isExternal color="foreground" href={link.url}>
+              <ExternalLink key={link.displayName} color="foreground" href={link.url}>
                 <Icon size={25} />
-              </Link>
+              </ExternalLink>
             )
           }),
           bottomLeft: project.role,

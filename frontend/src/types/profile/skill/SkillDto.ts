@@ -1,4 +1,4 @@
-import { SkillType } from '@/types/PublicSkillDto.ts'
+import { SkillType } from '@/types/profile/skill/PublicSkillDto.ts'
 
 export interface SkillDto {
   id: number

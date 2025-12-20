@@ -1,17 +1,18 @@
 import { ReactNode } from 'react'
 import { Button, Tab, Tabs } from '@heroui/react'
-import { ProfileDto } from '@/types/ProfileDto.ts'
+import { ProfileDto } from '@/types/profile/ProfileDto.ts'
 import { useTranslation } from 'react-i18next'
 import { FaArrowLeftLong } from 'react-icons/fa6'
 import { h2 } from '@/styles/primitives.ts'
 import { GeneralEditor } from '@/components/profile/editor/GeneralEditor.tsx'
 import { WorkExperienceEditor } from '@/components/profile/editor/workExperience/WorkExperienceEditor.tsx'
 import { Key } from '@react-types/shared'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { EducationEditor } from '@/components/profile/editor/education/EducationEditor.tsx'
 import { ProjectEditor } from '@/components/profile/editor/project/ProjectEditor.tsx'
 import { ThemeEditor } from '@/components/profile/editor/theme/ThemeEditor.tsx'
 import { SkillEditor } from '@/components/profile/editor/skill/SkillEditor.tsx'
+import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 
 interface TabConfiguration {
   key: Key
@@ -111,7 +112,9 @@ export function ProfileEditor(props: ProfileEditorProps): ReactNode {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <Button startContent={<FaArrowLeftLong />}>{t('profile.editor.back')}</Button>
+        <Button as={Link} to={getRoutePath(RouteId.Account)} startContent={<FaArrowLeftLong />}>
+          {t('profile.editor.back')}
+        </Button>
       </div>
       <h2 className={h2()}>{t('profile.title')}</h2>
       <Tabs onSelectionChange={handleTabChange} selectedKey={selectedTab}>

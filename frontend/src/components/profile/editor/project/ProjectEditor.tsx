@@ -1,5 +1,5 @@
 import { ReactNode, useState } from 'react'
-import { ProjectDto } from '@/types/ProjectDto.ts'
+import { ProjectDto } from '@/types/profile/project/ProjectDto.ts'
 import {
   EditProjectModal,
   ProjectFormData

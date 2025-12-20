@@ -1,8 +1,8 @@
-import { AuthLevel } from '@/types/AuthLevel.ts'
+import { AuthLevel } from '@/types/account/AuthLevel.ts'
 import { createContext, PropsWithChildren, ReactNode, useCallback, useEffect, useState, useMemo } from 'react'
 import AccountApi from '@/api/AccountApi.ts'
 import { useTranslation } from 'react-i18next'
-import { ThumbnailDto } from '@/types/ThumbnailDto.ts'
+import { ThumbnailDto } from '@/types/account/ThumbnailDto.ts'
 
 export interface AuthorizedUser {
   username: string
@@ -19,12 +19,14 @@ export type LogoutFunction = () => void
 
 export interface AuthorizationContextValue {
   user: AuthorizedUser | undefined
+  isLoadingUser: boolean
   handleUserUpdate: AccountUpdateFunction
   handleLogout: LogoutFunction
 }
 
 export const AuthorizationContext = createContext<AuthorizationContextValue>({
   user: undefined,
+  isLoadingUser: true,
   handleUserUpdate: () => { /* empty */ },
   handleLogout: () => { /* empty */ }
 })
@@ -34,9 +36,11 @@ export function AuthorizationProvider(props: Readonly<PropsWithChildren>): React
   const {children} = props
 
   const [authUser, setAuthUser] = useState<AuthorizedUser>()
+  const [isLoading, setIsLoading] = useState(true)
 
   const handleUserUpdate = useCallback<AccountUpdateFunction>(() => {
     async function getAuth() {
+      setIsLoading(true)
       try {
         const auth = await AccountApi.verifyLogin(i18n.language)
         setAuthUser({
@@ -52,6 +56,8 @@ export function AuthorizationProvider(props: Readonly<PropsWithChildren>): React
         }
       } catch (_ignore) {
         setAuthUser(undefined)
+      } finally {
+        setIsLoading(false)
       }
     }
     getAuth()
@@ -59,8 +65,7 @@ export function AuthorizationProvider(props: Readonly<PropsWithChildren>): React
 
   useEffect(() => {
     handleUserUpdate()
-  }, [handleUserUpdate])
-
+  }, [])
 
   const handleLogout = useCallback<LogoutFunction>(() => {
     setAuthUser(undefined)
@@ -69,6 +74,7 @@ export function AuthorizationProvider(props: Readonly<PropsWithChildren>): React
   const contextValue: AuthorizationContextValue = useMemo(() => {
     return {
       user: authUser,
+      isLoadingUser: isLoading,
       handleUserUpdate,
       handleLogout
     }

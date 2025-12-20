@@ -1,4 +1,4 @@
-import { ProjectLinkUpdateDto } from '@/types/ProjectLinkUpdateDto.ts'
+import { ProjectLinkUpdateDto } from '@/types/profile/project/ProjectLinkUpdateDto.ts'
 
 export interface ProjectUpdateDto {
   id?: number;

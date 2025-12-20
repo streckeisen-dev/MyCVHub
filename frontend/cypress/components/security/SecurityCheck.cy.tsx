@@ -4,7 +4,7 @@ import {
   AuthorizedUser
 } from '@/context/AuthorizationContext.tsx'
 import { SecurityCheck } from '@/components/security/SecurityCheck.tsx'
-import { AuthLevel } from '@/types/AuthLevel.ts'
+import { AuthLevel } from '@/types/account/AuthLevel.ts'
 
 const CONTENT_SELECTOR = 'p[data-testid="page-content"]'
 

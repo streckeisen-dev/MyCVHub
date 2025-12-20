@@ -1,7 +1,7 @@
-import { WorkExperienceDto } from '@/types/WorkExperienceDto.ts'
-import { EducationDto } from '@/types/EducationDto.ts'
-import { ProjectDto } from '@/types/ProjectDto.ts'
-import { SkillDto } from '@/types/SkillDto.ts'
+import { WorkExperienceDto } from '@/types/profile/workExperience/WorkExperienceDto.ts'
+import { EducationDto } from '@/types/profile/education/EducationDto.ts'
+import { ProjectDto } from '@/types/profile/project/ProjectDto.ts'
+import { SkillDto } from '@/types/profile/skill/SkillDto.ts'
 import { useTranslation } from 'react-i18next'
 import {
   CvContentTreeRoot,

@@ -15,6 +15,7 @@ const val VALIDATION_DATE_IN_FUTURE_ERROR_KEY = "${VALIDATION_ERROR_KEY_PREFIX}.
 const val VALIDATION_NUMBER_TOO_SMALL_ERROR_KEY = "${VALIDATION_ERROR_KEY_PREFIX}.numberTooSmall"
 const val VALIDATION_NUMBER_TOO_BIG_ERROR_KEY = "${VALIDATION_ERROR_KEY_PREFIX}.numberTooBig"
 const val VALIDATION_INVALID_URL_ERROR_KEY = "${VALIDATION_ERROR_KEY_PREFIX}.invalidUrl"
+const val EITHER_NULL_OR_VALUE_ERROR_KEY = "${VALIDATION_ERROR_KEY_PREFIX}.eitherNullOrValue"
 
 @Service
 class MessagesService(
@@ -49,15 +50,19 @@ class MessagesService(
     }
 
     fun numberTooSmallError(field: String, min: Int): String {
-        return getMessage(VALIDATION_NUMBER_TOO_SMALL_ERROR_KEY, field, min.toString())
+        return getMessage(VALIDATION_NUMBER_TOO_SMALL_ERROR_KEY, dataFieldName(field), min.toString())
     }
 
     fun numberTooBigError(field: String, max: Int): String {
-        return getMessage(VALIDATION_NUMBER_TOO_BIG_ERROR_KEY, field, max.toString())
+        return getMessage(VALIDATION_NUMBER_TOO_BIG_ERROR_KEY, dataFieldName(field), max.toString())
     }
 
     fun invalidUrlError(url: String): String {
         return getMessage(VALIDATION_INVALID_URL_ERROR_KEY, url)
+    }
+
+    fun eitherNullOrValue(field: String): String {
+        return getMessage(EITHER_NULL_OR_VALUE_ERROR_KEY, dataFieldName(field))
     }
 
     fun getSupportedLanguages(): List<String> = listOf(Locale.ENGLISH, Locale.GERMAN)

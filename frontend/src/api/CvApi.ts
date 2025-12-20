@@ -1,11 +1,11 @@
-import { CVStyleDto } from '@/types/CVStyleDto.ts'
+import { CVStyleDto } from '@/types/cv/CVStyleDto.ts'
 import {
   extractErrorIfResponseIsNotOk,
   fetchFromApi,
   getJSONIfResponseIsOk
 } from '@/api/ApiHelper.ts'
 import { RestError } from '@/types/RestError.ts'
-import { CVGenerationRequestDto } from '@/types/CVGenerationRequestDto.ts'
+import { CVGenerationRequestDto } from '@/types/cv/CVGenerationRequestDto.ts'
 
 async function getCVStyles(locale: string): Promise<CVStyleDto[]> {
   try {

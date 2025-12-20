@@ -1,5 +1,5 @@
-import { AuthLevel } from '@/types/AuthLevel.ts'
-import { ThumbnailDto } from '@/types/ThumbnailDto.ts'
+import { AuthLevel } from '@/types/account/AuthLevel.ts'
+import { ThumbnailDto } from '@/types/account/ThumbnailDto.ts'
 
 export interface AuthResponseDto {
   username: string

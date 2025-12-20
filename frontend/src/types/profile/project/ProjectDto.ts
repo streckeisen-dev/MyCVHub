@@ -1,6 +1,7 @@
-import { ProjectLink } from '@/types/ProjectLink.ts'
+import { ProjectLink } from '@/types/profile/project/ProjectLink.ts'
 
-export interface PublicProjectDto {
+export interface ProjectDto {
+  id: number
   name: string
   role: string
   description: string

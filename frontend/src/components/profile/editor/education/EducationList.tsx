@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
-import { EducationDto } from '@/types/EducationDto.ts'
+import { EducationDto } from '@/types/profile/education/EducationDto.ts'
 import { useTranslation } from 'react-i18next'
 import {
   CvListEntry,
   ListModificationEvent
 } from '@/components/profile/editor/CvListEntry.tsx'
-import { PublicEducationDto } from '@/types/PublicEducationDto.ts'
+import { PublicEducationDto } from '@/types/profile/education/PublicEducationDto.ts'
 import { sortByStartAndEndDate } from '@/helpers/SortHelper.ts'
 
 function sortEducation(

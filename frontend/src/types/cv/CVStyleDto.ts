@@ -1,4 +1,4 @@
-import { CVStyleOptionType } from '@/types/CVStyleOptionType.ts'
+import { CVStyleOptionType } from '@/types/cv/CVStyleOptionType.ts'
 
 export interface CVStyleDto {
   key: string
