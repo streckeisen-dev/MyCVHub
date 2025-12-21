@@ -79,19 +79,34 @@ frontend:
   
   home: 
     welcome: 
-      title: "Welcome to MyCVHub"
-      message: "Create and share your professional CV online with ease!"
-    getStarted: "Get Started"
+      title: "Your Career Journey, Organized"
+      message: "MyCVHub brings together everything you need to manage your job search in one place. Create polished CVs, generate professional PDFs, and keep track of every application you send out."
     features: 
-      title: "Features"
+      title: "What You Can Do"
       create: 
-        title: "Create Your CV"
-        description: "Easily create a professional CV using a user-friendly interface."
-      share: 
-        title: "Share with a Link"
-        description: "Share your CV with potential employers using a unique link."
+        title: "Build Your Professional Profile"
+        description: "Create and maintain your online CV with all your experience, skills, and achievements. Update it anytime, and have your information ready whenever opportunity knocks."
+      generate:
+        title: "Generate Beautiful PDFs"
+        description: "Choose from professionally designed templates and export your CV as a polished PDF. Each template is crafted to make your experience shine while maintaining readability and professional standards."
+      tracking:
+        title: "Track Your Applications"
+        description: "Stay organized with built-in application tracking. Monitor where you've applied and track response dates. Never lose track of an opportunity or accidentally apply twice to the same position."
+    why:
+      title: "Why MyCVHub?"
+      allInOne:
+        title: "All-in-One Platform"
+        description: "No need to juggle multiple tools. Your CV and application history live in one place."
+      alwaysUpToDate:
+        title: "Always Up-to-Date"
+        description: "Make changes once, and they're reflected everywhere. No more updating multiple versions of the same document."
+      organized:
+        title: "Stay Organized"
+        description: "From CV creation to application tracking, manage your entire job search workflow efficiently and effectively."
+
     callToAction: 
-      title: "Ready to create your online CV?"
+      title: "Ready to get started?"
+      description: "Create your profile and take control of your career journey."
       btn: "Sign up now"
 
   dashboard:
