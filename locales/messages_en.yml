@@ -356,7 +356,7 @@ backend:
     numberTooSmall: "{0} must be greater than {1}"
     numberTooBig: "{0} must be less than {1}"
     invalidUrl: "URL is invalid"
-    eitherNullOrValue: "{0} must either be null or have a value"
+    eitherNullOrValue: "{0} must either be 'null' or have a valid value"
   
   workExperience:
     notFound: "Work Experience not found"
@@ -396,7 +396,6 @@ backend:
       usernameAlreadyTaken: "Username is already taken"
       emailAlreadyTaken: "Email is already taken"
       phoneInvalid: "Phone number is not valid"
-      houseNumberEmpty: "House number must be null or have a value"
       countryLengthError: "Country must be ISO {0} character country code"
       countryInvalid: "Invalid country code"
       languageInvalid: "Invalid language code"

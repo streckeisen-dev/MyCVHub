@@ -30,6 +30,9 @@ private const val TRANSITION_NOT_ALLOWED_MESSAGE_KEY = "$MYCV_KEY_PREFIX.applica
 
 private const val DESCENDING_KEY = "descending"
 
+private const val UPDATED_COLUMN_KEY = "updatedAt"
+private const val CREATED_COLUMN_KEY = "createdAt"
+
 @Service
 class ApplicationService(
     private val applicationRepository: ApplicationRepository,
@@ -66,7 +69,14 @@ class ApplicationService(
                 Sort.by(Sort.Direction.ASC, sort)
             }
             PageRequest.of(page, pageSize, sortBy)
-        } else PageRequest.of(page, pageSize)
+        } else PageRequest.of(
+            page,
+            pageSize,
+            Sort.by(
+                Sort.Order(Sort.Direction.DESC, UPDATED_COLUMN_KEY),
+                Sort.Order(Sort.Direction.DESC, CREATED_COLUMN_KEY)
+            )
+        )
         val result = applicationRepository.searchByAccountId(accountId, searchTerm, status, pageable)
         return Result.success(result)
     }

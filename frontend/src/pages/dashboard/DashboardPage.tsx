@@ -1,9 +1,9 @@
 import { ReactNode, useEffect, useState } from 'react'
-import { centerSection, title } from '@/styles/primitives.ts'
+import { title } from '@/styles/primitives.ts'
 import { DashboardInfoDto } from '@/types/dashboard/DashboardInfoDto.ts'
 import DashboardApi from '@/api/DashboardApi.ts'
 import { useTranslation } from 'react-i18next'
-import { Button, Divider, Spinner } from '@heroui/react'
+import { Button, Divider } from '@heroui/react'
 import { Empty } from '@/components/Empty.tsx'
 import { Link } from 'react-router-dom'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
@@ -13,6 +13,7 @@ import { UnverifiedView } from '@/components/dashboard/UnverifiedView.tsx'
 import { DashboardCard } from '@/components/dashboard/DashboardCard.tsx'
 import { ProfileStat } from '@/components/dashboard/ProfileStat.tsx'
 import { ApplicationStat } from '@/components/dashboard/ApplicationStat.tsx'
+import { LoadingWrapper } from '@/layouts/LoadingWrapper.tsx'
 
 type DashboardContentProps = Readonly<{
   info: DashboardInfoDto
@@ -125,15 +126,17 @@ export function DashboardPage(): ReactNode {
     loadInfo()
   }, [])
 
-  const content = info ? (
-    <>
-      <h1 className={title()}>{t('dashboard.title')}</h1>
+  return (
+    <LoadingWrapper isLoading={isLoading}>
+      {info ? (
+        <>
+          <h1 className={title()}>{t('dashboard.title')}</h1>
 
-      {info.isVerified ? <DashboardContent info={info} /> : <UnverifiedView />}
-    </>
-  ) : (
-    <Empty headline={t('dashboard.loadingError')} />
+          {info.isVerified ? <DashboardContent info={info} /> : <UnverifiedView />}
+        </>
+      ) : (
+        <Empty headline={t('dashboard.loadingError')} />
+      )}
+    </LoadingWrapper>
   )
-
-  return <section className={centerSection()}>{isLoading ? <Spinner /> : content}</section>
 }

@@ -17,7 +17,6 @@ private const val ACCOUNT_VALIDATION_KEY_PREFIX = "${MYCV_KEY_PREFIX}.account.va
 private const val USERNAME_TAKEN_ERROR_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.usernameAlreadyTaken"
 private const val EMAIL_TAKEN_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.emailAlreadyTaken"
 private const val PHONE_INVALID_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.phoneInvalid"
-private const val EMPTY_HOUSE_NUMBER_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.houseNumberEmpty"
 private const val COUNTRY_LENGTH_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.countryLengthError"
 private const val COUNTRY_INVALID_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.countryInvalid"
 private const val LANGUAGE_INVALID_KEY = "${ACCOUNT_VALIDATION_KEY_PREFIX}.languageInvalid"
@@ -157,7 +156,13 @@ class ApplicantAccountValidationService(
         country: String?,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
-        stringValidator.validateRequiredString(PHONE_FIELD_KEY, phone, PHONE_MAX_LENGTH, validationErrorBuilder)
+        stringValidator.validateRequiredString(
+            requiredField = PHONE_FIELD_KEY,
+            value = phone,
+            maxLength = PHONE_MAX_LENGTH,
+            validationErrorBuilder = validationErrorBuilder
+        )
+
         if (!phone.isNullOrBlank()) {
             try {
                 val phoneNumber = phoneNumberUtil.parse(phone, country ?: Locale.getDefault().country)

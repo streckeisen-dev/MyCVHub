@@ -21,6 +21,4 @@ class ApplicationHistoryEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     val application: ApplicationEntity
-) {
-
-}
+)
