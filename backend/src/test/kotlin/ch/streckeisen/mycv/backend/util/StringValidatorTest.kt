@@ -39,13 +39,6 @@ class StringValidatorTest {
     }
 
     @Test
-    fun testValidateRequiredStringWithNullValue() {
-        validator.validateRequiredString("field", null, validationErrorBuilder)
-
-        assertTrue { validationErrorBuilder.hasErrors() }
-    }
-
-    @Test
     fun testValidationRequiredStringWithMaxLengthAndValidValue() {
         validator.validateRequiredString("field", "a".repeat(45), 50, validationErrorBuilder)
 

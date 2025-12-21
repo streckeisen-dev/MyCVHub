@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { title } from '@/styles/primitives.ts'
-import { DashboardInfoDto } from '@/types/dashboard/DashboardInfoDto.ts'
+import { ApplicationInfoDto, DashboardInfoDto } from '@/types/dashboard/DashboardInfoDto.ts'
 import DashboardApi from '@/api/DashboardApi.ts'
 import { useTranslation } from 'react-i18next'
 import { Button, Divider } from '@heroui/react'
@@ -18,6 +18,10 @@ import { LoadingWrapper } from '@/layouts/LoadingWrapper.tsx'
 type DashboardContentProps = Readonly<{
   info: DashboardInfoDto
 }>
+
+function sortApplicationStats(a: ApplicationInfoDto, b: ApplicationInfoDto) {
+  return b.count - a.count
+}
 
 function DashboardContent(props: DashboardContentProps): ReactNode {
   const { t } = useTranslation()
@@ -86,11 +90,9 @@ function DashboardContent(props: DashboardContentProps): ReactNode {
           <div className="flex flex-col gap-4">
             <div className="grid grid-cols-2 gap-1.5">
               <Divider className="col-span-2" />
-              {info.applications
-                .sort((a, b) => b.count - a.count)
-                .map((stat) => (
-                  <ApplicationStat key={stat.status.key} stat={stat} />
-                ))}
+              {info.applications.sort(sortApplicationStats).map((stat) => (
+                <ApplicationStat key={stat.status.key} stat={stat} />
+              ))}
             </div>
             <Button
               className="w-min"

@@ -50,12 +50,12 @@ export function DeleteApplicationButton(props: DeleteApplicationButtonProps): Re
   return (
     <>
       <Tooltip color="danger" content={t('application.editor.delete.title')} closeDelay={0}>
-        <span
+        <a
           className="text-lg text-danger cursor-pointer z-10"
           onClick={handleModalOpen}
         >
           <FaTrash />
-        </span>
+        </a>
       </Tooltip>
       <Modal isOpen={isModalOpen} backdrop="blur" onClose={handleModalClose}>
         <ModalContent>
