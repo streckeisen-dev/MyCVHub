@@ -23,6 +23,13 @@ private val availableTransitions: Map<ApplicationStatus, List<ApplicationTransit
 private val transitions: Map<Int, ApplicationTransition> =
     ApplicationTransition.entries.associateBy { transition -> transition.id }
 
+private const val ACCESS_DENIED_MESSAGE_KEY = "$MYCV_KEY_PREFIX.application.accessDenied"
+private const val APPLICATION_NOT_FOUND_MESSAGE_KEY = "$MYCV_KEY_PREFIX.application.notFound"
+private const val TRANSITION_NOT_FOUND_MESSAGE_KEY = "$MYCV_KEY_PREFIX.application.transition.notFound"
+private const val TRANSITION_NOT_ALLOWED_MESSAGE_KEY = "$MYCV_KEY_PREFIX.application.transition.notAllowed"
+
+private const val DESCENDING_KEY = "descending"
+
 @Service
 class ApplicationService(
     private val applicationRepository: ApplicationRepository,
@@ -33,10 +40,10 @@ class ApplicationService(
     @Transactional
     fun findById(accountId: Long, applicationId: Long): Result<ApplicationEntity> {
         val application = applicationRepository.findById(applicationId)
-            .getOrElse { return Result.failure(LocalizedException("$MYCV_KEY_PREFIX.application.notFound")) }
+            .getOrElse { return Result.failure(LocalizedException(APPLICATION_NOT_FOUND_MESSAGE_KEY)) }
 
         if (application.account.id != accountId) {
-            return Result.failure(LocalizedException("$MYCV_KEY_PREFIX.application.accessDenied"))
+            return Result.failure(LocalizedException(ACCESS_DENIED_MESSAGE_KEY))
         }
 
         return Result.success(application)
@@ -53,7 +60,7 @@ class ApplicationService(
         sortDirection: String?
     ): Result<Page<ApplicationEntity>> {
         val pageable = if (!sort.isNullOrBlank()) {
-            val sortBy = if (sortDirection == "descending") {
+            val sortBy = if (sortDirection == DESCENDING_KEY) {
                 Sort.by(Sort.Direction.DESC, sort)
             } else {
                 Sort.by(Sort.Direction.ASC, sort)
@@ -80,9 +87,14 @@ class ApplicationService(
             .onFailure { return Result.failure(it) }
 
         val application = if (update.id != null) {
-            applicationRepository.findById(update.id).orElse(null)
+            applicationRepository.findById(update.id)
+                .getOrElse { return Result.failure(LocalizedException(APPLICATION_NOT_FOUND_MESSAGE_KEY)) }
         } else {
             null
+        }
+
+        if (application != null && application.account.id != accountId) {
+            return Result.failure(LocalizedException(ACCESS_DENIED_MESSAGE_KEY))
         }
 
         val account = if (application != null) {
@@ -117,20 +129,20 @@ class ApplicationService(
         transitionRequest: ApplicationTransitionRequestDto
     ): Result<ApplicationEntity> {
         val transition = transitions[transitionId]
-            ?: return Result.failure(LocalizedException("$MYCV_KEY_PREFIX.application.transition.notFound"))
+            ?: return Result.failure(LocalizedException(TRANSITION_NOT_FOUND_MESSAGE_KEY))
 
         applicationValidationService.validateTransition(transitionRequest)
             .onFailure { return Result.failure(it) }
 
         val application = applicationRepository.findById(transitionRequest.applicationId!!)
-            .getOrElse { return Result.failure(LocalizedException("$MYCV_KEY_PREFIX.application.notFound")) }
+            .getOrElse { return Result.failure(LocalizedException(APPLICATION_NOT_FOUND_MESSAGE_KEY)) }
 
         if (application.account.id != accountId) {
-            return Result.failure(LocalizedException("$MYCV_KEY_PREFIX.application.accessDenied"))
+            return Result.failure(LocalizedException(ACCESS_DENIED_MESSAGE_KEY))
         }
 
         if (availableTransitions[application.status]?.none { it.id == transitionId } == true) {
-            return Result.failure(LocalizedException("$MYCV_KEY_PREFIX.application.transition.notAllowed"))
+            return Result.failure(LocalizedException(TRANSITION_NOT_ALLOWED_MESSAGE_KEY))
         }
 
         val historyEntry = applicationHistoryRepository.save(
@@ -164,10 +176,10 @@ class ApplicationService(
     @Transactional
     fun delete(accountId: Long, applicationId: Long): Result<Unit> {
         val application = applicationRepository.findById(applicationId)
-            .getOrElse { return Result.failure(LocalizedException("$MYCV_KEY_PREFIX.application.notFound")) }
+            .getOrElse { return Result.failure(LocalizedException(APPLICATION_NOT_FOUND_MESSAGE_KEY)) }
 
         if (application.account.id != accountId) {
-            return Result.failure(LocalizedException("$MYCV_KEY_PREFIX.application.accessDenied"))
+            return Result.failure(LocalizedException(ACCESS_DENIED_MESSAGE_KEY))
         }
 
         applicationRepository.delete(application)
