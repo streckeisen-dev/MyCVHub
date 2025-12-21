@@ -3,6 +3,7 @@ package ch.streckeisen.mycv.backend.cv.experience
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
+import ch.streckeisen.mycv.backend.util.StringValidator
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
@@ -16,34 +17,32 @@ private const val DESCRIPTION_FIELD_KEY = "description"
 
 @Service
 class WorkExperienceValidationService(
+    private val stringValidator: StringValidator,
     private val messagesService: MessagesService
 ) {
     fun validateWorkExperience(workExperience: WorkExperienceUpdateDto): Result<Unit> {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
-        if (workExperience.jobTitle.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(JOB_TITLE_FIELD_KEY)
-            validationErrorBuilder.addError(JOB_TITLE_FIELD_KEY, error)
-        } else if (workExperience.jobTitle.length > JOB_TITLE_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError(JOB_TITLE_FIELD_KEY, JOB_TITLE_MAX_LENGTH)
-            validationErrorBuilder.addError(JOB_TITLE_FIELD_KEY, error)
-        }
+        stringValidator.validateRequiredString(
+            requiredField = JOB_TITLE_FIELD_KEY,
+            value = workExperience.jobTitle,
+            maxLength = JOB_TITLE_MAX_LENGTH,
+            validationErrorBuilder = validationErrorBuilder
+        )
 
-        if (workExperience.location.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(LOCATION_FIELD_KEY)
-            validationErrorBuilder.addError(LOCATION_FIELD_KEY, error)
-        } else if (workExperience.location.length > LOCATION_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError(LOCATION_FIELD_KEY, LOCATION_MAX_LENGTH)
-            validationErrorBuilder.addError(LOCATION_FIELD_KEY, error)
-        }
+        stringValidator.validateRequiredString(
+            requiredField = LOCATION_FIELD_KEY,
+            value = workExperience.location,
+            maxLength = LOCATION_MAX_LENGTH,
+            validationErrorBuilder = validationErrorBuilder
+        )
 
-        if (workExperience.company.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(COMPANY_FIELD_KEY)
-            validationErrorBuilder.addError(COMPANY_FIELD_KEY, error)
-        } else if (workExperience.company.length > COMPANY_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError(LOCATION_FIELD_KEY, LOCATION_MAX_LENGTH)
-            validationErrorBuilder.addError(COMPANY_FIELD_KEY, error)
-        }
+        stringValidator.validateRequiredString(
+            requiredField = COMPANY_FIELD_KEY,
+            value = workExperience.company,
+            maxLength = COMPANY_MAX_LENGTH,
+            validationErrorBuilder = validationErrorBuilder
+        )
 
         if (workExperience.positionStart == null) {
             val error = messagesService.requiredFieldMissingError(POSITION_START_FIELD_KEY)
@@ -65,10 +64,11 @@ class WorkExperienceValidationService(
             validationErrorBuilder.addError(POSITION_END_FIELD_KEY, error)
         }
 
-        if (workExperience.description.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(DESCRIPTION_FIELD_KEY)
-            validationErrorBuilder.addError(DESCRIPTION_FIELD_KEY, error)
-        }
+        stringValidator.validateRequiredString(
+            requiredField = DESCRIPTION_FIELD_KEY,
+            value = workExperience.description,
+            validationErrorBuilder = validationErrorBuilder
+        )
 
         if (validationErrorBuilder.hasErrors()) {
             return Result.failure(validationErrorBuilder.build(messagesService.getMessage(VALIDATION_ERROR_KEY)))

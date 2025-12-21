@@ -3,6 +3,7 @@ package ch.streckeisen.mycv.backend.cv.project
 import ch.streckeisen.mycv.backend.exceptions.ValidationException.ValidationErrorBuilder
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
+import ch.streckeisen.mycv.backend.util.StringValidator
 import ch.streckeisen.mycv.backend.util.isUrlValid
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -20,6 +21,7 @@ private const val DISPLAY_NAME_KEY = "displayName"
 
 @Service
 class ProjectValidationService(
+    private val stringValidator: StringValidator,
     private val messagesService: MessagesService
 ) {
     fun validateProject(projectUpdate: ProjectUpdateDto): Result<Unit> {
@@ -42,36 +44,35 @@ class ProjectValidationService(
         projectName: String?,
         validationErrorBuilder: ValidationErrorBuilder
     ) {
-        if (projectName.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(NAME_FIELD_KEY)
-            validationErrorBuilder.addError(NAME_FIELD_KEY, error)
-        } else if (projectName.length > PROJECT_NAME_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError(NAME_FIELD_KEY, PROJECT_NAME_MAX_LENGTH)
-            validationErrorBuilder.addError(NAME_FIELD_KEY, error)
-        }
+        stringValidator.validateRequiredString(
+            requiredField = NAME_FIELD_KEY,
+            value = projectName,
+            maxLength = PROJECT_NAME_MAX_LENGTH,
+            validationErrorBuilder = validationErrorBuilder
+        )
     }
 
     private fun validateProjectRole(
         projectRole: String?,
         validationErrorBuilder: ValidationErrorBuilder
     ) {
-        if (projectRole.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(ROLE_FIELD_KEY)
-            validationErrorBuilder.addError(ROLE_FIELD_KEY, error)
-        } else if (projectRole.length > ROLE_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError(ROLE_FIELD_KEY, ROLE_MAX_LENGTH)
-            validationErrorBuilder.addError(ROLE_FIELD_KEY, error)
-        }
+        stringValidator.validateRequiredString(
+            requiredField = ROLE_FIELD_KEY,
+            value = projectRole,
+            maxLength = ROLE_MAX_LENGTH,
+            validationErrorBuilder = validationErrorBuilder
+        )
     }
 
     private fun validateDescription(
         description: String?,
         validationErrorBuilder: ValidationErrorBuilder
     ) {
-        if (description.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(DESCRIPTION_FIELD_KEY)
-            validationErrorBuilder.addError(DESCRIPTION_FIELD_KEY, error)
-        }
+        stringValidator.validateRequiredString(
+            requiredField = DESCRIPTION_FIELD_KEY,
+            value = description,
+            validationErrorBuilder = validationErrorBuilder
+        )
     }
 
     private fun validateProjectStart(

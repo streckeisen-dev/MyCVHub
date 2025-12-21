@@ -1,5 +1,7 @@
 package ch.streckeisen.mycv.backend.cv.education
 
+import ch.streckeisen.mycv.backend.locale.MessagesService
+import ch.streckeisen.mycv.backend.util.StringValidator
 import ch.streckeisen.mycv.backend.util.executeParameterizedTest
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
@@ -13,7 +15,8 @@ class EducationValidationServiceTest {
 
     @BeforeEach
     fun setup() {
-        educationValidationService = EducationValidationService(mockk(relaxed = true))
+        val messagesService: MessagesService = mockk(relaxed = true)
+        educationValidationService = EducationValidationService(StringValidator(messagesService), messagesService)
     }
 
     @ParameterizedTest
