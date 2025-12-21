@@ -40,6 +40,9 @@ shared:
     url: "URL"
     displayName: "Display Name"
     language: "Language"
+    status: "Status"
+    source: "Source"
+    comment: "Comment"
   
   validations: 
     required: "{label} must not be blank"
@@ -95,6 +98,8 @@ frontend:
     title: "Dashboard"
     profile: "Your CV profile"
     noProfile: "You don't have a profile yet. Create one and start building your CV."
+    applications: "Job Application Tracking"
+    viewApplications: "View Applications"
     loadingError: "Couldn't load dashboard"
   
   account:
@@ -258,6 +263,35 @@ frontend:
     loadingError:
       title: "Failed to load countries"
       message: "Try again later or contact the administrator if the problem isn't resolved"
+
+  application:
+    title: "Applications"
+    singular: "Application"
+    notFound: "Application not found"
+    noEntries: "You don't have any applications yet."
+    createdAt: "Created at"
+    updatedAt: "Updated at"
+    at: "at"
+    as: "as"
+    details: "Application Details"
+    back: "Back to Overview"
+    history:
+      title: "Application History"
+      from: "Old Status"
+      to: "New Status"
+      timestamp: "Date"
+    editor:
+      add: "Add Application"
+      edit: "Edit Application"
+      delete:
+        title: "Delete Application"
+        confirmationText: "If you go ahead and delete this application, it will be permanently deleted. You will not be able to recover it. Are you sure you want to delete this application?"
+        deleteSuccess: "Application successfully deleted"
+        deleteError: "Failed to delete application"
+      saveError: "Failed to save your application"
+    loadingError: "Failed to load applications"
+    statusLoadingError: "Failed to load application status filter"
+    transitionError: "Failed to update application status"
   
   notFound:
     headline: "Where are you going?"
@@ -308,6 +342,13 @@ frontend:
     headline: "Unauthorized"
     title: "You don't have permission to access this page!"
 
+  table:
+    pagination:
+      pageSize: "Entries Per Page"
+      numberInformation: "Showing entries {start}-{end} of {total}"
+    search: "Search"
+    actions: "Actions"
+
 backend:
   validations:
     maxLengthExceeded: "{0} must not exceed {1} characters"
@@ -315,6 +356,7 @@ backend:
     numberTooSmall: "{0} must be greater than {1}"
     numberTooBig: "{0} must be less than {1}"
     invalidUrl: "URL is invalid"
+    eitherNullOrValue: "{0} must either be 'null' or have a valid value"
   
   workExperience:
     notFound: "Work Experience not found"
@@ -354,7 +396,6 @@ backend:
       usernameAlreadyTaken: "Username is already taken"
       emailAlreadyTaken: "Email is already taken"
       phoneInvalid: "Phone number is not valid"
-      houseNumberEmpty: "House number must be null or have a value"
       countryLengthError: "Country must be ISO {0} character country code"
       countryInvalid: "Invalid country code"
       languageInvalid: "Invalid language code"
@@ -396,6 +437,35 @@ backend:
       unknown: "Unknown template option"
       invalid: "Invalid template option"
       missing: "Missing template option"
+
+  application:
+    transition:
+      sent: "Application sent"
+      rejected: "Application rejected"
+      interviewScheduled: "Interview scheduled"
+      interviewEnded: "Interview ended"
+      offerReceived: "Received job offer"
+      offerAccepted: "Accepted job offer"
+      offerRejected: "Rejected job offer"
+      withdrawn: "Withdrawn"
+      notAllowed: "Requested application transition is not allowed"
+      notFound: "Requested application transition does not exist"
+    status:
+      unsent: "Draft"
+      waitingForFirstResponse: "Waiting for first response"
+      rejected: "Rejected"
+      interviewScheduled: "Interview scheduled"
+      waitingForInterviewFeedback: "Waiting for interview feedback"
+      offerReceived: "Offer received"
+      offerDeclined: "Offer declined"
+      hired: "Hired"
+      withdrawn: "Withdrawn"
+    validation:
+      updateError: "Your update request is invalid"
+      transitionError: "Your transition request is invalid"
+    notFound: "Application not found"
+    accessDenied: "You don't have access to this application"
+
   exceptions:
     db: "A database error occurred. Please contact the administrator"
     expiredJwt: "Expired JWT token"

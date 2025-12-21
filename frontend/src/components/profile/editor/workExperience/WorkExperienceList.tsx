@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
-import { WorkExperienceDto } from '@/types/WorkExperienceDto.ts'
+import { WorkExperienceDto } from '@/types/profile/workExperience/WorkExperienceDto.ts'
 import { useTranslation } from 'react-i18next'
 import {
   CvListEntry,
   ListModificationEvent
 } from '@/components/profile/editor/CvListEntry.tsx'
-import { PublicWorkExperienceDto } from '@/types/PublicWorkExperienceDto.ts'
+import { PublicWorkExperienceDto } from '@/types/profile/workExperience/PublicWorkExperienceDto.ts'
 import { sortByStartAndEndDate } from '@/helpers/SortHelper.ts'
 
 function sortExperience(

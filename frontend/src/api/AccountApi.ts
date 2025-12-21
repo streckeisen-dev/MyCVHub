@@ -1,16 +1,16 @@
-import { AccountDto } from '@/types/AccountDto.ts'
-import { AccountUpdateDto } from '@/types/AccountUpdateDto.ts'
-import { AuthResponseDto } from '@/types/AuthResponseDto.ts'
+import { AccountDto } from '@/types/account/AccountDto.ts'
+import { AccountUpdateDto } from '@/types/account/AccountUpdateDto.ts'
+import { AuthResponseDto } from '@/types/account/AuthResponseDto.ts'
 import {
   extractErrorIfResponseIsNotOk,
   fetchFromApi,
   getJSONIfResponseIsOk
 } from '@/api/ApiHelper.ts'
 import { RestError } from '@/types/RestError.ts'
-import { ChangePasswordRequestDto } from '@/types/ChangePasswordRequestDto.ts'
-import { SignupRequestDto } from '@/types/SignUpRequestDto.ts'
-import { AccountVerificationRequestDto } from '@/types/AccountVerificationRequestDto.ts'
-import { OAuthSignUpRequestDto } from '@/types/OAuthSignUpRequestDto.ts'
+import { ChangePasswordRequestDto } from '@/types/account/ChangePasswordRequestDto.ts'
+import { SignupRequestDto } from '@/types/account/SignUpRequestDto.ts'
+import { AccountVerificationRequestDto } from '@/types/account/AccountVerificationRequestDto.ts'
+import { OAuthSignUpRequestDto } from '@/types/account/OAuthSignUpRequestDto.ts'
 
 async function login(username: string | undefined, password: string | undefined, locale: string): Promise<void> {
   try {

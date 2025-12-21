@@ -5,12 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 data class DashboardInfoDto(
     @get:JsonProperty(value = "isVerified")
     val isVerified: Boolean,
-    val profile: ProfileInfoDto?
+    val profile: ProfileInfoDto?,
+    val applications: List<ApplicationInfoDto>
 )
 
-data class ProfileInfoDto(
-    val experienceCount: Int,
-    val educationCount: Int,
-    val projectCount: Int,
-    val skillCount: Int
-)

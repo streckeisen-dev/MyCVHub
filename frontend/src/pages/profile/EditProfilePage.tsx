@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { useTranslation } from 'react-i18next'
-import { ProfileDto } from '@/types/ProfileDto.ts'
+import { ProfileDto } from '@/types/profile/ProfileDto.ts'
 import { Spinner } from '@heroui/react'
 import { Empty } from '@/components/Empty.tsx'
 import { ProfileEditor } from '@/components/profile/editor/ProfileEditor.tsx'

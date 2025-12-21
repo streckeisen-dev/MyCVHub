@@ -3,6 +3,7 @@ package ch.streckeisen.mycv.backend.account
 import ch.streckeisen.mycv.backend.account.dto.AccountUpdateDto
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MessagesService
+import ch.streckeisen.mycv.backend.util.StringValidator
 import ch.streckeisen.mycv.backend.util.assertValidationResult
 import io.mockk.every
 import io.mockk.mockk
@@ -40,7 +41,11 @@ class ApplicantAccountValidationServiceTest {
         }
 
         applicantAccountValidationService =
-            ApplicantAccountValidationService(applicantAccountRepository, messagesService)
+            ApplicantAccountValidationService(
+                StringValidator(messagesService),
+                applicantAccountRepository,
+                messagesService
+            )
     }
 
     @ParameterizedTest
@@ -69,7 +74,10 @@ class ApplicantAccountValidationServiceTest {
     fun testValidateFirstNameTooLong() {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
-        applicantAccountValidationService.validateFirstName("f".repeat(FIRST_NAME_MAX_LENGTH + 1), validationErrorBuilder)
+        applicantAccountValidationService.validateFirstName(
+            "f".repeat(FIRST_NAME_MAX_LENGTH + 1),
+            validationErrorBuilder
+        )
 
         assertTrue { validationErrorBuilder.hasErrors() }
     }
@@ -197,7 +205,10 @@ class ApplicantAccountValidationServiceTest {
     fun testValidateHouseNumberTooLong() {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
-        applicantAccountValidationService.validateHouseNumber("h".repeat(HOUSE_NUMBER_MAX_LENGTH + 1), validationErrorBuilder)
+        applicantAccountValidationService.validateHouseNumber(
+            "h".repeat(HOUSE_NUMBER_MAX_LENGTH + 1),
+            validationErrorBuilder
+        )
 
         assertTrue { validationErrorBuilder.hasErrors() }
     }
@@ -424,7 +435,7 @@ class ApplicantAccountValidationServiceTest {
                 false
             ),
             Arguments.of(
-              "eeeeeeeeeeeeee",
+                "eeeeeeeeeeeeee",
                 null,
                 false
             ),
@@ -473,7 +484,7 @@ class ApplicantAccountValidationServiceTest {
                 false
             ),
             Arguments.of(
-              "p".repeat(PHONE_MAX_LENGTH + 1),
+                "p".repeat(PHONE_MAX_LENGTH + 1),
                 "CH",
                 false
             ),
@@ -488,7 +499,7 @@ class ApplicantAccountValidationServiceTest {
                 false
             ),
             Arguments.of(
-              "+41 12 123 456 789",
+                "+41 12 123 456 789",
                 "CH",
                 false
             ),

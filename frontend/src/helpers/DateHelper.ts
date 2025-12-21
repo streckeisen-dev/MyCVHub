@@ -24,6 +24,11 @@ export function formatDate(dateString: string, lang: string): string {
   }
 }
 
+export function formatDateTime(dateString: string): string {
+  const date = moment(dateString)
+  return date.format('DD.MM.YYYY HH:mm')
+}
+
 export function convertStringToDate(dateString: string | undefined): Date | undefined {
   if (dateString) {
     return new Date(dateString)

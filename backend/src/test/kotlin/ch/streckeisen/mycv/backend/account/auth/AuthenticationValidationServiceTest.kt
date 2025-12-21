@@ -5,6 +5,8 @@ import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
 import ch.streckeisen.mycv.backend.account.dto.LoginRequestDto
 import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
+import ch.streckeisen.mycv.backend.locale.MessagesService
+import ch.streckeisen.mycv.backend.util.StringValidator
 import ch.streckeisen.mycv.backend.util.assertValidationResult
 import ch.streckeisen.mycv.backend.util.executeParameterizedTest
 import io.mockk.Runs
@@ -111,8 +113,14 @@ class AuthenticationValidationServiceTest {
             every { matches(any(), any()) } returns false
             every { matches(eq("validPassword"), eq("validEncodedPassword")) } returns true
         }
+        val messagesService: MessagesService = mockk(relaxed = true)
         authenticationValidationService =
-            AuthenticationValidationService(mockk(relaxed = true), applicantAccountValidationService, passwordEncoder)
+            AuthenticationValidationService(
+                stringValidator = StringValidator(messagesService),
+                messagesService,
+                applicantAccountValidationService,
+                passwordEncoder
+            )
     }
 
     @ParameterizedTest

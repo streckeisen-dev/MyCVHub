@@ -1,22 +1,22 @@
-import { ProfileDto } from '@/types/ProfileDto.ts'
+import { ProfileDto } from '@/types/profile/ProfileDto.ts'
 import {
   extractErrorIfResponseIsNotOk,
   fetchFromApi,
   getJSONIfResponseIsOk
 } from '@/api/ApiHelper.ts'
 import { RestError } from '@/types/RestError.ts'
-import { ProfileUpdateRequestDto } from '@/types/ProfileUpdateRequestDto.ts'
-import { WorkExperienceUpdateDto } from '@/types/WorkExperienceUpdateDto.ts'
-import { WorkExperienceDto } from '@/types/WorkExperienceDto.ts'
-import { EducationUpdateDto } from '@/types/EducationUpdateDto.ts'
-import { EducationDto } from '@/types/EducationDto.ts'
-import { ProjectUpdateDto } from '@/types/ProjectUpdateDto.ts'
-import { ProjectDto } from '@/types/ProjectDto.ts'
-import { SkillUpdateDto } from '@/types/SkillUpdateDto.ts'
-import { SkillDto } from '@/types/SkillDto.ts'
-import { ProfileThemeUpdateDto } from '@/types/ProfileThemeUpdateDto.ts'
-import { ProfileThemeDto } from '@/types/ProfileThemeDto.ts'
-import { PublicProfileDto } from '@/types/PublicProfileDto.ts'
+import { ProfileUpdateRequestDto } from '@/types/profile/ProfileUpdateRequestDto.ts'
+import { WorkExperienceUpdateDto } from '@/types/profile/workExperience/WorkExperienceUpdateDto.ts'
+import { WorkExperienceDto } from '@/types/profile/workExperience/WorkExperienceDto.ts'
+import { EducationUpdateDto } from '@/types/profile/education/EducationUpdateDto.ts'
+import { EducationDto } from '@/types/profile/education/EducationDto.ts'
+import { ProjectUpdateDto } from '@/types/profile/project/ProjectUpdateDto.ts'
+import { ProjectDto } from '@/types/profile/project/ProjectDto.ts'
+import { SkillUpdateDto } from '@/types/profile/skill/SkillUpdateDto.ts'
+import { SkillDto } from '@/types/profile/skill/SkillDto.ts'
+import { ProfileThemeUpdateDto } from '@/types/profile/theme/ProfileThemeUpdateDto.ts'
+import { ProfileThemeDto } from '@/types/profile/theme/ProfileThemeDto.ts'
+import { PublicProfileDto } from '@/types/profile/PublicProfileDto.ts'
 
 async function getProfile(locale: string): Promise<ProfileDto> {
   try {

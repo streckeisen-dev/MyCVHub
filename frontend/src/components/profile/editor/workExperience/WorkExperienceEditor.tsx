@@ -1,7 +1,7 @@
 import { ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@heroui/react'
-import { WorkExperienceDto } from '@/types/WorkExperienceDto.ts'
+import { WorkExperienceDto } from '@/types/profile/workExperience/WorkExperienceDto.ts'
 import {
   WorkExperienceList,
   WorkExperienceModificationEvent

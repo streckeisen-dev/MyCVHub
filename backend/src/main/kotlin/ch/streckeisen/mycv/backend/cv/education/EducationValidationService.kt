@@ -3,6 +3,7 @@ package ch.streckeisen.mycv.backend.cv.education
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
+import ch.streckeisen.mycv.backend.util.StringValidator
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
@@ -15,34 +16,32 @@ private const val EDUCATION_END_FIELD_KEY = "educationEnd"
 
 @Service
 class EducationValidationService(
+    private val stringValidator: StringValidator,
     private val messagesService: MessagesService
 ) {
     fun validateEducation(educationUpdate: EducationUpdateDto): Result<Unit> {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
-        if (educationUpdate.institution.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(INSTITUTION_FIELD_KEY)
-            validationErrorBuilder.addError(INSTITUTION_FIELD_KEY, error)
-        } else if (educationUpdate.institution.length > INSTITUTION_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError(INSTITUTION_FIELD_KEY, INSTITUTION_MAX_LENGTH)
-            validationErrorBuilder.addError(INSTITUTION_FIELD_KEY, error)
-        }
+        stringValidator.validateRequiredString(
+            requiredField = INSTITUTION_FIELD_KEY,
+            value = educationUpdate.institution,
+            maxLength = INSTITUTION_MAX_LENGTH,
+            validationErrorBuilder = validationErrorBuilder
+        )
 
-        if (educationUpdate.location.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(LOCATION_FIELD_KEY)
-            validationErrorBuilder.addError(LOCATION_FIELD_KEY, error)
-        } else if (educationUpdate.location.length > LOCATION_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError(LOCATION_FIELD_KEY, LOCATION_MAX_LENGTH)
-            validationErrorBuilder.addError(LOCATION_FIELD_KEY, error)
-        }
+        stringValidator.validateRequiredString(
+            requiredField = LOCATION_FIELD_KEY,
+            value = educationUpdate.location,
+            maxLength = LOCATION_MAX_LENGTH,
+            validationErrorBuilder = validationErrorBuilder
+        )
 
-        if (educationUpdate.degreeName.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(DEGREE_FIELD_KEY)
-            validationErrorBuilder.addError(DEGREE_FIELD_KEY, error)
-        } else if (educationUpdate.degreeName.length > DEGREE_NAME_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError(DEGREE_FIELD_KEY, DEGREE_NAME_MAX_LENGTH)
-            validationErrorBuilder.addError(DEGREE_FIELD_KEY, error)
-        }
+        stringValidator.validateRequiredString(
+            requiredField = DEGREE_FIELD_KEY,
+            value = educationUpdate.degreeName,
+            maxLength = DEGREE_NAME_MAX_LENGTH,
+            validationErrorBuilder = validationErrorBuilder
+        )
 
         if (educationUpdate.educationStart == null) {
             val error = messagesService.requiredFieldMissingError(EDUCATION_START_FIELD_KEY)

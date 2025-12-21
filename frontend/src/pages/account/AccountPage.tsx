@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react'
 import { centerSection, h2, h3 } from '@/styles/primitives.ts'
 import { useTranslation } from 'react-i18next'
-import { AccountDto } from '@/types/AccountDto.ts'
+import { AccountDto } from '@/types/account/AccountDto.ts'
 import { Button, Card, CardBody, CardFooter, CardHeader, CircularProgress } from '@heroui/react'
 import AccountApi from '@/api/AccountApi.ts'
 import { Empty } from '@/components/Empty.tsx'
@@ -138,10 +138,14 @@ export function AccountPage(): React.ReactNode {
       </Button>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
         <AccountTile title={t('account.personalData')}>
-          <AttributeList attributes={getPersonalDataAttributes(t, i18n.language, account)} />
+          <AttributeList
+            attributes={getPersonalDataAttributes(t, i18n.language, account)}
+          />
         </AccountTile>
         <AccountTile title={t('account.address')}>
-          <AttributeList attributes={getAddressAttributes(t, account)} />
+          <AttributeList
+            attributes={getAddressAttributes(t, account)}
+          />
         </AccountTile>
         <AccountTile
           title={t('account.security.title')}
@@ -158,7 +162,9 @@ export function AccountPage(): React.ReactNode {
             )
           }
         >
-          <AttributeList attributes={getSecurityAttributes(t, account)} />
+          <AttributeList
+            attributes={getSecurityAttributes(t, account)}
+          />
         </AccountTile>
         <AccountTile title={t('account.accountMgmt.title')} action={<AccountDeleteButton />} />
       </div>

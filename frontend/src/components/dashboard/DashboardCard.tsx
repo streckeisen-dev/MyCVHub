@@ -1,17 +1,16 @@
-import { ReactNode } from 'react'
+import { PropsWithChildren, ReactNode } from 'react'
 import { Card, CardBody, CardHeader } from '@heroui/react'
 
-export type DashboardCardProps = Readonly<{
+export type DashboardCardProps = Readonly<PropsWithChildren & {
   title: string
-  content: ReactNode
 }>
 
 export function DashboardCard(props: DashboardCardProps): ReactNode {
-  const { title, content } = props
+  const { title, children } = props
   return (
     <Card className="p-2">
       <CardHeader className="font-bold">{title}</CardHeader>
-      <CardBody>{content}</CardBody>
+      <CardBody>{children}</CardBody>
     </Card>
   )
 }

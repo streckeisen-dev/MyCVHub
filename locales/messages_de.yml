@@ -40,6 +40,9 @@ shared:
     url: "URL"
     displayName: "Anzeigename"
     language: "Sprache"
+    comment: "Kommentar"
+    status: "Status"
+    source: "Quelle"
 
   validations:
     required: "{label} darf nicht leer sein"
@@ -95,6 +98,8 @@ frontend:
     title: "Dashboard"
     profile: "Dein CV Profil"
     noProfile: "Du hast noch kein Profil. Erstelle eines und baue deinen Lebenslauf."
+    applications: "Bewerbungsverfolgung"
+    viewApplications: "Bewerbungen anzeigen"
     loadingError: "Das Dashboard konnte nicht geladen werden"
 
   account:
@@ -259,6 +264,35 @@ frontend:
       title: "Länder konnten nicht geladen werden"
       message: "Versuchen Sie es später noch einmal oder wenden Sie sich an den Administrator, wenn das Problem nicht behoben ist."
 
+  application:
+    title: "Bewerbungen"
+    singular: "Bewerbung"
+    notFound: "Bewerbung nicht gefunden"
+    noEntries: "Du hast noch keine Bewerbungen."
+    createdAt: "Erstellt am"
+    updatedAt: "Aktualisiert am"
+    at: "bei"
+    as: "als"
+    details: "Bewerbungsdetails"
+    back: "Zurück zur Übersicht"
+    history:
+      title: "Bewerbungsverlauf"
+      from: "Alter Status"
+      to: "Neuer Status"
+      timestamp: "Datum"
+    editor:
+      add: "Bewerbung erstellen"
+      edit: "Bewerbung bearbeiten"
+      delete:
+        title: "Bewerbung löschen"
+        confirmationText: "Wenn du fortfährst und diese Bewerung löschst, wird diese definitiv gelöscht. Du wirst sie nicht Wiederherstellen könne. Bist du sicher dass du diese Bewerbung löschen möchtest?"
+        deleteSuccess: "Bewerbung erfolgreich gelöscht"
+        deleteError: "Bewerbung konnte nicht gelöscht werden"
+      saveError: "Bewerbung konnte nicht gespeichert werden"
+    loadingError: "Bewerbungen konnten nicht geladen werden"
+    statusLoadingError: "Bewerungs-Status Filter Informationen konnten nicht geladen werden"
+    transitionError: "Bewerbungs-Status konnte nicht aktualisiert werden"
+
   notFound:
     headline: "Wo willst du hin?"
     title: "404, Seite nicht gefunden"
@@ -309,6 +343,13 @@ frontend:
     headline: "Nicht Autorisiert"
     title: "Du hast keine Berechtigung um auf diese Seite zuzugreifen!"
 
+  table:
+    pagination:
+      pageSize: "Resultate pro Seite"
+      numberInformation: "Resultate {start}-{end} von {total}"
+    search: "Suche"
+    actions: "Aktionen"
+
 backend:
   validations:
     maxLengthExceeded: "{0} darf nicht länger als {1} Zeichen sein"
@@ -316,6 +357,7 @@ backend:
     numberTooSmall: "{0} muss grösser als {1} sein"
     numberTooBig: "{0} muss kleiner als {1} sein"
     invalidUrl: "URL ist ungültig"
+    eitherNullOrValue: "{0} muss entweder 'null' sein oder einen gültigen Wert haben"
 
   workExperience:
     notFound: "Berufserfahrung nicht gefunden"
@@ -355,7 +397,6 @@ backend:
       usernameAlreadyTaken: "Benutzername ist bereits vergeben"
       emailAlreadyTaken: "E-Mail ist schon vergeben"
       phoneInvalid: "Telefonnummer ist nicht gültig"
-      houseNumberEmpty: "Hausnummer muss 'null' sein oder einen Wert haben"
       countryLengthError: "Land muss ein ISO {0}-Buchstaben Ländercode sein"
       countryInvalid: "Ungültiger Ländercode"
       languageInvalid: "Ungültiger Sprachcode"
@@ -397,6 +438,35 @@ backend:
       unknown: "Die Vorlagen-Einstellung gibt es nicht."
       invalid: "Die Vorlagen-Einstellung ist ungültig."
       missing: "Diese Vorlagen-Einstellung benötigt einen Wert."
+
+  application:
+    transition:
+      sent: "Bewerbung verschickt"
+      rejected: "Bewerbung abgelehnt"
+      interviewScheduled: "Interview vereinbart"
+      interviewEnded: "Interview beendet"
+      offerReceived: "Angebot erhalten"
+      offerAccepted: "Angebot akzeptiert"
+      offerRejected: "Angebot abgelehnt"
+      withdrawn: "Zurückgezogen"
+      notAllowed: "Diese Aktion ist nicht erlaubt"
+      notFound: "Diese Aktion existiert nicht"
+    status:
+      unsent: "Entwurf"
+      waitingForFirstResponse: "Warten auf erste Antwort"
+      rejected: "Abgelehnt"
+      interviewScheduled: "Interview vereinbart"
+      waitingForInterviewFeedback: "Warten auf Interview Feedback"
+      offerReceived: "Angebot erhalten"
+      offerDeclined: "Angebot abgelehnt"
+      hired: "Eingestellt"
+      withdrawn: "Zurückgezogen"
+    validation:
+      updateError: "Deine Bewerbungs-Update Anfrage ist ungültig"
+      transitionError: "Deine Status-Update Anfrage ist ungültig"
+    notFound: "Bewerbung nicht gefunden"
+    accessDenied: "Du hast keine Berechtigung diese Bewerbung zu sehen"
+
   exceptions:
     db: "Ein Datenbank-Fehler ist aufgetreten. Bitte kontaktiere den Administrator"
     expiredJwt: "Abgelaufenes JWT-Token"

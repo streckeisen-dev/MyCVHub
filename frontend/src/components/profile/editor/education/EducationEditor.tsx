@@ -5,7 +5,7 @@ import {
   EducationList,
   EducationModificationEvent
 } from '@/components/profile/editor/education/EducationList.tsx'
-import { EducationDto } from '@/types/EducationDto.ts'
+import { EducationDto } from '@/types/profile/education/EducationDto.ts'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { RestError } from '@/types/RestError.ts'
 import {

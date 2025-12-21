@@ -1,6 +1,6 @@
 import { RouteObject } from 'react-router-dom'
 import { DefaultLayout } from '@/layouts/DefaultLayout.tsx'
-import { AuthLevel } from '@/types/AuthLevel.ts'
+import { AuthLevel } from '@/types/account/AuthLevel.ts'
 import HomePage from '@/pages/HomePage.tsx'
 import { PublicProfilePage } from '@/pages/profile/PublicProfilePage.tsx'
 import { KeyValueObject } from '@/types/KeyValueObject.ts'
@@ -24,6 +24,7 @@ import { ApplicationsPage } from '@/pages/applications/ApplicationsPage.tsx'
 import { AuthorizedUser } from '@/context/AuthorizationContext.tsx'
 import { CvDownloadPage } from '@/pages/cv/CvDownloadPage.tsx'
 import { SecurityCheck } from '@/components/security/SecurityCheck.tsx'
+import { ApplicationDetailsPage } from '@/pages/applications/ApplicationDetailsPage.tsx'
 
 type MyCvRouteObject = Omit<RouteObject, 'children'> & {
   id: string
@@ -128,6 +129,11 @@ const ROUTE_DEFINITIONS = defineRoutes([
             id: 'ApplicationsOverview',
             index: true,
             element: <ApplicationsPage />
+          },
+          {
+            id: 'ApplicationDetail',
+            path: ':id',
+            element: <ApplicationDetailsPage />
           }
         ]
       },
@@ -322,7 +328,7 @@ const navItems: NavItemConfig[] = [
   },
   {
     id: 'applications',
-    label: 'applications.title',
+    label: 'application.title',
     href: getRoutePath(RouteId.ApplicationsOverview),
     predicate: (user: AuthorizedUser | undefined) => user?.hasProfile ?? false
   }

@@ -3,7 +3,7 @@ import { Spinner } from '@heroui/react'
 import { AuthorizationContext } from '@/context/AuthorizationContext.tsx'
 import { useNavigate } from 'react-router-dom'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
-import { AuthLevel } from '@/types/AuthLevel.ts'
+import { AuthLevel } from '@/types/account/AuthLevel.ts'
 
 export function OAuthSuccessPage(): ReactNode {
   const navigate = useNavigate()

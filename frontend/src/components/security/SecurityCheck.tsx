@@ -3,8 +3,9 @@ import {
   AuthorizationContext,
   AuthorizedUser
 } from '@/context/AuthorizationContext.tsx'
-import { AuthLevel } from '@/types/AuthLevel.ts'
+import { AuthLevel } from '@/types/account/AuthLevel.ts'
 import { UnauthorizedPage } from '@/pages/UnauthorizedPage.tsx'
+import { Spinner } from '@heroui/react'
 
 const DEFAULT_AUTH_REQUIRED = true
 const DEFAULT_MIN_AUTH_LEVEL = AuthLevel.VERIFIED
@@ -44,13 +45,12 @@ function canUserAccessRoute(
 
 export function SecurityCheck(props: SecurityCheckProps): ReactNode {
   const { requiresAuth, minAuthLevel, children } = props
-  const { user } = use(AuthorizationContext)
+  const { user, isLoadingUser } = use(AuthorizationContext)
   
   const doesRequireAuth = requiresAuth ?? DEFAULT_AUTH_REQUIRED
   const canAccess = canUserAccessRoute(user, doesRequireAuth, minAuthLevel)
+
+  const noAccessContent = isLoadingUser ? <Spinner /> : <UnauthorizedPage />
   
-  return <>
-    {canAccess && children}
-    {!canAccess && <UnauthorizedPage />}
-  </>
+  return canAccess ? children : noAccessContent
 }

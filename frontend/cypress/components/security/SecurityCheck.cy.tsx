@@ -4,7 +4,7 @@ import {
   AuthorizedUser
 } from '@/context/AuthorizationContext.tsx'
 import { SecurityCheck } from '@/components/security/SecurityCheck.tsx'
-import { AuthLevel } from '@/types/AuthLevel.ts'
+import { AuthLevel } from '@/types/account/AuthLevel.ts'
 
 const CONTENT_SELECTOR = 'p[data-testid="page-content"]'
 
@@ -26,6 +26,7 @@ function createUser(authLevel: AuthLevel): AuthorizedUser {
 function createContextValue(user: AuthorizedUser | undefined): AuthorizationContextValue {
   return {
     user,
+    isLoadingUser: false,
     handleUserUpdate: dummyHandler,
     handleLogout: dummyHandler
   }

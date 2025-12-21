@@ -36,8 +36,6 @@ export function CvListEntry(props: CvListEntryProps): ReactNode {
     (hasActions ? ' md: grid-cols-10' : '')
   const fixedClasses = 'col-span-8'
   const adaptableClasses = hasActions ? 'col-span-4 lg:col-span-2' : 'col-span-4'
-  const actionClasses =
-    'rounded-full w-min col-span-3 sm:col-span-2 lg:col-span-1 lg:justify-self-end min-w-1'
 
   function handleEdit() {
     if (value.id && onEdit) {
@@ -58,21 +56,17 @@ export function CvListEntry(props: CvListEntryProps): ReactNode {
       <p className={fixedClasses}>{value.bottomLeft}</p>
       <p className={adaptableClasses}>{duration}</p>
       {hasActions && (
-        <>
-          <Button
-            className={`${actionClasses} col-start-7 sm:col-start-9 lg:col-start-11`}
-            color="primary"
-            onPress={handleEdit}
-          >
+        <div className="col-span-12 lg:col-span-2 flex gap-3 justify-end">
+          <Button isIconOnly radius="full" color="primary" onPress={handleEdit}>
             <FaPen size={15} />
           </Button>
-          <Button className={`${actionClasses}`} color="danger" onPress={handleDelete}>
+          <Button isIconOnly radius="full" color="danger" onPress={handleDelete}>
             <FaTrash size={15} />
           </Button>
-        </>
+        </div>
       )}
       {value.description && (
-        <pre className={`col-span-12 whitespace-break-spaces ${hasActions ? '' : 'mt-5'}`}>
+        <pre className={`col-span-12 whitespace-break-spaces ${hasActions ? 'mt-2' : 'mt-6'}`}>
           {value.description}
         </pre>
       )}
