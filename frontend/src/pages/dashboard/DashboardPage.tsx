@@ -27,6 +27,8 @@ function DashboardContent(props: DashboardContentProps): ReactNode {
   const { t } = useTranslation()
   const { info } = props
 
+  const sortedApplicationStats = info.applications.sort(sortApplicationStats)
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
       {info.profile ? (
@@ -90,7 +92,7 @@ function DashboardContent(props: DashboardContentProps): ReactNode {
           <div className="flex flex-col gap-4">
             <div className="grid grid-cols-2 gap-1.5">
               <Divider className="col-span-2" />
-              {info.applications.sort(sortApplicationStats).map((stat) => (
+              {sortedApplicationStats.map((stat) => (
                 <ApplicationStat key={stat.status.key} stat={stat} />
               ))}
             </div>
