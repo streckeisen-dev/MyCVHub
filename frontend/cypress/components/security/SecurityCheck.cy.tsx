@@ -26,6 +26,7 @@ function createUser(authLevel: AuthLevel): AuthorizedUser {
 function createContextValue(user: AuthorizedUser | undefined): AuthorizationContextValue {
   return {
     user,
+    isLoadingUser: false,
     handleUserUpdate: dummyHandler,
     handleLogout: dummyHandler
   }
