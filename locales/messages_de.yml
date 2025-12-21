@@ -43,6 +43,7 @@ shared:
     comment: "Kommentar"
     status: "Status"
     source: "Quelle"
+    acceptTos: "Ich habe die folgenden Dokumente gelesen und akzeptiere diese: "
 
   validations:
     required: "{label} darf nicht leer sein"
@@ -314,44 +315,204 @@ frontend:
 
   privacy:
     title: "Datenschutzerklärung"
-    description: "In dieser Datenschutzerklärung wird erläutert, wie MyCVHub personenbezogene Daten sammelt, verwendet und verwaltet."
     intro:
       title: "Einleitung"
-      content: "In dieser Datenschutzerklärung wird erläutert, wie MyCVHub personenbezogene Daten von registrierten Benutzern sammelt, verwendet und verwaltet."
+      content: "Diese Datenschutzerklärung erklärt, wie MyCVHub personenbezogene Daten von registrierten Nutzern erfasst, verwendet und verwaltet."
+      controller:
+        title: "Verantwortlicher"
+        location: "Zürich, Schweiz"
+        legalEntity: "Streckeisen DevWorks"
+    processing:
+      title: "Rechtsgrundlage für die Datenverarbeitung"
+      content: "Wir verarbeiten deine personenbezogenen Daten auf Grundlage von:"
+      proc1: "Deiner Einwilligung, wenn du ein Konto erstellst und unsere Dienste nutzt"
+      proc2: "Der Erfüllung unseres Vertrags mit dir zur Bereitstellung von Lebenslauf-Erstellungs- und Verwaltungsdiensten"
+      proc3: "Unserem berechtigten Interesse an der Aufrechterhaltung und Verbesserung unseres Dienstes"
     collection:
-      title: "Datenerhebung"
-      content: "MyCVHub sammelt die folgenden persönlichen Informationen:"
+      title: "Datenerfassung"
+      content: "MyCVHub erfasst folgende personenbezogene Informationen:"
       profileInfo:
         title: "Profil Informationen"
-        content: "Name, Adresse, Telefonnummer und Inhalt des Lebenslaufs, wie von den Nutzern angegeben."
+        content: "Name, Adresse, Telefonnummer, E-Mail-Adresse und Lebenslauf-Inhalte (Berufserfahrung, Ausbildung, Projekte, Fähigkeiten, Bewerbungen), wie von dir bereitgestellt."
       profilePicture:
-        title: "Profil Bild"
-        content: "Das Profilbild wird sicher bei unserem Drittanbieter, Cloudinary, gespeichert."
+        title: "Profilbild"
+        content: "Dein Profilbild wird sicher bei unserem Drittanbieter Cloudinary gespeichert."
+      authData:
+        title: "Authentifizierungsdaten"
+        content: "Wir verwenden Session-Cookies, die ausschließlich für die Login-Funktionalität und Kontosicherheit erforderlich sind."
     usage:
       title: "Datenverwendung"
-      content: "Die gesammelten Daten werden verwendet, um:"
-      usage1: "Nutzern zu ermöglichen, ihre Lebensläufe zu erstellen, zu bearbeiten und zu teilen."
-      usage2: "Nutzern zu ermöglichen, ihren Lebenslauf öffentlich zugänglich zu machen, wobei kontrolliert werden kann, welche Datenfelder (E-Mail, Telefon, Adresse) im öffentlichen Lebenslauf erscheinen."
+      content: "Wir verwenden deine Daten, um:"
+      usage1: "Dir die Erstellung, Bearbeitung und Verwaltung deiner Lebensläufe und Bewerbungen zu ermöglichen"
+      usage2: "PDF-Versionen deines Lebenslaufs aus verfügbaren Vorlagen zu generieren"
+      usage3: "Dir optional zu ermöglichen, deinen Lebenslauf über einen eindeutigen Link öffentlich zugänglich zu machen, mit Kontrolle darüber, welche Datenfelder (E-Mail, Telefon, Adresse, Lebenslauf-Eintrag Beschreibung) im öffentlichen Lebenslauf erscheinen"
+      usage4: "Unseren Dienst aufrechtzuerhalten und zu verbessern"
     storage:
       title: "Datenspeicherung und -sicherheit"
       userData:
-        title: "Benutzerdaten"
-        content: "Persönliche Informationen werden sicher in unserer Datenbank gespeichert. Standardmäßig hat nur der Nutzer Zugang zu diesen Daten, es sei denn, er entscheidet sich dafür, bestimmte Informationen öffentlich zu machen. Der Entwickler hat nur zu Wartungszwecken begrenzten Zugriff auf die Datenbank."
+        title: "Nutzerdaten"
+        content: "Deine personenbezogenen Informationen werden sicher in unserer Datenbank gespeichert. Standardmäßig hast nur du Zugriff auf deine Daten, es sei denn, du entscheidest dich, bestimmte Informationen über einen geteilten Lebenslauf-Link öffentlich zu machen. Datenbankadministratoren haben Zugriff ausschließlich für technische Wartung und Sicherheitszwecke und sind zur Vertraulichkeit verpflichtet."
       pictures:
         title: "Profilbilder"
-        content: "Profilbilder werden über Cloudinary, einen sicheren Drittanbieter, mit eingeschränktem Zugriff gespeichert und verwaltet, um den Datenschutz zu gewährleisten."
-    access:
-      title: "Datenzugriff und Nutzerkontrolle"
-      content: "MyCVHub bietet den Nutzern einen direkten Zugang zu ihren Daten. Die Nutzer können alle Informationen, einschließlich ihres Kontos und Profilbildes, direkt in der App anzeigen, bearbeiten und löschen. Es sind keine externen Datenzugriffsanfragen erforderlich."
+        content: "Profilbilder werden über Cloudinary, einen sicheren Drittanbieter für Speicherung, gespeichert und verwaltet. Cloudinary kann Daten international verarbeiten und hält sich an geltende Datenschutzstandards, um die Privatsphäre und Sicherheit gespeicherter Bilder zu gewährleisten."
+      security:
+        title: "Sicherheitsmaßnahmen"
+        content: "Wir implementieren branchenübliche Sicherheitspraktiken zum Schutz deiner Daten, einschließlich sicherer Authentifizierung, verschlüsselter Verbindungen (HTTPS) und regelmäßiger Sicherheitsupdates."
+    retention:
+      title: "Datenaufbewahrung"
+      content: "Wir speichern deine Daten, solange dein Konto aktiv ist. Nach der Kontolöschung werden alle personenbezogenen Daten, einschließlich deiner Lebenslauf-Informationen und deines Profilbilds, innerhalb von 30 Tagen dauerhaft aus unseren Systemen entfernt."
     sharing:
       title: "Datenweitergabe"
-      content: "MyCVHub gibt keine Nutzerdaten an Dritte weiter, es sei denn, dies ist für die Medienspeicherung erforderlich. Öffentlich freigegebene Lebensläufe sind nur über den freigegebenen Link zugänglich und enthalten nur die Informationen, die der Nutzer als öffentlich gekennzeichnet hat."
+      content: "MyCVHub verkauft deine persönlichen Daten nicht. Deine persönlichen Daten werden nur in folgenden Situationen and Dritte wetergegeben:"
+      sharing1: "Cloudinary: Für die sichere Speicherung und Bereitstellung von Profilbildern"
+      sharing2: "Gesetzliche Anforderungen: Wenn dies gesetzlich, durch rechtliche Verfahren oder zum Schutz unserer Rechte erforderlich ist"
+      sharing3: "Öffentliche Lebensläufe: Wenn du dich entscheidest, deinen Lebenslauf öffentlich zugänglich zu machen, ist er über den geteilten Link verfügbar und enthält nur die Informationen, die du als öffentlich festgelegt hast"
+    rights:
+      title: "Deine Rechte"
+      content: "Gemäß Datenschutzrecht hast du folgende Rechte:"
+      right1: "Auskunftsrecht: Du kannst alle deine personenbezogenen Daten direkt in der App einsehen"
+      right2: "Recht auf Berichtigung: Du kannst jederzeit alle deine Informationen über dein Konto bearbeiten"
+      right3: "Recht auf Löschung: Du kannst dein Konto und alle zugehörigen Daten jederzeit über die App-Einstellungen löschen"
+      right4: "Recht auf Datenübertragbarkeit: Du kannst deinen Lebenslauf jederzeit als PDF herunterladen"
+      right5: "Recht auf Widerruf der Einwilligung: Du kannst die Nutzung des Dienstes jederzeit beenden und dein Konto löschen"
+      right6: "Widerspruchsrecht: Du kannst der Datenverarbeitung widersprechen, indem du dein Konto löschst"
+      right7: "Beschwerderecht: Du hast das Recht, eine Beschwerde bei deiner lokalen Datenschutzbehörde einzureichen"
+    breach:
+      title: "Benachrichtigung bei Datenschutzverletzungen"
+      content: "Im unwahrscheinlichen Fall einer Datenschutzverletzung, die deine personenbezogenen Informationen betrifft, werden wir dich und, falls erforderlich, die zuständige Aufsichtsbehörde innerhalb von 72 Stunden nach Kenntnisnahme der Verletzung benachrichtigen."
     thirdParty:
-      title: "Nutzung von Diensten Dritter"
-      content: "MyCVHub nutzt Cloudinary ausschließlich für die Speicherung und den Abruf von Profilbildern. Cloudinary hält sich an strenge Sicherheitsstandards, um die Privatsphäre und Sicherheit der gespeicherten Bilder zu gewährleisten."
-    contact:
-      title: "Kontaktinformationen"
-      content: "Bei Fragen oder Anliegen kontaktieren Sie uns bitte unter"
+      title: "Nutzung von Drittanbieterdiensten"
+      content: "MyCVHub nutzt Cloudinary ausschließlich für die Speicherung und den Abruf von Profilbildern. Cloudinary hält sich an strenge Sicherheitsstandards und kann Daten international in Übereinstimmung mit geltenden Datenschutzbestimmungen verarbeiten."
+    age:
+      title: "Altersbeschränkung"
+      content: "MyCVHub ist für Nutzer ab 16 Jahren vorgesehen. Wir erfassen wissentlich keine Daten von Personen unter 16 Jahren."
+    changes:
+      title: "Änderungen dieser Erklärung"
+      content: "Wir können diese Datenschutzerklärung von Zeit zu Zeit aktualisieren. Wir werden Nutzer über wesentliche Änderungen informieren. Deine fortgesetzte Nutzung von MyCVHub nach Änderungen stellt die Annahme der aktualisierten Erklärung dar."
+    contact: "Für Fragen, Anliegen oder zur Ausübung deiner Datenschutzrechte kontaktiere uns bitte unter:"
+    note: "MyCVHub wird als persönliches Projekt betrieben. Obwohl wir Datenschutz ernst nehmen und angemessene Sicherheitsmaßnahmen implementieren, wird der Dienst auf \"as-is\"-Basis bereitgestellt, wie in unseren Nutzungsbedingungen beschrieben."
+
+  tos:
+    title: "Nutzungsbedingungen"
+    acceptance:
+      title: "Annahme der Bedingungen"
+      content: "Durch den Zugriff auf oder die Nutzung von MyCVHub (\"der Dienst\") erklärst du dich damit einverstanden, an diese Nutzungsbedingungen (\"Bedingungen\") gebunden zu sein. Wenn du mit diesen Bedingungen nicht einverstanden bist, nutze den Dienst bitte nicht.\nMyCVHub wird als persönliches Projekt mit Sitz in Zürich, Schweiz, betrieben. Durch die Nutzung dieses Dienstes bestätigst du, dass er von einer Einzelperson und nicht von einem Unternehmen bereitgestellt wird und nach bestem Bemühen angeboten wird."
+    description:
+      title: "Beschreibung des Dienstes"
+      content: "MyCVHub bietet Tools, um:"
+      desc1: "Online-Lebenslauf-Profile zu erstellen und zu verwalten"
+      desc2: "PDF-Versionen deines Lebenslaufs mit verschiedenen Vorlagen zu generieren"
+      desc3: "Bewerbungen zu verfolgen"
+      desc4: "Deinen Lebenslauf optional über einen eindeutigen Link öffentlich zu teilen"
+      addendum: "Der Dienst wird kostenlos bereitgestellt und ist für die persönliche, nicht-kommerzielle Nutzung vorgesehen."
+    accounts:
+      title: "Nutzerkonten"
+      registration:
+        title: "Registrierung"
+        content: "u musst bei der Erstellung eines Kontos genaue und vollständige Informationen angeben. Du bist für die Wahrung der Vertraulichkeit deiner Konto-Zugangsdaten verantwortlich."
+      security:
+        title: "Kontosicherheit"
+        content: "Du bist für alle Aktivitäten verantwortlich, die unter deinem Konto stattfinden. Benachrichtige uns umgehend unter der untenstehenden Kontaktadresse, wenn du einen unbefugten Zugriff vermutest."
+      age:
+        title: "Altersanforderung"
+        content: "Du musst mindestens 16 Jahre alt sein, um diesen Dienst zu nutzen."
+    contentAndOwnership:
+      title: "Nutzerinhalte und Eigentum"
+      content:
+        title: "Deine Inhalte"
+        content: "Du behältst alle Eigentumsrechte an den Inhalten, die du erstellst und hochlädst (einschließlich Lebenslauf-Informationen, Profilbilder und Bewerbungsverfolgungsdaten). Durch die Nutzung des Dienstes gewährst du MyCVHub eine eingeschränkte Lizenz zum Speichern, Anzeigen und Verarbeiten deiner Inhalte ausschließlich zum Zweck der Bereitstellung des Dienstes für dich."
+      platform:
+        title: "Unsere Plattform"
+        content: "Der MyCVHub-Quellcode ist Open Source und unter der MIT Lizenz verfügbar bei "
+        contentContinue: "Du darfst den Code gemäß der Open-Source-Lizenz verwenden, modifizieren und verteilen. Das MyCVHub-Branding, die Designelemente und diese gehostete Dienstinstanz bleiben Eigentum des Betreibers."
+      sharing:
+        title: "Öffentliches Teilen"
+        content: "Wenn du dich entscheidest, deinen Lebenslauf über einen geteilten Link öffentlich zugänglich zu machen, verstehst du, dass jeder mit dem Link die von dir als öffentlich gekennzeichneten Informationen einsehen kann."
+    prohibited:
+      title: "Verbotenes Verhalten"
+      content: "Du verpflichtest dich, Folgendes zu unterlassen:"
+      prohib1: "Den Dienst für illegale Zwecke oder unter Verletzung geltender Gesetze zu nutzen"
+      prohib2: "Inhalte hochzuladen, die diffamierend, obszön, belästigend sind oder die Rechte anderer verletzen"
+      prohib3: "Zu versuchen, unbefugten Zugriff auf den Dienst oder die Konten anderer Nutzer zu erlangen"
+      prohib4: "Den Dienst zu nutzen, um Malware, Spam oder andere schädliche Inhalte zu verbreiten"
+      prohib5: "Eine andere Person oder Entität vorzutäuschen"
+      prohib6: "Daten vom Dienst mit automatisierten Mitteln zu scrapen, zu sammeln oder zu erfassen"
+      prohib7: "Den ordnungsgemäßen Betrieb des Dienstes zu missbrauchen, zu überlasten oder zu stören"
+      addendum: "Wir behalten uns das Recht vor, Konten zu kündigen, die gegen diese Bedingungen verstoßen."
+    disclaimer:
+      title: "Haftungsausschlüsse und Haftungsbeschränkungen"
+      asIs:
+        title: "\"Wie Besehen\" Dienst"
+        content: "MyCVHub wird \"wie besehen\" und \"wie verfügbar\" ohne jegliche Gewährleistungen, ausdrücklich oder stillschweigend, bereitgestellt. Wir garantieren nicht, dass der Dienst unterbrechungsfrei, fehlerfrei, sicher oder frei von Viren oder anderen schädlichen Komponenten sein wird."
+      noGuarantees:
+        title: "Keine Garantien"
+        content: "Wir geben keine Garantien bezüglich:"
+        nonGuar1: "Der Qualität, Genauigkeit oder Wirksamkeit von Lebensläufen, die mit dem Dienst erstellt wurden"
+        nonGuar2: "Ergebnissen bei der Jobsuche oder Erfolg bei Vorstellungsgesprächen"
+        nonGuar3: "Kontinuierlicher Verfügbarkeit des Dienstes"
+        nonGuar4: "Erhaltung deiner Daten (obwohl wir uns angemessen bemühen)"
+      limitation:
+        title: "Haftungsbeschränkung"
+        content: "Im maximal gesetzlich zulässigen Umfang haften MyCVHub und sein Betreiber nicht für:"
+        lim1: "Indirekte, zufällige, besondere, Folge- oder Strafschäden"
+        lim2: "Verlust von Daten, Gewinnen oder Gelegenheiten"
+        lim3: "Schäden, die durch Dienstunterbrechungen, Fehler oder Sicherheitsverletzungen entstehen"
+        lim4: "Schäden, die den Betrag übersteigen, den du für die Nutzung des Dienstes bezahlt hast (der null ist)"
+      responsibility:
+        title: "Nutzungsverantwortung"
+        content: "Du bist allein verantwortlich für:"
+        resp1: "Die Genauigkeit und Angemessenheit deiner Lebenslauf-Inhalte"
+        resp2: "Die Sicherung wichtiger Informationen"
+        resp3: "Die Überprüfung von Informationen vor dem Versenden von Bewerbungen"
+        resp4: "Die Einhaltung geltender Gesetze bei der Nutzung des Dienstes"
+    privacy:
+      title: "Daten und Datenschutz"
+      content: "Deine Nutzung des Dienstes unterliegt auch unserer Datenschutzerklärung, die erklärt, wie wir deine personenbezogenen Daten erfassen, verwenden und schützen. Durch die Nutzung des Dienstes stimmst du unserer Datenschutzerklärung zu."
+    serviceModifications:
+      title: "Dienständerungen und Verfügbarkeit"
+      content: "Wir behalten uns das Recht vor:"
+      mod1: "Jeden Teil des Dienstes jederzeit ohne Vorankündigung zu ändern, auszusetzen oder einzustellen"
+      mod2: "Funktionen, Funktionalität oder verfügbare Vorlagen zu ändern"
+      mod3: "Nutzungsbeschränkungen oder Einschränkungen zu implementieren"
+      mod4: "Wartungsarbeiten durchzuführen, die den Dienst vorübergehend unterbrechen können"
+      addendum: "Wir sind nicht verpflichtet, den Dienst auf unbestimmte Zeit aufrechtzuerhalten oder zu unterstützen."
+    termination:
+      title: "Kontokündigung"
+      byYou:
+        title: "Durch dich"
+        content: "Du kannst dein Konto jederzeit über die Diensteinstellungen löschen. Nach der Löschung werden deine Daten wie in unserer Datenschutzerklärung beschrieben entfernt."
+      byUs:
+        title: "Durch uns"
+        content: "Wir behalten uns das Recht vor, dein Konto auszusetzen oder zu kündigen, wenn:"
+        term1: "Du gegen diese Bedingungen verstößt"
+        term2: "Dein Konto über einen längeren Zeitraum inaktiv bleibt"
+        term3: "Wir beschließen, den Dienst einzustellen"
+        term4: "Wir glauben, dass deine Nutzung ein Sicherheits- oder Rechtsrisiko darstellt"
+    thirdParty:
+      title: "Drittanbieterdienste"
+      content: "Der Dienst nutzt Drittanbeiterdienste gemäss unserer Datenschutzerklärung."
+    intellectualProperty:
+      title: "Ansprüche wegen geistigen Eigentums"
+      content: "Wenn du glaubst, dass Inhalte auf MyCVHub deine geistigen Eigentumsrechte verletzen, kontaktiere uns unter der untenstehenden Kontaktadresse mit detaillierten Informationen über die mutmaßliche Verletzung."
+    jurisdiction:
+      title: "Anwendbares Recht und Gerichtsstand"
+      content: "Diese Bedingungen unterliegen dem Schweizer Recht. Streitigkeiten, die sich aus diesen Bedingungen oder deiner Nutzung des Dienstes ergeben, unterliegen der ausschließlichen Zuständigkeit der Gerichte in Zürich, Schweiz."
+    changes:
+      title: "Änderungen der Bedingungen"
+      content: "Wir können diese Bedingungen von Zeit zu Zeit aktualisieren. Wir werden Nutzer über wesentliche Änderungen informieren. Deine fortgesetzte Nutzung des Dienstes nach Änderungen stellt die Annahme der aktualisierten Bedingungen dar."
+    severability:
+      title: "Salvatorische Klausel"
+      content: "Sollte eine Bestimmung dieser Bedingungen als nicht durchsetzbar oder ungültig befunden werden, wird diese Bestimmung im minimal erforderlichen Umfang eingeschränkt oder beseitigt, und die verbleibenden Bestimmungen bleiben in vollem Umfang gültig und wirksam."
+    agreement:
+      title: "Gesamtvereinbarung"
+      content: "Diese Bedingungen bilden zusammen mit unserer Datenschutzerklärung die gesamte Vereinbarung zwischen dir und MyCVHub bezüglich deiner Nutzung des Dienstes."
+    contact: "Für Fragen zu diesen Bedingungen kontaktiere uns bitte unter:"
+    note: "MyCVHub ist ein persönliches Projekt, das von einer Einzelperson betrieben wird. Obwohl wir bestrebt sind, einen zuverlässigen und sicheren Dienst bereitzustellen, sollten Nutzer verstehen, dass dies kein kommerzielles Unternehmen mit umfangreichen Ressourcen ist. Wir ermutigen Nutzer, Sicherungskopien wichtiger Informationen zu führen und den Dienst mit angemessenen Erwartungen für eine kostenlose, privat betriebene Plattform zu nutzen."
+
+  legal:
+    lastUpdated: "Letzte Aktualisierung"
+    contact: "Kontakt Informationen"
+    note: "Hinweis"
 
   unauthorized:
     headline: "Nicht Autorisiert"
@@ -415,6 +576,7 @@ backend:
       countryInvalid: "Ungültiger Ländercode"
       languageInvalid: "Ungültiger Sprachcode"
       languageLengthError: "Sprache muss ein ISO {0}-Buchstaben Sprachcode sein"
+      termsError: "Du musst die Nutzungsbedungen und Datenschutzerklärung akzeptieren um einen Account zu erstellen"
       password:
         encodingTooLong: "Verschlüsseltes Passwort überschreitet die Anzahl der erlaubten Zeichen"
         encodingError: "Passwortverschlüsselung fehlgeschlagen"

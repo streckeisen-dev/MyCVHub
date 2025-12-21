@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import { formatDate } from '@/helpers/DateHelper.ts'
 
-function getPersonalDataAttributes(t: TFunction, lang: string, account: AccountDto): Attribute[] {
+function getPersonalDataAttributes(t: TFunction, account: AccountDto): Attribute[] {
   return [
     {
       name: t('fields.firstName'),
@@ -33,7 +33,7 @@ function getPersonalDataAttributes(t: TFunction, lang: string, account: AccountD
     },
     {
       name: t('fields.birthday'),
-      value: formatDate(account.birthday, lang)
+      value: formatDate(account.birthday)
     }
   ]
 }
@@ -138,14 +138,10 @@ export function AccountPage(): React.ReactNode {
       </Button>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
         <AccountTile title={t('account.personalData')}>
-          <AttributeList
-            attributes={getPersonalDataAttributes(t, i18n.language, account)}
-          />
+          <AttributeList attributes={getPersonalDataAttributes(t, account)} />
         </AccountTile>
         <AccountTile title={t('account.address')}>
-          <AttributeList
-            attributes={getAddressAttributes(t, account)}
-          />
+          <AttributeList attributes={getAddressAttributes(t, account)} />
         </AccountTile>
         <AccountTile
           title={t('account.security.title')}
@@ -162,9 +158,7 @@ export function AccountPage(): React.ReactNode {
             )
           }
         >
-          <AttributeList
-            attributes={getSecurityAttributes(t, account)}
-          />
+          <AttributeList attributes={getSecurityAttributes(t, account)} />
         </AccountTile>
         <AccountTile title={t('account.accountMgmt.title')} action={<AccountDeleteButton />} />
       </div>

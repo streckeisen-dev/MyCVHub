@@ -11,5 +11,6 @@ export interface SignupRequestDto {
   city?: string
   country?: string
   password?: string
-  confirmPassword?: string
+  confirmPassword?: string,
+  acceptsTos?: boolean
 }

@@ -15,11 +15,13 @@ export function DefaultLayout() {
       <footer className="w-full flex flex-col items-center justify-center py-3">
         <p>&copy; 2025 Streckeisen DevWorks</p>
         <div className="w-full flex justify-center items-center gap-3">
-          <Link className="text-current" to={getRoutePath(RouteId.PrivacyPolicy)}>
+          <Link className="text-foreground" to={getRoutePath(RouteId.TermsOfService)}>
+            {t('tos.title')}
+          </Link>
+          <Link className="text-foreground" to={getRoutePath(RouteId.PrivacyPolicy)}>
             {t('privacy.title')}
           </Link>
           <ExternalLink
-            className="flex items-center gap-1 text-current"
             href="https://heroui.com"
             title="heroui.com homepage"
             color="foreground"

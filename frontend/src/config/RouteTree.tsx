@@ -25,6 +25,7 @@ import { AuthorizedUser } from '@/context/AuthorizationContext.tsx'
 import { CvDownloadPage } from '@/pages/cv/CvDownloadPage.tsx'
 import { SecurityCheck } from '@/components/security/SecurityCheck.tsx'
 import { ApplicationDetailsPage } from '@/pages/applications/ApplicationDetailsPage.tsx'
+import { TermsOfServicePage } from '@/pages/TermsOfServicePage.tsx'
 
 type MyCvRouteObject = Omit<RouteObject, 'children'> & {
   id: string
@@ -162,6 +163,12 @@ const ROUTE_DEFINITIONS = defineRoutes([
         id: 'PrivacyPolicy',
         path: 'privacy',
         element: <PrivacyPolicyPage />,
+        requiresAuth: false
+      },
+      {
+        id: 'TermsOfService',
+        path: 'terms',
+        element: <TermsOfServicePage />,
         requiresAuth: false
       },
       {

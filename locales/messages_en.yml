@@ -43,6 +43,7 @@ shared:
     status: "Status"
     source: "Source"
     comment: "Comment"
+    acceptTos: "I have read and accept the following documents: "
   
   validations: 
     required: "{label} must not be blank"
@@ -315,44 +316,204 @@ frontend:
   
   privacy:
     title: "Privacy Policy"
-    description: "This Privacy Policy explains how MyCVHub collects, uses, and manages personal data."
     intro:
       title: "Introduction"
       content: "This Privacy Policy explains how MyCVHub collects, uses, and manages personal data for registered users."
+      controller:
+        title: "Data Controller"
+        legalEntity: "Streckeisen DevWorks"
+        location: "Zurich, Switzerland"
+    processing:
+      title: "Legal Basis for Data Processing"
+      content: "We process your personal data on:"
+      proc1: "Your consent when you create an account and use our services."
+      proc2: "The fulfillment of our contract with you to provide CV creation and management services"
+      proc3: "Our legitimate interest in maintaining and improving our services."
     collection:
       title: "Data Collection"
       content: "MyCVHub collects the following personal information:"
       profileInfo:
         title: "Profile Information"
-        content: "Name, address, phone number, and CV content, as provided by users."
+        content: "Name, address, phone number, and CV content (work experience, education, projects, skills, applications), as provided by you."
       profilePicture:
         title: "Profile Picture"
         content: "The profile picture is stored securely with our third-party provider, Cloudinary."
+      authData:
+        title: "Authentication Data"
+        content: "We use session cookies strictly necessary for login functionality and account security."
     usage:
       title: "Data Usage"
-      content: "Collected data is used to:"
-      usage1: "Enable users to create, edit, and share their CVs."
-      usage2: "Allow users to make their CV publicly accessible, with controls over which data fields (email, phone, address) appear on the public CV."
+      content: "We use your data to:"
+      usage1: "Enable you to create, edit, delete and view your CV and applications."
+      usage2: "Allow you to optionally make your CV publicly accessible via a unique link, with controls over which data fields (email, phone, address, CV entry descriptions) appear on the public CV."
+      usage3: "Track your job applications and their status."
+      usage4: "Maintain and improve our service."
     storage:
       title: "Data Storage and Security"
       userData:
         title: "User Data"
-        content: "Personal information is stored securely in our database. By default, only the user has access to this data, unless they opt to make specific information public. The developer has limited database access for maintenance purposes only."
+        content: "Your personal information is stored securely in our database. By default, only you have access to your data, unless you opt to make specific information public through a shared CV link. Database administrators have access for technical maintenance and security purposes only and are bound by confidentiality obligations."
       pictures:
         title: "Profile Pictures"
-        content: "Profile pictures are stored and managed through Cloudinary, a secure third-party storage provider, with restricted access to ensure privacy."
-    access:
-      title: "Data Access and User Control"
-      content: "MyCVHub provides users with direct access to their data. Users can view, edit, and delete any information, including their account and profile picture, directly within the app. No external data access requests are required."
+        content: "Profile pictures are stored and managed through Cloudinary, a secure third-party storage provider. Cloudinary may process data internationally and adheres to applicable data protection standards to ensure the privacy and security of stored images."
+      security:
+        title: "Security Measures"
+        content: "We implement industry-standard security practices to protect your data, including secure authentication, encrypted connections (HTTPS), and regular security updates."
+    retention:
+      title: "Data Retention"
+      content: "We retain your data for as long as your account is active. Upon account deletion, all personal data, including your CV information and profile picture, is permanently removed from our systems within 30 days."
     sharing:
       title: "Data Sharing"
-      content: "MyCVHub does not share any user data with third parties, except as required for media storage. Publicly shared CVs are accessible only by the shared link and contain only the information the user has designated as public."
+      content: "MyCVHub does not sell your personal data. We only share your personal data with third parties in the following situations:"
+      sharing1: "Cloudinary: For secure storage and delivery of profile pictures."
+      sharing2: "Legal Requirements: When required by law, legal process, or to protect our legal rights."
+      sharing3: "Public CVs: If you choose to make your CV publicly accessible, it will be available via the shared link and contain only the information you have designated as public."
+    rights:
+      title: "Your Rights"
+      content: "Under data protection law, you have the following rights:"
+      right1: "Right to Access: You can view all your personal data directly within the app"
+      right2: "Right to Rectification: You can edit any of your information at any time through your account"
+      right3: "Right to Erasure: You can delete your account and all associated data at any time through the app settings"
+      right4: "Right to Data Portability: You can download your CV as a PDF at any time"
+      right5: "Right to Withdraw Consent: You can stop using the service and delete your account at any time"
+      right6: "Right to Object: You can object to data processing by deleting your account"
+      right7: "Right to Lodge a Complaint: You have the right to lodge a complaint with your local data protection authority"
+    breach:
+      title: "Data Breach Notification"
+      content: "In the unlikely event of a data breach that affects your personal information, we will notify you and, where required, the relevant supervisory authority within 72 hours of becoming aware of the breach."
     thirdParty:
       title: "Use of Third-Party Services"
-      content: "MyCVHub uses Cloudinary solely for the storage and retrieval of profile pictures. Cloudinary adheres to strict security standards to ensure the privacy and security of stored images."
-    contact:
-      title: "Contact Information"
-      content: "For questions or concerns, please contact us at"
+      content: "MyCVHub uses Cloudinary solely for the storage and retrieval of profile pictures. Cloudinary adheres to strict security standards and may process data internationally in compliance with applicable data protection regulations."
+    age:
+      title: "Age Restriction"
+      content: "MyCVHub is intended for users aged 16 years or older. We do not knowingly collect data from individuals under 16."
+    changes:
+      title: "Changes to this Policy"
+      content: "We may update this Privacy Policy from time to time. We will notify users of any material changes. Your continued use of MyCVHub after changes constitutes acceptance of the updated policy."
+    contact: "For questions, concerns, or to exercise your data protection rights, please contact us at:"
+    note: "MyCVHub is operated as a personal project. While we take data protection seriously and implement appropriate security measures, the service is provided on an \"as-is\" basis as described in our Terms of Service."
+
+  tos:
+    title: "Terms of Service"
+    acceptance:
+      title: "Acceptance of Terms"
+      content: "By accessing or using MyCVHub (\"the Service\"), you agree to be bound by these Terms of Service (\"Terms\"). If you do not agree to these Terms, please do not use the Service.\nMyCVHub is operated as a personal project based in Zurich, Switzerland. By using this Service, you acknowledge that it is provided by an individual, not a corporation, and is offered on a best-effort basis."
+    description:
+      title: "Description of Service"
+      content: "MyCVHub provides tools to:"
+      desc1: "Create and manage online CV profiles."
+      desc2: "Generate PDF versions of your CV using various templates"
+      desc3: "Track job applications"
+      desc4: "Optionally share your CV publicly via a unique link"
+      addendum: "The Service is provided free of charge and is intended for personal, non-commercial use."
+    accounts:
+      title: "User Accounts"
+      registration:
+        title: "Registration"
+        content: "You must provide accurate and complete information when creating an account. You are responsible for maintaining the confidentiality of your account credentials."
+      security:
+        title: "Account Security"
+        content: "You are responsible for all activities that occur under your account. Notify us immediately at the contact address give below if you suspect unauthorized access."
+      age:
+        title: "Age Restriction"
+        content: "You must be at least 16 years of age to use the Service."
+    contentAndOwnership:
+      title: "User Content and Ownership"
+      content:
+        title: "Your Content"
+        content: "You retain all ownership rights to the content you create and upload (including CV information, profile pictures, and application tracking data). By using the Service, you grant MyCVHub a limited license to store, display, and process your content solely for the purpose of providing the Service to you."
+      platform:
+        title: "Our platform"
+        content: "The MyCVHub source code is open source and available under MIT License at "
+        contentContinue: "You may use, modify, and distribute the code in accordance with the open source license. The MyCVHub branding, design elements, and this hosted service instance remain the property of the operator."
+      sharing:
+        title: "Public Sharing"
+        content: "If you choose to make your CV publicly accessible via a shared link, you understand that anyone with the link can view the information you've designated as public."
+    prohibited:
+      title: "Prohibited Conduct"
+      content: "You agree not to:"
+      prohib1: "Use the Service for any illegal purpose or in violation of any applicable laws."
+      prohib2: "Upload content that is defamatory, obscene, harassing, or infringes on others' rights."
+      prohib3: "Attempt to gain unauthorized access to the Service or other users' accounts."
+      prohib4: "Use the Service to distribute malware, spam or other harmful content."
+      prohib5: "Impersonate another person or entity."
+      prohib6: "Scrape, harvest, or collect data from the Service in any manner."
+      prohib7: "Abuse, overload, or interfere with the proper functioning of the Service."
+      addendum: "We reserve the right to terminate accounts that violate these Terms."
+    disclaimer:
+      title: "Disclaimers and Limitations of Liability"
+      asIs:
+        title: "\"As Is\" Service"
+        content: "MyCVHub is provided \"as-is\" and \"as available\" without any warranties, express or implied. We do not guarantee that the Service will be uninterrupted, error-free, secure, or free from viruses or other harmful components."
+      noGuarantees:
+        title: "No Guarantees"
+        content: "We make no guarantees about:"
+        nonGuar1: "The quality, accuracy, or effectiveness of CVs created using the Service"
+        nonGuar2: "Job search outcomes or interview success"
+        nonGuar3: "Continuous availability of the Service"
+        nonGuar4: "Preservation of your data (though we make reasonable efforts)"
+      limitation:
+        title: "Limitation of Liability"
+        content: "To the maximum extent permitted by law, MyCVHub and its operator shall not be liable for:"
+        lim1: "Any indirect, incidental, special, consequential, or punitive damages"
+        lim2: "Loss of data, profits, or opportunities"
+        lim3: "Damages resulting from service interruptions, errors, or security breaches"
+        lim4: "Any damages exceeding the amount you paid to use the Service (which is zero)"
+      responsibility:
+        title: "User Responsibility"
+        content: "You are solely responsible for:"
+        resp1: "The accuracy and appropriateness of your CV content"
+        resp2: "Backing up important information"
+        resp3: "Verifying information before sending applications"
+        resp4: "Complying with applicable laws when using the Service"
+    privacy:
+      title: "Data and Privacy"
+      content: "Your use of the Service is also governed by our Privacy Policy, which explains how we collect, use, and protect your personal data. By using the Service, you consent to our Privacy Policy."
+    serviceModifications:
+      title: "Service Modifications and Availability"
+      content: "We reserve the right to:"
+      mod1: "Modify, suspend, or discontinue any part of the Service at any time without notice"
+      mod2: "Change features, functionality, or available templates"
+      mod3: "Implement usage limits or restrictions"
+      mod4: "Perform maintenance that may temporarily interrupt service"
+      addendum: "We are not obligated to maintain or support the Service indefinitely."
+    termination:
+      title: "Account Termination"
+      byYou:
+        title: "By You"
+        content: "You may delete your account at any time through the Service settings. Upon deletion, your data will be removed as described in our Privacy Policy."
+      byUs:
+        title: "By Us"
+        content: "We reserve the right to suspend or terminate your account if:"
+        term1: "You violate these Terms"
+        term2: "Your account remains inactive for an extended period"
+        term3: "We decide to discontinue the Service"
+        term4: "We believe your use poses a security or legal risk"
+    thirdParty:
+      title: "Third-Party Services"
+      content: "The Service uses third-party services as described in our Privacy Policy."
+    intellectualProperty:
+      title: "Intellectual Property Claims"
+      content: "If you believe content on MyCVHub infringes your intellectual property rights, contact us using the contact information given below with detailed information about the alleged infringement."
+    jurisdiction:
+      title: "Governing Law and Jurisdiction"
+      content: "These Terms are governed by the laws of Switzerland. Any disputes arising from these Terms or your use of the Service shall be subject to the exclusive jurisdiction of the courts in Zurich, Switzerland."
+    changes:
+      title: "Changes to these Terms"
+      content: "We may update these Terms from time to time. We will notify users of material changes. Your continued use of the Service after changes constitutes acceptance of the updated Terms."
+    severability:
+      title: "Severability"
+      content: "If any provision of these Terms is found to be unenforceable or invalid, that provision shall be limited or eliminated to the minimum extent necessary, and the remaining provisions shall remain in full force and effect."
+    agreement:
+      title: "Entire Agreement"
+      content: "These Terms, together with our Privacy Policy, constitute the entire agreement between you and MyCVHub regarding your use of the Service."
+    contact: "For questions about these Terms, please contact us at:"
+    note: "MyCVHub is a personal project operated by an individual. While we strive to provide a reliable and secure service, users should understand that this is not a commercial enterprise with extensive resources. We encourage users to maintain backups of important information and use the Service with appropriate expectations for a free, personally-operated platform."
+
+  legal:
+    lastUpdated: "Last Updated"
+    note: "Note"
+    contact: "Contact Information"
   unauthorized:
     headline: "Unauthorized"
     title: "You don't have permission to access this page!"
@@ -415,6 +576,7 @@ backend:
       countryInvalid: "Invalid country code"
       languageInvalid: "Invalid language code"
       languageLengthError: "Language must be ISO {0} character language code"
+      termsError: "You must accept the terms of service and privacy policy to create an account"
       password:
         encodingTooLong: "Encoded password exceeds number of allowed characters"
         encodingError: "Password encoding failed"
