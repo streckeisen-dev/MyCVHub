@@ -452,7 +452,7 @@ backend:
       notAllowed: "Requested application transition is not allowed"
       notFound: "Requested application transition does not exist"
     status:
-      unsent: "Unsent"
+      unsent: "Draft"
       waitingForFirstResponse: "Waiting for first response"
       rejected: "Rejected"
       interviewScheduled: "Interview scheduled"
