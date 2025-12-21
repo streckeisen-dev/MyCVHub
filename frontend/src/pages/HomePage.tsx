@@ -1,11 +1,13 @@
-import { Button, Card, CardBody, CardHeader} from '@heroui/react'
+import { Button } from '@heroui/react'
 
-import { h3, h4, subtitle, title } from '@/styles/primitives.ts'
+import { centerSection, h3, h4, subtitle, title } from '@/styles/primitives.ts'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { use, useEffect } from 'react'
 import { AuthorizationContext } from '@/context/AuthorizationContext.tsx'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
+import { HomePageCard } from '@/components/home/HomePageCard.tsx'
+import { HomePageList } from '@/components/home/HomePageList.tsx'
 
 export default function HomePage() {
   const { t } = useTranslation()
@@ -19,40 +21,55 @@ export default function HomePage() {
   }, [user])
 
   return (
-      <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-        <div className="inline-block max-w-lg text-center justify-center">
-          <span className={title()}>{t('home.welcome.title')}</span>
-          <div className={subtitle({ class: 'mt-4' })}>
-            {t('home.welcome.message')}
-          </div>
-        </div>
+    <section className={centerSection()}>
+      <div className="inline-block max-w-2xl text-center justify-center">
+        <h1 className={title()}>{t('home.welcome.title')}</h1>
+        <div className={subtitle({ class: 'mt-4' })}>{t('home.welcome.message')}</div>
+      </div>
 
-        <div className="flex gap-3">
-          <Card className="p-3">
-            <CardHeader>
-              <h4 className={h4()}>{t('home.features.create.title')}</h4>
-            </CardHeader>
-            <CardBody>
-              <p>{t('home.features.create.description')}</p>
-            </CardBody>
-          </Card>
+      <h3 className={h3()}>{t('home.features.title')}</h3>
+      <div className="flex flex-wrap gap-3 gap-x-6 justify-center">
+        <HomePageCard
+          title={t('home.features.create.title')}
+          description={t('home.features.create.description')}
+        />
 
-          <Card className="p-3">
-            <CardHeader>
-              <h4 className={h4()}>{t('home.features.share.title')}</h4>
-            </CardHeader>
-            <CardBody>
-              <p>{t('home.features.share.description')}</p>
-            </CardBody>
-          </Card>
-        </div>
+        <HomePageCard
+          title={t('home.features.generate.title')}
+          description={t('home.features.generate.description')}
+        />
 
-        <div className="flex flex-col items-center gap-5">
-          <h2 className={h3()}>{t('home.callToAction.title')}</h2>
-          <Button as={Link} to="register" color="primary">
-            {t('home.callToAction.btn')}
-          </Button>
-        </div>
-      </section>
+        <HomePageCard
+          title={t('home.features.tracking.title')}
+          description={t('home.features.tracking.description')}
+        />
+      </div>
+
+      <h3 className={h3()}>{t('home.why.title')}</h3>
+      <HomePageList
+        entries={[
+          {
+            title: t('home.why.allInOne.title'),
+            description: t('home.why.allInOne.description')
+          },
+          {
+            title: t('home.why.alwaysUpToDate.title'),
+            description: t('home.why.alwaysUpToDate.description')
+          },
+          {
+            title: t('home.why.organized.title'),
+            description: t('home.why.organized.description')
+          }
+        ]}
+      />
+
+      <h4 className={h4()}>{t('home.callToAction.title')}</h4>
+      <div className="flex flex-col items-center gap-2">
+        <p>{t('home.callToAction.description')}</p>
+        <Button as={Link} to="register" color="primary">
+          {t('home.callToAction.btn')}
+        </Button>
+      </div>
+    </section>
   )
 }

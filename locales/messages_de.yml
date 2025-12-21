@@ -79,20 +79,34 @@ frontend:
 
   home:
     welcome:
-      title: "Willkommen bei MyCVHub"
-      message: "Erstellen und teile deinen professionellen Lebenslauf ganz einfach online!"
-    getStarted: "Los geht's"
+      title: "Deine Karriere, organisiert"
+      message: "MyCVHub vereint alles, was du für deine Jobsuche brauchst, an einem Ort. Erstelle professionelle Lebensläufe, generiere hochwertige PDFs und behalte den Überblick über jede Bewerbung, die du versendest."
     features:
-      title: "Funktionen"
+      title: "Was du tun kannst"
       create:
-        title: "Erstelle deinen Lebenslauf"
-        description: "Erstelle mit einer benutzerfreundlichen Oberfläche ganz einfach einen professionellen Lebenslauf."
-      share:
-        title: "Mit Link teilen"
-        description: "Gib deinen Lebenslauf über einen Link an potenzielle Arbeitgeber weiter."
+        title: "Erstelle dein professionelles Profil"
+        description: "Erstelle und pflege deinen Online-Lebenslauf mit all deiner Erfahrung, deinen Fähigkeiten und Erfolgen. Aktualisiere ihn jederzeit und halte deine Informationen bereit, wenn sich eine Gelegenheit ergibt."
+      generate:
+        title: "Generiere ansprechende PDFs"
+        description: "Wähle aus professionell gestalteten Vorlagen und exportiere deinen Lebenslauf als hochwertiges PDF. Jede Vorlage ist darauf ausgelegt, deine Erfahrung hervorzuheben und dabei Lesbarkeit sowie professionelle Standards zu wahren."
+      tracking:
+        title: "Verfolge deine Bewerbungen"
+        description: "Bleib organisiert mit der integrierten Bewerbungsverfolgung. Behalte im Blick, wo du dich beworben hast, und verfolge Rückmeldungstermine. Verliere nie den Überblick über eine Gelegenheit und bewirb dich nicht versehentlich zweimal auf dieselbe Stelle."
+    why:
+      title: "Warum MyCVHub?"
+      allInOne:
+        title: "All-in-One-Plattform"
+        description: "Du musst nicht zwischen mehreren Tools jonglieren. Dein Lebenslauf und deine Bewerbungshistorie befinden sich an einem Ort."
+      alwaysUpToDate:
+        title: "Immer aktuell"
+        description: "Nimm Änderungen einmal vor, und sie werden überall übernommen. Keine mehrfachen Versionen desselben Dokuments mehr."
+      organized:
+        title: "Bleib organisiert"
+        description: "Von der Lebenslauf-Erstellung bis zur Bewerbungsverfolgung: Verwalte deinen gesamten Jobsuche-Workflow effizient."
     callToAction:
-      title: "Bereit deinen Online-Lebenslauf zu erstellen?"
-      btn: "Jetzt anmelden"
+      title: "Bereit loszulegen?"
+      description: "Erstelle dein Profil und nimm deine Karriere selbst in die Hand."
+      btn: "Jetzt registrieren"
 
   dashboard:
     title: "Dashboard"
