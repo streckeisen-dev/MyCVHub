@@ -1,4 +1,7 @@
-![MyCVHub](https://mycvhub.ch/mycvhub_icon.png) **MyCVHub**
+<div style="display: flex; width: 100%; gap: 10px; align-items: center;">
+<img src="https://mycvhub.ch/mycvhub_icon.png" width="60" height="60" alt="MyCVHub Logo" />
+<p style="font-weight: bold; font-size: 25px">MyCVHub</p>
+</div>
 
 [![Build](https://github.com/streckeisen-dev/MyCVHub/actions/workflows/build.yaml/badge.svg)](https://github.com/streckeisen-dev/MyCVHub/actions/workflows/build.yaml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=streckeisen-dev_MyCVHub&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=streckeisen-dev_MyCVHub)
@@ -22,13 +25,13 @@ Planned features:
 
 # Technologies
 
-| Component      | Technologies                        |
-|----------------|-------------------------------------|
-| Backend        | Java 17, Kotlin, Spring Boot 3      |
-| PDF generation | typst                               |
-| Frontend       | Node.js 22, Vue.js 3, Vuetify, yarn |
-| Database       | PostgreSQL                          |
-| Hosting        | Docker, DigitalOcean app platform   |
+| Component      | Technologies                      |
+|----------------|-----------------------------------|
+| Backend        | Java 21, Kotlin, Spring Boot 4    |
+| PDF generation | typst                             |
+| Frontend       | Node.js 24, React, HeroUI, yarn   |
+| Database       | PostgreSQL                        |
+| Hosting        | Docker, DigitalOcean app platform |
 
 # Getting Started
 
