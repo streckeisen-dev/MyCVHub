@@ -153,5 +153,12 @@ export function PrivacyPolicyPage(): ReactNode {
     }
   ]
 
-  return <PolicyContent lastUpdated={LAST_UPDATED} content={policy} note={t('privacy.note')} />
+  return (
+    <PolicyContent
+      title={t('privacy.title')}
+      lastUpdated={LAST_UPDATED}
+      content={policy}
+      note={t('privacy.note')}
+    />
+  )
 }
