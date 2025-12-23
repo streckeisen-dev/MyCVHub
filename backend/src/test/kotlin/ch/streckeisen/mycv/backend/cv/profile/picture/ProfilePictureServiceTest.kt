@@ -4,14 +4,14 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.apache.tika.mime.MediaType
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
 import java.io.IOException
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 class ProfilePictureServiceTest {
     private lateinit var profilePictureStorageService: ProfilePictureStorageService

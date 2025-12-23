@@ -2,7 +2,6 @@ package ch.streckeisen.mycv.backend.cv.profile
 
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
+import tools.jackson.databind.ObjectMapper
 
 @RestController
 @RequestMapping("/api/profile")
@@ -22,7 +22,7 @@ class ProfileResource(
 ) {
     @GetMapping
     fun getProfile(): ResponseEntity<ProfileDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         return profileService.findByAccountId(principal.id)
             .fold(
@@ -39,7 +39,7 @@ class ProfileResource(
 
     @GetMapping("picture/thumbnail")
     fun getProfilePictureThumbnail(): ResponseEntity<ThumbnailDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         return profileService.findByAccountId(principal.id)
             .fold(
@@ -61,7 +61,7 @@ class ProfileResource(
     ): ResponseEntity<ProfileDto> {
         val profileInformationUpdate = objectMapper.readValue(data, GeneralProfileInformationUpdateDto::class.java)
 
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
         return profileService.save(principal.id, profileInformationUpdate, profilePictureFile)
             .fold(
                 onSuccess = { profile ->

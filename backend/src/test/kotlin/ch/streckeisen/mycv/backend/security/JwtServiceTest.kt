@@ -4,6 +4,10 @@ import io.jsonwebtoken.ExpiredJwtException
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -11,10 +15,6 @@ import org.springframework.security.core.userdetails.User
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 private const val JWT_SECRET = "AXElBHoFbc5nZ2QACGIsRHY/adM8f7WDRaoI5KsJBGA="
 private const val JWT_ACCESS_EXPIRY_TIME = 123456L

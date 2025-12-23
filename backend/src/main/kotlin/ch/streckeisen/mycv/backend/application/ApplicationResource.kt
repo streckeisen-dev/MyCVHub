@@ -32,7 +32,7 @@ class ApplicationResource(
 ) {
     @GetMapping("/{id}")
     fun getApplication(@PathVariable id: Long): ResponseEntity<ApplicationDetailsDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         val application = applicationService.findById(principal.id, id)
             .fold(
@@ -58,7 +58,7 @@ class ApplicationResource(
         @RequestParam(required = false) sortDirection: String?,
         @RequestParam(required = false) pageSize: Int?
     ): ResponseEntity<Page<ApplicationSearchDto>> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         val currentPage = page ?: 0
 
@@ -81,7 +81,7 @@ class ApplicationResource(
 
     @PostMapping
     fun saveApplication(@RequestBody update: ApplicationUpdateDto): ResponseEntity<ApplicationDetailsDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         val application = applicationService.save(principal.id, update)
             .fold(
@@ -113,7 +113,7 @@ class ApplicationResource(
         @PathVariable("id") transitionId: Int,
         @RequestBody transitionRequest: ApplicationTransitionRequestDto
     ): ResponseEntity<ApplicationDetailsDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         val application = applicationService.transition(principal.id, transitionId, transitionRequest)
             .fold(
@@ -132,7 +132,7 @@ class ApplicationResource(
 
     @DeleteMapping("{id}")
     fun deleteApplication(@PathVariable id: Long): ResponseEntity<Unit> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         return applicationService.delete(principal.id, id)
             .fold(

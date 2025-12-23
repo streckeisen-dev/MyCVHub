@@ -47,7 +47,7 @@ class CVGeneratorResource(
         if (style == null) return ResponseEntity.badRequest().build()
 
 
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
         val file = cvGeneratorService.generateCV(
             principal.id,
             style,

@@ -7,16 +7,16 @@ import ch.streckeisen.mycv.backend.util.StringValidator
 import ch.streckeisen.mycv.backend.util.assertValidationResult
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.time.LocalDate
 import java.util.Optional
-import kotlin.test.BeforeTest
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 private const val EXISTING_USER_EMAIL = "existing.user@example.com"
 private const val EXISTING_USERNAME = "existingUsername"
@@ -26,7 +26,7 @@ class ApplicantAccountValidationServiceTest {
     private lateinit var messagesService: MessagesService
     private lateinit var applicantAccountValidationService: ApplicantAccountValidationService
 
-    @BeforeTest
+    @BeforeEach
     fun setup() {
         applicantAccountRepository = mockk {
             every { findByUsername(eq(EXISTING_USERNAME)) } returns Optional.of(existingApplicant())

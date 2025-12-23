@@ -11,6 +11,8 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -18,8 +20,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 import java.time.LocalDateTime
 import java.util.Optional
-import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
 
 private val validAccount = ApplicantAccountEntity(
     username = "testuser",

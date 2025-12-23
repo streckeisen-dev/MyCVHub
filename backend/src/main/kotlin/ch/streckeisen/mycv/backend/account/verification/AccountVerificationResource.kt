@@ -19,7 +19,7 @@ class AccountVerificationResource(
     @RequiresAccountStatus(AccountStatus.UNVERIFIED)
     @PostMapping("generate")
     fun generateToken(): ResponseEntity<Unit> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
         accountVerificationService.generateVerificationToken(principal.id)
             .fold(
                 onSuccess = {

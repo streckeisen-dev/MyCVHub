@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 class ApplicantAccountResource(private val applicantAccountService: ApplicantAccountService) {
     @GetMapping
     fun getAccount(): ResponseEntity<AccountDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
         return applicantAccountService.findById(principal.id)
             .fold(
                 onSuccess = { account ->
@@ -33,7 +33,7 @@ class ApplicantAccountResource(private val applicantAccountService: ApplicantAcc
 
     @PostMapping
     fun updateAccount(@RequestBody accountUpdate: AccountUpdateDto): ResponseEntity<AccountDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
         return applicantAccountService.update(principal.id, accountUpdate)
             .fold(
                 onSuccess = { updatedAccount ->
@@ -48,7 +48,7 @@ class ApplicantAccountResource(private val applicantAccountService: ApplicantAcc
     @RequiresAccountStatus(AccountStatus.INCOMPLETE)
     @GetMapping("status")
     fun getVerificationStatus(): ResponseEntity<AccountStatusDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
         val status = applicantAccountService.getAccountStatus(principal.id)
             .getOrThrow()
         return ResponseEntity.ok(AccountStatusDto(status))
@@ -57,7 +57,7 @@ class ApplicantAccountResource(private val applicantAccountService: ApplicantAcc
     @RequiresAccountStatus(AccountStatus.INCOMPLETE)
     @DeleteMapping
     fun deleteAccount(): ResponseEntity<Unit> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
         return applicantAccountService.delete(principal.id)
             .fold(
                 onSuccess = {

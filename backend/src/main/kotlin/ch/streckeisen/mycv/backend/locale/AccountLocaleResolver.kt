@@ -8,7 +8,7 @@ import java.util.Locale
 
 class AccountLocaleResolver : AcceptHeaderLocaleResolver() {
     override fun resolveLocale(request: HttpServletRequest): Locale {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipalOrNull()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipalOrNull()
         if (principal != null && principal.locale != null) {
             return principal.locale
         }

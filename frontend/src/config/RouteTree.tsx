@@ -25,6 +25,7 @@ import { AuthorizedUser } from '@/context/AuthorizationContext.tsx'
 import { CvDownloadPage } from '@/pages/cv/CvDownloadPage.tsx'
 import { SecurityCheck } from '@/components/security/SecurityCheck.tsx'
 import { ApplicationDetailsPage } from '@/pages/applications/ApplicationDetailsPage.tsx'
+import { OAuthFailurePage } from '@/pages/account/oauth/OAuthFailurePage.tsx'
 import { TermsOfServicePage } from '@/pages/policy/TermsOfServicePage.tsx'
 import { AboutPage } from '@/AboutPage.tsx'
 
@@ -69,6 +70,12 @@ const ROUTE_DEFINITIONS = defineRoutes([
             element: <OAuthSuccessPage />,
             requiresAuth: true,
             minAuthLevel: AuthLevel.INCOMPLETE
+          },
+          {
+            id: 'OAuthFailure',
+            path: 'oauth-failure',
+            element: <OAuthFailurePage />,
+            requiresAuth: false
           },
           {
             id: 'OAuthSignup',

@@ -21,7 +21,7 @@ class PublicProfileResource(
 ) {
     @GetMapping("/{username}")
     fun getApplicant(@PathVariable username: String): ResponseEntity<PublicProfileDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipalOrNull()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipalOrNull()
 
         return profileService.findByUsername(principal?.id, username)
             .fold(

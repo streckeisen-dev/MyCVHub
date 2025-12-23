@@ -5,7 +5,6 @@ import ch.streckeisen.mycv.backend.exceptions.LocalizedException
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
-import com.fasterxml.jackson.core.JacksonException
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.security.SignatureException
 import org.postgresql.util.PSQLException
@@ -19,6 +18,7 @@ import org.springframework.security.core.AuthenticationException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
+import tools.jackson.core.JacksonException
 
 private const val EXCEPTION_ERROR_KEY_PREFIX = "${MYCV_KEY_PREFIX}.exceptions"
 private const val DATA_ACCESS_ERROR_KEY = "${EXCEPTION_ERROR_KEY_PREFIX}.db"

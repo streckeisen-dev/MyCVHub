@@ -1,9 +1,9 @@
 package ch.streckeisen.mycv.backend.security
 
 import ch.streckeisen.mycv.backend.account.auth.oauth.MyCvOAuth2AuthorizationRequestResolver
+import ch.streckeisen.mycv.backend.account.auth.oauth.OAuth2FailureHandler
 import ch.streckeisen.mycv.backend.account.auth.oauth.OAuth2SuccessHandler
 import ch.streckeisen.mycv.backend.locale.MessagesService
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationProvider
@@ -25,9 +25,8 @@ class ApplicationSecurityConfig(
     private val authenticationProvider: AuthenticationProvider,
     private val messagesService: MessagesService,
     private val oAuth2SuccessHandler: OAuth2SuccessHandler,
-    private val clientRegistrationRepository: ClientRegistrationRepository,
-    @param:Value($$"${my-cv.frontend.base-url}")
-    private val frontendBaseUrl: String
+    private val oAuth2FailureHandler: OAuth2FailureHandler,
+    private val clientRegistrationRepository: ClientRegistrationRepository
 ) {
 
     @Bean
@@ -62,7 +61,7 @@ class ApplicationSecurityConfig(
                     redirectionEndpoint.baseUri("/api/auth/oauth2/callback/*")
                 }
                 oauth2.successHandler(oAuth2SuccessHandler)
-                oauth2.failureUrl("${frontendBaseUrl}/login/oauth-failure")
+                oauth2.failureHandler(oAuth2FailureHandler)
             }
             .sessionManagement { sessionManager ->
                 sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
