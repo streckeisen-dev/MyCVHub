@@ -26,6 +26,7 @@ import { CvDownloadPage } from '@/pages/cv/CvDownloadPage.tsx'
 import { SecurityCheck } from '@/components/security/SecurityCheck.tsx'
 import { ApplicationDetailsPage } from '@/pages/applications/ApplicationDetailsPage.tsx'
 import { TermsOfServicePage } from '@/pages/policy/TermsOfServicePage.tsx'
+import { AboutPage } from '@/AboutPage.tsx'
 
 type MyCvRouteObject = Omit<RouteObject, 'children'> & {
   id: string
@@ -158,6 +159,12 @@ const ROUTE_DEFINITIONS = defineRoutes([
         id: 'CvDownload',
         path: 'download/cv',
         element: <CvDownloadPage />
+      },
+      {
+        id: 'About',
+        path: 'about',
+        element: <AboutPage />,
+        requiresAuth: false
       },
       {
         id: 'PrivacyPolicy',
@@ -338,6 +345,12 @@ const navItems: NavItemConfig[] = [
     label: 'application.title',
     href: getRoutePath(RouteId.ApplicationsOverview),
     predicate: (user: AuthorizedUser | undefined) => user?.hasProfile ?? false
+  },
+  {
+    id: 'about',
+    label: 'about.title',
+    href: getRoutePath(RouteId.About),
+    predicate: () => true
   }
 ]
 

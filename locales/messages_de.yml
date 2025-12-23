@@ -313,6 +313,12 @@ frontend:
     title: "404, Seite nicht gefunden"
     text: "Die Seite nach der du suchst gibt es nicht"
 
+  about:
+    title: "Über MyCVHub"
+    what: "MyCVHub ist eine kostenlose Webanwendung, die dir hilft, deine Jobsuche von Anfang bis Ende zu verwalten. Erstelle professionelle Lebensläufe, generiere hochwertige PDFs und behalte den Überblick über deine Bewerbungen—alles an einem Ort."
+    about: "MyCVHub ist ein persönliches Projekt, welches von Lukas Streckeisen entwickelt und gewartet wird, um moderne Webentwicklungspraktiken zu präsentieren, und kombiniert eine klare, intuitive Benutzeroberfläche mit praktischen Funktionen, die die Jobsuche weniger überwältigend machen. Ob du aktiv suchst oder einfach nur dein berufliches Profil aktuell halten möchtest—MyCVHub bietet dir die Tools, die du brauchst, ohne unnötige Komplexität."
+    openSource: "MyCVHub ist Open Source. Der Code ist auf GitHub unter der MIT Lizenz verfügbar und ermöglicht es jedem, von der Anwendung zu lernen, sie zu modifizieren oder selbst zu hosten. Du kannst gerne selbst Code zu diesem Projekt beitragen oder Tickets mit Funktionswünschen oder Fehlerberichten erstellen."
+
   privacy:
     title: "Datenschutzerklärung"
     intro:

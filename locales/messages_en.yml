@@ -313,6 +313,12 @@ frontend:
     headline: "Where are you going?"
     title: "404, Page not found"
     text: "The page you're looking for doesn't exist"
+
+  about:
+    title: "About MyCVHub"
+    what: "MyCVHub is a free web application that helps you manage your job search from start to finish. Create professional CVs, generate polished PDFs, and keep track of your applications—all in one place."
+    about: "MyCVHub is a personal project created and maintained by Lukas Streckeisen. The application combines a clean, intuitive interface with practical features that make job hunting less overwhelming. Whether you're actively searching or just keeping your professional profile up to date, MyCVHub provides the tools you need without the complexity."
+    openSource: "The application is open source. The code is available on GitHub under the MIT license, allowing anyone to learn from, modify, or self-host the application. Feel free to contribute to the project or to open issues with feature requests or bug reports."
   
   privacy:
     title: "Privacy Policy"
