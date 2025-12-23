@@ -1,10 +1,5 @@
 name: Build
 
-permissions:
-  id-token: write
-  contents: write
-  checks: write
-
 on:
   push:
     branches:
@@ -67,7 +62,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: frontend
-        run: yarn install --frozen-lockfile
+        run: yarn install --frozen-lockfile --ignore-scripts
 
       - name: Test frontend
         working-directory: frontend
@@ -251,6 +246,8 @@ jobs:
     needs:
       - docker-build
       - cypress-test
+    permissions:
+      contents: write
     
     steps:
       - name: Checkout code
