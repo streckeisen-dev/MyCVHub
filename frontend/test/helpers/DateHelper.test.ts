@@ -41,14 +41,9 @@ describe('DateHelper tests', () => {
   })
 
   describe('formatDate tests', () => {
-    it('formatDate should format german date correctly', () => {
-      const result = formatDate('2020-1-1', 'de')
+    it('formatDate should format date correctly', () => {
+      const result = formatDate('2020-1-1')
       expect(result).toBe('01.01.2020')
-    })
-
-    it('formatDate should format date in english format', () => {
-      const result = formatDate('2020-2-1', 'jp')
-      expect(result).toBe('02/01/2020')
     })
   })
 

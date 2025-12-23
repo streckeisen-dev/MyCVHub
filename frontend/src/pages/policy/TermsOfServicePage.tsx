@@ -1,9 +1,8 @@
 import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { centerSection, h4, title } from '@/styles/primitives.ts'
 import { ExternalLink } from '@/components/ExternalLink.tsx'
-import { formatDate } from '@/helpers/DateHelper.ts'
 import { SITE_CONFIG } from '@/config/RouteTree.tsx'
+import { PolicyContent, PolicySectionProps } from '@/components/policy/PolicyContent.tsx'
 
 const CONTACT_EMAIL = 'contact@mycvhub.ch'
 
@@ -11,25 +10,10 @@ const UL_CLASSES = 'list-disc ml-4'
 
 const LAST_UPDATED = '2025-12-21'
 
-type TermsSectionProps = Readonly<{
-  title: string
-  content: ReactNode
-}>
-
-function TermsSection(props: TermsSectionProps): ReactNode {
-  const { title, content } = props
-  return (
-    <section className="flex flex-col gap-2">
-      <h4 className={h4()}>{title}</h4>
-      <div>{content}</div>
-    </section>
-  )
-}
-
 export function TermsOfServicePage(): ReactNode {
   const { t } = useTranslation()
 
-  const terms: (TermsSectionProps & { key: string })[] = [
+  const terms: PolicySectionProps[] = [
     {
       key: 'acceptance',
       title: t('tos.acceptance.title'),
@@ -79,8 +63,10 @@ export function TermsOfServicePage(): ReactNode {
           <p className="font-bold">{t('tos.contentAndOwnership.platform.title')}</p>
           <p>
             {t('tos.contentAndOwnership.platform.content')}
-            <ExternalLink color="foreground" href={SITE_CONFIG.links.github}>GitHub</ExternalLink>.{' '}
-            {t('tos.contentAndOwnership.platform.contentContinue')}
+            <ExternalLink color="foreground" href={SITE_CONFIG.links.github}>
+              GitHub
+            </ExternalLink>
+            . {t('tos.contentAndOwnership.platform.contentContinue')}
           </p>
           <p className="font-bold">{t('tos.contentAndOwnership.sharing.title')}</p>
           <p>{t('tos.contentAndOwnership.sharing.content')}</p>
@@ -220,33 +206,18 @@ export function TermsOfServicePage(): ReactNode {
     {
       key: 'contact',
       title: t('legal.contact'),
-      content: <div>
-        <p>{t('tos.contact')} <ExternalLink href={`mailto: ${CONTACT_EMAIL}`} color="foreground">{CONTACT_EMAIL}</ExternalLink> </p>
-      </div>
+      content: (
+        <div>
+          <p>
+            {t('tos.contact')}{' '}
+            <ExternalLink href={`mailto: ${CONTACT_EMAIL}`} color="foreground">
+              {CONTACT_EMAIL}
+            </ExternalLink>{' '}
+          </p>
+        </div>
+      )
     }
   ]
 
-  return (
-    <div className={centerSection()}>
-      <h1 className={title() + ' text-center'}>{t('tos.title')}</h1>
-      <p>
-        {t('legal.lastUpdated')}: {formatDate(LAST_UPDATED)}
-      </p>
-
-      <div className="max-w-5xl flex flex-col gap-2">
-        {terms.map((section, index) => (
-          <TermsSection
-            key={section.key}
-            title={index + 1 + '. ' + section.title}
-            content={section.content}
-          />
-        ))}
-
-        <div>
-          <p className="font-bold">{t('legal.note')}:</p>
-          <p>{t('tos.note')}</p>
-        </div>
-      </div>
-    </div>
-  )
+  return <PolicyContent lastUpdated={LAST_UPDATED} content={terms} note={t('tos.note')} />
 }

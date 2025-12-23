@@ -12,7 +12,7 @@ import { AccountPage } from '@/pages/account/AccountPage.tsx'
 import { EditAccountPage } from '@/pages/account/EditAccountPage.tsx'
 import { OAuthSuccessPage } from '@/pages/account/oauth/OAuthSuccessPage.tsx'
 import { OAuthSignupPage } from '@/pages/account/oauth/OAuthSignupPage.tsx'
-import { PrivacyPolicyPage } from '@/pages/PrivacyPolicyPage.tsx'
+import { PrivacyPolicyPage } from '@/pages/policy/PrivacyPolicyPage.tsx'
 import { ChangePasswordPage } from '@/pages/account/ChangePasswordPage.tsx'
 import { SignupPage } from '@/pages/account/SignupPage.tsx'
 import { AccountVerificationPage } from '@/pages/account/AccountVerificationPage.tsx'
@@ -25,7 +25,7 @@ import { AuthorizedUser } from '@/context/AuthorizationContext.tsx'
 import { CvDownloadPage } from '@/pages/cv/CvDownloadPage.tsx'
 import { SecurityCheck } from '@/components/security/SecurityCheck.tsx'
 import { ApplicationDetailsPage } from '@/pages/applications/ApplicationDetailsPage.tsx'
-import { TermsOfServicePage } from '@/pages/TermsOfServicePage.tsx'
+import { TermsOfServicePage } from '@/pages/policy/TermsOfServicePage.tsx'
 
 type MyCvRouteObject = Omit<RouteObject, 'children'> & {
   id: string

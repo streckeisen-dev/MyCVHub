@@ -1,8 +1,7 @@
 import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { centerSection, h4, title } from '@/styles/primitives.ts'
 import { ExternalLink } from '@/components/ExternalLink.tsx'
-import { formatDate } from '@/helpers/DateHelper.ts'
+import { PolicyContent, PolicySectionProps } from '@/components/policy/PolicyContent.tsx'
 
 const CONTACT_EMAIL = 'contact@mycvhub.ch'
 
@@ -10,25 +9,10 @@ const UL_CLASSES = 'list-disc ml-4'
 
 const LAST_UPDATED = '2025-12-21'
 
-type PolicySectionProps = Readonly<{
-  title: string
-  content: ReactNode
-}>
-
-function PolicySection(props: PolicySectionProps): ReactNode {
-  const { title, content } = props
-  return (
-    <section className="flex flex-col gap-2">
-      <h4 className={h4()}>{title}</h4>
-      <div>{content}</div>
-    </section>
-  )
-}
-
 export function PrivacyPolicyPage(): ReactNode {
   const { t } = useTranslation()
 
-  const policy: (PolicySectionProps & { key: string })[] = [
+  const policy: PolicySectionProps[] = [
     {
       key: 'intro',
       title: t('privacy.intro.title'),
@@ -181,27 +165,5 @@ export function PrivacyPolicyPage(): ReactNode {
     }
   ]
 
-  return (
-    <div className={centerSection()}>
-      <h1 className={title()}>{t('privacy.title')}</h1>
-      <p>
-        {t('legal.lastUpdated')}: {formatDate(LAST_UPDATED)}
-      </p>
-
-      <div className="max-w-5xl flex flex-col gap-2">
-        {policy.map((section, index) => (
-          <PolicySection
-            key={section.key}
-            title={index + 1 + '. ' + section.title}
-            content={section.content}
-          />
-        ))}
-
-        <div>
-          <p className="font-bold">{t('legal.note')}:</p>
-          <p>{t('privacy.note')}</p>
-        </div>
-      </div>
-    </div>
-  )
+  return <PolicyContent lastUpdated={LAST_UPDATED} content={policy} note={t('privacy.note')} />
 }
