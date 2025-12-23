@@ -202,5 +202,12 @@ export function TermsOfServicePage(): ReactNode {
     }
   ]
 
-  return <PolicyContent lastUpdated={LAST_UPDATED} content={terms} note={t('tos.note')} />
+  return (
+    <PolicyContent
+      title={t('tos.title')}
+      lastUpdated={LAST_UPDATED}
+      content={terms}
+      note={t('tos.note')}
+    />
+  )
 }

@@ -52,7 +52,7 @@ export const Navbar = () => {
             <p className="font-bold text-inherit">MyCVHub</p>
           </Link>
         </NavbarBrand>
-        <div className="hidden xl:flex gap-4 justify-start ml-2">
+        <div className="hidden xl:flex gap-4 justify-start ml-20">
           {SITE_CONFIG.navItems
             .filter((item) => item.predicate(user))
             .map((item) => (
@@ -113,7 +113,7 @@ export const Navbar = () => {
                   target={item.newTab ? '_blank' : '_self'}
                   onClick={handleLinkClick}
                 >
-                  {item.label}
+                  {t(item.label)}
                 </NavLink>
               </NavbarMenuItem>
             ))}

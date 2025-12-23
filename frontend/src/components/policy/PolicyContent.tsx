@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { PolicySection, PolicySectionProps } from '@/components/policy/PolicySection.tsx'
 
 export type PolicyContentProps = Readonly<{
+  title: string
   lastUpdated: string
   content: PolicySectionProps[]
   note: string
@@ -12,11 +13,11 @@ export type PolicyContentProps = Readonly<{
 
 export function PolicyContent(props: PolicyContentProps): ReactNode {
   const { t } = useTranslation()
-  const { lastUpdated, content, note } = props
+  const { lastUpdated, content, note, title: pageTitle } = props
 
   return (
     <div className={centerSection()}>
-      <h1 className={title()}>{t('privacy.title')}</h1>
+      <h1 className={title()}>{pageTitle}</h1>
       <p>
         {t('legal.lastUpdated')}: {formatDate(lastUpdated)}
       </p>
