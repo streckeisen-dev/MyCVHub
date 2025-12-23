@@ -44,7 +44,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
 
       - name: Enable corepack
         run: corepack enable
@@ -62,7 +62,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: frontend
-        run: yarn install --frozen-lockfile --ignore-scripts
+        run: YARN_ENABLE_SCRIPTS=false yarn install --frozen-lockfile
 
       - name: Test frontend
         working-directory: frontend
@@ -178,7 +178,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
 
       - name: Enable corepack
         run: corepack enable
