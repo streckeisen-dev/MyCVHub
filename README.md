@@ -33,7 +33,7 @@ Planned features:
 # Getting Started
 
 ## Prerequisites
-- Java 17+
+- Java 21+
 - Node.js 24+
 - yarn 4+ (run `corepack enable` if not yet enabled)
 - Docker (for local testing)
