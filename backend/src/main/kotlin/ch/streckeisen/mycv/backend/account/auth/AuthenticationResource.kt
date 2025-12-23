@@ -44,7 +44,7 @@ class AuthenticationResource(
     @RequiresAccountStatus(AccountStatus.INCOMPLETE)
     @GetMapping("/login/verify")
     fun verifyLogin(): ResponseEntity<AuthResponseDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipalOrNull()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipalOrNull()
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
         }
@@ -100,7 +100,7 @@ class AuthenticationResource(
 
     @PostMapping("/change-password")
     fun changePassword(@RequestBody changePasswordDto: ChangePasswordDto): ResponseEntity<AuthResponseDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         return authenticationService.changePassword(principal.id, changePasswordDto)
             .fold(

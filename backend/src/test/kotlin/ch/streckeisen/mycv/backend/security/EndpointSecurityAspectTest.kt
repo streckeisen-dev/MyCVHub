@@ -7,6 +7,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.reflect.MethodSignature
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.fail
 import org.junit.jupiter.params.ParameterizedTest
@@ -20,7 +21,6 @@ import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
 import java.lang.reflect.Method
 import java.util.Locale
-import kotlin.test.assertTrue
 
 class EndpointSecurityAspectTest {
     private lateinit var endpointSecurityAspect: EndpointSecurityAspect

@@ -17,7 +17,7 @@ class SkillResource(
 ) {
     @PostMapping
     fun saveSkill(@RequestBody skillUpdate: SkillUpdateDto): ResponseEntity<SkillDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         return skillService.save(principal.id, skillUpdate)
             .fold(
@@ -32,7 +32,7 @@ class SkillResource(
 
     @DeleteMapping("{id}")
     fun deleteSkill(@PathVariable id: Long): ResponseEntity<Unit> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         return skillService.delete(principal.id, id)
             .fold(

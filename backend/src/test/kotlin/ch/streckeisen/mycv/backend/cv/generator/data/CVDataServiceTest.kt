@@ -14,12 +14,11 @@ import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 import java.time.LocalDate
-import java.util.Locale
-import kotlin.test.assertEquals
 
 private const val CURRENT_JOB_TITLE = "Current Job"
 private const val TECH_COMPANY = "Tech Inc."

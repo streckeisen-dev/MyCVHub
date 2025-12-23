@@ -28,6 +28,8 @@ private const val PASSWORD_ENCODING_ERROR_KEY = "${MYCV_KEY_PREFIX}.account.vali
 
 private val logger = KotlinLogging.logger {}
 
+private const val PASSWORD_FIELD_KEY = "password"
+
 @Service
 class AuthenticationService(
     private val applicantAccountRepository: ApplicantAccountRepository,
@@ -137,10 +139,13 @@ class AuthenticationService(
     }
 
     private fun encodePassword(password: String?): Result<String> {
+        val errors = ValidationException.ValidationErrorBuilder()
         val encodedPassword = passwordEncoder.encode(password)
+        if (encodedPassword == null) {
+            return Result.failure(errors.build(messagesService.getMessage(PASSWORD_ENCODING_ERROR_KEY)))
+        }
         if (encodedPassword.length > PASSWORD_MAX_LENGTH) {
-            val errors = ValidationException.ValidationErrorBuilder()
-            errors.addError("password", messagesService.getMessage(ENCODED_PASSWORD_LENGTH_ERROR_KEY))
+            errors.addError(PASSWORD_FIELD_KEY, messagesService.getMessage(ENCODED_PASSWORD_LENGTH_ERROR_KEY))
             return Result.failure(errors.build(messagesService.getMessage(PASSWORD_ENCODING_ERROR_KEY)))
         }
         return Result.success(encodedPassword)

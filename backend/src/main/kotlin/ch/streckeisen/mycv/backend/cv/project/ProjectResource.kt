@@ -17,7 +17,7 @@ class ProjectResource(
 ) {
     @PostMapping
     fun saveProject(@RequestBody updateRequest: ProjectUpdateDto): ResponseEntity<ProjectDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         return projectService.save(principal.id, updateRequest)
             .fold(
@@ -32,7 +32,7 @@ class ProjectResource(
 
     @DeleteMapping("{id}")
     fun deleteProject(@PathVariable id: Long): ResponseEntity<Unit> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         return projectService.delete(principal.id, id)
             .fold(

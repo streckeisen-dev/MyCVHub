@@ -1,9 +1,9 @@
 package ch.streckeisen.mycv.backend.util
 
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 
 fun <T> executeParameterizedTest(actual: T, isValid: Boolean, numberOfErrors: Int, validate: (T) -> Result<Unit>) {
     val result = validate(actual)
@@ -16,6 +16,6 @@ fun assertValidationResult(result: Result<Unit>, isValid: Boolean, numberOfError
         val ex = result.exceptionOrNull()
         assertNotNull(ex)
         assertTrue(ex is ValidationException)
-        assertEquals(numberOfErrors, ex.errors.size)
+        assertEquals(numberOfErrors, (ex as ValidationException).errors.size)
     }
 }

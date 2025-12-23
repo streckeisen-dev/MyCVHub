@@ -11,15 +11,15 @@ import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePicture
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import tools.jackson.databind.ObjectMapper
 import java.time.LocalDate
-import kotlin.test.assertTrue
 
 private const val TALENDO_TEMPLATE = "talendo.typ"
 private const val OUTPUT_PDF = "cv_1.pdf"

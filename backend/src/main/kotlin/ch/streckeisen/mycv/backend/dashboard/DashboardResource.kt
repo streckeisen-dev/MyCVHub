@@ -25,7 +25,7 @@ class DashboardResource(
     @GetMapping
     @RequiresAccountStatus(AccountStatus.UNVERIFIED)
     fun getDashboardInfo(): ResponseEntity<DashboardInfoDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         val isVerified = principal.status.permissionValue > AccountStatus.UNVERIFIED.permissionValue
         val profileInfo = profileService.getProfileStats(principal.id)

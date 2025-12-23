@@ -17,7 +17,7 @@ class EducationResource(
 ) {
     @PostMapping
     fun saveEducation(@RequestBody educationUpdate: EducationUpdateDto): ResponseEntity<EducationDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         return educationService.save(principal.id, educationUpdate)
             .fold(
@@ -32,7 +32,7 @@ class EducationResource(
 
     @DeleteMapping("{id}")
     fun deleteEducation(@PathVariable id: Long): ResponseEntity<Unit> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         return educationService.delete(principal.id, id)
             .fold(

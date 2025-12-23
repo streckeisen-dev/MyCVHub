@@ -8,13 +8,13 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.util.Optional
 import java.util.UUID
-import kotlin.test.Test
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 private const val VERIFICATION_TOKEN_EXPIRATION_HOURS = 2L
 private const val TOKEN_GENERATION_BLOCK_MINUTES = 5L

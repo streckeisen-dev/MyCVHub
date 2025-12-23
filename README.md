@@ -34,7 +34,7 @@ Planned features:
 
 ## Prerequisites
 - Java 17+
-- Node.js 22+
+- Node.js 24+
 - yarn 4+ (run `corepack enable` if not yet enabled)
 - Docker (for local testing)
 - Cloudinary account (for profile picture storage)

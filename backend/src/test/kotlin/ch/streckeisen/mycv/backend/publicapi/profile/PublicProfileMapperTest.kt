@@ -6,11 +6,11 @@ import ch.streckeisen.mycv.backend.cv.education.EducationEntity
 import ch.streckeisen.mycv.backend.cv.experience.WorkExperienceEntity
 import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import io.mockk.mockk
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.time.LocalDate
-import kotlin.test.assertTrue
 
 class PublicProfileMapperTest {
     @ParameterizedTest

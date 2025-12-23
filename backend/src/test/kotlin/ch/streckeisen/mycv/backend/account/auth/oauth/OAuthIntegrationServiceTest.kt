@@ -11,17 +11,17 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 import java.util.Optional
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 class OAuthIntegrationServiceTest {
     private lateinit var oauthIntegrationRepository: OauthIntegrationRepository
@@ -73,7 +73,7 @@ class OAuthIntegrationServiceTest {
         assertTrue(result.isSuccess)
         val account = result.getOrNull()
         assertNotNull(account)
-        assertEquals(1, account.id)
+        assertEquals(1, account!!.id)
         verify(exactly = 0) { oauthIntegrationRepository.save(any()) }
         verify(exactly = 0) { applicantAccountRepository.save(any()) }
     }

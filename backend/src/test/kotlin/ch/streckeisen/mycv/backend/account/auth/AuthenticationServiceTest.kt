@@ -13,6 +13,8 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.security.authentication.AuthenticationManager
@@ -21,8 +23,6 @@ import org.springframework.security.core.AuthenticationException
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate
 import java.util.Optional
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 private val existingAccount = ApplicantAccountEntity(
     "username",
