@@ -25,13 +25,13 @@ Planned features:
 
 # Technologies
 
-| Component      | Technologies                        |
-|----------------|-------------------------------------|
-| Backend        | Java 17, Kotlin, Spring Boot 3      |
-| PDF generation | typst                               |
-| Frontend       | Node.js 22, Vue.js 3, Vuetify, yarn |
-| Database       | PostgreSQL                          |
-| Hosting        | Docker, DigitalOcean app platform   |
+| Component      | Technologies                      |
+|----------------|-----------------------------------|
+| Backend        | Java 21, Kotlin, Spring Boot 4    |
+| PDF generation | typst                             |
+| Frontend       | Node.js 24, React, HeroUI, yarn   |
+| Database       | PostgreSQL                        |
+| Hosting        | Docker, DigitalOcean app platform |
 
 # Getting Started
 
