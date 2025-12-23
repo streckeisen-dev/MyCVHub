@@ -7,13 +7,13 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.util.Optional
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 private val EXISTING_ACCOUNT = ApplicantAccountEntity(
     "username",
@@ -31,11 +31,12 @@ private val EXISTING_ACCOUNT = ApplicantAccountEntity(
         "29742",
         "Real City",
         "CH",
+        "de"
     ),
     id = 1,
 )
 
-private val INVALID_ACCOUNT_UPDATE = AccountUpdateDto(null, null, null, null, null, null, null, null, null, null, null)
+private val INVALID_ACCOUNT_UPDATE = AccountUpdateDto(null, null, null, null, null, null, null, null, null, null, null, null)
 private val VALID_ACCOUNT_UPDATE = AccountUpdateDto(
     "username",
     "fN",
@@ -47,7 +48,8 @@ private val VALID_ACCOUNT_UPDATE = AccountUpdateDto(
     null,
     "pc",
     "ct",
-    "DE"
+    "DE",
+    "de"
 )
 
 class ApplicantAccountServiceTest {
@@ -79,7 +81,8 @@ class ApplicantAccountServiceTest {
                     null,
                     "123",
                     "NewCity",
-                    "CH"
+                    "CH",
+                    "de"
                 )
             )
         }

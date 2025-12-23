@@ -26,10 +26,10 @@ private const val CV_PICTURE_TRANSFORMATION = "cv_profile"
 
 @Service
 class ProfilePictureStorageService(
-    @Value("\${cloudinary.api-key}") private val apiKey: String,
-    @Value("\${cloudinary.api-secret}") private val apiSecret: String,
-    @Value("\${cloudinary.cloud-name}") private val cloudName: String,
-    @Value("\${cloudinary.url-expiration}") private val urlExpirationTime: Long,
+    @param:Value($$"${cloudinary.api-key}") private val apiKey: String,
+    @param:Value($$"${cloudinary.api-secret}") private val apiSecret: String,
+    @param:Value($$"${cloudinary.cloud-name}") private val cloudName: String,
+    @param:Value($$"${cloudinary.url-expiration}") private val urlExpirationTime: Long,
     environment: Environment
 ) {
     private val cloudinary = Cloudinary("cloudinary://${apiKey}:${apiSecret}@${cloudName}")
@@ -69,13 +69,7 @@ class ProfilePictureStorageService(
             "transformation" to "t_${PROFILE_PICTURE_THUMBNAIL_TRANSFORMATION}"
         )
 
-        try {
-            cloudinary.signRequest(params, params)
-            val url = buildUrl(cloudinary.cloudinaryApiUrl("download", params), params)
-            return Result.success(ProfilePicture(filename, URI(url)))
-        } catch (ex: Exception) {
-            return Result.failure(ex)
-        }
+        return getPictureUrl(filename, params)
     }
 
     fun getCVPicture(filename: String): Result<ProfilePicture> {
@@ -89,13 +83,7 @@ class ProfilePictureStorageService(
             "transformation" to "t_${CV_PICTURE_TRANSFORMATION}"
         )
 
-        try {
-            cloudinary.signRequest(params, params)
-            val url = buildUrl(cloudinary.cloudinaryApiUrl("download", params), params)
-            return Result.success(ProfilePicture(filename, URI(url)))
-        } catch (ex: Exception) {
-            return Result.failure(ex)
-        }
+        return getPictureUrl(filename, params)
     }
 
     fun store(profilePicture: MultipartFile): Result<String> {
@@ -165,5 +153,15 @@ class ProfilePictureStorageService(
             isFirst = false
         }
         return urlBuilder.toString()
+    }
+
+    private fun getPictureUrl(filename: String, params: Map<String, String>): Result<ProfilePicture> {
+        try {
+            cloudinary.signRequest(params, params)
+            val url = buildUrl(cloudinary.cloudinaryApiUrl("download", params), params)
+            return Result.success(ProfilePicture(filename, URI(url)))
+        } catch (ex: Exception) {
+            return Result.failure(ex)
+        }
     }
 }

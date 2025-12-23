@@ -15,7 +15,7 @@ class ProfileThemeResource(
 ) {
     @PostMapping
     fun saveProfileTheme(@RequestBody profileThemeUpdate: ProfileThemeUpdateDto): ResponseEntity<ProfileThemeDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         return profileThemeService.save(principal.id, profileThemeUpdate).fold(
             onSuccess = { profileTheme ->

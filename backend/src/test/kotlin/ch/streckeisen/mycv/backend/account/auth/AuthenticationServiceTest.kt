@@ -13,6 +13,8 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.security.authentication.AuthenticationManager
@@ -21,8 +23,6 @@ import org.springframework.security.core.AuthenticationException
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate
 import java.util.Optional
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 private val existingAccount = ApplicantAccountEntity(
     "username",
@@ -40,6 +40,7 @@ private val existingAccount = ApplicantAccountEntity(
         "29742",
         "Real City",
         "CH",
+        "de"
     ),
     id = 1,
 )
@@ -48,35 +49,39 @@ private const val TEST_EMAIL = "first.last@example.com"
 private const val VALID_TEST_PASSWORD = "a*c3efgH"
 
 private val validSignupRequest = SignupRequestDto(
-    TEST_EMAIL,
-    "FirstName",
-    "LastName",
-    TEST_EMAIL,
-    "+41 79 123 45 67",
-    LocalDate.of(2000, 8, 13),
-    "StreetName",
-    "6",
-    "3287",
-    "City",
-    "CH",
-    VALID_TEST_PASSWORD,
-    VALID_TEST_PASSWORD
+    username = TEST_EMAIL,
+    firstName = "FirstName",
+    lastName = "LastName",
+    email = TEST_EMAIL,
+    phone = "+41 79 123 45 67",
+    birthday = LocalDate.of(2000, 8, 13),
+    street = "StreetName",
+    houseNumber = "6",
+    postcode = "3287",
+    city = "City",
+    country = "CH",
+    password = VALID_TEST_PASSWORD,
+    confirmPassword = VALID_TEST_PASSWORD,
+    language = "en",
+    acceptsTos = true
 )
 
 private val invalidSignupRequest = SignupRequestDto(
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
+    username = null,
+    firstName = null,
+    lastName = null,
+    email = null,
+    phone = null,
+    birthday = null,
+    street = null,
+    houseNumber = null,
+    postcode = null,
+    city = null,
+    country = null,
+    password = null,
+    confirmPassword = null,
+    language = null,
+    acceptsTos = null
 )
 
 private val invalidChangePwRequest = ChangePasswordDto(null, null, null)

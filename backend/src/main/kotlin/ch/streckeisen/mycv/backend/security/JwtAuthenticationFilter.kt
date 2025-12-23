@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.servlet.HandlerExceptionResolver
+import java.util.Locale
 
 @Component
 class JwtAuthenticationFilter(
@@ -60,7 +61,8 @@ class JwtAuthenticationFilter(
                     val principal = MyCvPrincipal(
                         userDetails.username,
                         userDetails.account.id!!,
-                        AccountStatus.ofAccount(userDetails.account)
+                        AccountStatus.ofAccount(userDetails.account),
+                        userDetails.account.accountDetails?.language?.let { Locale.of(it) }
                     )
                     val authToken =
                         UsernamePasswordAuthenticationToken(principal, null, userDetails.authorities)

@@ -7,6 +7,7 @@ import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
+import ch.streckeisen.mycv.backend.util.StringValidator
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -30,9 +31,13 @@ private const val OLD_PASSWORD_INVALID_ERROR_KEY = "${ACCOUNT_VALIDATION_KEY_PRE
 private const val LOGIN_VALIDATION_ERROR_KEY = "${MYCV_KEY_PREFIX}.auth.login.error"
 private const val SIGNUP_VALIDATION_ERROR_KEY = "${MYCV_KEY_PREFIX}.auth.signup.error"
 private const val CHANGE_PASSWORD_VALIDATION_ERROR_KEY = "${MYCV_KEY_PREFIX}.auth.changePassword.error"
+private const val TERMS_ERROR_KEY = "${MYCV_KEY_PREFIX}.account.validations.termsError"
+
+private const val TERMS_FIELD_KEY = "acceptsTos"
 
 @Service
 class AuthenticationValidationService(
+    private val stringValidator: StringValidator,
     private val messagesService: MessagesService,
     private val applicantAccountValidationService: ApplicantAccountValidationService,
     private val passwordEncoder: PasswordEncoder
@@ -40,15 +45,17 @@ class AuthenticationValidationService(
     fun validateLoginRequest(loginRequest: LoginRequestDto): Result<Unit> {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
-        if (loginRequest.username.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(USERNAME_FIELD_KEY)
-            validationErrorBuilder.addError(USERNAME_FIELD_KEY, error)
-        }
+        stringValidator.validateRequiredString(
+            requiredField = USERNAME_FIELD_KEY,
+            value = loginRequest.username,
+            validationErrorBuilder = validationErrorBuilder
+        )
 
-        if (loginRequest.password.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(PASSWORD_FIELD_KEY)
-            validationErrorBuilder.addError(PASSWORD_FIELD_KEY, error)
-        }
+        stringValidator.validateRequiredString(
+            requiredField = PASSWORD_FIELD_KEY,
+            value = loginRequest.password,
+            validationErrorBuilder = validationErrorBuilder
+        )
 
         if (validationErrorBuilder.hasErrors()) {
             return Result.failure(validationErrorBuilder.build(messagesService.getMessage(LOGIN_VALIDATION_ERROR_KEY)))
@@ -79,6 +86,12 @@ class AuthenticationValidationService(
             signupRequest.confirmPassword,
             validationErrorBuilder
         )
+        applicantAccountValidationService.validateLanguage(signupRequest.language, validationErrorBuilder)
+
+        if (signupRequest.acceptsTos == null || !signupRequest.acceptsTos) {
+            val error = messagesService.getMessage(TERMS_ERROR_KEY)
+            validationErrorBuilder.addError(TERMS_FIELD_KEY, error)
+        }
 
         if (validationErrorBuilder.hasErrors()) {
             return Result.failure(validationErrorBuilder.build(messagesService.getMessage(SIGNUP_VALIDATION_ERROR_KEY)))
@@ -121,14 +134,17 @@ class AuthenticationValidationService(
         confirmPassword: String?,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
-        if (password.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(PASSWORD_FIELD_KEY)
-            validationErrorBuilder.addError(PASSWORD_FIELD_KEY, error)
-        }
-        if (confirmPassword.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(CONFIRM_PASSWORD_FIELD_KEY)
-            validationErrorBuilder.addError(CONFIRM_PASSWORD_FIELD_KEY, error)
-        }
+        stringValidator.validateRequiredString(
+            requiredField = PASSWORD_FIELD_KEY,
+            value = password,
+            validationErrorBuilder = validationErrorBuilder
+        )
+        stringValidator.validateRequiredString(
+            requiredField = CONFIRM_PASSWORD_FIELD_KEY,
+            value = confirmPassword,
+            validationErrorBuilder = validationErrorBuilder
+        )
+
         if (password != null && confirmPassword != null) {
             validatePassword(password, confirmPassword)
                 .onFailure { validationErrorBuilder.addError(PASSWORD_FIELD_KEY, it.message!!) }
@@ -155,10 +171,12 @@ class AuthenticationValidationService(
         currentPassword: String,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
-        if (oldPassword.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(OLD_PASSWORD_FIELD_KEY)
-            validationErrorBuilder.addError(OLD_PASSWORD_FIELD_KEY, error)
-        } else if (!passwordEncoder.matches(oldPassword, currentPassword)) {
+        stringValidator.validateRequiredString(
+            requiredField = OLD_PASSWORD_FIELD_KEY,
+            value = oldPassword,
+            validationErrorBuilder = validationErrorBuilder
+        )
+        if (!oldPassword.isNullOrBlank() && !passwordEncoder.matches(oldPassword, currentPassword)) {
             val error = messagesService.getMessage(OLD_PASSWORD_INVALID_ERROR_KEY)
             validationErrorBuilder.addError(OLD_PASSWORD_FIELD_KEY, error)
         }

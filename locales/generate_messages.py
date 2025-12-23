@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import yaml
 import json
 import os
@@ -36,15 +38,27 @@ def merge_keys(shared, specific):
             combined[key] = value
     return combined
 
+def convert_params_to_double_curly(data):
+    if isinstance(data, dict):
+        return {k: convert_params_to_double_curly(v) for k, v in data.items()}
+    elif isinstance(data, str):
+        # Regex to match {param} but not {{param}} just in case
+        return re.sub(r'(?<!\{)\{(\w+)\}(?!\})', r'{{\1}}', data)
+    return data
+
 # Write frontend JSON format
 def write_frontend_json(locales, output_dir):
     for lang, content in locales.items():
         # Merge shared and frontend sections
         merged_data = merge_keys(content.get("shared", {}), content.get("frontend", {}))
 
-        # Define the output path for each language
-        output_file = os.path.join(output_dir, f"{lang}.json")
+        # Convert parameters to double curly brackets
+        merged_data = convert_params_to_double_curly(merged_data)
 
+        # Define the output path for each language
+        output_file: str = os.path.join(output_dir, os.path.join(lang, "translation.json"))
+
+        Path(output_file).parent.mkdir(exist_ok=True, parents=True)
         # Write the merged data to the JSON file
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(merged_data, f, ensure_ascii=False, indent=2)
@@ -113,7 +127,7 @@ args = parser.parse_args()
 
 try:
     generate_type = args.type  # Command-line parameter for generating files
-    frontend_output_dir = '../frontend/src/locales/'  # Path to output JSON for frontend
+    frontend_output_dir = '../frontend/public/locales/'  # Path to output JSON for frontend
     backend_output_dir = '../backend/src/main/resources/'  # Relative output directory for backend .properties files
     key_prefix = 'ch.streckeisen.mycv'  # Prefix for backend keys
     fallback_locale = 'en'

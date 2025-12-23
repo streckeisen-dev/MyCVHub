@@ -1,6 +1,5 @@
 package ch.streckeisen.mycv.backend.account.auth
 
-import ch.streckeisen.mycv.backend.account.dto.AuthResponseDto
 import ch.streckeisen.mycv.backend.security.JwtService
 import ch.streckeisen.mycv.backend.security.UserDetailsServiceImpl
 import io.jsonwebtoken.JwtException
@@ -29,7 +28,8 @@ class AuthTokenService(
                 accessToken,
                 accessTokenExpirationTime,
                 refreshToken,
-                refreshTokenExpirationTime
+                refreshTokenExpirationTime,
+                userDetails.account.accountDetails?.language
             )
         )
     }
@@ -44,13 +44,13 @@ class AuthTokenService(
         return Result.success(username!!)
     }
 
-    fun createRefreshCookie(refreshToken: String, expiresIn: Long) =
+    fun createRefreshCookie(refreshToken: String, expiresIn: Long): ResponseCookie =
         createCookie(REFRESH_TOKEN_NAME, refreshToken, "/api/auth/refresh", expiresIn)
 
-    fun createAccessCookie(accessToken: String, expiresIn: Long) =
+    fun createAccessCookie(accessToken: String, expiresIn: Long): ResponseCookie =
         createCookie(ACCESS_TOKEN_NAME, accessToken, "/", expiresIn)
 
-    fun handleAuthTokenResult(authTokens: Result<AuthTokens>): ResponseEntity<AuthResponseDto> {
+    fun handleAuthTokenResult(authTokens: Result<AuthTokens>): ResponseEntity<Unit> {
         return authTokens.fold(
             onSuccess = { authData ->
                 val refreshCookie =
@@ -66,7 +66,7 @@ class AuthTokenService(
                 headers.add(HttpHeaders.SET_COOKIE, accessCookie.toString())
                 ResponseEntity.ok()
                     .headers(headers)
-                    .body(AuthResponseDto(authData.accessToken, authData.accessTokenExpirationTime))
+                    .body(Unit)
             },
             onFailure = {
                 throw it

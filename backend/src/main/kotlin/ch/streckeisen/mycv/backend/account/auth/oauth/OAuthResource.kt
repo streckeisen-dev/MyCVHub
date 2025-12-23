@@ -2,7 +2,6 @@ package ch.streckeisen.mycv.backend.account.auth.oauth
 
 import ch.streckeisen.mycv.backend.account.AccountStatus
 import ch.streckeisen.mycv.backend.account.auth.AuthTokenService
-import ch.streckeisen.mycv.backend.account.dto.AuthResponseDto
 import ch.streckeisen.mycv.backend.account.dto.OAuthSignupRequestDto
 import ch.streckeisen.mycv.backend.security.annotations.RequiresAccountStatus
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
@@ -21,8 +20,8 @@ class OAuthResource(
 ) {
     @RequiresAccountStatus(AccountStatus.INCOMPLETE, exact = true)
     @PostMapping("/signup")
-    fun oauthSignup(@RequestBody oauthSignupRequest: OAuthSignupRequestDto): ResponseEntity<AuthResponseDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+    fun oauthSignup(@RequestBody oauthSignupRequest: OAuthSignupRequestDto): ResponseEntity<Unit> {
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
         val signupResult = oAuthIntegrationService.completeSignup(principal.id, oauthSignupRequest)
         return authTokenService.handleAuthTokenResult(signupResult)
     }

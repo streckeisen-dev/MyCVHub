@@ -11,6 +11,10 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.servlet.http.HttpSession
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -18,10 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.web.servlet.HandlerExceptionResolver
 import org.springframework.web.servlet.ModelAndView
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import java.util.Locale
 
 class JwtAuthenticationFilterTest {
     private lateinit var jwtService: JwtService
@@ -83,7 +84,11 @@ class JwtAuthenticationFilterTest {
             every { id } returns userId
             every { username } returns userName
             every { isVerified } returns false
-            every { accountDetails } returns mockk()
+            every { accountDetails } returns mockk {
+                every { accountDetails } returns mockk {
+                    every { language } returns "en"
+                }
+            }
         })
         assertNull(SecurityContextHolder.getContext().authentication)
         every { request.cookies } returns arrayOf(mockk {
@@ -116,7 +121,7 @@ class JwtAuthenticationFilterTest {
             every { value } returns "abcdefg"
         })
         every { jwtService.extractUsername(eq("abcdefg")) } returns "username"
-        val authToken = UsernamePasswordAuthenticationToken(MyCvPrincipal("username", 1, AccountStatus.VERIFIED), null, listOf())
+        val authToken = UsernamePasswordAuthenticationToken(MyCvPrincipal("username", 1, AccountStatus.VERIFIED, Locale.ENGLISH), null, listOf())
         authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
         SecurityContextHolder.getContext().authentication = authToken
 

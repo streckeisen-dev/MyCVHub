@@ -1,10 +1,5 @@
 name: Build
 
-permissions:
-  id-token: write
-  contents: write
-  checks: write
-
 on:
   push:
     branches:
@@ -49,7 +44,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
 
       - name: Enable corepack
         run: corepack enable
@@ -67,7 +62,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: frontend
-        run: yarn install --frozen-lockfile
+        run: YARN_ENABLE_SCRIPTS=false yarn install --frozen-lockfile
 
       - name: Test frontend
         working-directory: frontend
@@ -75,7 +70,7 @@ jobs:
 
       - name: Frontend test report
         if: always()
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v2
         with:
           name: Frontend Test Results
           path: frontend/test-results.xml
@@ -146,7 +141,7 @@ jobs:
 
       - name: Backend test report
         if: always()
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v2
         with:
           name: JUnit Test Results
           path: backend/target/surefire-reports/TEST-*.xml
@@ -183,7 +178,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
 
       - name: Enable corepack
         run: corepack enable
@@ -200,7 +195,7 @@ jobs:
         run: yarn cypress:results:merge
       - name: Cypress test report
         if: always()
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v2
         with:
           name: Cypress Test Results
           path: frontend/cypress/component-results.xml
@@ -251,6 +246,8 @@ jobs:
     needs:
       - docker-build
       - cypress-test
+    permissions:
+      contents: write
     
     steps:
       - name: Checkout code

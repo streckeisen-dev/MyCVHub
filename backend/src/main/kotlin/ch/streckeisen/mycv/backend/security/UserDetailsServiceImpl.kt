@@ -11,7 +11,7 @@ import kotlin.jvm.optionals.getOrElse
 class UserDetailsServiceImpl(
     private val applicantAccountRepository: ApplicantAccountRepository
 ) : UserDetailsService {
-    override fun loadUserByUsername(username: String?): MyCvUserDetails {
+    override fun loadUserByUsername(username: String): MyCvUserDetails {
         return loadUserByUsernameAsResult(username).getOrThrow()
     }
 

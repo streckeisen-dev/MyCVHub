@@ -20,9 +20,9 @@ class AccountVerificationService(
     private val accountVerificationRepository: AccountVerificationRepository,
     private val emailService: EmailService,
     private val applicantAccountRepository: ApplicantAccountRepository,
-    @Value("\${my-cv.account.verification.token-expiration-hours}")
+    @param:Value($$"${my-cv.account.verification.token-expiration-hours}")
     private val verificationTokenExpirationHours: Long,
-    @Value("\${my-cv.account.verification.token-generation-block-minutes}")
+    @param:Value($$"${my-cv.account.verification.token-generation-block-minutes}")
     private val tokenGenerationBlockMinutes: Long
 ) {
     @Transactional

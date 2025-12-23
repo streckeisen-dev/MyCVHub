@@ -5,23 +5,25 @@ import ch.streckeisen.mycv.backend.account.ApplicantAccountRepository
 import ch.streckeisen.mycv.backend.account.ApplicantAccountService
 import ch.streckeisen.mycv.backend.account.auth.AuthTokenService
 import ch.streckeisen.mycv.backend.account.auth.AuthenticationValidationService
+import ch.streckeisen.mycv.backend.account.dto.OAuthSignupRequestDto
+import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.github.GithubException
 import ch.streckeisen.mycv.backend.github.GithubService
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 import java.util.Optional
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 class OAuthIntegrationServiceTest {
     private lateinit var oauthIntegrationRepository: OauthIntegrationRepository
@@ -57,7 +59,8 @@ class OAuthIntegrationServiceTest {
             authorizedClientService,
             githubService,
             accountService,
-            authTokenService
+            authTokenService,
+            mockk(relaxed = true)
         )
     }
 
@@ -73,7 +76,7 @@ class OAuthIntegrationServiceTest {
         assertTrue(result.isSuccess)
         val account = result.getOrNull()
         assertNotNull(account)
-        assertEquals(1, account.id)
+        assertEquals(1, account!!.id)
         verify(exactly = 0) { oauthIntegrationRepository.save(any()) }
         verify(exactly = 0) { applicantAccountRepository.save(any()) }
     }
@@ -245,5 +248,30 @@ class OAuthIntegrationServiceTest {
         assertTrue(result.isFailure)
         verify(exactly = 0) { oauthIntegrationRepository.save(any()) }
         verify(exactly = 0) { applicantAccountRepository.save(any()) }
+    }
+
+    @Test
+    fun testCompleteSignupWithoutTermsAccepted() {
+        val request = OAuthSignupRequestDto(
+            username = "u",
+            firstName = "f",
+            lastName = "l",
+            email = "e",
+            phone = "p",
+            birthday = null,
+            street = null,
+            houseNumber = null,
+            postcode = null,
+            city = null,
+            country = null,
+            language = null,
+            acceptsTos = null
+        )
+        val result = oAuthIntegrationService.completeSignup(1, request)
+
+        assertTrue { result.isFailure }
+        val ex = result.exceptionOrNull()
+        assertNotNull(ex)
+        assertTrue { ex is ValidationException }
     }
 }

@@ -17,7 +17,7 @@ class WorkExperienceResource(
 ) {
     @PostMapping
     fun saveWorkExperience(@RequestBody updateRequest: WorkExperienceUpdateDto): ResponseEntity<WorkExperienceDto> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         return workExperienceService.save(principal.id, updateRequest)
             .fold(
@@ -31,8 +31,8 @@ class WorkExperienceResource(
     }
 
     @DeleteMapping("{id}")
-    fun deleteWorkExperience(@PathVariable("id") id: Long): ResponseEntity<Unit> {
-        val principal = SecurityContextHolder.getContext().authentication.getMyCvPrincipal()
+    fun deleteWorkExperience(@PathVariable id: Long): ResponseEntity<Unit> {
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         return workExperienceService.delete(principal.id, id)
             .fold(

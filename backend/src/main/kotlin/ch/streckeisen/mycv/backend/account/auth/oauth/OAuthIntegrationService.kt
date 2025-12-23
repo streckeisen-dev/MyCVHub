@@ -10,8 +10,10 @@ import ch.streckeisen.mycv.backend.account.auth.AuthenticationValidationService
 import ch.streckeisen.mycv.backend.account.dto.AccountUpdateDto
 import ch.streckeisen.mycv.backend.account.dto.OAuthSignupRequestDto
 import ch.streckeisen.mycv.backend.exceptions.LocalizedException
+import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.github.GithubService
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
+import ch.streckeisen.mycv.backend.locale.MessagesService
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
@@ -23,6 +25,10 @@ import kotlin.jvm.optionals.getOrElse
 
 private val logger = KotlinLogging.logger {}
 
+private const val TERMS_ERROR_KEY = "${MYCV_KEY_PREFIX}.account.validations.termsError"
+private const val VALIDATION_ERROR_KEY = "${MYCV_KEY_PREFIX}.account.validations.error"
+private const val OAUTH_NOT_FOUND_ERROR_KEY = "${MYCV_KEY_PREFIX}.account.oauth.notFound"
+
 @Service
 class OAuthIntegrationService(
     private val oauthIntegrationRepository: OauthIntegrationRepository,
@@ -31,13 +37,14 @@ class OAuthIntegrationService(
     private val authorizedClientService: OAuth2AuthorizedClientService,
     private val githubService: GithubService,
     private val accountService: ApplicantAccountService,
-    private val authTokenService: AuthTokenService
+    private val authTokenService: AuthTokenService,
+    private val messagesService: MessagesService
 ) {
     @Transactional(readOnly = true)
     fun findById(oauthId: String, oauthType: OAuthType): Result<OAuthIntegrationEntity> {
         return oauthIntegrationRepository.findById(OAuthEntityId(oauthId, oauthType))
             .map { Result.success(it) }
-            .orElse(Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.account.oauth.notFound")))
+            .orElse(Result.failure(LocalizedException(OAUTH_NOT_FOUND_ERROR_KEY)))
     }
 
     @Transactional
@@ -58,6 +65,11 @@ class OAuthIntegrationService(
     }
 
     fun completeSignup(accountId: Long, oauthSignupRequest: OAuthSignupRequestDto): Result<AuthTokens> {
+        if (oauthSignupRequest.acceptsTos == null || !oauthSignupRequest.acceptsTos) {
+            val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
+            validationErrorBuilder.addError("acceptsTos", TERMS_ERROR_KEY)
+            return Result.failure(validationErrorBuilder.build(messagesService.getMessage(VALIDATION_ERROR_KEY)))
+        }
         val accountUpdate = AccountUpdateDto(
             username = oauthSignupRequest.username,
             firstName = oauthSignupRequest.firstName,
@@ -69,7 +81,8 @@ class OAuthIntegrationService(
             houseNumber = oauthSignupRequest.houseNumber,
             postcode = oauthSignupRequest.postcode,
             city = oauthSignupRequest.city,
-            country = oauthSignupRequest.country
+            country = oauthSignupRequest.country,
+            language = oauthSignupRequest.language
         )
         val account = accountService.update(accountId, accountUpdate)
             .getOrElse { return Result.failure(it) }
@@ -126,16 +139,16 @@ class OAuthIntegrationService(
     private fun createIncompleteOAuthAccount(
         username: String,
         oauthType: OAuthType,
-        oauthId: String
+        oauthId: String,
     ): Result<ApplicantAccountEntity> {
         authenticationValidationService.validateOAuthSignupRequest(username)
             .onFailure { return Result.failure(it) }
 
         val oauthAccount = ApplicantAccountEntity(
-            username,
-            null,
-            true,
-            false
+            username = username,
+            password = null,
+            isOAuthUser = true,
+            isVerified = false
         )
         val account = applicantAccountRepository.save(oauthAccount)
         addOAuthIntegration(account, oauthId, oauthType)

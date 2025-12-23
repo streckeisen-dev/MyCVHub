@@ -11,7 +11,7 @@ private const val LOGO_URL = "https://localhost:8080/assets/mycvhub_logo.png"
 
 @Service
 class EmailTemplateService(
-    @Value("\${my-cv.frontend.base-url}")
+    @param:Value($$"${my-cv.frontend.base-url}")
     private val baseUrl: String
 ) {
     private val markupTemplateEngine: MarkupTemplateEngine

@@ -36,11 +36,12 @@ class EndpointSecurityAspect {
             return
         }
 
-        val authentication = SecurityContextHolder.getContext().authentication
+        val securityContext = SecurityContextHolder.getContext()
+        val authentication = securityContext.authentication
         if (authentication == null || !authentication.isAuthenticated || authentication is AnonymousAuthenticationToken) {
             throw InvalidCookieException("Unauthorized")
         }
-        val userAccountStatus = authentication.getMyCvPrincipal().status
+        val userAccountStatus = securityContext.getMyCvPrincipal().status
 
         val methodRequiresAccountStatusAnnotation =
             methodSignature.method.annotations.find { it is RequiresAccountStatus } as RequiresAccountStatus?

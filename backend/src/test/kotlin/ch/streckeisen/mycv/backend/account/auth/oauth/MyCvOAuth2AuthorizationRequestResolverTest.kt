@@ -3,16 +3,16 @@ package ch.streckeisen.mycv.backend.account.auth.oauth
 import io.mockk.every
 import io.mockk.mockk
 import jakarta.servlet.http.HttpServletRequest
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver
 import org.springframework.security.oauth2.core.AuthorizationGrantType
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationResponseType
 import java.util.Base64
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 
 class MyCvOAuth2AuthorizationRequestResolverTest {
     private lateinit var baseResolver: OAuth2AuthorizationRequestResolver
@@ -63,7 +63,7 @@ class MyCvOAuth2AuthorizationRequestResolverTest {
         val result = myCvOAuth2AuthorizationRequestResolver.resolve(request)
 
         assertNotNull(result)
-        assertNotNull(result.state)
+        assertNotNull(result!!.state)
         val decodedState = Base64.getUrlDecoder().decode(result.state).toString(Charsets.UTF_8)
         assertEquals("redirect=/ui/test", decodedState)
     }

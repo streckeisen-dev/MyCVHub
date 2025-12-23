@@ -14,6 +14,12 @@ data class AccountDto(
     val postcode: String,
     val city: String,
     val country: String,
+    val language: String,
     val hasProfile: Boolean,
-    val hasPassword: Boolean
+    val hasPassword: Boolean,
+    val oauthIntegrations: List<LinkedAccount>
+)
+
+data class LinkedAccount(
+    val provider: String
 )

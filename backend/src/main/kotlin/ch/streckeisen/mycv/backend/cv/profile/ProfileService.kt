@@ -27,9 +27,16 @@ class ProfileService(
         return Result.success(profile)
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun findByAccountId(accountId: Long): Result<ProfileEntity> {
         return profileRepository.findByAccountId(accountId)
+            .map { Result.success(it) }
+            .orElse(Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.profile.notFound")))
+    }
+
+    @Transactional(readOnly = true)
+    fun getProfileStats(accountId: Long): Result<ProfileStats> {
+        return profileRepository.getProfileStats(accountId)
             .map { Result.success(it) }
             .orElse(Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.profile.notFound")))
     }

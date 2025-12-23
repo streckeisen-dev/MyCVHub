@@ -1,19 +1,16 @@
 #import "@preview/fontawesome:0.5.0": fa-icon
 #import "shared.typ": project_link, getTitle, getEntryDescription
 
+#let profile = json("profile.json")
+
 #set page(
   margin: (x: 5mm, y: 1cm),
   background: place(start, grid(
     columns: (7.5cm, auto),
-    block(fill: black, height: 100%, width: 100%)
-  )
-  )
+    block(fill: color.rgb(profile.templateOptions.bannerBackground), height: 100%, width: 100%)
+  ))
 )
 #set text(font: "Helvetica", size: 10pt)
-
-#let personalInfoBackgroundColor = rgb(0, 0, 0)
-
-#let profile = json("profile.json")
 
 #let section-header(icon, title) = {
   let cells = (
@@ -43,20 +40,18 @@
 
 #let timeline-entry(startDate, endDate, institution, location, title, description, links: ()) = {
   let lines = 3
+  let hasLinks = links != none and links.len() > 0
   let content = grid(
     columns: (2cm, auto),
     [#startDate - #endDate],
     [
       #text(weight: "bold")[#institution, #location]#linebreak()
       #title #linebreak()
-      #if (description != none) {
+      #if (description != none and description != "") {
         lines += (description.len() / 55)
-        getEntryDescription(description)
+        getEntryDescription(description, hasLinks: hasLinks)
       }
       #if (links != none and links.len() > 0) {
-        if (description != none) {
-          linebreak()
-        }
         for link in links {
           project_link(link)
           h(5pt)
@@ -64,6 +59,10 @@
       }
     ]
   )
+  let linkBuffer = 0pt
+  if (hasLinks) {
+    linkBuffer = 14pt
+  }
 
   return (
     pad(left: 0.34cm,
@@ -79,7 +78,7 @@
         ),
         // Spacer below the circle so the line begins below it
         pad(left: 0.7mm)[
-          #rect(width: 0.4mm, height: (lines * (11pt + 3pt)), fill: black)
+          #rect(width: 0.4mm, height: (lines * (11pt + 3pt) + linkBuffer), fill: black)
         ]
       
       )
@@ -155,6 +154,10 @@
   if (profile.projects.len() == 0) {
     return
   }
+
+  // workaround to prevent the grid header from standing alone on the bottom of the page
+  block(breakable: false, v(6cm))
+  v(-6cm)
 
   grid(
       columns: (1.2cm, auto),

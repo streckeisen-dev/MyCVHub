@@ -3,10 +3,9 @@ package ch.streckeisen.mycv.backend.cv.project
 import ch.streckeisen.mycv.backend.exceptions.ValidationException.ValidationErrorBuilder
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
+import ch.streckeisen.mycv.backend.util.StringValidator
+import ch.streckeisen.mycv.backend.util.isUrlValid
 import org.springframework.stereotype.Service
-import java.net.MalformedURLException
-import java.net.URI
-import java.net.URISyntaxException
 import java.time.LocalDate
 
 private const val VALIDATION_ERROR_KEY = "${MYCV_KEY_PREFIX}.project.validation.error"
@@ -22,6 +21,7 @@ private const val DISPLAY_NAME_KEY = "displayName"
 
 @Service
 class ProjectValidationService(
+    private val stringValidator: StringValidator,
     private val messagesService: MessagesService
 ) {
     fun validateProject(projectUpdate: ProjectUpdateDto): Result<Unit> {
@@ -44,36 +44,35 @@ class ProjectValidationService(
         projectName: String?,
         validationErrorBuilder: ValidationErrorBuilder
     ) {
-        if (projectName.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(NAME_FIELD_KEY)
-            validationErrorBuilder.addError(NAME_FIELD_KEY, error)
-        } else if (projectName.length > PROJECT_NAME_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError(NAME_FIELD_KEY, PROJECT_NAME_MAX_LENGTH)
-            validationErrorBuilder.addError(NAME_FIELD_KEY, error)
-        }
+        stringValidator.validateRequiredString(
+            requiredField = NAME_FIELD_KEY,
+            value = projectName,
+            maxLength = PROJECT_NAME_MAX_LENGTH,
+            validationErrorBuilder = validationErrorBuilder
+        )
     }
 
     private fun validateProjectRole(
         projectRole: String?,
         validationErrorBuilder: ValidationErrorBuilder
     ) {
-        if (projectRole.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(ROLE_FIELD_KEY)
-            validationErrorBuilder.addError(ROLE_FIELD_KEY, error)
-        } else if (projectRole.length > ROLE_MAX_LENGTH) {
-            val error = messagesService.fieldMaxLengthExceededError(ROLE_FIELD_KEY, ROLE_MAX_LENGTH)
-            validationErrorBuilder.addError(ROLE_FIELD_KEY, error)
-        }
+        stringValidator.validateRequiredString(
+            requiredField = ROLE_FIELD_KEY,
+            value = projectRole,
+            maxLength = ROLE_MAX_LENGTH,
+            validationErrorBuilder = validationErrorBuilder
+        )
     }
 
     private fun validateDescription(
         description: String?,
         validationErrorBuilder: ValidationErrorBuilder
     ) {
-        if (description.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(DESCRIPTION_FIELD_KEY)
-            validationErrorBuilder.addError(DESCRIPTION_FIELD_KEY, error)
-        }
+        stringValidator.validateRequiredString(
+            requiredField = DESCRIPTION_FIELD_KEY,
+            value = description,
+            validationErrorBuilder = validationErrorBuilder
+        )
     }
 
     private fun validateProjectStart(
@@ -115,19 +114,9 @@ class ProjectValidationService(
             if (link.url.isNullOrBlank()) {
                 val error = messagesService.requiredFieldMissingError(PROJECT_LINK_URL_KEY)
                 validationErrorBuilder.addError("$PROJECT_LINK_KEY[$index].$PROJECT_LINK_URL_KEY", error)
-            } else {
-                try {
-                    URI(link.url).toURL()
-                } catch (ex: Exception) {
-                    when (ex) {
-                        is URISyntaxException, is MalformedURLException, is IllegalArgumentException -> {
-                            val error = messagesService.invalidUrlError(PROJECT_LINK_URL_KEY)
-                            validationErrorBuilder.addError("$PROJECT_LINK_KEY[$index].$PROJECT_LINK_URL_KEY", error)
-                        }
-
-                        else -> throw ex
-                    }
-                }
+            } else if (!isUrlValid(link.url)) {
+                val error = messagesService.invalidUrlError(PROJECT_LINK_URL_KEY)
+                validationErrorBuilder.addError("$PROJECT_LINK_KEY[$index].$PROJECT_LINK_URL_KEY", error)
             }
 
             if (link.displayName.isNullOrBlank()) {

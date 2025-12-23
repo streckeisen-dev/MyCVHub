@@ -7,6 +7,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.reflect.MethodSignature
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.fail
 import org.junit.jupiter.params.ParameterizedTest
@@ -19,7 +20,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
 import java.lang.reflect.Method
-import kotlin.test.assertTrue
+import java.util.Locale
 
 class EndpointSecurityAspectTest {
     private lateinit var endpointSecurityAspect: EndpointSecurityAspect
@@ -357,7 +358,7 @@ class EndpointSecurityAspectTest {
 
         private fun mockPrincipal(status: AccountStatus): UsernamePasswordAuthenticationToken {
             return mockk {
-                every { principal } returns MyCvPrincipal("user", 1, status)
+                every { principal } returns MyCvPrincipal("user", 1, status, Locale.ENGLISH)
                 every { isAuthenticated } returns true
             }
         }

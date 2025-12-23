@@ -14,5 +14,4 @@ class OAuthIntegrationEntity(
     val id: OAuthEntityId,
     @ManyToOne(fetch = FetchType.EAGER)
     val account: ApplicantAccountEntity
-) {
-}
+)

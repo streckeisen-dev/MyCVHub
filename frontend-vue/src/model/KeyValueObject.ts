@@ -1,0 +1,1 @@
+export type KeyValueObject<V> = {[key: string]: V}

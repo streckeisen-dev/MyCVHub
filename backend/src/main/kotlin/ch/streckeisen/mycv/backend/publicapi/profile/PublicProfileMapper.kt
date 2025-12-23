@@ -16,10 +16,10 @@ import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicSkillDto
 import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicWorkExperienceDto
 
 fun ProfileEntity.toPublicDto(profilePicture: String): PublicProfileDto = PublicProfileDto(
-    account.accountDetails!!.firstName,
-    account.accountDetails.lastName,
-    jobTitle,
-    bio,
+    firstName = account.accountDetails!!.firstName,
+    lastName = account.accountDetails.lastName,
+    jobTitle = jobTitle,
+    bio = bio,
     email = if (isEmailPublic) account.accountDetails.email else null,
     phone = if (isPhonePublic) account.accountDetails.phone else null,
     address = if (isAddressPublic) PublicAddressDto(
@@ -30,11 +30,12 @@ fun ProfileEntity.toPublicDto(profilePicture: String): PublicProfileDto = Public
         account.accountDetails.country
     ) else null,
     profilePicture = profilePicture,
-    workExperiences.map { it.toPublicDto(hideDescriptions) }.toList(),
-    skills.map { it.toPublicDto() }.toList(),
-    education.map { it.toPublicDto(hideDescriptions) }.toList(),
-    projects.map { it.toPublicDto(hideDescriptions) }.toList(),
-    profileTheme?.toPublicDto()
+    workExperiences = workExperiences.map { it.toPublicDto(hideDescriptions) }.toList(),
+    skills = skills.map { it.toPublicDto() }.toList(),
+    education = education.map { it.toPublicDto(hideDescriptions) }.toList(),
+    projects = projects.map { it.toPublicDto(hideDescriptions) }.toList(),
+    theme = profileTheme?.toPublicDto(),
+    language = account.accountDetails.language
 )
 
 fun EducationEntity.toPublicDto(hideDescription: Boolean) = PublicEducationDto(

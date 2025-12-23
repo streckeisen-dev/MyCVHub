@@ -9,5 +9,6 @@ const val STREET_MAX_LENGTH = 100
 const val HOUSE_NUMBER_MAX_LENGTH = 10
 const val POSTCODE_MAX_LENGTH = 15
 const val CITY_MAX_LENGTH = 100
-const val COUNTRY_MAX_LENGTH = 2
+const val COUNTRY_LENGTH = 2
+const val LANGUAGE_LENGTH = 2
 const val PASSWORD_MAX_LENGTH = 60

@@ -12,11 +12,11 @@ import javax.crypto.SecretKey
 
 @Service
 class JwtService(
-    @Value("\${my-cv.security.jwt.secret}")
+    @param:Value($$"${my-cv.security.jwt.secret}")
     private val jwtSecret: String,
-    @Value("\${my-cv.security.jwt.access.expiration-time}")
+    @param:Value($$"${my-cv.security.jwt.access.expiration-time}")
     private val jwtAccessExpirationTime: Long,
-    @Value("\${my-cv.security.jwt.refresh.expiration-time}")
+    @param:Value($$"${my-cv.security.jwt.refresh.expiration-time}")
     private val jwtRefreshExpirationTime: Long
 ) {
     fun extractUsername(token: String): String? {

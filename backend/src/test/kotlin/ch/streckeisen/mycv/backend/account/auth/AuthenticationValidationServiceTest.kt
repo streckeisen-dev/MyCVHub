@@ -5,6 +5,8 @@ import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
 import ch.streckeisen.mycv.backend.account.dto.LoginRequestDto
 import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
+import ch.streckeisen.mycv.backend.locale.MessagesService
+import ch.streckeisen.mycv.backend.util.StringValidator
 import ch.streckeisen.mycv.backend.util.assertValidationResult
 import ch.streckeisen.mycv.backend.util.executeParameterizedTest
 import io.mockk.Runs
@@ -98,13 +100,27 @@ class AuthenticationValidationServiceTest {
                     secondArg()
                 )
             }
+
+            every { validateLanguage(eq(VALID_ATTRIBUTE), any()) } just Runs
+            every { validateLanguage(eq(INVALID_ATTRIBUTE), any()) } answers {
+                mockValidationError(
+                    "language",
+                    secondArg()
+                )
+            }
         }
         passwordEncoder = mockk {
             every { matches(any(), any()) } returns false
             every { matches(eq("validPassword"), eq("validEncodedPassword")) } returns true
         }
+        val messagesService: MessagesService = mockk(relaxed = true)
         authenticationValidationService =
-            AuthenticationValidationService(mockk(relaxed = true), applicantAccountValidationService, passwordEncoder)
+            AuthenticationValidationService(
+                stringValidator = StringValidator(messagesService),
+                messagesService,
+                applicantAccountValidationService,
+                passwordEncoder
+            )
     }
 
     @ParameterizedTest
@@ -153,247 +169,294 @@ class AuthenticationValidationServiceTest {
         fun signupValidationDataProvider() = listOf(
             Arguments.of(
                 SignupRequestDto(
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    null
+                    username = INVALID_ATTRIBUTE,
+                    firstName = INVALID_ATTRIBUTE,
+                    lastName = INVALID_ATTRIBUTE,
+                    email = INVALID_ATTRIBUTE,
+                    phone = INVALID_ATTRIBUTE,
+                    birthday = null,
+                    street = INVALID_ATTRIBUTE,
+                    houseNumber = INVALID_ATTRIBUTE,
+                    postcode = INVALID_ATTRIBUTE,
+                    city = INVALID_ATTRIBUTE,
+                    country = INVALID_ATTRIBUTE,
+                    password = null,
+                    confirmPassword = null,
+                    language = INVALID_ATTRIBUTE,
+                    acceptsTos = null
                 ),
                 false,
-                13
+                15
             ),
             Arguments.of(
                 SignupRequestDto(
-                    VALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    null
+                    username = VALID_ATTRIBUTE,
+                    firstName = INVALID_ATTRIBUTE,
+                    lastName = INVALID_ATTRIBUTE,
+                    email = INVALID_ATTRIBUTE,
+                    phone = INVALID_ATTRIBUTE,
+                    birthday = null,
+                    street = INVALID_ATTRIBUTE,
+                    houseNumber = INVALID_ATTRIBUTE,
+                    postcode = INVALID_ATTRIBUTE,
+                    city = INVALID_ATTRIBUTE,
+                    country = INVALID_ATTRIBUTE,
+                    password = null,
+                    confirmPassword = null,
+                    language = INVALID_ATTRIBUTE,
+                    acceptsTos = false
                 ),
                 false,
-                12
+                14
             ),
             Arguments.of(
                 SignupRequestDto(
-                    INVALID_ATTRIBUTE,
-                    VALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    null
+                    username = INVALID_ATTRIBUTE,
+                    firstName = VALID_ATTRIBUTE,
+                    lastName = INVALID_ATTRIBUTE,
+                    email = INVALID_ATTRIBUTE,
+                    phone = INVALID_ATTRIBUTE,
+                    birthday = null,
+                    street = INVALID_ATTRIBUTE,
+                    houseNumber = INVALID_ATTRIBUTE,
+                    postcode = INVALID_ATTRIBUTE,
+                    city = INVALID_ATTRIBUTE,
+                    country = INVALID_ATTRIBUTE,
+                    password = null,
+                    confirmPassword = null,
+                    language = INVALID_ATTRIBUTE,
+                    acceptsTos = null
                 ),
                 false,
-                12
+                14
             ),
             Arguments.of(
                 SignupRequestDto(
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    VALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    null
+                    username = INVALID_ATTRIBUTE,
+                    firstName = INVALID_ATTRIBUTE,
+                    lastName = VALID_ATTRIBUTE,
+                    email = INVALID_ATTRIBUTE,
+                    phone = INVALID_ATTRIBUTE,
+                    birthday = null,
+                    street = INVALID_ATTRIBUTE,
+                    houseNumber = INVALID_ATTRIBUTE,
+                    postcode = INVALID_ATTRIBUTE,
+                    city = INVALID_ATTRIBUTE,
+                    country = INVALID_ATTRIBUTE,
+                    password = null,
+                    confirmPassword = null,
+                    language = INVALID_ATTRIBUTE,
+                    acceptsTos = null
                 ),
                 false,
-                12
+                14
             ),
             Arguments.of(
                 SignupRequestDto(
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    VALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    null
+                    username = INVALID_ATTRIBUTE,
+                    firstName = INVALID_ATTRIBUTE,
+                    lastName = INVALID_ATTRIBUTE,
+                    email = VALID_ATTRIBUTE,
+                    phone = INVALID_ATTRIBUTE,
+                    birthday = null,
+                    street = INVALID_ATTRIBUTE,
+                    houseNumber = INVALID_ATTRIBUTE,
+                    postcode = INVALID_ATTRIBUTE,
+                    city = INVALID_ATTRIBUTE,
+                    country = INVALID_ATTRIBUTE,
+                    password = null,
+                    confirmPassword = null,
+                    language = INVALID_ATTRIBUTE,
+                    acceptsTos = null
                 ),
                 false,
-                12
+                14
             ),
             Arguments.of(
                 SignupRequestDto(
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    VALID_ATTRIBUTE,
-                    null,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    null
+                    username = INVALID_ATTRIBUTE,
+                    firstName = INVALID_ATTRIBUTE,
+                    lastName = INVALID_ATTRIBUTE,
+                    email = INVALID_ATTRIBUTE,
+                    phone = VALID_ATTRIBUTE,
+                    birthday = null,
+                    street = INVALID_ATTRIBUTE,
+                    houseNumber = INVALID_ATTRIBUTE,
+                    postcode = INVALID_ATTRIBUTE,
+                    city = INVALID_ATTRIBUTE,
+                    country = INVALID_ATTRIBUTE,
+                    password = null,
+                    confirmPassword = null,
+                    language = INVALID_ATTRIBUTE,
+                    acceptsTos = null
                 ),
                 false,
-                12
+                14
             ),
             Arguments.of(
                 SignupRequestDto(
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    LocalDate.now(),
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    null
+                    username = INVALID_ATTRIBUTE,
+                    firstName = INVALID_ATTRIBUTE,
+                    lastName = INVALID_ATTRIBUTE,
+                    email = INVALID_ATTRIBUTE,
+                    phone = INVALID_ATTRIBUTE,
+                    birthday = LocalDate.now(),
+                    street = INVALID_ATTRIBUTE,
+                    houseNumber = INVALID_ATTRIBUTE,
+                    postcode = INVALID_ATTRIBUTE,
+                    city = INVALID_ATTRIBUTE,
+                    country = INVALID_ATTRIBUTE,
+                    password = null,
+                    confirmPassword = null,
+                    language = INVALID_ATTRIBUTE,
+                    acceptsTos = null
                 ),
                 false,
-                12
+                14
             ),
             Arguments.of(
                 SignupRequestDto(
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    VALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    null
+                    username = INVALID_ATTRIBUTE,
+                    firstName = INVALID_ATTRIBUTE,
+                    lastName = INVALID_ATTRIBUTE,
+                    email = INVALID_ATTRIBUTE,
+                    phone = INVALID_ATTRIBUTE,
+                    birthday = null,
+                    street = VALID_ATTRIBUTE,
+                    houseNumber = INVALID_ATTRIBUTE,
+                    postcode = INVALID_ATTRIBUTE,
+                    city = INVALID_ATTRIBUTE,
+                    country = INVALID_ATTRIBUTE,
+                    password = null,
+                    confirmPassword = null,
+                    language = INVALID_ATTRIBUTE,
+                    acceptsTos = null
                 ),
                 false,
-                12
+                14
             ),
             Arguments.of(
                 SignupRequestDto(
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    INVALID_ATTRIBUTE,
-                    VALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    null
+                    username = INVALID_ATTRIBUTE,
+                    firstName = INVALID_ATTRIBUTE,
+                    lastName = INVALID_ATTRIBUTE,
+                    email = INVALID_ATTRIBUTE,
+                    phone = INVALID_ATTRIBUTE,
+                    birthday = null,
+                    street = INVALID_ATTRIBUTE,
+                    houseNumber = VALID_ATTRIBUTE,
+                    postcode = INVALID_ATTRIBUTE,
+                    city = INVALID_ATTRIBUTE,
+                    country = INVALID_ATTRIBUTE,
+                    password = null,
+                    confirmPassword = null,
+                    language = INVALID_ATTRIBUTE,
+                    acceptsTos = null
                 ),
                 false,
-                12
+                14
             ),
             Arguments.of(
                 SignupRequestDto(
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    VALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    null
+                    username = INVALID_ATTRIBUTE,
+                    firstName = INVALID_ATTRIBUTE,
+                    lastName = INVALID_ATTRIBUTE,
+                    email = INVALID_ATTRIBUTE,
+                    phone = INVALID_ATTRIBUTE,
+                    birthday = null,
+                    street = INVALID_ATTRIBUTE,
+                    houseNumber = INVALID_ATTRIBUTE,
+                    postcode = VALID_ATTRIBUTE,
+                    city = INVALID_ATTRIBUTE,
+                    country = INVALID_ATTRIBUTE,
+                    password = null,
+                    confirmPassword = null,
+                    language = INVALID_ATTRIBUTE,
+                    acceptsTos = null
                 ),
                 false,
-                12
+                14
             ),
             Arguments.of(
                 SignupRequestDto(
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    VALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    null
+                    username = INVALID_ATTRIBUTE,
+                    firstName = INVALID_ATTRIBUTE,
+                    lastName = INVALID_ATTRIBUTE,
+                    email = INVALID_ATTRIBUTE,
+                    phone = INVALID_ATTRIBUTE,
+                    birthday = null,
+                    street = INVALID_ATTRIBUTE,
+                    houseNumber = INVALID_ATTRIBUTE,
+                    postcode = INVALID_ATTRIBUTE,
+                    city = VALID_ATTRIBUTE,
+                    country = INVALID_ATTRIBUTE,
+                    password = null,
+                    confirmPassword = null,
+                    language = INVALID_ATTRIBUTE,
+                    acceptsTos = null
                 ),
                 false,
-                12
+                14
             ),
             Arguments.of(
                 SignupRequestDto(
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    null,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    INVALID_ATTRIBUTE,
-                    VALID_ATTRIBUTE,
-                    null,
-                    null
+                    username = INVALID_ATTRIBUTE,
+                    firstName = INVALID_ATTRIBUTE,
+                    lastName = INVALID_ATTRIBUTE,
+                    email = INVALID_ATTRIBUTE,
+                    phone = INVALID_ATTRIBUTE,
+                    birthday = null,
+                    street = INVALID_ATTRIBUTE,
+                    houseNumber = INVALID_ATTRIBUTE,
+                    postcode = INVALID_ATTRIBUTE,
+                    city = INVALID_ATTRIBUTE,
+                    country = VALID_ATTRIBUTE,
+                    password = null,
+                    confirmPassword = null,
+                    language = INVALID_ATTRIBUTE,
+                    acceptsTos = null
                 ),
                 false,
-                12
+                14
             ),
             Arguments.of(
                 SignupRequestDto(
-                    VALID_ATTRIBUTE,
-                    VALID_ATTRIBUTE,
-                    VALID_ATTRIBUTE,
-                    VALID_ATTRIBUTE,
-                    VALID_ATTRIBUTE,
-                    LocalDate.now(),
-                    VALID_ATTRIBUTE,
-                    VALID_ATTRIBUTE,
-                    VALID_ATTRIBUTE,
-                    VALID_ATTRIBUTE,
-                    VALID_ATTRIBUTE,
-                    VALID_TEST_PW,
-                    VALID_TEST_PW
+                    username = INVALID_ATTRIBUTE,
+                    firstName = INVALID_ATTRIBUTE,
+                    lastName = INVALID_ATTRIBUTE,
+                    email = INVALID_ATTRIBUTE,
+                    phone = INVALID_ATTRIBUTE,
+                    birthday = null,
+                    street = INVALID_ATTRIBUTE,
+                    houseNumber = INVALID_ATTRIBUTE,
+                    postcode = INVALID_ATTRIBUTE,
+                    city = INVALID_ATTRIBUTE,
+                    country = INVALID_ATTRIBUTE,
+                    password = null,
+                    confirmPassword = null,
+                    language = VALID_ATTRIBUTE,
+                    acceptsTos = null
+                ),
+                false,
+                14
+            ),
+            Arguments.of(
+                SignupRequestDto(
+                    username = VALID_ATTRIBUTE,
+                    firstName = VALID_ATTRIBUTE,
+                    lastName = VALID_ATTRIBUTE,
+                    email = VALID_ATTRIBUTE,
+                    phone = VALID_ATTRIBUTE,
+                    birthday = LocalDate.now(),
+                    street = VALID_ATTRIBUTE,
+                    houseNumber = VALID_ATTRIBUTE,
+                    postcode = VALID_ATTRIBUTE,
+                    city = VALID_ATTRIBUTE,
+                    country = VALID_ATTRIBUTE,
+                    password = VALID_TEST_PW,
+                    confirmPassword = VALID_TEST_PW,
+                    language = VALID_ATTRIBUTE,
+                    acceptsTos = true
                 ),
                 true,
                 0

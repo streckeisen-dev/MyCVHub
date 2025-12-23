@@ -13,10 +13,9 @@ private val logger = KotlinLogging.logger {}
 
 @Service
 class GithubService(
-    restClientBuilder: RestClient.Builder,
-    @Value("\${my-cv.github.api-base-url}") private val baseUrl: String,
+    @param:Value($$"${my-cv.github.api-base-url}") private val baseUrl: String,
 ) {
-    private val restClient = restClientBuilder.baseUrl(baseUrl).build()
+    private val restClient = RestClient.builder().baseUrl(baseUrl).build()
 
     fun getUserEmail(accountId: String, accessToken: String): Result<String> {
         logger.debug { "Getting email for account $accountId" }
@@ -35,7 +34,7 @@ class GithubService(
                 } else {
                     Result.failure(GithubException("Failed to get user email for account $accountId"))
                 }
-            }!!
+            }
 
         return result.fold(
             onSuccess = { emailData ->

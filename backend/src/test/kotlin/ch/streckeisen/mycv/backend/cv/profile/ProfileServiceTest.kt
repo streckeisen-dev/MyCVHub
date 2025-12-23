@@ -8,13 +8,13 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.IOException
 import java.time.LocalDate
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 private val existingAccount =
     ApplicantAccountEntity(
@@ -32,7 +32,8 @@ private val existingAccount =
             houseNumber = null,
             postcode = "code",
             city = "city",
-            country = "CH"
+            country = "CH",
+            language = "en"
         ),
         id = 1,
         profile = ProfileEntity(
@@ -64,7 +65,8 @@ private val existingAccountWithoutProfile =
             houseNumber = null,
             postcode = "code",
             city = "city",
-            country = "CH"
+            country = "CH",
+            "en"
         ),
         id = 3,
         profile = null
@@ -103,7 +105,12 @@ class ProfileServiceTest {
         }
         profilePictureService = mockk()
         profileService =
-            ProfileService(profileRepository, profileValidationService, applicantAccountService, profilePictureService)
+            ProfileService(
+                profileRepository,
+                profileValidationService,
+                applicantAccountService,
+                profilePictureService
+            )
     }
 
     @Test

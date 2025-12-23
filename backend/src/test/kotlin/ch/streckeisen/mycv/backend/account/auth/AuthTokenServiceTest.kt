@@ -5,17 +5,18 @@ import ch.streckeisen.mycv.backend.security.MyCvUserDetails
 import ch.streckeisen.mycv.backend.security.UserDetailsServiceImpl
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.security.authentication.BadCredentialsException
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 private const val GENERATED_ACCESS_TOKEN = "access_token"
 private const val GENERATED_REFRESH_TOKEN = "refresh_token"
 private const val ACCESS_TOKEN_EXPIRY_TIME = 123456L
 private const val REFRESH_TOKEN_EXPIRY_TIME = 123456789L
+private const val LANGUAGE = "de"
 
 private const val TEST_EMAIL = "first.last@example.com"
 
@@ -33,6 +34,9 @@ class AuthTokenServiceTest {
                 MyCvUserDetails(
                     mockk {
                         every { username } returns TEST_EMAIL
+                        every { accountDetails } returns mockk {
+                            every { language } returns LANGUAGE
+                        }
                     }
                 )
             )
@@ -120,10 +124,11 @@ class AuthTokenServiceTest {
     }
 
     private fun assertAuthTokens(authTokens: AuthTokens?) {
-        assertNotNull(authTokens)
-        assertEquals(GENERATED_REFRESH_TOKEN, authTokens.refreshToken)
+        assertNotNull { authTokens }
+        assertEquals(GENERATED_REFRESH_TOKEN, authTokens!!.refreshToken)
         assertEquals(GENERATED_ACCESS_TOKEN, authTokens.accessToken)
         assertEquals(ACCESS_TOKEN_EXPIRY_TIME, authTokens.accessTokenExpirationTime)
         assertEquals(REFRESH_TOKEN_EXPIRY_TIME, authTokens.refreshTokenExpirationTime)
+        assertEquals(LANGUAGE, authTokens.language)
     }
 }

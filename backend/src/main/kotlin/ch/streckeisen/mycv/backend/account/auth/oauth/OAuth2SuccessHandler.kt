@@ -15,11 +15,13 @@ import java.util.Base64
 
 private val logger = KotlinLogging.logger {}
 
+private const val OAUTH_SUCCESS_REDIRECT = "login/oauth-success"
+
 @Component
 class OAuth2SuccessHandler(
     private val authTokenService: AuthTokenService,
     private val oAuthIntegrationService: OAuthIntegrationService,
-    @Value("\${my-cv.frontend.base-url}")
+    @param:Value(value = $$"${my-cv.frontend.base-url}")
     private val frontendBaseUrl: String,
 ) : AuthenticationSuccessHandler {
     override fun onAuthenticationSuccess(
@@ -30,6 +32,11 @@ class OAuth2SuccessHandler(
         val oauthAuthentication = authentication as OAuth2AuthenticationToken
         val oauthUser = oauthAuthentication.principal
         val registrationId = oauthAuthentication.authorizedClientRegistrationId
+
+        if (oauthUser == null) {
+            logger.error { "OAuth2 authentication unsuccessful" }
+            throw InternalAuthenticationServiceException("Failed to authenticate")
+        }
 
         val account = when (registrationId) {
             "github" -> {
@@ -61,7 +68,7 @@ class OAuth2SuccessHandler(
                     extractRedirectFromState(state)
                 } else null
 
-                response.sendRedirect("${frontendBaseUrl}/login/oauth-success${redirect?.let { "?redirect=$it" } ?: ""}")
+                response.sendRedirect("${frontendBaseUrl}/$OAUTH_SUCCESS_REDIRECT${redirect?.let { "?redirect=$it" } ?: ""}")
             }.onFailure { ex -> throw InternalAuthenticationServiceException("Failed to create auth tokens", ex) }
     }
 

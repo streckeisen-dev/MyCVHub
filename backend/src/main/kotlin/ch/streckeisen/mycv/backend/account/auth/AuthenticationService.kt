@@ -23,10 +23,12 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import kotlin.jvm.optionals.getOrElse
 
-private const val ENCODED_PASSWORD_LENGTH_ERROR_KEY = "${MYCV_KEY_PREFIX}.account.validation.password.encodingTooLong"
-private const val PASSWORD_ENCODING_ERROR_KEY = "${MYCV_KEY_PREFIX}.account.validation.password.encodingError"
+private const val ENCODED_PASSWORD_LENGTH_ERROR_KEY = "${MYCV_KEY_PREFIX}.account.validations.password.encodingTooLong"
+private const val PASSWORD_ENCODING_ERROR_KEY = "${MYCV_KEY_PREFIX}.account.validations.password.encodingError"
 
 private val logger = KotlinLogging.logger {}
+
+private const val PASSWORD_FIELD_KEY = "password"
 
 @Service
 class AuthenticationService(
@@ -112,10 +114,10 @@ class AuthenticationService(
             .getOrElse { return Result.failure(it) }
 
         val applicantAccount = ApplicantAccountEntity(
-            signupRequest.username!!,
-            encodedPassword,
-            false,
-            false,
+            username = signupRequest.username!!,
+            password = encodedPassword,
+            isOAuthUser = false,
+            isVerified = false,
             accountDetails = AccountDetailsEntity(
                 signupRequest.firstName!!,
                 signupRequest.lastName!!,
@@ -126,7 +128,8 @@ class AuthenticationService(
                 signupRequest.houseNumber,
                 signupRequest.postcode!!,
                 signupRequest.city!!,
-                signupRequest.country!!
+                signupRequest.country!!,
+                signupRequest.language!!
             )
         )
         val account = applicantAccountRepository.save(applicantAccount)
@@ -136,10 +139,13 @@ class AuthenticationService(
     }
 
     private fun encodePassword(password: String?): Result<String> {
+        val errors = ValidationException.ValidationErrorBuilder()
         val encodedPassword = passwordEncoder.encode(password)
+        if (encodedPassword == null) {
+            return Result.failure(errors.build(messagesService.getMessage(PASSWORD_ENCODING_ERROR_KEY)))
+        }
         if (encodedPassword.length > PASSWORD_MAX_LENGTH) {
-            val errors = ValidationException.ValidationErrorBuilder()
-            errors.addError("password", messagesService.getMessage(ENCODED_PASSWORD_LENGTH_ERROR_KEY))
+            errors.addError(PASSWORD_FIELD_KEY, messagesService.getMessage(ENCODED_PASSWORD_LENGTH_ERROR_KEY))
             return Result.failure(errors.build(messagesService.getMessage(PASSWORD_ENCODING_ERROR_KEY)))
         }
         return Result.success(encodedPassword)
