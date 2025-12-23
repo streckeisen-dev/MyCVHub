@@ -360,5 +360,6 @@ export const SITE_CONFIG = {
   links: {
     github: 'https://github.com/streckeisen-dev/MyCVHub',
     sponsor: 'https://patreon.com/jrgarciadev'
-  }
+  },
+  contact: 'contact@mycvhub.ch'
 }

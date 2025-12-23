@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ExternalLink } from '@/components/ExternalLink.tsx'
-import { PolicyContent, PolicySectionProps } from '@/components/policy/PolicyContent.tsx'
-
-const CONTACT_EMAIL = 'contact@mycvhub.ch'
-
-const UL_CLASSES = 'list-disc ml-4'
+import { PolicyContent } from '@/components/policy/PolicyContent.tsx'
+import { SITE_CONFIG } from '@/config/RouteTree.tsx'
+import { PolicyList } from '@/components/policy/PolicyList.tsx'
+import { PolicySectionProps } from '@/components/policy/PolicySection.tsx'
+import { PolicyText } from '@/components/policy/PolicyText.tsx'
 
 const LAST_UPDATED = '2025-12-21'
 
@@ -24,8 +24,8 @@ export function PrivacyPolicyPage(): ReactNode {
           <p>{t('privacy.intro.controller.location')}</p>
           <p>
             {t('legal.contact')}:{' '}
-            <ExternalLink color="foreground" href={`mailto:${CONTACT_EMAIL}`}>
-              {CONTACT_EMAIL}
+            <ExternalLink color="foreground" href={`mailto:${SITE_CONFIG.contact}`}>
+              {SITE_CONFIG.contact}
             </ExternalLink>
           </p>
         </div>
@@ -35,14 +35,11 @@ export function PrivacyPolicyPage(): ReactNode {
       key: 'legalBasis',
       title: t('privacy.processing.title'),
       content: (
-        <div>
-          <p>{t('privacy.processing.content')}</p>
-          <ul className={UL_CLASSES}>
-            <li>{t('privacy.processing.proc1')}</li>
-            <li>{t('privacy.processing.proc2')}</li>
-            <li>{t('privacy.processing.proc3')}</li>
-          </ul>
-        </div>
+        <PolicyList preamble={t('privacy.processing.content')}>
+          <li>{t('privacy.processing.proc1')}</li>
+          <li>{t('privacy.processing.proc2')}</li>
+          <li>{t('privacy.processing.proc3')}</li>
+        </PolicyList>
       )
     },
     {
@@ -66,15 +63,12 @@ export function PrivacyPolicyPage(): ReactNode {
       key: 'data-usage',
       title: t('privacy.usage.title'),
       content: (
-        <>
-          <p>{t('privacy.usage.content')}</p>
-          <ul className={UL_CLASSES}>
-            <li>{t('privacy.usage.usage1')}</li>
-            <li>{t('privacy.usage.usage2')}</li>
-            <li>{t('privacy.usage.usage3')}</li>
-            <li>{t('privacy.usage.usage4')}</li>
-          </ul>
-        </>
+        <PolicyList preamble={t('privacy.usage.content')}>
+          <li>{t('privacy.usage.usage1')}</li>
+          <li>{t('privacy.usage.usage2')}</li>
+          <li>{t('privacy.usage.usage3')}</li>
+          <li>{t('privacy.usage.usage4')}</li>
+        </PolicyList>
       )
     },
     {
@@ -102,53 +96,47 @@ export function PrivacyPolicyPage(): ReactNode {
       key: 'sharing',
       title: t('privacy.sharing.title'),
       content: (
-        <div>
-          <p>{t('privacy.sharing.content')}</p>
-          <ul className={UL_CLASSES}>
-            <li>{t('privacy.sharing.sharing1')}</li>
-            <li>{t('privacy.sharing.sharing2')}</li>
-            <li>{t('privacy.sharing.sharing3')}</li>
-          </ul>
-        </div>
+        <PolicyList preamble={t('privacy.sharing.content')}>
+          <li>{t('privacy.sharing.sharing1')}</li>
+          <li>{t('privacy.sharing.sharing2')}</li>
+          <li>{t('privacy.sharing.sharing3')}</li>
+        </PolicyList>
       )
     },
     {
       key: 'rights',
       title: t('privacy.rights.title'),
       content: (
-        <div>
-          <p>{t('privacy.rights.content')}</p>
-          <ul className={UL_CLASSES}>
-            <li>{t('privacy.rights.right1')}</li>
-            <li>{t('privacy.rights.right2')}</li>
-            <li>{t('privacy.rights.right3')}</li>
-            <li>{t('privacy.rights.right4')}</li>
-            <li>{t('privacy.rights.right5')}</li>
-            <li>{t('privacy.rights.right6')}</li>
-            <li>{t('privacy.rights.right7')}</li>
-          </ul>
-        </div>
+        <PolicyList preamble={t('privacy.rights.content')}>
+          <li>{t('privacy.rights.right1')}</li>
+          <li>{t('privacy.rights.right2')}</li>
+          <li>{t('privacy.rights.right3')}</li>
+          <li>{t('privacy.rights.right4')}</li>
+          <li>{t('privacy.rights.right5')}</li>
+          <li>{t('privacy.rights.right6')}</li>
+          <li>{t('privacy.rights.right7')}</li>
+        </PolicyList>
       )
     },
     {
       key: 'breach',
       title: t('privacy.breach.title'),
-      content: <p>{t('privacy.breach.content')}</p>
+      content: <PolicyText text={t('privacy.breach.content')} />
     },
     {
       key: 'third-party-providers',
       title: t('privacy.thirdParty.title'),
-      content: <p>{t('privacy.thirdParty.content')}</p>
+      content: <PolicyText text={t('privacy.thirdParty.content')} />
     },
     {
       key: 'age',
       title: t('privacy.age.title'),
-      content: <p>{t('privacy.age.content')}</p>
+      content: <PolicyText text={t('privacy.age.content')} />
     },
     {
       key: 'changes',
       title: t('privacy.changes.title'),
-      content: <p>{t('privacy.changes.content')}</p>
+      content: <PolicyText text={t('privacy.changes.content')} />
     },
     {
       key: 'contact',
@@ -156,8 +144,8 @@ export function PrivacyPolicyPage(): ReactNode {
       content: (
         <p>
           <span>{t('privacy.contact')} </span>
-          <ExternalLink color="foreground" href={`mailto:${CONTACT_EMAIL}`}>
-            {CONTACT_EMAIL}
+          <ExternalLink color="foreground" href={`mailto:${SITE_CONFIG.contact}`}>
+            {SITE_CONFIG.contact}
           </ExternalLink>
           .
         </p>

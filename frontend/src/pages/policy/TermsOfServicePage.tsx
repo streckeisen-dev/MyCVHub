@@ -2,11 +2,12 @@ import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ExternalLink } from '@/components/ExternalLink.tsx'
 import { SITE_CONFIG } from '@/config/RouteTree.tsx'
-import { PolicyContent, PolicySectionProps } from '@/components/policy/PolicyContent.tsx'
+import { PolicyContent } from '@/components/policy/PolicyContent.tsx'
+import { PolicyList } from '@/components/policy/PolicyList.tsx'
+import { PolicySectionProps } from '@/components/policy/PolicySection.tsx'
+import { PolicyText } from '@/components/policy/PolicyText.tsx'
 
 const CONTACT_EMAIL = 'contact@mycvhub.ch'
-
-const UL_CLASSES = 'list-disc ml-4'
 
 const LAST_UPDATED = '2025-12-21'
 
@@ -17,26 +18,21 @@ export function TermsOfServicePage(): ReactNode {
     {
       key: 'acceptance',
       title: t('tos.acceptance.title'),
-      content: (
-        <div>
-          <p>{t('tos.acceptance.content')}</p>
-        </div>
-      )
+      content: <PolicyText text={t('tos.acceptance.content')} />
     },
     {
       key: 'description',
       title: t('tos.description.title'),
       content: (
-        <div>
-          <p>{t('tos.description.content')}</p>
-          <ul className={UL_CLASSES}>
-            <li>{t('tos.description.desc1')}</li>
-            <li>{t('tos.description.desc2')}</li>
-            <li>{t('tos.description.desc3')}</li>
-            <li>{t('tos.description.desc4')}</li>
-          </ul>
-          <p>{t('tos.description.addendum')}</p>
-        </div>
+        <PolicyList
+          preamble={t('tos.description.content')}
+          addendum={t('tos.description.addendum')}
+        >
+          <li>{t('tos.description.desc1')}</li>
+          <li>{t('tos.description.desc2')}</li>
+          <li>{t('tos.description.desc3')}</li>
+          <li>{t('tos.description.desc4')}</li>
+        </PolicyList>
       )
     },
     {
@@ -77,19 +73,15 @@ export function TermsOfServicePage(): ReactNode {
       key: 'prohibited',
       title: t('tos.prohibited.title'),
       content: (
-        <div>
-          <p>{t('tos.prohibited.content')}</p>
-          <ul className={UL_CLASSES}>
-            <li>{t('tos.prohibited.prohib1')}</li>
-            <li>{t('tos.prohibited.prohib2')}</li>
-            <li>{t('tos.prohibited.prohib3')}</li>
-            <li>{t('tos.prohibited.prohib4')}</li>
-            <li>{t('tos.prohibited.prohib5')}</li>
-            <li>{t('tos.prohibited.prohib6')}</li>
-            <li>{t('tos.prohibited.prohib7')}</li>
-          </ul>
-          <p>{t('tos.prohibited.addendum')}</p>
-        </div>
+        <PolicyList preamble={t('tos.prohibited.content')} addendum={t('tos.prohibited.addendum')}>
+          <li>{t('tos.prohibited.prohib1')}</li>
+          <li>{t('tos.prohibited.prohib2')}</li>
+          <li>{t('tos.prohibited.prohib3')}</li>
+          <li>{t('tos.prohibited.prohib4')}</li>
+          <li>{t('tos.prohibited.prohib5')}</li>
+          <li>{t('tos.prohibited.prohib6')}</li>
+          <li>{t('tos.prohibited.prohib7')}</li>
+        </PolicyList>
       )
     },
     {
@@ -101,57 +93,49 @@ export function TermsOfServicePage(): ReactNode {
           <p>{t('tos.disclaimer.asIs.content')}</p>
 
           <p className="font-bold">{t('tos.disclaimer.noGuarantees.title')}: </p>
-          <p>{t('tos.disclaimer.noGuarantees.content')}</p>
-          <ul className={UL_CLASSES}>
+          <PolicyList preamble={t('tos.disclaimer.noGuarantees.content')}>
             <li>{t('tos.disclaimer.noGuarantees.nonGuar1')}</li>
             <li>{t('tos.disclaimer.noGuarantees.nonGuar2')}</li>
             <li>{t('tos.disclaimer.noGuarantees.nonGuar3')}</li>
             <li>{t('tos.disclaimer.noGuarantees.nonGuar4')}</li>
-          </ul>
+          </PolicyList>
 
           <p className="font-bold">{t('tos.disclaimer.limitation.title')}</p>
-          <p>{t('tos.disclaimer.limitation.content')}</p>
-          <ul className={UL_CLASSES}>
+          <PolicyList preamble={t('tos.disclaimer.limitation.content')}>
             <li>{t('tos.disclaimer.limitation.lim1')}</li>
             <li>{t('tos.disclaimer.limitation.lim2')}</li>
             <li>{t('tos.disclaimer.limitation.lim3')}</li>
             <li>{t('tos.disclaimer.limitation.lim4')}</li>
-          </ul>
+          </PolicyList>
 
           <p className="font-bold">{t('tos.disclaimer.responsibility.title')}</p>
-          <p>{t('tos.disclaimer.responsibility.content')}</p>
-          <ul className={UL_CLASSES}>
+          <PolicyList preamble={t('tos.disclaimer.responsibility.content')}>
             <li>{t('tos.disclaimer.responsibility.resp1')}</li>
             <li>{t('tos.disclaimer.responsibility.resp2')}</li>
             <li>{t('tos.disclaimer.responsibility.resp3')}</li>
             <li>{t('tos.disclaimer.responsibility.resp4')}</li>
-          </ul>
+          </PolicyList>
         </div>
       )
     },
     {
       key: 'privacy',
       title: t('tos.privacy.title'),
-      content: (
-        <div>
-          <p>{t('tos.privacy.content')}</p>
-        </div>
-      )
+      content: <PolicyText text={t('tos.privacy.content')} />
     },
     {
       key: 'serviceModifications',
       title: t('tos.serviceModifications.title'),
       content: (
-        <div>
-          <p>{t('tos.serviceModifications.content')}</p>
-          <ul className={UL_CLASSES}>
-            <li>{t('tos.serviceModifications.mod1')}</li>
-            <li>{t('tos.serviceModifications.mod2')}</li>
-            <li>{t('tos.serviceModifications.mod3')}</li>
-            <li>{t('tos.serviceModifications.mod4')}</li>
-          </ul>
-          <p>{t('tos.serviceModifications.addendum')}</p>
-        </div>
+        <PolicyList
+          preamble={t('tos.serviceModifications.content')}
+          addendum={t('tos.serviceModifications.addendum')}
+        >
+          <li>{t('tos.serviceModifications.mod1')}</li>
+          <li>{t('tos.serviceModifications.mod2')}</li>
+          <li>{t('tos.serviceModifications.mod3')}</li>
+          <li>{t('tos.serviceModifications.mod4')}</li>
+        </PolicyList>
       )
     },
     {
@@ -163,45 +147,44 @@ export function TermsOfServicePage(): ReactNode {
           <p>{t('tos.termination.byYou.content')}</p>
 
           <p className="font-bold">{t('tos.termination.byUs.title')}:</p>
-          <p>{t('tos.termination.byUs.content')}</p>
-          <ul className={UL_CLASSES}>
+          <PolicyList preamble={t('tos.termination.byUs.content')}>
             <li>{t('tos.termination.byUs.term1')}</li>
             <li>{t('tos.termination.byUs.term2')}</li>
             <li>{t('tos.termination.byUs.term3')}</li>
             <li>{t('tos.termination.byUs.term4')}</li>
-          </ul>
+          </PolicyList>
         </div>
       )
     },
     {
       key: 'thirdParty',
       title: t('tos.thirdParty.title'),
-      content: <p>{t('tos.thirdParty.content')}</p>
+      content: <PolicyText text={t('tos.thirdParty.content')} />
     },
     {
       key: 'intellectualProperty',
       title: t('tos.intellectualProperty.title'),
-      content: <p>{t('tos.intellectualProperty.content')}</p>
+      content: <PolicyText text={t('tos.intellectualProperty.content')} />
     },
     {
       key: 'jurisdiction',
       title: t('tos.jurisdiction.title'),
-      content: <p>{t('tos.jurisdiction.content')}</p>
+      content: <PolicyText text={t('tos.jurisdiction.content')} />
     },
     {
       key: 'changes',
       title: t('tos.changes.title'),
-      content: <p>{t('tos.changes.content')}</p>
+      content: <PolicyText text={t('tos.changes.content')} />
     },
     {
       key: 'severability',
       title: t('tos.severability.title'),
-      content: <p>{t('tos.severability.content')}</p>
+      content: <PolicyText text={t('tos.severability.content')} />
     },
     {
       key: 'agreement',
       title: t('tos.agreement.title'),
-      content: <p>{t('tos.agreement.content')}</p>
+      content: <PolicyText text={t('tos.agreement.content')} />
     },
     {
       key: 'contact',

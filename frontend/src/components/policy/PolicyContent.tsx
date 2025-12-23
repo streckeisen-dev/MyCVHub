@@ -1,23 +1,8 @@
 import { ReactNode } from 'react'
-import { centerSection, h4, title } from '@/styles/primitives.ts'
+import { centerSection, title } from '@/styles/primitives.ts'
 import { formatDate } from '@/helpers/DateHelper.ts'
 import { useTranslation } from 'react-i18next'
-
-export type PolicySectionProps = Readonly<{
-  key: string
-  title: string
-  content: ReactNode
-}>
-
-function PolicySection(props: PolicySectionProps): ReactNode {
-  const { key, title, content } = props
-  return (
-    <section key={key} className="flex flex-col gap-2">
-      <h4 className={h4()}>{title}</h4>
-      <div>{content}</div>
-    </section>
-  )
-}
+import { PolicySection, PolicySectionProps } from '@/components/policy/PolicySection.tsx'
 
 export type PolicyContentProps = Readonly<{
   lastUpdated: string
