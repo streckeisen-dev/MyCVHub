@@ -5,6 +5,8 @@ import ch.streckeisen.mycv.backend.account.ApplicantAccountRepository
 import ch.streckeisen.mycv.backend.account.ApplicantAccountService
 import ch.streckeisen.mycv.backend.account.auth.AuthTokenService
 import ch.streckeisen.mycv.backend.account.auth.AuthenticationValidationService
+import ch.streckeisen.mycv.backend.account.dto.OAuthSignupRequestDto
+import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.github.GithubException
 import ch.streckeisen.mycv.backend.github.GithubService
 import io.mockk.every
@@ -57,7 +59,8 @@ class OAuthIntegrationServiceTest {
             authorizedClientService,
             githubService,
             accountService,
-            authTokenService
+            authTokenService,
+            mockk(relaxed = true)
         )
     }
 
@@ -245,5 +248,30 @@ class OAuthIntegrationServiceTest {
         assertTrue(result.isFailure)
         verify(exactly = 0) { oauthIntegrationRepository.save(any()) }
         verify(exactly = 0) { applicantAccountRepository.save(any()) }
+    }
+
+    @Test
+    fun testCompleteSignupWithoutTermsAccepted() {
+        val request = OAuthSignupRequestDto(
+            username = "u",
+            firstName = "f",
+            lastName = "l",
+            email = "e",
+            phone = "p",
+            birthday = null,
+            street = null,
+            houseNumber = null,
+            postcode = null,
+            city = null,
+            country = null,
+            language = null,
+            acceptsTos = null
+        )
+        val result = oAuthIntegrationService.completeSignup(1, request)
+
+        assertTrue { result.isFailure }
+        val ex = result.exceptionOrNull()
+        assertNotNull(ex)
+        assertTrue { ex is ValidationException }
     }
 }

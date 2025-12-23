@@ -10,5 +10,6 @@ export interface OAuthSignUpRequestDto {
   postcode?: string
   city?: string
   country?: string
-  language?: string
+  language?: string,
+  acceptsTos?: boolean
 }

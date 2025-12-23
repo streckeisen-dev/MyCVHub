@@ -14,5 +14,6 @@ data class OAuthSignupRequestDto(
     val postcode: String?,
     val city: String?,
     val country: String?,
-    val language: String?
+    val language: String?,
+    val acceptsTos: Boolean?
 )

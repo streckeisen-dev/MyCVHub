@@ -31,6 +31,9 @@ private const val OLD_PASSWORD_INVALID_ERROR_KEY = "${ACCOUNT_VALIDATION_KEY_PRE
 private const val LOGIN_VALIDATION_ERROR_KEY = "${MYCV_KEY_PREFIX}.auth.login.error"
 private const val SIGNUP_VALIDATION_ERROR_KEY = "${MYCV_KEY_PREFIX}.auth.signup.error"
 private const val CHANGE_PASSWORD_VALIDATION_ERROR_KEY = "${MYCV_KEY_PREFIX}.auth.changePassword.error"
+private const val TERMS_ERROR_KEY = "${MYCV_KEY_PREFIX}.account.validations.termsError"
+
+private const val TERMS_FIELD_KEY = "acceptsTos"
 
 @Service
 class AuthenticationValidationService(
@@ -84,6 +87,11 @@ class AuthenticationValidationService(
             validationErrorBuilder
         )
         applicantAccountValidationService.validateLanguage(signupRequest.language, validationErrorBuilder)
+
+        if (signupRequest.acceptsTos == null || !signupRequest.acceptsTos) {
+            val error = messagesService.getMessage(TERMS_ERROR_KEY)
+            validationErrorBuilder.addError(TERMS_FIELD_KEY, error)
+        }
 
         if (validationErrorBuilder.hasErrors()) {
             return Result.failure(validationErrorBuilder.build(messagesService.getMessage(SIGNUP_VALIDATION_ERROR_KEY)))
