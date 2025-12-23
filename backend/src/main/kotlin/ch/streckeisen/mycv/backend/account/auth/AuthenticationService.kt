@@ -23,8 +23,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import kotlin.jvm.optionals.getOrElse
 
-private const val ENCODED_PASSWORD_LENGTH_ERROR_KEY = "${MYCV_KEY_PREFIX}.account.validation.password.encodingTooLong"
-private const val PASSWORD_ENCODING_ERROR_KEY = "${MYCV_KEY_PREFIX}.account.validation.password.encodingError"
+private const val ENCODED_PASSWORD_LENGTH_ERROR_KEY = "${MYCV_KEY_PREFIX}.account.validations.password.encodingTooLong"
+private const val PASSWORD_ENCODING_ERROR_KEY = "${MYCV_KEY_PREFIX}.account.validations.password.encodingError"
 
 private val logger = KotlinLogging.logger {}
 

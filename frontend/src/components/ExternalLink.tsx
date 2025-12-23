@@ -6,7 +6,7 @@ export type ExternalLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
 }
 
 export function ExternalLink(props: ExternalLinkProps) {
-  const { color, children, ...linkProps } = props
+  const { color, children, className, ...linkProps } = props
 
   const textColor = `text-${color ?? 'primary'}`
   return (
@@ -14,7 +14,7 @@ export function ExternalLink(props: ExternalLinkProps) {
       {...linkProps}
       target="_blank"
       rel="noreferrer"
-      className={`${textColor} hover:opacity-hover active:opacity-disabled`}
+      className={`${textColor} hover:opacity-hover active:opacity-disabled ${className ?? ''}`}
     >
       {children}
     </a>

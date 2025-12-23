@@ -15,13 +15,9 @@ export function toDateString(date: CalendarDate | null): string | undefined {
   return moment(date.toDate(getLocalTimeZone())).format('YYYY-MM-DD')
 }
 
-export function formatDate(dateString: string, lang: string): string {
+export function formatDate(dateString: string): string {
   const date = moment(dateString)
-  if (lang === 'de') {
-    return date.format('DD.MM.YYYY')
-  } else {
-    return date.format('MM/DD/YYYY')
-  }
+  return date.format('DD.MM.YYYY')
 }
 
 export function formatDateTime(dateString: string): string {

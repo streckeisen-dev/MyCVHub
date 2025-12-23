@@ -12,7 +12,7 @@ import { AccountPage } from '@/pages/account/AccountPage.tsx'
 import { EditAccountPage } from '@/pages/account/EditAccountPage.tsx'
 import { OAuthSuccessPage } from '@/pages/account/oauth/OAuthSuccessPage.tsx'
 import { OAuthSignupPage } from '@/pages/account/oauth/OAuthSignupPage.tsx'
-import { PrivacyPolicyPage } from '@/pages/PrivacyPolicyPage.tsx'
+import { PrivacyPolicyPage } from '@/pages/policy/PrivacyPolicyPage.tsx'
 import { ChangePasswordPage } from '@/pages/account/ChangePasswordPage.tsx'
 import { SignupPage } from '@/pages/account/SignupPage.tsx'
 import { AccountVerificationPage } from '@/pages/account/AccountVerificationPage.tsx'
@@ -25,6 +25,8 @@ import { AuthorizedUser } from '@/context/AuthorizationContext.tsx'
 import { CvDownloadPage } from '@/pages/cv/CvDownloadPage.tsx'
 import { SecurityCheck } from '@/components/security/SecurityCheck.tsx'
 import { ApplicationDetailsPage } from '@/pages/applications/ApplicationDetailsPage.tsx'
+import { TermsOfServicePage } from '@/pages/policy/TermsOfServicePage.tsx'
+import { AboutPage } from '@/AboutPage.tsx'
 
 type MyCvRouteObject = Omit<RouteObject, 'children'> & {
   id: string
@@ -159,9 +161,21 @@ const ROUTE_DEFINITIONS = defineRoutes([
         element: <CvDownloadPage />
       },
       {
+        id: 'About',
+        path: 'about',
+        element: <AboutPage />,
+        requiresAuth: false
+      },
+      {
         id: 'PrivacyPolicy',
         path: 'privacy',
         element: <PrivacyPolicyPage />,
+        requiresAuth: false
+      },
+      {
+        id: 'TermsOfService',
+        path: 'terms',
+        element: <TermsOfServicePage />,
         requiresAuth: false
       },
       {
@@ -331,6 +345,12 @@ const navItems: NavItemConfig[] = [
     label: 'application.title',
     href: getRoutePath(RouteId.ApplicationsOverview),
     predicate: (user: AuthorizedUser | undefined) => user?.hasProfile ?? false
+  },
+  {
+    id: 'about',
+    label: 'about.title',
+    href: getRoutePath(RouteId.About),
+    predicate: () => true
   }
 ]
 
@@ -353,5 +373,6 @@ export const SITE_CONFIG = {
   links: {
     github: 'https://github.com/streckeisen-dev/MyCVHub',
     sponsor: 'https://patreon.com/jrgarciadev'
-  }
+  },
+  contact: 'contact@mycvhub.ch'
 }

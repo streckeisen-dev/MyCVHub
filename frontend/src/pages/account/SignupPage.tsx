@@ -1,7 +1,7 @@
 import { FormEvent, ReactNode, use, useEffect, useState } from 'react'
 import { centerSection, h1, twoColumnForm } from '@/styles/primitives.ts'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { AuthorizationContext } from '@/context/AuthorizationContext.tsx'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import { AccountEditorData } from '@/types/account/AccountEditorData.ts'
@@ -16,6 +16,7 @@ import AccountApi from '@/api/AccountApi.ts'
 import { SignupRequestDto } from '@/types/account/SignUpRequestDto.ts'
 import { RestError } from '@/types/RestError.ts'
 import { extractFormErrors } from '@/helpers/FormHelper.ts'
+import { CheckboxInput } from '@/components/input/CheckboxInput.tsx'
 
 export function SignupPage(): ReactNode {
   const { t, i18n } = useTranslation()
@@ -38,6 +39,7 @@ export function SignupPage(): ReactNode {
     password: '',
     confirmPassword: ''
   })
+  const [acceptedTos, setAcceptedTos] = useState<boolean>(false)
   const [isSaving, setIsSaving] = useState<boolean>(false)
   const [errorMessages, setErrorMessages] = useState<ErrorMessages>({})
 
@@ -91,7 +93,8 @@ export function SignupPage(): ReactNode {
       ...accountFormState,
       houseNumber: accountFormState.houseNumber === '' ? undefined : accountFormState.houseNumber,
       birthday: toDateString(accountFormState.birthday),
-      ...passwordFormState
+      ...passwordFormState,
+      acceptsTos: acceptedTos
     }
 
     try {
@@ -125,6 +128,28 @@ export function SignupPage(): ReactNode {
           />
         </div>
         <PasswordRequirements state={passwordFormState} />
+
+        <div className="col-span-1 sm:col-span-2">
+          <CheckboxInput
+            name="acceptsTos"
+            label={
+              <p>
+                {t('fields.acceptTos')}
+                <Link className="text-primary" to={getRoutePath(RouteId.TermsOfService)} target="_blank">
+                  {t('tos.title')}
+                </Link>
+                {', '}
+                <Link className="text-primary" to={getRoutePath(RouteId.PrivacyPolicy)} target="_blank">
+                  {t('privacy.title')}
+                </Link>
+              </p>
+            }
+            isSelected={acceptedTos}
+            onValueChange={val => setAcceptedTos(val)}
+            isInvalid={errorMessages.acceptsTos != null}
+            errorMessage={errorMessages.acceptsTos}
+          />
+        </div>
         <FormButtons onCancel={handleCancel} isSaving={isSaving} />
       </Form>
     </section>

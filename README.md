@@ -1,4 +1,4 @@
-![MyCVHub](https://mycvhub.ch/assets/mycvhub_logo.png)
+![MyCVHub](https://mycvhub.ch/mycvhub_icon.png) **MyCVHub**
 
 [![Build](https://github.com/streckeisen-dev/MyCVHub/actions/workflows/build.yaml/badge.svg)](https://github.com/streckeisen-dev/MyCVHub/actions/workflows/build.yaml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=streckeisen-dev_MyCVHub&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=streckeisen-dev_MyCVHub)
