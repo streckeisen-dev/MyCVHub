@@ -54,87 +54,89 @@ export function PublicProfilePage(): ReactNode {
   const name = `${profile?.firstName} ${profile?.lastName}`
 
   return (
-    <LoadingWrapper isLoading={isLoading}>
-      {profile ? (
-        <div className="relative flex flex-col h-screen">
-          <Navbar
-            maxWidth="full"
-            position="sticky"
-            style={{
-              backgroundColor: surfaceColor,
-              color: getMatchingTextColor(surfaceColor)
-            }}
-          >
-            <NavbarBrand>
-              <p className="text-xl font-bold">{name}</p>
-            </NavbarBrand>
-          </Navbar>
-          <main
-            className="w-full mx-auto pt-16 px-6 lg:px-15 lg:pb-10"
-            style={{
-              backgroundColor: backgroundColor,
-              color: contentTextColor
-            }}
-          >
-            <div className="grid grid-cols-12 gap-3">
-              <section className="col-span-12 lg:col-span-6 flex flex-col gap-2">
-                <img
-                  src={profile.profilePicture}
-                  alt={t('fields.profilePicture')}
-                  className="max-w-full md:max-w-3/4 lg:max-w-1/2"
-                />
-                <div className="mb-2">
-                  <h3 className={h3()}>{name}</h3>
-                  <p>{profile.jobTitle}</p>
-                </div>
-                {profile.bio && (
-                  <>
-                    <h4 className={h4()}>{t('profile.aboutMe')}</h4>
-                    <p>{profile.bio}</p>
-                  </>
-                )}
+    <div className="flex flex-col h-screen">
+      <LoadingWrapper isLoading={isLoading} className="w-full mx-auto grow">
+        {profile ? (
+          <div className="flex flex-col items-center justify-center gap-5 pt-0 pb-10">
+            <Navbar
+              maxWidth="full"
+              position="sticky"
+              style={{
+                backgroundColor: surfaceColor,
+                color: getMatchingTextColor(surfaceColor)
+              }}
+            >
+              <NavbarBrand>
+                <p className="text-xl font-bold">{name}</p>
+              </NavbarBrand>
+            </Navbar>
+            <main
+              className="w-full mx-auto pt-16 px-6 lg:px-15 lg:pb-10"
+              style={{
+                backgroundColor: backgroundColor,
+                color: contentTextColor
+              }}
+            >
+              <div className="grid grid-cols-12 gap-3">
+                <section className="col-span-12 lg:col-span-6 flex flex-col gap-2">
+                  <img
+                    src={profile.profilePicture}
+                    alt={t('fields.profilePicture')}
+                    className="max-w-full md:max-w-3/4 lg:max-w-1/2"
+                  />
+                  <div className="mb-2">
+                    <h3 className={h3()}>{name}</h3>
+                    <p>{profile.jobTitle}</p>
+                  </div>
+                  {profile.bio && (
+                    <>
+                      <h4 className={h4()}>{t('profile.aboutMe')}</h4>
+                      <p>{profile.bio}</p>
+                    </>
+                  )}
 
-                {(profile.phone != null || profile.address != null || profile.email != null) && (
-                  <ContactInfo profile={profile} textColor={contentTextColor} t={t} />
-                )}
-              </section>
-              <div className="col-span-12 lg:col-span-6 flex flex-col gap-4">
-                {profile.workExperiences.length > 0 && (
-                  <section className="flex flex-col gap-2">
-                    <h4 className={h4()}>{t('workExperience.title')}</h4>
-                    <WorkExperienceList workExperiences={profile.workExperiences} />
-                  </section>
-                )}
-                {profile.education.length > 0 && (
-                  <section className="flex flex-col gap-2">
-                    <h4 className={h4()}>{t('education.title')}</h4>
-                    <EducationList education={profile.education} />
-                  </section>
-                )}
-                {profile.projects.length > 0 && (
-                  <section className="flex flex-col gap-2">
-                    <h4 className={h4()}>{t('project.title')}</h4>
-                    <ProjectList projects={profile.projects} />
-                  </section>
-                )}
-                {profile.skills.length > 0 && (
-                  <section className="flex flex-col gap-2">
-                    <h4 className={h4()}>{t('skills.title')}</h4>
-                    <SkillList skills={profile.skills} />
-                  </section>
-                )}
+                  {(profile.phone != null || profile.address != null || profile.email != null) && (
+                    <ContactInfo profile={profile} textColor={contentTextColor} t={t} />
+                  )}
+                </section>
+                <div className="col-span-12 lg:col-span-6 flex flex-col gap-4">
+                  {profile.workExperiences.length > 0 && (
+                    <section className="flex flex-col gap-2">
+                      <h4 className={h4()}>{t('workExperience.title')}</h4>
+                      <WorkExperienceList workExperiences={profile.workExperiences} />
+                    </section>
+                  )}
+                  {profile.education.length > 0 && (
+                    <section className="flex flex-col gap-2">
+                      <h4 className={h4()}>{t('education.title')}</h4>
+                      <EducationList education={profile.education} />
+                    </section>
+                  )}
+                  {profile.projects.length > 0 && (
+                    <section className="flex flex-col gap-2">
+                      <h4 className={h4()}>{t('project.title')}</h4>
+                      <ProjectList projects={profile.projects} />
+                    </section>
+                  )}
+                  {profile.skills.length > 0 && (
+                    <section className="flex flex-col gap-2">
+                      <h4 className={h4()}>{t('skills.title')}</h4>
+                      <SkillList skills={profile.skills} />
+                    </section>
+                  )}
+                </div>
               </div>
-            </div>
-          </main>
-        </div>
-      ) : (
-        <Empty
-          headline={t('profile.notFound.headline')}
-          title={t('profile.notFound.title')}
-          text={loadingError}
-        />
-      )}
-    </LoadingWrapper>
+            </main>
+          </div>
+        ) : (
+          <Empty
+            headline={t('profile.notFound.headline')}
+            title={t('profile.notFound.title')}
+            text={loadingError}
+          />
+        )}
+      </LoadingWrapper>
+    </div>
   )
 }
 
