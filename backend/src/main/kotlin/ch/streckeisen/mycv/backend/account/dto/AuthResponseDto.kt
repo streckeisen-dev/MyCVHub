@@ -11,5 +11,5 @@ data class AuthResponseDto(
     val language: String?,
     @get:JsonProperty(value = "hasProfile")
     val hasProfile: Boolean,
-    val thumbnailDto: ThumbnailDto?
+    val thumbnail: ThumbnailDto?
 )

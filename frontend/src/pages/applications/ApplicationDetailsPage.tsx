@@ -188,7 +188,7 @@ export function ApplicationDetailsPage(): ReactNode {
                         <ApplicationStatus status={historyEntry.from} />
                         <ApplicationStatus status={historyEntry.to} />
                         <p className="whitespace-break-spaces">
-                          {historyEntry.comment ?? '&mdash;'}
+                          {historyEntry.comment ?? <>&mdash;</>}
                         </p>
                         <p>{formatDateTime(historyEntry.timestamp)}</p>
 

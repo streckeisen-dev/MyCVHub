@@ -52,7 +52,7 @@ export function CvListEntry(props: CvListEntryProps): ReactNode {
   return (
     <div className={entryClasses}>
       <p className={`font-bold text-lg ${fixedClasses}`}>{value.title}</p>
-      <p className={adaptableClasses}>{value.topRight}</p>
+      <p className={`${adaptableClasses} flex flex-wrap gap-2`}>{value.topRight}</p>
       <p className={fixedClasses}>{value.bottomLeft}</p>
       <p className={adaptableClasses}>{duration}</p>
       {hasActions && (

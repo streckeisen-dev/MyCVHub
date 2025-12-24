@@ -88,7 +88,7 @@ export function ProfileEditor(props: ProfileEditorProps): ReactNode {
       content: <ProjectEditor initialValue={profile.projects} />
     },
     {
-      key: 'skils',
+      key: 'skills',
       title: t('skills.title'),
       show: initialValue != null,
       content: <SkillEditor initialValue={profile.skills} />
