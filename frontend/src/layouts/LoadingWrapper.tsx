@@ -5,11 +5,14 @@ import { Spinner } from '@heroui/react'
 export type LoadingWrapperProps = Readonly<
   PropsWithChildren & {
     isLoading: boolean
+    className?: string
   }
 >
 
 export function LoadingWrapper(props: LoadingWrapperProps): ReactNode {
-  const { isLoading, children } = props
+  const { isLoading, className, children } = props
 
-  return <section className={centerSection()}>{isLoading ? <Spinner /> : children}</section>
+  return (
+    <section className={className ?? centerSection()}>{isLoading ? <Spinner /> : children}</section>
+  )
 }
