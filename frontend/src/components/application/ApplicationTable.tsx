@@ -220,7 +220,7 @@ export function ApplicationTable(props: ApplicationTableProps) {
           )}
 
           <Select
-            className="w-35"
+            className="w-40"
             name="pageSize"
             label={t('table.pagination.pageSize')}
             selectedKeys={[pageSize]}

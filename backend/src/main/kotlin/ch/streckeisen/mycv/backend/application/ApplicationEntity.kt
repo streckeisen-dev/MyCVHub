@@ -1,6 +1,7 @@
 package ch.streckeisen.mycv.backend.application
 
 import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
@@ -26,7 +27,7 @@ class ApplicationEntity(
     val source: String? = null,
     val description: String? = null,
 
-    @OneToMany(mappedBy = "application", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "application", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
     val history: List<ApplicationHistoryEntity> = listOf(),
 
     @ManyToOne(fetch = FetchType.LAZY)
