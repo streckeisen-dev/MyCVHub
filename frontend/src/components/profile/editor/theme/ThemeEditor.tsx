@@ -84,10 +84,10 @@ export function ThemeEditor(props: ThemeEditorProps): ReactNode {
     <section className="flex flex-col gap-6">
       <p className="whitespace-break-spaces">{t('theme.description')}</p>
 
-      <Form className="grid grid-cols-12 gap-6" onSubmit={handleSubmit}>
-        <div className="col-span-12 lg:col-span-6 xl:col-span-4 grid grid-cols-12">
+      <div className="flex flex-row flex-wrap gap-5">
+        <Form className="flex flex-row flex-wrap gap-5" onSubmit={handleSubmit}>
           <ColorPicker
-            className="col-span-12 md:col-span-6"
+            className=""
             label={t('fields.backgroundColor')}
             isRequired
             color={backgroundColor}
@@ -95,17 +95,36 @@ export function ThemeEditor(props: ThemeEditorProps): ReactNode {
             errorMessage={errorMessages.backgroundColor}
           />
           <ColorPicker
-            className="col-span-12 md:col-span-6"
+            className=""
             label={t('fields.surfaceColor')}
             isRequired
             color={surfaceColor}
             onChangeComplete={handleSurfaceColorChange}
             errorMessage={errorMessages.surfaceColor}
           />
-        </div>
-        <div className="col-span-12 lg:col-span-6 xl:col-span-6">
+          <div className="flex w-full gap-5">
+            <Button
+              className="w-min"
+              type="submit"
+              color="primary"
+              isLoading={isSaving}
+              isDisabled={isSaving || isResetting}
+            >
+              {t('forms.save')}
+            </Button>
+            <Button
+              className="w-min min-w-50"
+              type="reset"
+              onPress={handleReset}
+              isLoading={isResetting}
+              isDisabled={isResetting || isSaving}
+            >
+              {t('theme.reset')}
+            </Button>
+          </div>
+        </Form>
+        <div className="max-w-full xl:max-w-1/2 w-full">
           <h4 className={h4()}>{t('theme.preview')}</h4>
-
           <Navbar
             maxWidth="full"
             style={{
@@ -140,26 +159,7 @@ export function ThemeEditor(props: ThemeEditorProps): ReactNode {
             </p>
           </div>
         </div>
-        <div className="col-span-12 flex gap-2">
-          <Button
-            type="submit"
-            color="primary"
-            isLoading={isSaving}
-            isDisabled={isSaving || isResetting}
-          >
-            {t('forms.save')}
-          </Button>
-          <Button
-            className="min-w-50"
-            type="reset"
-            onPress={handleReset}
-            isLoading={isResetting}
-            isDisabled={isResetting || isSaving}
-          >
-            {t('theme.reset')}
-          </Button>
-        </div>
-      </Form>
+      </div>
     </section>
   )
 }
