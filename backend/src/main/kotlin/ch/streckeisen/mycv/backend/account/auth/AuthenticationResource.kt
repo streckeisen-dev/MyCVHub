@@ -66,7 +66,7 @@ class AuthenticationResource(
                             displayName = displayName,
                             language = account.accountDetails?.language,
                             hasProfile = hasProfile,
-                            thumbnailDto = if (thumbnail != null) {
+                            thumbnail = if (thumbnail != null) {
                                 ThumbnailDto(thumbnail.uri.toString())
                             } else null
                         )
