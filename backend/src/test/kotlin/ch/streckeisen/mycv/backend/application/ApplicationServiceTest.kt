@@ -330,7 +330,7 @@ class ApplicationServiceTest {
         assertEquals(existingApplicationTwo.jobTitle, capturedApplication.captured.jobTitle)
         assertEquals(existingApplicationTwo.company, capturedApplication.captured.company)
         assertEquals(existingApplicationTwo.createdAt, capturedApplication.captured.createdAt)
-        assertNotEquals(existingApplicationTwo.updatedAt, capturedApplication.captured.updatedAt)
+        assertEquals(existingApplicationTwo.updatedAt, capturedApplication.captured.updatedAt)
         assertEquals(existingApplicationTwo.status, capturedApplication.captured.status)
         assertEquals(existingApplicationTwo.source, capturedApplication.captured.source)
         assertEquals(existingApplicationTwo.description, capturedApplication.captured.description)
