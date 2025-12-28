@@ -36,6 +36,7 @@ async function search(
   page: number,
   searchTerm: string | undefined,
   status: string | undefined,
+  includeArchived: boolean | undefined,
   sort: SortDescriptor | undefined,
   pageSize: string,
   locale: string,
@@ -50,6 +51,9 @@ async function search(
   }
   if (status) {
     params.append('status', status)
+  }
+  if (includeArchived) {
+    params.append('includeArchived', includeArchived.toString())
   }
   if (sort) {
     params.append('sort', sort.column as string)
@@ -85,13 +89,25 @@ async function save(
 async function transition(transitionId: number, request: ApplicationTransitionRequestDto, locale: string): Promise<ApplicationDetailsDto> {
   try {
     const response = await fetchFromApi(`/application/transition/${transitionId}`, locale, {
-      method: 'POST',
+      method: 'PUT',
       body: JSON.stringify(request)
     })
     return await getJSONIfResponseIsOk<ApplicationDetailsDto>(response)
   } catch (e) {
     const error = (e as RestError).errorDto
     throw new RestError('Failed to transition application', error)
+  }
+}
+
+async function archive(id: number, locale: string): Promise<void> {
+  try {
+    const response = await fetchFromApi(`/application/${id}/archive`, locale, {
+      method: 'PUT'
+    })
+    await extractErrorIfResponseIsNotOk(response)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    throw new RestError('Failed to archive application', error)
   }
 }
 
@@ -113,5 +129,6 @@ export default {
   search,
   save,
   transition,
+  archive,
   deleteApplication
 }

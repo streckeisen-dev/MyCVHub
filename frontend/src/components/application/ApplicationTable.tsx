@@ -1,6 +1,8 @@
 import { PageInfo } from '@/types/Page.ts'
 import { ApplicationSearchDto } from '@/types/application/ApplicationSearchDto.ts'
 import {
+  Button,
+  Chip,
   Input,
   Pagination,
   Select,
@@ -13,7 +15,8 @@ import {
   TableCell,
   TableColumn,
   TableHeader,
-  TableRow
+  TableRow,
+  Tooltip
 } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import { ReactNode, RefObject, useCallback, useEffect, useImperativeHandle, useState } from 'react'
@@ -30,6 +33,11 @@ import { DeleteApplicationButton } from '@/components/application/DeleteApplicat
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import { useNavigate } from 'react-router-dom'
 import { ApplicationStatus } from '@/components/application/ApplicationStatus.tsx'
+import { CheckboxInput } from '@/components/input/CheckboxInput.tsx'
+import { ArchiveApplicationButton } from '@/components/application/ArchiveApplicationButton.tsx'
+import { TableButton } from '@/components/TableButton.tsx'
+import { FaArrowRotateLeft, FaEye } from 'react-icons/fa6'
+import ApplicationFilterService from '@/components/application/ApplicationFilterService.ts'
 
 const ROWS_PER_PAGE_OPTIONS = ['5', '10', '25']
 
@@ -82,9 +90,18 @@ export function ApplicationTable(props: ApplicationTableProps) {
   const [page, setPage] = useState<number>(0)
   const [pageInfo, setPageInfo] = useState<PageInfo>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [statusFilter, setStatusFilter] = useState<string | undefined>()
-  const [searchTerm, setSearchTerm] = useState<string | undefined>()
-  const [pageSize, setPageSize] = useState<string>(ROWS_PER_PAGE_OPTIONS[0])
+  const [statusFilter, setStatusFilter] = useState<string | undefined>(
+    ApplicationFilterService.getApplicationStatusFilter()
+  )
+  const [searchTerm, setSearchTerm] = useState<string | undefined>(
+    ApplicationFilterService.getApplicationSearchTermFilter
+  )
+  const [pageSize, setPageSize] = useState<string>(
+    ApplicationFilterService.getPageSize() ?? ROWS_PER_PAGE_OPTIONS[0]
+  )
+  const [includeArchivedFilter, setIncludeArchivedFilter] = useState<boolean>(
+    ApplicationFilterService.getIncludeArchivedFilter() ?? false
+  )
 
   const applications = useAsyncList<ApplicationSearchDto>({
     async load({ signal }): Promise<ApplicationAsyncListValue> {
@@ -111,6 +128,7 @@ export function ApplicationTable(props: ApplicationTableProps) {
         page,
         searchTerm,
         statusFilter,
+        includeArchivedFilter,
         sort,
         pageSize,
         i18n.language,
@@ -133,7 +151,7 @@ export function ApplicationTable(props: ApplicationTableProps) {
 
   useEffect(() => {
     applications.reload()
-  }, [statusFilter, searchTerm, page, pageSize])
+  }, [statusFilter, searchTerm, page, pageSize, includeArchivedFilter])
 
   async function onPageChange(pageNumber: number) {
     setPage(pageNumber - 1)
@@ -142,6 +160,7 @@ export function ApplicationTable(props: ApplicationTableProps) {
   function handleStatusFilterChange(keys: SharedSelection) {
     setPageInfo(undefined)
     setStatusFilter(keys.currentKey ?? undefined)
+    ApplicationFilterService.setApplicationStatusFilter(keys.currentKey)
   }
 
   const debouncedSetSearch = useCallback(
@@ -152,19 +171,33 @@ export function ApplicationTable(props: ApplicationTableProps) {
   function handleSearchTermChange(value: string) {
     setPageInfo(undefined)
     debouncedSetSearch(value)
+    ApplicationFilterService.setApplicationSearchTermFilter(value)
   }
 
   function handlePageSizeChange(keys: SharedSelection) {
     setPageInfo(undefined)
     setPageSize(keys.currentKey ?? ROWS_PER_PAGE_OPTIONS[0])
+    ApplicationFilterService.setPageSize(keys.currentKey)
   }
 
-  function handleRowPress(id: number) {
+  function handleArchivedFilterChange(includeArchived: boolean) {
+    setIncludeArchivedFilter(includeArchived)
+    ApplicationFilterService.setIncludeArchivedFilter(includeArchived)
+  }
+
+  function handleView(id: number) {
     navigate(getRoutePath(RouteId.ApplicationDetail, undefined, id.toString()))
   }
 
-  function handleDelete() {
+  function handleUpdate() {
     applications.reload()
+  }
+
+  function handleFilterReset() {
+    handleSearchTermChange('')
+    handleStatusFilterChange({ currentKey: undefined } as SharedSelection)
+    handlePageSizeChange({ currentKey: ROWS_PER_PAGE_OPTIONS[0] } as SharedSelection)
+    handleArchivedFilterChange(false)
   }
 
   function renderCell(application: ApplicationSearchDto, columnKey: Key): ReactNode {
@@ -172,10 +205,27 @@ export function ApplicationTable(props: ApplicationTableProps) {
     switch (columnKey) {
       case 'status': {
         const status = cellValue as ApplicationStatusDto
-        return <ApplicationStatus status={status} />
+        return (
+          <div className="flex flex-row flex-wrap gap-2">
+            <ApplicationStatus status={status} />
+            {application.isArchived && <Chip color="warning">{t('application.archived')}</Chip>}
+          </div>
+        )
       }
       case 'actions': {
-        return <DeleteApplicationButton id={application.id} onDelete={handleDelete} />
+        return (
+          <div className="flex f lex-wrap flex-row gap-2">
+            <Tooltip color="primary" content={t('application.view')}>
+              <TableButton className="text-primary" onClick={() => handleView(application.id)}>
+                <FaEye />
+              </TableButton>
+            </Tooltip>
+            {application.status.isTerminal && !application.isArchived && (
+              <ArchiveApplicationButton id={application.id} onArchive={handleUpdate} />
+            )}
+            <DeleteApplicationButton id={application.id} onDelete={handleUpdate} />
+          </div>
+        )
       }
       case 'createdAt':
       case 'updatedAt': {
@@ -196,48 +246,59 @@ export function ApplicationTable(props: ApplicationTableProps) {
   return (
     <Table
       topContent={
-        <div className="w-full flex flex-wrap gap-6 sm:items-end">
-          <Input
-            className="w-60"
-            name="search"
-            label={t('table.search')}
-            onValueChange={handleSearchTermChange}
-            startContent={<FaSearch />}
-            isClearable
-          />
-          {statuses.length > 0 && (
-            <Select
-              className="w-65"
-              items={statuses}
-              name="status"
-              label={t('fields.status')}
-              selectedKeys={statusFilter ? [statusFilter] : []}
-              onSelectionChange={handleStatusFilterChange}
+        <div className="flex flex-col items-start gap-2">
+          <Button variant="light" startContent={<FaArrowRotateLeft />} onPress={handleFilterReset}>
+            {t('table.resetFilter')}
+          </Button>
+          <div className="w-full flex flex-wrap gap-6 sm:items-end">
+            <Input
+              className="w-60"
+              name="search"
+              label={t('table.search')}
+              onValueChange={handleSearchTermChange}
+              startContent={<FaSearch />}
               isClearable
+            />
+            {statuses.length > 0 && (
+              <Select
+                className="w-65"
+                items={statuses}
+                name="status"
+                label={t('fields.status')}
+                selectedKeys={statusFilter ? [statusFilter] : []}
+                onSelectionChange={handleStatusFilterChange}
+                isClearable
+              >
+                {(status) => <SelectItem key={status.key}>{status.name}</SelectItem>}
+              </Select>
+            )}
+
+            <Select
+              className="w-40"
+              name="pageSize"
+              label={t('table.pagination.pageSize')}
+              selectedKeys={[pageSize]}
+              onSelectionChange={handlePageSizeChange}
             >
-              {(status) => <SelectItem key={status.key}>{status.name}</SelectItem>}
+              {ROWS_PER_PAGE_OPTIONS.map((option) => (
+                <SelectItem key={option}>{option}</SelectItem>
+              ))}
             </Select>
-          )}
 
-          <Select
-            className="w-40"
-            name="pageSize"
-            label={t('table.pagination.pageSize')}
-            selectedKeys={[pageSize]}
-            onSelectionChange={handlePageSizeChange}
-          >
-            {ROWS_PER_PAGE_OPTIONS.map((option) => (
-              <SelectItem key={option}>{option}</SelectItem>
-            ))}
-          </Select>
+            <CheckboxInput
+              label={t('application.includeArchived')}
+              isSelected={includeArchivedFilter}
+              onValueChange={handleArchivedFilterChange}
+            />
 
-          <p className="text-default-500 grow text-right self-end">
-            {t('table.pagination.numberInformation', {
-              start: applications.items.length === 0 ? 0 : pageStart + 1,
-              end: pageStart + applications.items.length,
-              total: pageInfo?.totalElements
-            })}
-          </p>
+            <p className="text-default-500 grow text-right self-end">
+              {t('table.pagination.numberInformation', {
+                start: applications.items.length === 0 ? 0 : pageStart + 1,
+                end: pageStart + applications.items.length,
+                total: pageInfo?.totalElements ?? 0
+              })}
+            </p>
+          </div>
         </div>
       }
       bottomContent={
@@ -271,15 +332,13 @@ export function ApplicationTable(props: ApplicationTableProps) {
         emptyContent={t('application.noEntries')}
         loadingContent={<Spinner />}
       >
-        {(application) => (
-          <TableRow
-            key={application.id}
-            onClick={() => handleRowPress(application.id)}
-            className="hover:cursor-pointer hover:bg-default-200 hover:rounded-5xl"
-          >
-            {(column) => <TableCell key={column}>{renderCell(application, column)}</TableCell>}
-          </TableRow>
-        )}
+        {(application) => {
+          return (
+            <TableRow key={application.id} className={''}>
+              {(column) => <TableCell key={column}>{renderCell(application, column)}</TableCell>}
+            </TableRow>
+          )
+        }}
       </TableBody>
     </Table>
   )

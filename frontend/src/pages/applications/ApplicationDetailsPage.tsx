@@ -30,7 +30,7 @@ import { formatDateTime } from '@/helpers/DateHelper.ts'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 
 function getApplicationAttributes(application: ApplicationDetailsDto, t: TFunction): Attribute[] {
-  const attributes = [
+  const attributes: Attribute[] = [
     {
       name: t('fields.status'),
       value: <ApplicationStatus status={application.status} />
@@ -43,6 +43,10 @@ function getApplicationAttributes(application: ApplicationDetailsDto, t: TFuncti
       value: <ExternalLink href={application.source}>{application.source}</ExternalLink>
     })
   }
+  attributes.push({
+    name: t('application.createdAt'),
+    value: formatDateTime(application.createdAt)
+  })
   return attributes
 }
 
@@ -120,38 +124,43 @@ export function ApplicationDetailsPage(): ReactNode {
             {t('application.at')} {application.company}
           </h2>
           <div className="flex flex-col gap-4 w-full">
-            <div className="flex flex-wrap gap-5">
-              {application.transitions.length > 0 && (
-                <Dropdown>
-                  <DropdownTrigger>
-                    <Button color="primary" variant="bordered">
-                      {t('table.actions')}
-                    </Button>
-                  </DropdownTrigger>
-                  <DropdownMenu>
-                    {application.transitions.map((transition) => (
-                      <DropdownItem
-                        as={Button}
-                        color="primary"
-                        className="bg-primary h-10 mb-1.5"
-                        key={transition.id}
-                        onPress={() => handleTransition(transition)}
-                      >
-                        {transition.label}
-                      </DropdownItem>
-                    ))}
-                  </DropdownMenu>
-                </Dropdown>
-              )}
-              <Button
-                className="ml-auto"
-                startContent={<FaPen />}
-                color="primary"
-                onPress={handleEdit}
-              >
-                {t('application.editor.edit')}
-              </Button>
-            </div>
+            {!application.isArchived && (
+              <div className="flex flex-wrap gap-5">
+                {application.transitions.length > 0 && (
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <Button color="primary" variant="bordered">
+                        {t('table.actions')}
+                      </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu>
+                      {application.transitions.map((transition) => (
+                        <DropdownItem
+                          as={Button}
+                          color="primary"
+                          className="bg-primary h-10 mb-1.5"
+                          key={transition.id}
+                          onPress={() => handleTransition(transition)}
+                        >
+                          {transition.label}
+                        </DropdownItem>
+                      ))}
+                    </DropdownMenu>
+                  </Dropdown>
+                )}
+                <Button
+                  className="ml-auto"
+                  startContent={<FaPen />}
+                  color="primary"
+                  onPress={handleEdit}
+                >
+                  {t('application.editor.edit')}
+                </Button>
+              </div>
+            )}
+            {application.isArchived && <div className="bg-warning-400 rounded-lg w-full p-2 text-center">
+              <p>{t('application.archivedDescription')}</p>
+            </div>}
             <Accordion selectionMode="multiple" defaultExpandedKeys="all" variant="bordered">
               <AccordionItem key="details" title={t('application.details')}>
                 <AttributeList

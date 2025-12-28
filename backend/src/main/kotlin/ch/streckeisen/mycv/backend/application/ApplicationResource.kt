@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -52,24 +53,24 @@ class ApplicationResource(
     @GetMapping("/search")
     fun getApplications(
         @RequestParam page: Int?,
-        @RequestParam(required = false) status: ApplicationStatus?,
+        @RequestParam(required = false) pageSize: Int?,
         @RequestParam(required = false) searchTerm: String?,
+        @RequestParam(required = false) status: ApplicationStatus?,
+        @RequestParam(required = false) includeArchived: Boolean?,
         @RequestParam(required = false) sort: String?,
         @RequestParam(required = false) sortDirection: String?,
-        @RequestParam(required = false) pageSize: Int?
     ): ResponseEntity<Page<ApplicationSearchDto>> {
         val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
-        val currentPage = page ?: 0
-
         return applicationService.searchApplications(
-            principal.id,
-            currentPage,
-            pageSize ?: DEFAULT_PAGE_SIZE,
-            searchTerm,
-            status,
-            sort,
-            sortDirection
+            accountId = principal.id,
+            page = page ?: 0,
+            pageSize = pageSize ?: DEFAULT_PAGE_SIZE,
+            searchTerm = searchTerm,
+            status = status,
+            includeArchived = includeArchived ?: false,
+            sort = sort,
+            sortDirection = sortDirection
         )
             .fold(
                 onSuccess = { page ->
@@ -108,7 +109,7 @@ class ApplicationResource(
         return ResponseEntity.ok(ApplicationStatus.entries.map { it.toDto(messagesService) })
     }
 
-    @PostMapping("/transition/{id}")
+    @PutMapping("/transition/{id}")
     fun transitionApplication(
         @PathVariable("id") transitionId: Int,
         @RequestBody transitionRequest: ApplicationTransitionRequestDto
@@ -126,6 +127,17 @@ class ApplicationResource(
                 onSuccess = { transitions ->
                     ResponseEntity.ok(application.toDetailsDto(transitions, messagesService))
                 },
+                onFailure = { throw it }
+            )
+    }
+
+    @PutMapping("{id}/archive")
+    fun archiveApplication(@PathVariable id: Long): ResponseEntity<Unit> {
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
+
+        return applicationService.archive(principal.id, id)
+            .fold(
+                onSuccess = { ResponseEntity.ok().build() },
                 onFailure = { throw it }
             )
     }
