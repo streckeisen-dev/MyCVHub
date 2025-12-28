@@ -214,7 +214,7 @@ class ApplicationService(
             company = application.company,
             status = application.status,
             createdAt = application.createdAt,
-            updatedAt = LocalDateTime.now(),
+            updatedAt = application.updatedAt,
             source = application.source,
             description = application.description,
             history = application.history,
