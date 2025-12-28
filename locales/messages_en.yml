@@ -291,6 +291,10 @@ frontend:
     as: "as"
     details: "Application Details"
     back: "Back to Overview"
+    view: "View Application"
+    archived: "Archived"
+    includeArchived: "Include archived applications"
+    archivedDescription: "This application is archived."
     history:
       title: "Application History"
       from: "Old Status"
@@ -299,6 +303,11 @@ frontend:
     editor:
       add: "Add Application"
       edit: "Edit Application"
+      archive:
+        title: "Archive Application"
+        confirmationText: "If you go ahead and archive this application, it will be removed from your active applications and you won't be able to edit its content anymore."
+        archiveSuccess: "Application successfully archived"
+        archiveError: "Failed to archive application"
       delete:
         title: "Delete Application"
         confirmationText: "If you go ahead and delete this application, it will be permanently deleted. You will not be able to recover it. Are you sure you want to delete this application?"
@@ -530,6 +539,7 @@ frontend:
       numberInformation: "Showing entries {start}-{end} of {total}"
     search: "Search"
     actions: "Actions"
+    resetFilter: "Reset Filters"
 
 backend:
   validations:
@@ -648,6 +658,7 @@ backend:
       transitionError: "Your transition request is invalid"
     notFound: "Application not found"
     accessDenied: "You don't have access to this application"
+    archived: "You can't modify archived applications"
 
   exceptions:
     db: "A database error occurred. Please contact the administrator"

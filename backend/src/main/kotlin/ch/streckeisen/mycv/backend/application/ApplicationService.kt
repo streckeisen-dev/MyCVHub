@@ -27,6 +27,7 @@ private const val ACCESS_DENIED_MESSAGE_KEY = "$MYCV_KEY_PREFIX.application.acce
 private const val APPLICATION_NOT_FOUND_MESSAGE_KEY = "$MYCV_KEY_PREFIX.application.notFound"
 private const val TRANSITION_NOT_FOUND_MESSAGE_KEY = "$MYCV_KEY_PREFIX.application.transition.notFound"
 private const val TRANSITION_NOT_ALLOWED_MESSAGE_KEY = "$MYCV_KEY_PREFIX.application.transition.notAllowed"
+private const val ARCHIVED_MESSAGE_KEY = "$MYCV_KEY_PREFIX.application.archived"
 
 private const val DESCENDING_KEY = "descending"
 
@@ -59,6 +60,7 @@ class ApplicationService(
         pageSize: Int,
         searchTerm: String?,
         status: ApplicationStatus?,
+        includeArchived: Boolean,
         sort: String?,
         sortDirection: String?
     ): Result<Page<ApplicationEntity>> {
@@ -77,7 +79,7 @@ class ApplicationService(
                 Sort.Order(Sort.Direction.DESC, CREATED_COLUMN_KEY)
             )
         )
-        val result = applicationRepository.searchByAccountId(accountId, searchTerm, status, pageable)
+        val result = applicationRepository.searchByAccountId(accountId, searchTerm, status, includeArchived, pageable)
         return Result.success(result)
     }
 
@@ -105,6 +107,10 @@ class ApplicationService(
 
         if (application != null && application.account.id != accountId) {
             return Result.failure(LocalizedException(ACCESS_DENIED_MESSAGE_KEY))
+        }
+
+        if (application != null && application.isArchived) {
+            return Result.failure(LocalizedException(ARCHIVED_MESSAGE_KEY))
         }
 
         val account = if (application != null) {
@@ -181,6 +187,37 @@ class ApplicationService(
 
         val saved = applicationRepository.save(updatedApplication)
         return Result.success(saved)
+    }
+
+    @Transactional
+    fun archive(accountId: Long, applicationId: Long): Result<Unit> {
+        val application = applicationRepository.findById(applicationId)
+            .getOrElse { return Result.failure(LocalizedException(APPLICATION_NOT_FOUND_MESSAGE_KEY)) }
+
+        if (application.account.id != accountId) {
+            return Result.failure(LocalizedException(ACCESS_DENIED_MESSAGE_KEY))
+        }
+
+        if (application.isArchived) {
+            return Result.success(Unit)
+        }
+
+        val updatedApplication = ApplicationEntity(
+            id = application.id,
+            jobTitle = application.jobTitle,
+            company = application.company,
+            status = application.status,
+            createdAt = application.createdAt,
+            updatedAt = LocalDateTime.now(),
+            source = application.source,
+            description = application.description,
+            history = application.history,
+            account = application.account,
+            isArchived = true
+        )
+
+        applicationRepository.save(updatedApplication)
+        return Result.success(Unit)
     }
 
     @Transactional

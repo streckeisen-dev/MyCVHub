@@ -1,4 +1,4 @@
-import { ReactNode, useState, MouseEvent } from 'react'
+import { MouseEvent, ReactNode, useState } from 'react'
 import { FaTrash } from 'react-icons/fa6'
 import {
   Button,
@@ -14,9 +14,10 @@ import { h3 } from '@/styles/primitives.ts'
 import ApplicationApi from '@/api/ApplicationApi.ts'
 import { addErrorToast, addSuccessToast } from '@/helpers/ToastHelper.ts'
 import { RestError } from '@/types/RestError.ts'
+import { TableButton } from '@/components/TableButton.tsx'
 
 export type DeleteApplicationButtonProps = Readonly<{
-  id: number,
+  id: number
   onDelete: () => void
 }>
 
@@ -43,20 +44,19 @@ export function DeleteApplicationButton(props: DeleteApplicationButtonProps): Re
       onDelete()
     } catch (e) {
       const error = (e as RestError).errorDto
-      addErrorToast(t('application.editor.delete.deleteError'), error?.message ?? t('error.genericMessage'))
+      addErrorToast(
+        t('application.editor.delete.deleteError'),
+        error?.message ?? t('error.genericMessage')
+      )
     }
   }
 
   return (
     <>
       <Tooltip color="danger" content={t('application.editor.delete.title')} closeDelay={0}>
-        <button
-          type="button"
-          className="text-lg text-danger cursor-pointer z-10"
-          onClick={handleModalOpen}
-        >
+        <TableButton onClick={handleModalOpen} className="text-danger">
           <FaTrash />
-        </button>
+        </TableButton>
       </Tooltip>
       <Modal isOpen={isModalOpen} backdrop="blur" onClose={handleModalClose}>
         <ModalContent>

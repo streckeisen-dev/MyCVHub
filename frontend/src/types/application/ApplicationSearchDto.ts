@@ -9,13 +9,5 @@ export interface ApplicationSearchDto {
   description: string | undefined
   createdAt: string
   updatedAt: string | undefined
-  history: ApplicationHistoryDto[]
-}
-
-export interface ApplicationHistoryDto {
-  id: number
-  from: ApplicationStatusDto
-  to: ApplicationStatusDto
-  comment: string | undefined
-  timestamp: string
+  isArchived: boolean
 }

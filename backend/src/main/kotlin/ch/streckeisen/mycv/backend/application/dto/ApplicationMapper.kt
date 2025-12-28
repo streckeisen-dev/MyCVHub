@@ -15,7 +15,7 @@ fun ApplicationEntity.toSearchDto(messagesService: MessagesService): Application
     description = description,
     createdAt = createdAt,
     updatedAt = updatedAt,
-    history = history.map { it.toDto(messagesService) }
+    isArchived = isArchived
 )
 
 fun ApplicationEntity.toDetailsDto(
@@ -31,7 +31,8 @@ fun ApplicationEntity.toDetailsDto(
     createdAt = createdAt,
     updatedAt = updatedAt,
     history = history.map { it.toDto(messagesService) },
-    transitions = transitions.map { it.toDto(messagesService) }
+    transitions = transitions.map { it.toDto(messagesService) },
+    isArchived = isArchived
 )
 
 fun ApplicationHistoryEntity.toDto(messagesService: MessagesService): ApplicationHistoryDto = ApplicationHistoryDto(
@@ -48,6 +49,7 @@ fun ApplicationTransition.toDto(messagesService: MessagesService): ApplicationTr
 )
 
 fun ApplicationStatus.toDto(messagesService: MessagesService): ApplicationStatusDto = ApplicationStatusDto(
-    name,
-    messagesService.getMessage(labelKey)
+    key = name,
+    name = messagesService.getMessage(labelKey),
+    isTerminal = isTerminal
 )

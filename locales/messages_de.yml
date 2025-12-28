@@ -290,6 +290,10 @@ frontend:
     as: "als"
     details: "Bewerbungsdetails"
     back: "Zurück zur Übersicht"
+    view: "Bewerbung ansehen"
+    archived: "Archiviert"
+    includeArchived: "Archivierte Bewerbungen anzeigen"
+    archivedDescription: "Diese Bewerbung ist archiviert."
     history:
       title: "Bewerbungsverlauf"
       from: "Alter Status"
@@ -298,6 +302,11 @@ frontend:
     editor:
       add: "Bewerbung erstellen"
       edit: "Bewerbung bearbeiten"
+      archive:
+        title: "Bewerbung archivieren"
+        confirmationText: "Wenn du fortfährst und diese Bewerbung archivierst, wirst du diese nicht mehr bearbeiten können. Bist du sicher dass du diese Bewerbung archivieren willst?"
+        archiveSuccess: "Bewerbung erfolgreich archiviert"
+        archiveError: "Bewerbung konnte nicht archiviert werden"
       delete:
         title: "Bewerbung löschen"
         confirmationText: "Wenn du fortfährst und diese Bewerung löschst, wird diese definitiv gelöscht. Du wirst sie nicht Wiederherstellen könne. Bist du sicher dass du diese Bewerbung löschen möchtest?"
@@ -530,6 +539,7 @@ frontend:
       numberInformation: "Resultate {start}-{end} von {total}"
     search: "Suche"
     actions: "Aktionen"
+    resetFilter: "Filter zurücksetzen"
 
 backend:
   validations:
@@ -648,6 +658,7 @@ backend:
       transitionError: "Deine Status-Update Anfrage ist ungültig"
     notFound: "Bewerbung nicht gefunden"
     accessDenied: "Du hast keine Berechtigung diese Bewerbung zu sehen"
+    archived: "Du kannst eine archivierte Bewerbung nicht mehr bearbeiten"
 
   exceptions:
     db: "Ein Datenbank-Fehler ist aufgetreten. Bitte kontaktiere den Administrator"
