@@ -659,6 +659,7 @@ backend:
     notFound: "Bewerbung nicht gefunden"
     accessDenied: "Du hast keine Berechtigung diese Bewerbung zu sehen"
     archived: "Du kannst eine archivierte Bewerbung nicht mehr bearbeiten"
+    archiveOpenNotAllowed: "Du kannst eine offene Bewerbung nicht archivieren"
 
   exceptions:
     db: "Ein Datenbank-Fehler ist aufgetreten. Bitte kontaktiere den Administrator"

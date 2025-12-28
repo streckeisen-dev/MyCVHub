@@ -28,6 +28,7 @@ private const val APPLICATION_NOT_FOUND_MESSAGE_KEY = "$MYCV_KEY_PREFIX.applicat
 private const val TRANSITION_NOT_FOUND_MESSAGE_KEY = "$MYCV_KEY_PREFIX.application.transition.notFound"
 private const val TRANSITION_NOT_ALLOWED_MESSAGE_KEY = "$MYCV_KEY_PREFIX.application.transition.notAllowed"
 private const val ARCHIVED_MESSAGE_KEY = "$MYCV_KEY_PREFIX.application.archived"
+private const val ARCHIVE_OPEN_NOT_ALLOWED_MESSAGE_KEY = "$MYCV_KEY_PREFIX.application.archiveOpenNotAllowed"
 
 private const val DESCENDING_KEY = "descending"
 
@@ -201,6 +202,11 @@ class ApplicationService(
         if (application.isArchived) {
             return Result.success(Unit)
         }
+
+        if (availableTransitions[application.status]?.size ?: 0 > 0) {
+            return Result.failure(LocalizedException(ARCHIVE_OPEN_NOT_ALLOWED_MESSAGE_KEY))
+        }
+
 
         val updatedApplication = ApplicationEntity(
             id = application.id,

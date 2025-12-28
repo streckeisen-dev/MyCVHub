@@ -12,6 +12,7 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -165,6 +166,7 @@ class ApplicationServiceTest {
         assertEquals(ApplicationStatus.UNSENT, capturedApplication.captured.status)
         assertNotNull(capturedApplication.captured.createdAt)
         assertNull(capturedApplication.captured.updatedAt)
+        assertFalse { capturedApplication.captured.isArchived }
     }
 
     @Test
@@ -202,6 +204,7 @@ class ApplicationServiceTest {
         assertEquals(existingApplication.createdAt, capturedApplication.captured.createdAt)
         assertNotNull(capturedApplication.captured.updatedAt)
         assertEquals(existingApplication.history, capturedApplication.captured.history)
+        assertFalse { capturedApplication.captured.isArchived }
     }
 
     @Test
@@ -261,6 +264,7 @@ class ApplicationServiceTest {
         assertEquals(existingApplication.company, capturedApplication.captured.company)
         assertEquals(existingApplication.account, capturedApplication.captured.account)
         assertNotEquals(existingApplication.updatedAt, capturedApplication.captured.updatedAt)
+        assertFalse { capturedApplication.captured.isArchived }
     }
 
     @Test
@@ -289,6 +293,50 @@ class ApplicationServiceTest {
         assertTrue { result.isFailure }
         verify(exactly = 0) { applicationHistoryRepository.save(any()) }
         verify(exactly = 0) { applicationRepository.save(any()) }
+    }
+
+    @Test
+    fun testArchiveWithNotExistingApplication() {
+        val result = applicationService.archive(1, 100)
+
+        assertTrue { result.isFailure }
+        verify(exactly = 0) { applicationRepository.save(any()) }
+    }
+
+    @Test
+    fun testArchiveWithoutPermission() {
+        val result = applicationService.archive(2, 1)
+
+        assertTrue { result.isFailure }
+        verify(exactly = 0) { applicationRepository.save(any()) }
+    }
+
+    @Test
+    fun testArchiveOfOpenApplication() {
+        val result = applicationService.archive(1, 1)
+
+        assertTrue { result.isFailure }
+        verify(exactly = 0) { applicationRepository.save(any()) }
+    }
+
+    @Test
+    fun testArchiveOfClosedApplication() {
+        val result = applicationService.archive(2, 2)
+
+        assertTrue { result.isSuccess }
+        verify(exactly = 1) { applicationRepository.save(any()) }
+        assertNotNull(capturedApplication.captured)
+        assertEquals(existingApplicationTwo.id, capturedApplication.captured.id)
+        assertEquals(existingApplicationTwo.jobTitle, capturedApplication.captured.jobTitle)
+        assertEquals(existingApplicationTwo.company, capturedApplication.captured.company)
+        assertEquals(existingApplicationTwo.createdAt, capturedApplication.captured.createdAt)
+        assertNotEquals(existingApplicationTwo.updatedAt, capturedApplication.captured.updatedAt)
+        assertEquals(existingApplicationTwo.status, capturedApplication.captured.status)
+        assertEquals(existingApplicationTwo.source, capturedApplication.captured.source)
+        assertEquals(existingApplicationTwo.description, capturedApplication.captured.description)
+        assertEquals(existingApplicationTwo.account, capturedApplication.captured.account)
+        assertEquals(existingApplicationTwo.history, capturedApplication.captured.history)
+        assertTrue { capturedApplication.captured.isArchived }
     }
 
     @Test

@@ -659,6 +659,7 @@ backend:
     notFound: "Application not found"
     accessDenied: "You don't have access to this application"
     archived: "You can't modify archived applications"
+    archiveOpenNotAllowed: "You can't archive an open application"
 
   exceptions:
     db: "A database error occurred. Please contact the administrator"
