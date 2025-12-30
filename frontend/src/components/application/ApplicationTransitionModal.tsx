@@ -1,5 +1,6 @@
 import {
   Form,
+  Input,
   Modal,
   ModalBody,
   ModalContent,
@@ -13,14 +14,24 @@ import { FormButtons } from '@/components/FormButtons.tsx'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { useTranslation } from 'react-i18next'
 import { ApplicationDetailsDto } from '@/types/application/ApplicationDetailsDto.ts'
-import ApplicationApi from '@/api/ApplicationApi.ts'
-import { RestError } from '@/types/RestError.ts'
-import { extractFormErrors } from '@/helpers/FormHelper.ts'
 import { ApplicationTransitionRequestDto } from '@/types/application/ApplicationTransitionRequestDto.ts'
+import { CheckboxInput } from '@/components/input/CheckboxInput.tsx'
+import { DateInput } from '@/components/input/DateInput.tsx'
+import { CalendarDate } from '@internationalized/date'
+import { toDateString } from '@/helpers/DateHelper.ts'
+import { extractFormErrors } from '@/helpers/FormHelper.ts'
+import { RestError } from '@/types/RestError.ts'
+import ApplicationApi from '@/api/ApplicationApi.ts'
+
+interface ScheduledWorkExperienceFormData {
+  location: string
+  positionStart: CalendarDate | null
+  description: string
+}
 
 export type ApplicationTransitionModalProps = Readonly<
   Omit<ModalProps, 'children'> & {
-    application: number
+    application: ApplicationDetailsDto
     transition: ApplicationTransitionDto
     onSave: (application: ApplicationDetailsDto) => void
   }
@@ -32,6 +43,13 @@ export function ApplicationTransitionModal(props: ApplicationTransitionModalProp
 
   const [isSaving, setIsSaving] = useState<boolean>(false)
   const [errorMessages, setErrorMessages] = useState<ErrorMessages>({})
+  const [hiredAutomationEnabled, setHiredAutomationEnabled] = useState<boolean>(false)
+  const [scheduledWorkExperience, setScheduledWorkExperience] =
+    useState<ScheduledWorkExperienceFormData>({
+      location: '',
+      positionStart: null,
+      description: ''
+    })
   const commentRef = useRef<HTMLTextAreaElement>(null)
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -39,9 +57,20 @@ export function ApplicationTransitionModal(props: ApplicationTransitionModalProp
     setIsSaving(true)
     const comment = commentRef.current?.value ?? undefined
     const request: ApplicationTransitionRequestDto = {
-      applicationId: application,
+      applicationId: application.id,
       comment: comment === '' ? undefined : comment
     }
+
+    if (transition.isHired && hiredAutomationEnabled) {
+      request.scheduledWorkExperience = {
+        jobTitle: application.jobTitle,
+        company: application.company,
+        location: scheduledWorkExperience.location,
+        positionStart: toDateString(scheduledWorkExperience.positionStart),
+        description: scheduledWorkExperience.description
+      }
+    }
+
     try {
       const updated = await ApplicationApi.transition(transition.id, request, i18n.language)
       onSave(updated)
@@ -56,8 +85,25 @@ export function ApplicationTransitionModal(props: ApplicationTransitionModalProp
     }
   }
 
+  function handleScheduledWorkExperienceChange(name: string, value: unknown) {
+    setScheduledWorkExperience((prev) => ({ ...prev, [name]: value }))
+    setErrorMessages((prev) => {
+      return {
+        ...prev,
+        [name]: undefined
+      } as ErrorMessages
+    })
+  }
+
   return (
-    <Modal isOpen={true} onClose={onClose} backdrop="blur" size="xl" className="w-full p-6" {...modalProps}>
+    <Modal
+      isOpen={true}
+      onClose={onClose}
+      backdrop="blur"
+      size="xl"
+      className="w-full p-6"
+      {...modalProps}
+    >
       <ModalContent>
         {(onClose) => (
           <>
@@ -70,6 +116,53 @@ export function ApplicationTransitionModal(props: ApplicationTransitionModalProp
                   isInvalid={errorMessages.comment != null}
                   errorMessage={errorMessages.comment}
                 />
+
+                {transition.isHired && (
+                  <>
+                    <CheckboxInput
+                      label={t('application.hiredAutomation')}
+                      isSelected={hiredAutomationEnabled}
+                      onValueChange={(val) => setHiredAutomationEnabled(val)}
+                    />
+
+                    {hiredAutomationEnabled && (
+                      <>
+                        <Input
+                          label={t('fields.location')}
+                          isRequired
+                          value={scheduledWorkExperience.location}
+                          onValueChange={(val) =>
+                            handleScheduledWorkExperienceChange('location', val)
+                          }
+                          isInvalid={errorMessages.location != null}
+                          errorMessage={errorMessages.location}
+                        />
+
+                        <DateInput
+                          label={t('fields.positionStart')}
+                          isRequired
+                          value={scheduledWorkExperience.positionStart}
+                          onChange={(val) =>
+                            handleScheduledWorkExperienceChange('positionStart', val)
+                          }
+                          isInvalid={errorMessages.positionStart != null}
+                          errorMessage={errorMessages.positionStart}
+                        />
+
+                        <Textarea
+                          label={t('fields.description')}
+                          isRequired
+                          value={scheduledWorkExperience.description}
+                          onValueChange={(val) =>
+                            handleScheduledWorkExperienceChange('description', val)
+                          }
+                          isInvalid={errorMessages.description != null}
+                          errorMessage={errorMessages.description}
+                        />
+                      </>
+                    )}
+                  </>
+                )}
 
                 <FormButtons onCancel={onClose} isSaving={isSaving} />
               </Form>

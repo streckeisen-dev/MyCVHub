@@ -294,6 +294,7 @@ frontend:
     archived: "Archiviert"
     includeArchived: "Archivierte Bewerbungen anzeigen"
     archivedDescription: "Diese Bewerbung ist archiviert."
+    hiredAutomation: "Willst du diese Position automatisch zu deinem Lebenslauf hinzufügen?"
     history:
       title: "Bewerbungsverlauf"
       from: "Alter Status"
@@ -639,7 +640,7 @@ backend:
       interviewEnded: "Interview beendet"
       offerReceived: "Angebot erhalten"
       offerAccepted: "Angebot akzeptiert"
-      offerRejected: "Angebot abgelehnt"
+      offerDeclined: "Angebot abgelehnt"
       withdrawn: "Zurückgezogen"
       notAllowed: "Diese Aktion ist nicht erlaubt"
       notFound: "Diese Aktion existiert nicht"
