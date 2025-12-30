@@ -2,7 +2,6 @@ package ch.streckeisen.mycv.backend.application
 
 import ch.streckeisen.mycv.backend.application.dto.ApplicationTransitionRequestDto
 import ch.streckeisen.mycv.backend.application.dto.ApplicationUpdateDto
-import ch.streckeisen.mycv.backend.cv.experience.WorkExperienceUpdateDto
 import ch.streckeisen.mycv.backend.cv.experience.WorkExperienceValidationService
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX

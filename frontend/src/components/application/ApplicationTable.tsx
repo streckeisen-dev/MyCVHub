@@ -24,7 +24,7 @@ import { Key } from '@react-types/shared'
 import { formatDateTime } from '@/helpers/DateHelper.ts'
 import { ApplicationStatusDto } from '@/types/application/ApplicationStatusDto.ts'
 import { useAsyncList } from '@react-stately/data'
-import ApplicationApi from '@/api/ApplicationApi.ts'
+import ApplicationApi, { ApplicationSearchRequest } from '@/api/ApplicationApi.ts'
 import { RestError } from '@/types/RestError.ts'
 import { addErrorToast } from '@/helpers/ToastHelper.ts'
 import { FaSearch } from 'react-icons/fa'
@@ -123,14 +123,18 @@ export function ApplicationTable(props: ApplicationTableProps) {
     sort?: SortDescriptor
   ): Promise<ApplicationAsyncListValue> {
     setIsLoading(true)
+
+    const searchRequest: ApplicationSearchRequest = {
+      page,
+      searchTerm,
+      status: statusFilter,
+      includeArchived: includeArchivedFilter,
+      sort,
+      pageSize
+    }
     try {
       const result = await ApplicationApi.search(
-        page,
-        searchTerm,
-        statusFilter,
-        includeArchivedFilter,
-        sort,
-        pageSize,
+        searchRequest,
         i18n.language,
         signal
       )

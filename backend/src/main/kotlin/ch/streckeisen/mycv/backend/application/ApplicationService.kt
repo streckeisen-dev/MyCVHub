@@ -60,30 +60,30 @@ class ApplicationService(
     @Transactional(readOnly = true)
     fun searchApplications(
         accountId: Long,
-        page: Int,
-        pageSize: Int,
-        searchTerm: String?,
-        status: ApplicationStatus?,
-        includeArchived: Boolean,
-        sort: String?,
-        sortDirection: String?
+        searchRequest: ApplicationSearchRequest
     ): Result<Page<ApplicationEntity>> {
-        val pageable = if (!sort.isNullOrBlank()) {
-            val sortBy = if (sortDirection == DESCENDING_KEY) {
-                Sort.by(Sort.Direction.DESC, sort)
+        val pageable = if (!searchRequest.sort.isNullOrBlank()) {
+            val sortBy = if (searchRequest.sortDirection == DESCENDING_KEY) {
+                Sort.by(Sort.Direction.DESC, searchRequest.sort)
             } else {
-                Sort.by(Sort.Direction.ASC, sort)
+                Sort.by(Sort.Direction.ASC, searchRequest.sort)
             }
-            PageRequest.of(page, pageSize, sortBy)
+            PageRequest.of(searchRequest.page, searchRequest.pageSize, sortBy)
         } else PageRequest.of(
-            page,
-            pageSize,
+            searchRequest.page,
+            searchRequest.pageSize,
             Sort.by(
                 Sort.Order(Sort.Direction.DESC, UPDATED_COLUMN_KEY),
                 Sort.Order(Sort.Direction.DESC, CREATED_COLUMN_KEY)
             )
         )
-        val result = applicationRepository.searchByAccountId(accountId, searchTerm, status, includeArchived, pageable)
+        val result = applicationRepository.searchByAccountId(
+            accountId,
+            searchRequest.searchTerm,
+            searchRequest.status,
+            searchRequest.includeArchived,
+            pageable
+        )
         return Result.success(result)
     }
 

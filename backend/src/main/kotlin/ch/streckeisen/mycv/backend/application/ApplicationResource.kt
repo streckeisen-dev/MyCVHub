@@ -62,8 +62,7 @@ class ApplicationResource(
     ): ResponseEntity<Page<ApplicationSearchDto>> {
         val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
-        return applicationService.searchApplications(
-            accountId = principal.id,
+        val searchRequest = ApplicationSearchRequest(
             page = page ?: 0,
             pageSize = pageSize ?: DEFAULT_PAGE_SIZE,
             searchTerm = searchTerm,
@@ -71,6 +70,11 @@ class ApplicationResource(
             includeArchived = includeArchived ?: false,
             sort = sort,
             sortDirection = sortDirection
+        )
+
+        return applicationService.searchApplications(
+            accountId = principal.id,
+            searchRequest = searchRequest
         )
             .fold(
                 onSuccess = { page ->
