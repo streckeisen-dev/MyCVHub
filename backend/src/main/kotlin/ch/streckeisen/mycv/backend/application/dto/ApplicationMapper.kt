@@ -45,7 +45,8 @@ fun ApplicationHistoryEntity.toDto(messagesService: MessagesService): Applicatio
 
 fun ApplicationTransition.toDto(messagesService: MessagesService): ApplicationTransitionDto = ApplicationTransitionDto(
     id = id,
-    label = messagesService.getMessage(labelKey)
+    label = messagesService.getMessage(labelKey),
+    isHired = to == ApplicationStatus.HIRED
 )
 
 fun ApplicationStatus.toDto(messagesService: MessagesService): ApplicationStatusDto = ApplicationStatusDto(

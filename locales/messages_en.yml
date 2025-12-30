@@ -295,6 +295,7 @@ frontend:
     archived: "Archived"
     includeArchived: "Include archived applications"
     archivedDescription: "This application is archived."
+    hiredAutomation: "Do you want to automatically add this new position to your CV profile?"
     history:
       title: "Application History"
       from: "Old Status"
@@ -639,7 +640,7 @@ backend:
       interviewEnded: "Interview ended"
       offerReceived: "Received job offer"
       offerAccepted: "Accepted job offer"
-      offerRejected: "Rejected job offer"
+      offerDeclined: "Declined job offer"
       withdrawn: "Withdrawn"
       notAllowed: "Requested application transition is not allowed"
       notFound: "Requested application transition does not exist"

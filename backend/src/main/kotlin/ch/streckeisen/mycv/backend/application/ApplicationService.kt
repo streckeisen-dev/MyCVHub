@@ -5,6 +5,8 @@ import ch.streckeisen.mycv.backend.application.dto.ApplicationTransitionRequestD
 import ch.streckeisen.mycv.backend.application.dto.ApplicationUpdateDto
 import ch.streckeisen.mycv.backend.exceptions.LocalizedException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
+import ch.streckeisen.mycv.backend.scheduled.SchedulerService
+import ch.streckeisen.mycv.backend.scheduled.data.AddWorkExperienceEntryTaskData
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -40,7 +42,8 @@ class ApplicationService(
     private val applicationRepository: ApplicationRepository,
     private val applicationHistoryRepository: ApplicationHistoryRepository,
     private val applicationValidationService: ApplicationValidationService,
-    private val applicationAccountService: ApplicantAccountService
+    private val applicationAccountService: ApplicantAccountService,
+    private val schedulerService: SchedulerService
 ) {
     @Transactional
     fun findById(accountId: Long, applicationId: Long): Result<ApplicationEntity> {
@@ -57,30 +60,30 @@ class ApplicationService(
     @Transactional(readOnly = true)
     fun searchApplications(
         accountId: Long,
-        page: Int,
-        pageSize: Int,
-        searchTerm: String?,
-        status: ApplicationStatus?,
-        includeArchived: Boolean,
-        sort: String?,
-        sortDirection: String?
+        searchRequest: ApplicationSearchRequest
     ): Result<Page<ApplicationEntity>> {
-        val pageable = if (!sort.isNullOrBlank()) {
-            val sortBy = if (sortDirection == DESCENDING_KEY) {
-                Sort.by(Sort.Direction.DESC, sort)
+        val pageable = if (!searchRequest.sort.isNullOrBlank()) {
+            val sortBy = if (searchRequest.sortDirection == DESCENDING_KEY) {
+                Sort.by(Sort.Direction.DESC, searchRequest.sort)
             } else {
-                Sort.by(Sort.Direction.ASC, sort)
+                Sort.by(Sort.Direction.ASC, searchRequest.sort)
             }
-            PageRequest.of(page, pageSize, sortBy)
+            PageRequest.of(searchRequest.page, searchRequest.pageSize, sortBy)
         } else PageRequest.of(
-            page,
-            pageSize,
+            searchRequest.page,
+            searchRequest.pageSize,
             Sort.by(
                 Sort.Order(Sort.Direction.DESC, UPDATED_COLUMN_KEY),
                 Sort.Order(Sort.Direction.DESC, CREATED_COLUMN_KEY)
             )
         )
-        val result = applicationRepository.searchByAccountId(accountId, searchTerm, status, includeArchived, pageable)
+        val result = applicationRepository.searchByAccountId(
+            accountId,
+            searchRequest.searchTerm,
+            searchRequest.status,
+            searchRequest.includeArchived,
+            pageable
+        )
         return Result.success(result)
     }
 
@@ -187,6 +190,19 @@ class ApplicationService(
         )
 
         val saved = applicationRepository.save(updatedApplication)
+
+        if (transition.to == ApplicationStatus.HIRED && transitionRequest.scheduledWorkExperience != null) {
+            val scheduledWorkExperience = AddWorkExperienceEntryTaskData(
+                accountId = accountId,
+                jobTitle = transitionRequest.scheduledWorkExperience.jobTitle!!,
+                company = transitionRequest.scheduledWorkExperience.company!!,
+                location = transitionRequest.scheduledWorkExperience.location!!,
+                startDate = transitionRequest.scheduledWorkExperience.positionStart!!,
+                description = transitionRequest.scheduledWorkExperience.description!!
+            )
+            schedulerService.scheduleWorkExperienceAddition(scheduledWorkExperience)
+        }
+
         return Result.success(saved)
     }
 
@@ -203,7 +219,7 @@ class ApplicationService(
             return Result.success(Unit)
         }
 
-        if (availableTransitions[application.status]?.size ?: 0 > 0) {
+        if ((availableTransitions[application.status]?.size ?: 0) > 0) {
             return Result.failure(LocalizedException(ARCHIVE_OPEN_NOT_ALLOWED_MESSAGE_KEY))
         }
 

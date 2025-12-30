@@ -70,6 +70,13 @@ cloudinary:
   api-secret: ${CLOUDINARY_API_SECRET}
   url-expiration: 300
 
+db-scheduler:
+  enabled: true
+  table-name: db_scheduler_scheduled_tasks
+  scheduler-name: mycv-scheduler
+  threads: 5
+  shutdown-max-wait: 15m
+  polling-interval: 10m
 my-cv:
   security:
     jwt:

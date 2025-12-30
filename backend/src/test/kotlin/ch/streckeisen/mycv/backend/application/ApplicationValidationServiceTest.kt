@@ -2,22 +2,56 @@ package ch.streckeisen.mycv.backend.application
 
 import ch.streckeisen.mycv.backend.application.dto.ApplicationTransitionRequestDto
 import ch.streckeisen.mycv.backend.application.dto.ApplicationUpdateDto
+import ch.streckeisen.mycv.backend.application.dto.ScheduledWorkExperienceDto
+import ch.streckeisen.mycv.backend.cv.experience.WorkExperienceValidationService
+import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MessagesService
 import ch.streckeisen.mycv.backend.util.StringValidator
 import ch.streckeisen.mycv.backend.util.executeParameterizedTest
+import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import java.time.LocalDate
+
+val validScheduledWorkExperience = ScheduledWorkExperienceDto("job", "loc", "comp", LocalDate.now().plusDays(5), "desc")
 
 class ApplicationValidationServiceTest {
+    private lateinit var workExperienceValidationService: WorkExperienceValidationService
     private lateinit var validationService: ApplicationValidationService
 
     @BeforeEach
     fun setup() {
         val messagesService: MessagesService = mockk(relaxed = true)
-        validationService = ApplicationValidationService(StringValidator(messagesService), messagesService)
+        workExperienceValidationService = mockk {
+            every {
+                validateWorkExperience(
+                    any(),
+                    any()
+                )
+            } returns Result.failure(
+                ValidationException.ValidationErrorBuilder()
+                    .addError("jobTitle", "error")
+                    .build("msg")
+            )
+
+            every {
+                validateWorkExperience(
+                    eq(validScheduledWorkExperience.toUpdateRequest()),
+                    eq(true)
+                )
+            } returns Result.success(Unit)
+        }
+        validationService = ApplicationValidationService(
+            StringValidator(messagesService),
+            messagesService,
+            workExperienceValidationService
+        )
     }
 
     @ParameterizedTest
@@ -38,6 +72,29 @@ class ApplicationValidationServiceTest {
             isValid,
             numberOfErrors
         ) { validationService.validateTransition(it) }
+    }
+
+    @Test
+    fun testValidateTransitionWithInvalidScheduledWorkExperience() {
+        val request =
+            ApplicationTransitionRequestDto(1, "abc", ScheduledWorkExperienceDto(null, null, null, null, null))
+
+        val result = validationService.validateTransition(request)
+
+        assertTrue { result.isFailure }
+        val ex = result.exceptionOrNull()
+        assertNotNull(ex)
+        assertTrue { ex is ValidationException }
+        assertTrue { (ex as ValidationException).errors.isNotEmpty() }
+    }
+
+    @Test
+    fun testValidateTransitionWithValidScheduledWorkExperience() {
+        val request = ApplicationTransitionRequestDto(1, "abc", validScheduledWorkExperience)
+
+        val result = validationService.validateTransition(request)
+
+        assertTrue { result.isSuccess }
     }
 
     companion object {
@@ -107,9 +164,9 @@ class ApplicationValidationServiceTest {
 
         @JvmStatic
         fun transitionValidationDataProvider() = listOf(
-            Arguments.of(ApplicationTransitionRequestDto(1, ""), false, 1),
-            Arguments.of(ApplicationTransitionRequestDto(1, null), true, 0),
-            Arguments.of(ApplicationTransitionRequestDto(1, "comment"), true, 0)
+            Arguments.of(ApplicationTransitionRequestDto(1, "", null), false, 1),
+            Arguments.of(ApplicationTransitionRequestDto(1, null, null), true, 0),
+            Arguments.of(ApplicationTransitionRequestDto(1, "comment", null), true, 0)
         )
     }
 }
