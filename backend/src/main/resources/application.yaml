@@ -76,7 +76,7 @@ db-scheduler:
   scheduler-name: mycv-scheduler
   threads: 5
   shutdown-max-wait: 15m
-  polling-interval: 10m
+  polling-interval: 1s
 my-cv:
   security:
     jwt:

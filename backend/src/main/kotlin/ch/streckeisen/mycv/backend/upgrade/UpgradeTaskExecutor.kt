@@ -3,12 +3,14 @@ package ch.streckeisen.mycv.backend.upgrade
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
 import org.springframework.context.annotation.DependsOn
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
 private val logger = KotlinLogging.logger { }
 
 @Component
 @DependsOn("liquibase")
+@Profile("!test")
 class UpgradeTaskExecutor(
     private val upgradeTaskExecutionService: UpgradeTaskExecutionService,
     private val upgradeTasks: List<UpgradeTask>

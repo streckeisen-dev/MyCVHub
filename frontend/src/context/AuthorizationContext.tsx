@@ -78,7 +78,7 @@ export function AuthorizationProvider(props: Readonly<PropsWithChildren>): React
       handleUserUpdate,
       handleLogout
     }
-  }, [authUser, handleUserUpdate, handleLogout])
+  }, [authUser, handleUserUpdate, handleLogout, isLoading])
 
   return (
     <AuthorizationContext value={contextValue}>

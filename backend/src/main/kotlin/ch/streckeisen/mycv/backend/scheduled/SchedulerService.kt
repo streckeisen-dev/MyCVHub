@@ -6,7 +6,7 @@ import ch.streckeisen.mycv.backend.scheduled.tasks.ADD_WORK_EXPERIENCE_TASK_RUN_
 import com.github.kagkarlsson.scheduler.Scheduler
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
-import java.time.ZoneOffset
+import java.time.ZoneId
 import java.util.UUID
 
 private val logger = KotlinLogging.logger {}
@@ -17,7 +17,8 @@ class SchedulerService(
 ) {
     fun scheduleWorkExperienceAddition(data: AddWorkExperienceEntryTaskData) {
         val runDate = data.startDate.atTime(ADD_WORK_EXPERIENCE_TASK_RUN_TIME)
-            .toInstant(ZoneOffset.UTC)
+            .atZone(ZoneId.systemDefault())
+            .toInstant()
 
         scheduler.schedule(
             ADD_WORK_EXPERIENCE_TASK_DESCRIPTOR.instance(
