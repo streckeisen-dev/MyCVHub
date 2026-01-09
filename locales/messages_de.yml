@@ -576,6 +576,14 @@ backend:
     accessDenied: "Du hast keinen Zugriff auf dieses Projekt"
     validation:
       error: "Validierung des Projekts ist fehlgeschlagen"
+  applicationTemplate:
+    notFound: "Bewerbungsvorlage nicht gefunden"
+    accessDenied: "Du hast keinen Zugriff auf diese Bewerbungsvorlage"
+    validation:
+      cvConfigurationMissing: "Lebenslauf-Konfiguration fehlt"
+      invalidCvStyle: "Lebenslauf-Stil ist ungültig"
+      invalidTemplate: "Bewerbungsvorlage ist ungültig"
+      unknownCvEntries: "Einige referenzierte Lebenslauf-Einträge existieren nicht"
   account:
     notFound: "Account nicht gefunden"
     verification:

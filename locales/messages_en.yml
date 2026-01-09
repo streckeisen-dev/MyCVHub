@@ -576,6 +576,14 @@ backend:
     accessDenied: "You don't have access to this project"
     validation:
       error: "Project validation failed"
+  applicationTemplate:
+    notFound: "Application template not found"
+    accessDenied: "You don't have access to this application template"
+    validation:
+      cvConfigurationMissing: "CV configuration is missing"
+      invalidCvStyle: "Invalid CV style"
+      invalidTemplate: "Application template is invalid"
+      unknownCvEntries: "Some referenced CV entries don't exist"
   account:
     notFound: "Account not found"
     verification:

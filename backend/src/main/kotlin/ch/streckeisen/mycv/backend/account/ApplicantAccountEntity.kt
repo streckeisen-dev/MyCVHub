@@ -2,6 +2,8 @@ package ch.streckeisen.mycv.backend.account
 
 import ch.streckeisen.mycv.backend.account.auth.oauth.OAuthIntegrationEntity
 import ch.streckeisen.mycv.backend.account.verification.AccountVerificationEntity
+import ch.streckeisen.mycv.backend.application.ApplicationEntity
+import ch.streckeisen.mycv.backend.applicationTemplate.ApplicationTemplateEntity
 import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -32,5 +34,10 @@ class ApplicantAccountEntity(
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "account")
     val profile: ProfileEntity? = null,
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "account")
-    val accountVerification: AccountVerificationEntity? = null
+    val accountVerification: AccountVerificationEntity? = null,
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "account")
+    val applications: List<ApplicationEntity> = emptyList(),
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "account")
+    val applicationTemplates: List<ApplicationTemplateEntity> = emptyList()
 )
