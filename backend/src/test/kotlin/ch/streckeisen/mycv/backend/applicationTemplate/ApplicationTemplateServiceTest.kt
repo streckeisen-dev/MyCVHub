@@ -4,7 +4,9 @@ import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
 import io.mockk.CapturingSlot
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -92,6 +94,8 @@ class ApplicationTemplateServiceTest {
                 val arg = firstArg<ApplicationTemplateEntity>()
                 ApplicationTemplateEntity(100, arg.account, arg.name, arg.cvConfiguration, arg.documentChecklist)
             }
+
+            every { delete(any()) } just runs
         }
 
         profileService = mockk {
@@ -183,5 +187,26 @@ class ApplicationTemplateServiceTest {
         assertEquals(validNewRequest.name, templateSlot.captured.name)
         assertEquals("{\"includedWorkExperience\":[{\"entityId\":1,\"includeDescription\":true}],\"includedEducation\":null,\"includedProjects\":null,\"includedSkills\":[1],\"cvTemplate\":\"talendo\",\"templateParameters\":{\"bannerBackground\":\"#FFFFFF\"}}", templateSlot.captured.cvConfiguration)
         assertEquals("[\"Uni Degree\"]", templateSlot.captured.documentChecklist)
+    }
+
+    @Test
+    fun testDeleteOfNotExistingTemplate() {
+        val result = applicationTemplateService.delete(1, 10)
+
+        assertTrue { result.isFailure }
+    }
+
+    @Test
+    fun testDeleteOfUnauthorizedTemplate() {
+        val result = applicationTemplateService.delete(2, 1)
+
+        assertTrue { result.isFailure }
+    }
+
+    @Test
+    fun testDelete() {
+        val result = applicationTemplateService.delete(1, 1)
+
+        assertTrue { result.isSuccess }
     }
 }
