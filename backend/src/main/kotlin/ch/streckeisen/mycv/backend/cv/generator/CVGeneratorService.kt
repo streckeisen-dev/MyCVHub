@@ -55,7 +55,7 @@ class CVGeneratorService(
             .onFailure { return Result.failure(it) }
             .getOrElse { return Result.failure(it) }
 
-        cvGeneratorValidationService.verifyProfileCompleteness(profile)
+        cvGeneratorValidationService.validateProfileCompleteness(profile)
             .onFailure { return Result.failure(it) }
 
         val workExperiences = cvDataService.filterWorkExperiences(profile.workExperiences, includedWorkExperience)

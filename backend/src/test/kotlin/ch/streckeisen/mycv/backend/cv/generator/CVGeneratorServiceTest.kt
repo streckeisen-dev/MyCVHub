@@ -95,8 +95,8 @@ class CVGeneratorServiceTest {
     @BeforeEach
     fun setup() {
         cvGeneratorValidationService = mockk {
-            every { verifyProfileCompleteness(eq(completeProfile)) } returns Result.success(Unit)
-            every { verifyProfileCompleteness(eq(invalidProfile)) } returns Result.failure(IllegalArgumentException())
+            every { validateProfileCompleteness(eq(completeProfile)) } returns Result.success(Unit)
+            every { validateProfileCompleteness(eq(invalidProfile)) } returns Result.failure(IllegalArgumentException())
         }
 
         profileService = mockk {

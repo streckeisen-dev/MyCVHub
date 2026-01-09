@@ -48,7 +48,7 @@ class CvGeneratorValidationService(
         return Result.success(Unit)
     }
 
-    fun verifyProfileCompleteness(profile: ProfileEntity): Result<Unit> {
+    fun validateProfileCompleteness(profile: ProfileEntity): Result<Unit> {
         if (!profile.account.isVerified || profile.account.accountDetails == null) {
             return Result.failure(LocalizedException(INCOMPLETE_PROFILE_MESSAGE))
         }

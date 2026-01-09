@@ -23,14 +23,16 @@ private const val CV_CONFIG_MISSING_MESSAGE_KEY = "$APPLICATION_TEMPLATE_MESSAGE
 private const val INVALID_CV_STYLE_MESSAGE_KEY = "$APPLICATION_TEMPLATE_MESSAGE_PREFIX.invalidCvStyle"
 private const val INVALID_TEMPLATE_MESSAGE_KEY = "$APPLICATION_TEMPLATE_MESSAGE_PREFIX.invalidTemplate"
 private const val UNKNOWN_CV_ENTRY_MESSAGE_KEY = "$APPLICATION_TEMPLATE_MESSAGE_PREFIX.unknownCvEntries"
+private const val NAME_TAKEN_MESSAGE_KEY = "$APPLICATION_TEMPLATE_MESSAGE_PREFIX.nameTaken"
 
 @Service
 class ApplicationTemplateValidationService(
     private val stringValidator: StringValidator,
     private val cvGeneratorValidationService: CvGeneratorValidationService,
-    private val messagesService: MessagesService
+    private val messagesService: MessagesService,
+    private val applicationTemplateRepository: ApplicationTemplateRepository
 ) {
-    fun validateUpdate(applicationTemplateUpdate: ApplicationTemplateUpdateDto, profile: ProfileEntity): Result<Unit> {
+    fun validateUpdate(accountId: Long, applicationTemplateUpdate: ApplicationTemplateUpdateDto, profile: ProfileEntity): Result<Unit> {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
         stringValidator.validateRequiredString(
@@ -39,6 +41,13 @@ class ApplicationTemplateValidationService(
             NAME_MAX_LENGTH,
             validationErrorBuilder
         )
+
+        if (applicationTemplateUpdate.name != null) {
+            val existingTemplate = applicationTemplateRepository.findByAccountIdAndName(accountId, applicationTemplateUpdate.name)
+            if (existingTemplate.isPresent && existingTemplate.get().id != applicationTemplateUpdate.id) {
+                validationErrorBuilder.addError(NAME_FIELD_KEY, messagesService.getMessage(NAME_TAKEN_MESSAGE_KEY))
+            }
+        }
 
         if (applicationTemplateUpdate.cvConfiguration == null) {
             val error = messagesService.getMessage(CV_CONFIG_MISSING_MESSAGE_KEY)
@@ -68,7 +77,7 @@ class ApplicationTemplateValidationService(
             validationErrorBuilder.addError(CV_TEMPLATE_FIELD, error)
         }
 
-        val profileValidation = cvGeneratorValidationService.verifyProfileCompleteness(profile)
+        val profileValidation = cvGeneratorValidationService.validateProfileCompleteness(profile)
         if (profileValidation.isFailure) {
             validationErrorBuilder.addError(
                 PROFILE_FIELD,
@@ -81,7 +90,7 @@ class ApplicationTemplateValidationService(
             val unknownEducation = cvConfiguration.includedEducation?.filter { includedEducation ->
                 profile.education.none { includedEducation.entityId == it.id }
             }
-            val unknownProjects = cvConfiguration.includedWorkExperience?.filter { includedProject ->
+            val unknownProjects = cvConfiguration.includedProjects?.filter { includedProject ->
                 profile.projects.none { includedProject.entityId == it.id }
             }
             val unknownSkills = cvConfiguration.includedSkills?.filter { includedSkillId ->

@@ -30,17 +30,22 @@ class ApplicationTemplateService(
                         LocalizedException(NOT_FOUND_MESSAGE_KEY)
                     )
                 } else null
+
+        if (existingTemplate != null && existingTemplate.account.id != accountId)  {
+            return Result.failure(LocalizedException(ACCESS_DENIED_MESSAGE_KEY))
+        }
+
         val profile = existingTemplate?.account?.profile ?: profileService.findByAccountId(accountId)
             .getOrElse { return Result.failure(it) }
 
-        applicationTemplateValidationService.validateUpdate(applicationTemplate, profile)
+        applicationTemplateValidationService.validateUpdate(accountId, applicationTemplate, profile)
             .onFailure { return Result.failure(it) }
 
         val template = ApplicationTemplateEntity(
             id = existingTemplate?.id,
             name = applicationTemplate.name!!,
             cvConfiguration = objectMapper.writeValueAsString(applicationTemplate.cvConfiguration!!.toCvConfiguration()),
-            documentChecklist = objectMapper.writeValueAsString(applicationTemplate.documentChecklist),
+            documentChecklist = if (applicationTemplate.documentChecklist != null) objectMapper.writeValueAsString(applicationTemplate.documentChecklist) else null,
             account = profile.account
         )
 

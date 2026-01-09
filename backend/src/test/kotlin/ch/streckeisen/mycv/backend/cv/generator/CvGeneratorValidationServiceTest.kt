@@ -132,22 +132,22 @@ class CvGeneratorValidationServiceTest {
     }
 
     @Test
-    fun testVerifyProfileCompleteness() {
-        val result = cvGeneratorValidationService.verifyProfileCompleteness(completeProfile)
+    fun testValidateProfileCompleteness() {
+        val result = cvGeneratorValidationService.validateProfileCompleteness(completeProfile)
 
         assertTrue { result.isSuccess }
     }
 
     @Test
-    fun testVerifyProfileCompletenessWithUnverifiedProfile() {
-        val result = cvGeneratorValidationService.verifyProfileCompleteness(unverifiedProfile)
+    fun testValidateProfileCompletenessWithUnverifiedProfile() {
+        val result = cvGeneratorValidationService.validateProfileCompleteness(unverifiedProfile)
 
         assertTrue { result.isFailure }
     }
 
     @Test
-    fun testVerifyProfileCompletenessWithIncompleteProfile() {
-        val result = cvGeneratorValidationService.verifyProfileCompleteness(incompleteProfile)
+    fun testValidateProfileCompletenessWithIncompleteProfile() {
+        val result = cvGeneratorValidationService.validateProfileCompleteness(incompleteProfile)
 
         assertTrue { result.isFailure }
     }

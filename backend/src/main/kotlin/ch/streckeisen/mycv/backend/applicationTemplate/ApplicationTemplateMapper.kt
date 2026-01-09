@@ -22,7 +22,7 @@ fun ApplicationTemplateEntity.toFullObject(objectMapper: ObjectMapper) = Applica
     id = id!!,
     name = name,
     cvConfiguration = objectMapper.readValue(cvConfiguration, CvConfiguration::class.java),
-    documentChecklist = objectMapper.readValue(
+    documentChecklist = if (documentChecklist == null) null else objectMapper.readValue(
         documentChecklist,
         object : TypeReference<List<String>>() {}
     )

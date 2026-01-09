@@ -584,6 +584,7 @@ backend:
       invalidCvStyle: "Lebenslauf-Stil ist ungültig"
       invalidTemplate: "Bewerbungsvorlage ist ungültig"
       unknownCvEntries: "Einige referenzierte Lebenslauf-Einträge existieren nicht"
+      nameTaken: "Der Name dieser Bewerbungsvorlage ist bereits vergeben"
   account:
     notFound: "Account nicht gefunden"
     verification:

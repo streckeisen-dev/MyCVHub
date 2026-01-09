@@ -584,6 +584,7 @@ backend:
       invalidCvStyle: "Invalid CV style"
       invalidTemplate: "Application template is invalid"
       unknownCvEntries: "Some referenced CV entries don't exist"
+      nameTaken: "Application template name is already taken"
   account:
     notFound: "Account not found"
     verification:
