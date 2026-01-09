@@ -24,7 +24,68 @@ import java.time.LocalDate
 private const val TALENDO_TEMPLATE = "talendo.typ"
 private const val OUTPUT_PDF = "cv_1.pdf"
 
+private val invalidProfile = ProfileEntity(
+    jobTitle = "Invalid Job",
+    bio = null,
+    isProfilePublic = false,
+    isEmailPublic = false,
+    isPhonePublic = false,
+    isAddressPublic = false,
+    hideDescriptions = false,
+    profilePicture = "picture.png",
+    id = 1,
+    account = mockk(),
+)
+
+private val completeProfile = ProfileEntity(
+    jobTitle = "Test Job",
+    bio = null,
+    isProfilePublic = false,
+    isEmailPublic = true,
+    isPhonePublic = true,
+    isAddressPublic = true,
+    hideDescriptions = false,
+    profilePicture = "myPicture.png",
+    id = 1,
+    account = ApplicantAccountEntity(
+        username = "testuser",
+        password = null,
+        isOAuthUser = true,
+        isVerified = true,
+        id = 1,
+        accountDetails = AccountDetailsEntity(
+            firstName = "Test",
+            lastName = "User",
+            email = "em@ail.com",
+            phone = "+41 79 123 45 67",
+            birthday = LocalDate.of(1985, 6, 25),
+            street = "My Home Street",
+            houseNumber = "4",
+            postcode = "12345",
+            city = "City",
+            country = "CH",
+            language = "en"
+        )
+    ),
+    workExperiences = listOf(
+        WorkExperienceEntity(
+            id = 1,
+            jobTitle = "Current Job",
+            company = "Tech Inc.",
+            positionStart = LocalDate.of(2020, 5, 1),
+            positionEnd = null,
+            location = "Here",
+            description = "Tech Stuff",
+            profile = mockk()
+        )
+    ),
+    education = emptyList(),
+    projects = emptyList(),
+    skills = emptyList(),
+)
+
 class CVGeneratorServiceTest {
+    private lateinit var cvGeneratorValidationService: CvGeneratorValidationService
     private lateinit var profileService: ProfileService
     private lateinit var profilePictureService: ProfilePictureService
     private lateinit var typstService: TypstService
@@ -33,9 +94,14 @@ class CVGeneratorServiceTest {
 
     @BeforeEach
     fun setup() {
+        cvGeneratorValidationService = mockk {
+            every { verifyProfileCompleteness(eq(completeProfile)) } returns Result.success(Unit)
+            every { verifyProfileCompleteness(eq(invalidProfile)) } returns Result.failure(IllegalArgumentException())
+        }
+
         profileService = mockk {
-            every { findByAccountId(eq(1)) } returns Result.success(completeProfile())
-            every { findByAccountId(eq(5)) } returns Result.success(invalidProfile())
+            every { findByAccountId(eq(1)) } returns Result.success(completeProfile)
+            every { findByAccountId(eq(5)) } returns Result.success(invalidProfile)
         }
 
         profilePictureService = mockk {
@@ -49,7 +115,12 @@ class CVGeneratorServiceTest {
 
         cvDataService = mockk(relaxed = true) {
             val delegate = CVDataService(mockk(relaxed = true))
-            every { filterWorkExperiences(any(), any()) } answers { delegate.filterWorkExperiences(firstArg(), secondArg()) }
+            every { filterWorkExperiences(any(), any()) } answers {
+                delegate.filterWorkExperiences(
+                    firstArg(),
+                    secondArg()
+                )
+            }
             every { createCVData(any(), any(), any(), any(), any(), any()) } returns CVData(
                 "en",
                 "Test",
@@ -60,15 +131,17 @@ class CVGeneratorServiceTest {
                 "phone",
                 "address",
                 "birthday",
-                listOf(CVEntry(
-                    "title",
-                    "loc",
-                    "start",
-                    "end",
-                    "institute",
-                    "descr",
-                    emptyList()
-                )),
+                listOf(
+                    CVEntry(
+                        "title",
+                        "loc",
+                        "start",
+                        "end",
+                        "institute",
+                        "descr",
+                        emptyList()
+                    )
+                ),
                 emptyList(),
                 emptyList(),
                 emptyList(),
@@ -79,6 +152,7 @@ class CVGeneratorServiceTest {
         typstService = mockk()
 
         cvGeneratorService = CVGeneratorService(
+            cvGeneratorValidationService,
             profileService,
             profilePictureService,
             ObjectMapper(),
@@ -89,7 +163,11 @@ class CVGeneratorServiceTest {
 
     @Test
     fun testCVGenerationWithoutCustomization() = runTest {
-        coEvery { typstService.compile(any(), eq(TALENDO_TEMPLATE), eq(OUTPUT_PDF)) } returns Result.success(ByteArray(10))
+        coEvery { typstService.compile(any(), eq(TALENDO_TEMPLATE), eq(OUTPUT_PDF)) } returns Result.success(
+            ByteArray(
+                10
+            )
+        )
 
         val result = cvGeneratorService.generateCV(1, CVStyle.TALENDO, null, null, null, null, null)
 
@@ -98,7 +176,11 @@ class CVGeneratorServiceTest {
 
     @Test
     fun testCVGenerationWithWorkExperienceFilter() = runTest {
-        coEvery { typstService.compile(any(), eq(TALENDO_TEMPLATE), eq(OUTPUT_PDF)) } returns Result.success(ByteArray(10))
+        coEvery { typstService.compile(any(), eq(TALENDO_TEMPLATE), eq(OUTPUT_PDF)) } returns Result.success(
+            ByteArray(
+                10
+            )
+        )
 
         val result = cvGeneratorService.generateCV(
             1,
@@ -115,7 +197,11 @@ class CVGeneratorServiceTest {
 
     @Test
     fun testCVGenerationWithWorkExperienceFilterAndNoEntries() = runTest {
-        coEvery { typstService.compile(any(), eq(TALENDO_TEMPLATE), eq(OUTPUT_PDF)) } returns Result.success(ByteArray(10))
+        coEvery { typstService.compile(any(), eq(TALENDO_TEMPLATE), eq(OUTPUT_PDF)) } returns Result.success(
+            ByteArray(
+                10
+            )
+        )
 
         val result = cvGeneratorService.generateCV(
             1,
@@ -140,6 +226,9 @@ class CVGeneratorServiceTest {
     @Test
     fun testCVGenerationWithInvalidTemplateOptions() = runTest {
         val options = mapOf(CVStyle.TALENDO.options.first().key to "invalid")
+        every { cvGeneratorValidationService.validateTemplateOptions(any(), eq(options)) } returns Result.failure(
+            IllegalArgumentException()
+        )
 
         val result = cvGeneratorService.generateCV(
             1,
@@ -157,6 +246,9 @@ class CVGeneratorServiceTest {
     @Test
     fun testCVGenerationWithNonexistentTemplateOptions() = runTest {
         val options = mapOf("invalid" to "invalid")
+        every { cvGeneratorValidationService.validateTemplateOptions(any(), eq(options)) } returns Result.failure(
+            IllegalArgumentException()
+        )
 
         val result = cvGeneratorService.generateCV(
             1,
@@ -174,6 +266,9 @@ class CVGeneratorServiceTest {
     @Test
     fun testCVGenerationWithUnsupportedTemplateOptions() = runTest {
         val options = mapOf("invalid" to "invalid")
+        every { cvGeneratorValidationService.validateTemplateOptions(any(), eq(options)) } returns Result.failure(
+            IllegalArgumentException()
+        )
 
         val result = cvGeneratorService.generateCV(
             1,
@@ -190,9 +285,18 @@ class CVGeneratorServiceTest {
 
     @Test
     fun testCVGenerationWithValidTemplateOptions() = runTest {
-        coEvery { typstService.compile(any(), eq(TALENDO_TEMPLATE), eq(OUTPUT_PDF)) } returns Result.success(ByteArray(10))
-
+        coEvery { typstService.compile(any(), eq(TALENDO_TEMPLATE), eq(OUTPUT_PDF)) } returns Result.success(
+            ByteArray(
+                10
+            )
+        )
         val options = mapOf(CVStyle.TALENDO.options.first().key to "#FFFFFF")
+        every {
+            cvGeneratorValidationService.validateTemplateOptions(
+                eq(CVStyle.TALENDO),
+                eq(options)
+            )
+        } returns Result.success(Unit)
 
         val result = cvGeneratorService.generateCV(
             1,
@@ -206,88 +310,4 @@ class CVGeneratorServiceTest {
 
         assertTrue { result.isSuccess }
     }
-
-    private fun completeAndVerifiedAccount() = ApplicantAccountEntity(
-        "testuser",
-        null,
-        true,
-        true,
-        1,
-        AccountDetailsEntity(
-            "Test",
-            "User",
-            "em@ail.com",
-            "+41 79 123 45 67",
-            LocalDate.of(1985, 6, 25),
-            "My Home Street",
-            "4",
-            "12345",
-            "City",
-            "CH",
-            "en"
-        )
-    )
-
-    private fun workExperiences() = listOf(
-        WorkExperienceEntity(
-            1,
-            "Current Job",
-            "Tech Inc.",
-            LocalDate.of(2020, 5, 1),
-            null,
-            "Here",
-            "Tech Stuff",
-            mockk()
-        ),
-        WorkExperienceEntity(
-            2,
-            "Previous Job",
-            "Other Inc.",
-            LocalDate.of(2010, 1, 1),
-            LocalDate.of(2015, 12, 31),
-            "There",
-            "Other Stuff",
-            mockk()
-        )
-    )
-
-    private fun completeProfile() = ProfileEntity(
-        "Test Job",
-        null,
-        false,
-        true,
-        true,
-        true,
-        false,
-        "myPicture.png",
-        1,
-        completeAndVerifiedAccount(),
-        workExperiences = workExperiences(),
-        education = emptyList(),
-        projects = emptyList(),
-        skills = emptyList(),
-    )
-
-    private fun unverifiedAccount() = ApplicantAccountEntity(
-        "unverified",
-        null,
-        true,
-        false,
-        5,
-        null
-    )
-
-    private fun invalidProfile() = ProfileEntity(
-        "Invalid Job",
-        null,
-        false,
-        false,
-        false,
-        false,
-        false,
-        "picture.png",
-        1,
-        unverifiedAccount(),
-        workExperiences = workExperiences(),
-    )
 }

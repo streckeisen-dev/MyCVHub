@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service
 
 private const val MISSING_TEMPLATE_OPTION = "$MYCV_KEY_PREFIX.cv.templateOptions.missing"
 private const val INVALID_TEMPLATE_OPTION = "$MYCV_KEY_PREFIX.cv.templateOptions.invalid"
-private const val UNSUPPORTED_TEMPLATE_OPTIONS = "$MYCV_KEY_PREFIX.cv.templateOptions.unsupported"
 private const val UNKNOWN_TEMPLATE_OPTION = "$MYCV_KEY_PREFIX.cv.templateOptions.unknown"
 
 private const val INCOMPLETE_PROFILE_MESSAGE = "$MYCV_KEY_PREFIX.cv.incompleteProfile"
@@ -22,9 +21,6 @@ class CvGeneratorValidationService(
 ) {
     fun validateTemplateOptions(cvStyle: CVStyle, templateOptions: Map<String, String>): Result<Unit> {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
-        if (cvStyle.options.isEmpty() && templateOptions.isNotEmpty()) {
-            validationErrorBuilder.addError("templateOptions", messagesService.getMessage(UNSUPPORTED_TEMPLATE_OPTIONS))
-        }
 
         templateOptions.keys.forEach { key ->
             val option = cvStyle.options.find { it.key == key }
