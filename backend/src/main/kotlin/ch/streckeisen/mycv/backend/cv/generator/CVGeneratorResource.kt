@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -25,7 +24,7 @@ class CVGeneratorResource(
             .entries
             .map { style ->
                 CVStyleDto(
-                    key = style.cvTemplate,
+                    key = style.styleKey,
                     name = messagesService.getMessage(style.nameKey),
                     description = messagesService.getMessage(style.descriptionKey),
                     options = style.options.map { option ->
@@ -42,21 +41,9 @@ class CVGeneratorResource(
     }
 
     @PostMapping("generate", produces = [MediaType.APPLICATION_PDF_VALUE])
-    suspend fun generate(@RequestParam("style") cvStyle: String?, @RequestBody generationRequest: CVGenerationRequestDto): ResponseEntity<ByteArray> {
-        val style = CVStyle.fromTemplate(cvStyle)
-        if (style == null) return ResponseEntity.badRequest().build()
-
-
+    suspend fun generate(@RequestBody generationRequest: CvConfigurationRequestDto): ResponseEntity<ByteArray> {
         val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
-        val file = cvGeneratorService.generateCV(
-            principal.id,
-            style,
-            generationRequest.includedWorkExperience,
-            generationRequest.includedEducation,
-            generationRequest.includedProjects,
-            generationRequest.includedSkills,
-            generationRequest.templateOptions
-        )
+        val file = cvGeneratorService.generateCV(principal.id, generationRequest)
             .onFailure { throw it }
             .getOrThrow()
         return ResponseEntity.ok(file)

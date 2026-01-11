@@ -1,13 +1,16 @@
 package ch.streckeisen.mycv.backend.applicationTemplate
 
 data class CvConfiguration(
-    val includedWorkExperience: List<CvEntrySelection>? = emptyList(),
-    val includedEducation: List<CvEntrySelection>? = emptyList(),
-    val includedProjects: List<CvEntrySelection>? = emptyList(),
-    val includedSkills: List<Long>? = emptyList(),
+    val includedCvContent: IncludedCvContent?,
+    val cvStyle: String,
+    val cvStyleOptions: Map<String, String>?
+)
 
-    val cvTemplate: String,
-    val templateParameters: Map<String, String> = emptyMap()
+data class IncludedCvContent(
+    val includedWorkExperience: List<CvEntrySelection>,
+    val includedEducation: List<CvEntrySelection>,
+    val includedProjects: List<CvEntrySelection>,
+    val includedSkills: List<Long>,
 )
 
 data class CvEntrySelection(

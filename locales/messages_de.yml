@@ -44,6 +44,7 @@ shared:
     status: "Status"
     source: "Quelle"
     acceptTos: "Ich habe die folgenden Dokumente gelesen und akzeptiere diese: "
+    documentName: "Dokument Name"
 
   validations:
     required: "{label} darf nicht leer sein"
@@ -281,6 +282,7 @@ frontend:
 
   application:
     title: "Bewerbungen"
+    overview: "Übersicht"
     singular: "Bewerbung"
     notFound: "Bewerbung nicht gefunden"
     noEntries: "Du hast noch keine Bewerbungen."
@@ -316,6 +318,17 @@ frontend:
     loadingError: "Bewerbungen konnten nicht geladen werden"
     statusLoadingError: "Bewerungs-Status Filter Informationen konnten nicht geladen werden"
     transitionError: "Bewerbungs-Status konnte nicht aktualisiert werden"
+
+  applicationTemplate:
+    title: "Bewerbungsvorlagen"
+    noEntries: "Noch keine Bewerbungsvorlagen vorhanden"
+    cvContent: "Lebenslaufinhalt"
+    documentChecklist: "Dokumenten Checkliste"
+    documentChecklistHint: "Du kannst diese Checklist als Erinnerungsstütze verwenden, damit du bei Bewerbungen keine Dokumente vergisst."
+    editor:
+      add: "Bewerbungsvorlage erstellen"
+      edit: "Bewerbungsvorlage bearbeiten"
+      saveError: "Bewerbungsvorlage konnte nicht gespeichert werden"
 
   notFound:
     headline: "Wo willst du hin?"

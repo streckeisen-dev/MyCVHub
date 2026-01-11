@@ -3,7 +3,7 @@ package ch.streckeisen.mycv.backend.cv.generator
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 
 enum class CVStyle(
-    val cvTemplate: String,
+    val styleKey: String,
     val nameKey: String,
     val descriptionKey: String,
     val options: List<CVStyleOption> = emptyList()
@@ -28,6 +28,6 @@ enum class CVStyle(
     );
 
     companion object {
-        fun fromTemplate(template: String?): CVStyle? = entries.find { it.cvTemplate == template }
+        fun fromStyleKey(styleKey: String?): CVStyle? = entries.find { it.styleKey == styleKey }
     }
 }

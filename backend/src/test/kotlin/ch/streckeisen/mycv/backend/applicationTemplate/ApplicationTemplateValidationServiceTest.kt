@@ -1,12 +1,18 @@
 package ch.streckeisen.mycv.backend.applicationTemplate
 
+import ch.streckeisen.mycv.backend.applicationTemplate.dto.ApplicationTemplateUpdateDto
+import ch.streckeisen.mycv.backend.cv.generator.CvConfigurationRequestDto
 import ch.streckeisen.mycv.backend.cv.generator.CvGeneratorValidationService
+import ch.streckeisen.mycv.backend.cv.generator.IncludedCVItem
+import ch.streckeisen.mycv.backend.cv.generator.IncludedCvContentDto
 import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MessagesService
 import ch.streckeisen.mycv.backend.util.StringValidator
 import ch.streckeisen.mycv.backend.util.assertValidationResult
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -163,13 +169,10 @@ class ApplicationTemplateValidationServiceTest {
             ApplicationTemplateUpdateDto(
                 id = null,
                 name = "name",
-                cvConfiguration = CvConfigurationUpdateDto(
-                    includedWorkExperience = null,
-                    includedEducation = null,
-                    includedProjects = null,
-                    includedSkills = null,
-                    cvTemplate = null,
-                    templateOptions = null
+                cvConfiguration = CvConfigurationRequestDto(
+                    includedCvContent = null,
+                    cvStyle = null,
+                    cvStyleOptions = null
                 ),
                 documentChecklist = null
             ),
@@ -186,13 +189,10 @@ class ApplicationTemplateValidationServiceTest {
             ApplicationTemplateUpdateDto(
                 id = null,
                 name = "name",
-                cvConfiguration = CvConfigurationUpdateDto(
-                    includedWorkExperience = null,
-                    includedEducation = null,
-                    includedProjects = null,
-                    includedSkills = null,
-                    cvTemplate = "talendo",
-                    templateOptions = null
+                cvConfiguration = CvConfigurationRequestDto(
+                    includedCvContent = null,
+                    cvStyle = "talendo",
+                    cvStyleOptions = null
                 ),
                 documentChecklist = null
             ),
@@ -207,13 +207,10 @@ class ApplicationTemplateValidationServiceTest {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
         applicationTemplateValidationService.validateCvConfiguration(
-            cvConfiguration = CvConfigurationUpdateDto(
-                includedWorkExperience = null,
-                includedEducation = null,
-                includedProjects = null,
-                includedSkills = null,
-                cvTemplate = null,
-                templateOptions = null
+            cvConfiguration = CvConfigurationRequestDto(
+                includedCvContent = null,
+                cvStyle = null,
+                cvStyleOptions = null
             ),
             profile = invalidProfile,
             validationErrorBuilder = validationErrorBuilder
@@ -228,13 +225,10 @@ class ApplicationTemplateValidationServiceTest {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
         applicationTemplateValidationService.validateCvConfiguration(
-            cvConfiguration = CvConfigurationUpdateDto(
-                includedWorkExperience = null,
-                includedEducation = null,
-                includedProjects = null,
-                includedSkills = null,
-                cvTemplate = "invalid",
-                templateOptions = null
+            cvConfiguration = CvConfigurationRequestDto(
+                includedCvContent = null,
+                cvStyle = "invalid",
+                cvStyleOptions = null
             ),
             profile = profile,
             validationErrorBuilder = validationErrorBuilder
@@ -249,13 +243,15 @@ class ApplicationTemplateValidationServiceTest {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
         applicationTemplateValidationService.validateCvConfiguration(
-            cvConfiguration = CvConfigurationUpdateDto(
-                includedWorkExperience = listOf(CvEntrySelectionUpdateDto(2, null)),
-                includedEducation = null,
-                includedProjects = null,
-                includedSkills = null,
-                cvTemplate = "talendo",
-                templateOptions = null
+            cvConfiguration = CvConfigurationRequestDto(
+                includedCvContent = IncludedCvContentDto(
+                    includedWorkExperience = listOf(IncludedCVItem(2, null)),
+                    includedEducation = null,
+                    includedProjects = null,
+                    includedSkills = null,
+                ),
+                cvStyle = "talendo",
+                cvStyleOptions = null
             ),
             profile = profile,
             validationErrorBuilder = validationErrorBuilder
@@ -270,13 +266,15 @@ class ApplicationTemplateValidationServiceTest {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
         applicationTemplateValidationService.validateCvConfiguration(
-            cvConfiguration = CvConfigurationUpdateDto(
-                includedWorkExperience = listOf(CvEntrySelectionUpdateDto(1, null)),
-                includedEducation = null,
-                includedProjects = null,
-                includedSkills = null,
-                cvTemplate = "talendo",
-                templateOptions = null
+            cvConfiguration = CvConfigurationRequestDto(
+                includedCvContent = IncludedCvContentDto(
+                    includedWorkExperience = listOf(IncludedCVItem(1, null)),
+                    includedEducation = null,
+                    includedProjects = null,
+                    includedSkills = null,
+                ),
+                cvStyle = "talendo",
+                cvStyleOptions = null
             ),
             profile = profile,
             validationErrorBuilder = validationErrorBuilder
@@ -290,13 +288,15 @@ class ApplicationTemplateValidationServiceTest {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
         applicationTemplateValidationService.validateCvConfiguration(
-            CvConfigurationUpdateDto(
-                includedWorkExperience = null,
-                includedEducation = listOf(CvEntrySelectionUpdateDto(1, null)),
-                includedProjects = null,
-                includedSkills = null,
-                cvTemplate = "talendo",
-                templateOptions = null
+            CvConfigurationRequestDto(
+                includedCvContent = IncludedCvContentDto(
+                    includedWorkExperience = null,
+                    includedEducation = listOf(IncludedCVItem(1, null)),
+                    includedProjects = null,
+                    includedSkills = null,
+                ),
+                cvStyle = "talendo",
+                cvStyleOptions = null
             ),
             profile,
             validationErrorBuilder
@@ -311,13 +311,15 @@ class ApplicationTemplateValidationServiceTest {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
         applicationTemplateValidationService.validateCvConfiguration(
-            CvConfigurationUpdateDto(
-                includedWorkExperience = null,
-                includedEducation = listOf(CvEntrySelectionUpdateDto(2, null)),
-                includedProjects = null,
-                includedSkills = null,
-                cvTemplate = "talendo",
-                templateOptions = null
+            CvConfigurationRequestDto(
+                includedCvContent = IncludedCvContentDto(
+                    includedWorkExperience = null,
+                    includedEducation = listOf(IncludedCVItem(2, null)),
+                    includedProjects = null,
+                    includedSkills = null,
+                ),
+                cvStyle = "talendo",
+                cvStyleOptions = null
             ),
             profile,
             validationErrorBuilder
@@ -331,13 +333,15 @@ class ApplicationTemplateValidationServiceTest {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
         applicationTemplateValidationService.validateCvConfiguration(
-            CvConfigurationUpdateDto(
-                includedWorkExperience = null,
-                includedEducation = null,
-                includedProjects = listOf(CvEntrySelectionUpdateDto(1, null)),
-                includedSkills = null,
-                cvTemplate = "talendo",
-                templateOptions = null
+            CvConfigurationRequestDto(
+                includedCvContent = IncludedCvContentDto(
+                    includedWorkExperience = null,
+                    includedEducation = null,
+                    includedProjects = listOf(IncludedCVItem(1, null)),
+                    includedSkills = null,
+                ),
+                cvStyle = "talendo",
+                cvStyleOptions = null
             ),
             profile,
             validationErrorBuilder
@@ -352,13 +356,15 @@ class ApplicationTemplateValidationServiceTest {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
         applicationTemplateValidationService.validateCvConfiguration(
-            CvConfigurationUpdateDto(
-                includedWorkExperience = null,
-                includedEducation = null,
-                includedProjects = listOf(CvEntrySelectionUpdateDto(3, null)),
-                includedSkills = null,
-                cvTemplate = "talendo",
-                templateOptions = null
+            CvConfigurationRequestDto(
+                includedCvContent = IncludedCvContentDto(
+                    includedWorkExperience = null,
+                    includedEducation = null,
+                    includedProjects = listOf(IncludedCVItem(3, null)),
+                    includedSkills = null,
+                ),
+                cvStyle = "talendo",
+                cvStyleOptions = null
             ),
             profile,
             validationErrorBuilder
@@ -372,13 +378,15 @@ class ApplicationTemplateValidationServiceTest {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
         applicationTemplateValidationService.validateCvConfiguration(
-            CvConfigurationUpdateDto(
-                includedWorkExperience = null,
-                includedEducation = null,
-                includedProjects = null,
-                includedSkills = listOf(1),
-                cvTemplate = "talendo",
-                templateOptions = null
+            CvConfigurationRequestDto(
+                includedCvContent = IncludedCvContentDto(
+                    includedWorkExperience = null,
+                    includedEducation = null,
+                    includedProjects = null,
+                    includedSkills = listOf(1),
+                ),
+                cvStyle = "talendo",
+                cvStyleOptions = null
             ),
             profile,
             validationErrorBuilder
@@ -393,13 +401,15 @@ class ApplicationTemplateValidationServiceTest {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
         applicationTemplateValidationService.validateCvConfiguration(
-            CvConfigurationUpdateDto(
-                includedWorkExperience = null,
-                includedEducation = null,
-                includedProjects = null,
-                includedSkills = listOf(4),
-                cvTemplate = "talendo",
-                templateOptions = null
+            CvConfigurationRequestDto(
+                includedCvContent = IncludedCvContentDto(
+                    includedWorkExperience = null,
+                    includedEducation = null,
+                    includedProjects = null,
+                    includedSkills = listOf(4)
+                ),
+                cvStyle = "talendo",
+                cvStyleOptions = null
             ),
             profile,
             validationErrorBuilder
@@ -410,21 +420,16 @@ class ApplicationTemplateValidationServiceTest {
 
     @Test
     fun testValidateCvConfigurationWithInvalidTemplateOptions() {
-        every { cvGeneratorValidationService.validateTemplateOptions(any(), any()) } returns Result.failure(
-            ValidationException.ValidationErrorBuilder()
-                .addError("test", "error")
-                .build("")
-        )
+        every { cvGeneratorValidationService.validateStyleOptions(any(), any(), any()) } answers {
+            thirdArg<ValidationException.ValidationErrorBuilder>().addError("invalid", "invalid")
+        }
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
         applicationTemplateValidationService.validateCvConfiguration(
-            CvConfigurationUpdateDto(
-                includedWorkExperience = null,
-                includedEducation = null,
-                includedProjects = null,
-                includedSkills = null,
-                cvTemplate = "talendo",
-                templateOptions = mapOf("invalid" to "invalid")
+            CvConfigurationRequestDto(
+                includedCvContent = null,
+                cvStyle = "talendo",
+                cvStyleOptions = mapOf("invalid" to "invalid")
             ),
             profile,
             validationErrorBuilder
@@ -436,17 +441,14 @@ class ApplicationTemplateValidationServiceTest {
 
     @Test
     fun testValidateCvConfigurationWithValidTemplateOptions() {
-        every { cvGeneratorValidationService.validateTemplateOptions(any(), any()) } returns Result.success(Unit)
+        every { cvGeneratorValidationService.validateStyleOptions(any(), any(), any()) } just Runs
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
         applicationTemplateValidationService.validateCvConfiguration(
-            CvConfigurationUpdateDto(
-                includedWorkExperience = null,
-                includedEducation = null,
-                includedProjects = null,
-                includedSkills = null,
-                cvTemplate = "talendo",
-                templateOptions = mapOf("valid" to "valid")
+            CvConfigurationRequestDto(
+                includedCvContent = null,
+                cvStyle = "talendo",
+                cvStyleOptions = mapOf("valid" to "valid")
             ),
             profile,
             validationErrorBuilder

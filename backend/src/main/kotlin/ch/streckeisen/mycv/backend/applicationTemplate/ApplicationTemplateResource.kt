@@ -1,5 +1,7 @@
 package ch.streckeisen.mycv.backend.applicationTemplate
 
+import ch.streckeisen.mycv.backend.applicationTemplate.dto.ApplicationTemplateDto
+import ch.streckeisen.mycv.backend.applicationTemplate.dto.ApplicationTemplateUpdateDto
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
@@ -23,6 +25,17 @@ class ApplicationTemplateResource(
 
         val result = applicationTemplateService.findApplicationTemplates(principal.id)
         return ResponseEntity.ok(result.map { it.toDto() })
+    }
+
+    @GetMapping("{id}")
+    fun getApplicationTemplate(@PathVariable id: Long): ResponseEntity<ApplicationTemplateDto> {
+        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
+
+        return applicationTemplateService.findById(principal.id, id)
+            .fold(
+                onSuccess = { template -> ResponseEntity.ok(template.toDto()) },
+                onFailure = { throw it }
+            )
     }
 
     @PostMapping

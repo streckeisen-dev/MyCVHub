@@ -1,9 +1,11 @@
 package ch.streckeisen.mycv.backend.applicationTemplate
 
+import ch.streckeisen.mycv.backend.applicationTemplate.dto.ApplicationTemplateUpdateDto
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
 import ch.streckeisen.mycv.backend.exceptions.LocalizedException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import tools.jackson.databind.ObjectMapper
 import kotlin.jvm.optionals.getOrElse
 
@@ -17,11 +19,25 @@ class ApplicationTemplateService(
     private val applicationTemplateValidationService: ApplicationTemplateValidationService,
     private val objectMapper: ObjectMapper
 ) {
+    @Transactional(readOnly = true)
     fun findApplicationTemplates(accountId: Long): List<ApplicationTemplate> {
         return applicationTemplateRepository.findByAccountId(accountId)
             .map { entity -> entity.toFullObject(objectMapper) }
     }
 
+    @Transactional(readOnly = true)
+    fun findById(accountId: Long, applicationTemplateId: Long): Result<ApplicationTemplate> {
+        val template = applicationTemplateRepository.findById(applicationTemplateId)
+            .getOrElse { return Result.failure(LocalizedException(NOT_FOUND_MESSAGE_KEY)) }
+
+        if (template.account.id != accountId) {
+            return Result.failure(LocalizedException(ACCESS_DENIED_MESSAGE_KEY))
+        }
+
+        return Result.success(template.toFullObject(objectMapper))
+    }
+
+    @Transactional
     fun save(accountId: Long, applicationTemplate: ApplicationTemplateUpdateDto): Result<ApplicationTemplate> {
         val existingTemplate =
             if (applicationTemplate.id != null) applicationTemplateRepository.findById(applicationTemplate.id)
@@ -31,7 +47,7 @@ class ApplicationTemplateService(
                     )
                 } else null
 
-        if (existingTemplate != null && existingTemplate.account.id != accountId)  {
+        if (existingTemplate != null && existingTemplate.account.id != accountId) {
             return Result.failure(LocalizedException(ACCESS_DENIED_MESSAGE_KEY))
         }
 
@@ -45,7 +61,9 @@ class ApplicationTemplateService(
             id = existingTemplate?.id,
             name = applicationTemplate.name!!,
             cvConfiguration = objectMapper.writeValueAsString(applicationTemplate.cvConfiguration!!.toCvConfiguration()),
-            documentChecklist = if (applicationTemplate.documentChecklist != null) objectMapper.writeValueAsString(applicationTemplate.documentChecklist) else null,
+            documentChecklist = if (applicationTemplate.documentChecklist != null) objectMapper.writeValueAsString(
+                applicationTemplate.documentChecklist
+            ) else null,
             account = profile.account
         )
 

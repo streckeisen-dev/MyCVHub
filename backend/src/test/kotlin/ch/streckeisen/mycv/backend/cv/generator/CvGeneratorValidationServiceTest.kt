@@ -5,8 +5,11 @@ import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
 import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MessagesService
+import ch.streckeisen.mycv.backend.util.StringValidator
+import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -42,7 +45,27 @@ private val completeProfile = ProfileEntity(
             country = "CH",
             language = "en"
         )
-    )
+    ),
+    workExperiences = listOf(
+        mockk {
+            every { id } returns 1L
+        }
+    ),
+    education = listOf(
+        mockk {
+            every { id } returns 2L
+        }
+    ),
+    projects = listOf(
+        mockk {
+            every { id } returns 3L
+        }
+    ),
+    skills = listOf(
+        mockk {
+            every { id } returns 4L
+        }
+    ),
 )
 
 private val unverifiedProfile = ProfileEntity(
@@ -91,44 +114,40 @@ class CvGeneratorValidationServiceTest {
     @BeforeEach
     fun setup() {
         val messagesService: MessagesService = mockk(relaxed = true)
-        cvGeneratorValidationService = CvGeneratorValidationService(messagesService)
+        val stringValidator = StringValidator(messagesService)
+        cvGeneratorValidationService = CvGeneratorValidationService(messagesService, stringValidator)
     }
 
     @Test
-    fun testValidateTemplateOptions() {
+    fun testValidateStyleOptions() {
         val options = mapOf(CVStyle.TALENDO.options.first().key to "#FFFFFF")
+        val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
-        val result = cvGeneratorValidationService.validateTemplateOptions(CVStyle.TALENDO, options)
+        cvGeneratorValidationService.validateStyleOptions(CVStyle.TALENDO, options, validationErrorBuilder)
 
-        assertTrue { result.isSuccess }
+        assertFalse { validationErrorBuilder.hasErrors() }
     }
 
     @Test
-    fun testValidateTemplateOptionsForTemplateWithoutOptions() {
+    fun testValidateTemplateOptionsForStyleWithoutOptions() {
         val options = mapOf("invalid" to "invalid")
+        val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
-        val result = cvGeneratorValidationService.validateTemplateOptions(CVStyle.MODERN, options)
+        cvGeneratorValidationService.validateStyleOptions(CVStyle.MODERN, options, validationErrorBuilder)
 
-        assertTrue { result.isFailure }
-        val ex = result.exceptionOrNull()
-        assertNotNull(ex)
-        assertTrue(ex is ValidationException)
-        val errors = (ex as ValidationException).errors
-        assertEquals(1, errors.size)
+        assertTrue { validationErrorBuilder.hasErrors() }
+        assertEquals(1, validationErrorBuilder.build("").errors.size)
     }
 
     @Test
-    fun testValidateTemplateOptionsWithInvalidColor() {
+    fun testValidateStyleOptionsWithInvalidColor() {
         val options = mapOf(CVStyle.TALENDO.options.first().key to "invalid")
+        val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
-        val result = cvGeneratorValidationService.validateTemplateOptions(CVStyle.TALENDO, options)
+        val result = cvGeneratorValidationService.validateStyleOptions(CVStyle.TALENDO, options, validationErrorBuilder)
 
-        assertTrue { result.isFailure }
-        val ex = result.exceptionOrNull()
-        assertNotNull(ex)
-        assertTrue(ex is ValidationException)
-        val errors = (ex as ValidationException).errors
-        assertEquals(1, errors.size)
+        assertTrue { validationErrorBuilder.hasErrors() }
+        assertEquals(1, validationErrorBuilder.build("").errors.size)
     }
 
     @Test
@@ -150,5 +169,132 @@ class CvGeneratorValidationServiceTest {
         val result = cvGeneratorValidationService.validateProfileCompleteness(incompleteProfile)
 
         assertTrue { result.isFailure }
+    }
+
+    @Test
+    fun testValidateConfigurationWithInvalidStyle() {
+        val config = CvConfigurationRequestDto(cvStyle = "invalid", includedCvContent = null, cvStyleOptions = null)
+
+        val result = cvGeneratorValidationService.validateConfiguration(config, completeProfile)
+
+        assertTrue { result.isFailure }
+        val ex = result.exceptionOrNull()
+        assertNotNull(ex)
+        assertTrue { ex is ValidationException }
+        val errors = (ex as ValidationException).errors
+        assertEquals(1, errors.size)
+    }
+
+    @Test
+    fun testValidateConfigurationWithInvalidStyleOptions() {
+        val config = CvConfigurationRequestDto(
+            cvStyle = CVStyle.TALENDO.styleKey,
+            includedCvContent = null,
+            cvStyleOptions = mapOf("invalid" to "invalid")
+        )
+
+        val result = cvGeneratorValidationService.validateConfiguration(config, completeProfile)
+
+        assertTrue { result.isFailure }
+        val ex = result.exceptionOrNull()
+        assertNotNull(ex)
+        assertTrue { ex is ValidationException }
+        val errors = (ex as ValidationException).errors
+        assertEquals(1, errors.size)
+    }
+
+    @Test
+    fun testValidateConfigurationWithIncompleteCvContentConfig() {
+        val config = CvConfigurationRequestDto(
+            cvStyle = CVStyle.TALENDO.styleKey,
+            includedCvContent = IncludedCvContentDto(null, null, null, null),
+            cvStyleOptions = null
+        )
+
+        val result = cvGeneratorValidationService.validateConfiguration(config, completeProfile)
+
+        assertTrue { result.isFailure }
+        val ex = result.exceptionOrNull()
+        assertNotNull(ex)
+        assertTrue { ex is ValidationException }
+        val errors = (ex as ValidationException).errors
+        assertEquals(1, errors.size)
+    }
+
+    @Test
+    fun testValidateConfigurationWithInvalidFilterIds() {
+        val config =
+            CvConfigurationRequestDto(
+                cvStyle = CVStyle.MODERN.styleKey, includedCvContent = IncludedCvContentDto(
+                    includedWorkExperience = listOf(IncludedCVItem(100, null)),
+                    includedEducation = listOf(IncludedCVItem(100, null)),
+                    includedProjects = listOf(IncludedCVItem(100, null)),
+                    includedSkills = listOf(100)
+                ),
+                cvStyleOptions = null
+            )
+
+        val result = cvGeneratorValidationService.validateConfiguration(config, completeProfile)
+
+        assertTrue { result.isFailure }
+        val ex = result.exceptionOrNull()
+        assertNotNull(ex)
+        assertTrue { ex is ValidationException }
+        val errors = (ex as ValidationException).errors
+        assertEquals(4, errors.size)
+    }
+
+    @Test
+    fun testValidateConfigurationWithNoFilterIds() {
+        val config = CvConfigurationRequestDto(
+            cvStyle = CVStyle.MODERN.styleKey,
+            includedCvContent = IncludedCvContentDto(
+                includedWorkExperience = emptyList(),
+                includedEducation = emptyList(),
+                includedProjects = emptyList(),
+                includedSkills = emptyList()
+            ),
+            cvStyleOptions = null
+        )
+
+        val result = cvGeneratorValidationService.validateConfiguration(config, completeProfile)
+
+        assertTrue { result.isFailure }
+        val ex = result.exceptionOrNull()
+        assertNotNull(ex)
+        assertTrue { ex is ValidationException }
+        val errors = (ex as ValidationException).errors
+        assertEquals(1, errors.size)
+    }
+
+    @Test
+    fun testValidateConfigurationWithNoContentConfig() {
+        val config = CvConfigurationRequestDto(
+            cvStyle = CVStyle.TALENDO.styleKey,
+            includedCvContent = null,
+            cvStyleOptions = mapOf(CVStyle.TALENDO.options.first().key to "#FFFFFF")
+        )
+
+        val result = cvGeneratorValidationService.validateConfiguration(config, completeProfile)
+
+        assertTrue { result.isSuccess }
+    }
+
+    @Test
+    fun testValidateConfigurationWitNoStyleOptions() {
+        val config = CvConfigurationRequestDto(
+            cvStyle = CVStyle.TALENDO.styleKey,
+            includedCvContent = IncludedCvContentDto(
+                includedWorkExperience = listOf(element = IncludedCVItem(1, false)),
+                includedEducation = listOf(IncludedCVItem(2, false)),
+                includedProjects = listOf(IncludedCVItem(3, true)),
+                includedSkills = listOf(4)
+            ),
+            cvStyleOptions = null
+        )
+
+        val result = cvGeneratorValidationService.validateConfiguration(config, completeProfile)
+
+        assertTrue { result.isSuccess }
     }
 }

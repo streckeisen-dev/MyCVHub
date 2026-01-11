@@ -1,4 +1,4 @@
-package ch.streckeisen.mycv.backend.applicationTemplate
+package ch.streckeisen.mycv.backend.applicationTemplate.dto
 
 data class ApplicationTemplateDto(
     val id: Long,

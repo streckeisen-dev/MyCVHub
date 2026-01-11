@@ -1,5 +1,9 @@
 package ch.streckeisen.mycv.backend.applicationTemplate
 
+import ch.streckeisen.mycv.backend.applicationTemplate.dto.ApplicationTemplateUpdateDto
+import ch.streckeisen.mycv.backend.cv.generator.CvConfigurationRequestDto
+import ch.streckeisen.mycv.backend.cv.generator.IncludedCVItem
+import ch.streckeisen.mycv.backend.cv.generator.IncludedCvContentDto
 import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
 import io.mockk.CapturingSlot
@@ -38,15 +42,19 @@ private val existingTemplate = ApplicationTemplateEntity(
     name = "First template",
     cvConfiguration = """
         {
-            "cvTemplate": "talendo",
-            "includedWorkExperience": [
-                {
-                    "entityId": 1,
-                    "includeDescription": false
-                }
-            ],
-            "includedSkills": [5],
-            "templateParameters": {
+            "cvStyle": "talendo",
+            "includedCvContent": {
+                "includedWorkExperience": [
+                    {
+                        "entityId": 1,
+                        "includeDescription": false
+                    }
+                ],
+                "includedEducation": [],
+                "includedProjects": [],
+                "includedSkills": [5]
+            },
+            "cvStyleOptions": {
                 "bannerBackground": "#FFFFFF"
             }
         }
@@ -61,13 +69,15 @@ private val existingTemplate = ApplicationTemplateEntity(
 private val validNewRequest = ApplicationTemplateUpdateDto(
     id = null,
     name = "new name",
-    cvConfiguration = CvConfigurationUpdateDto(
-        includedWorkExperience = listOf(CvEntrySelectionUpdateDto(1, null)),
-        includedEducation = null,
-        includedProjects = null,
-        includedSkills = listOf(1),
-        cvTemplate = "talendo",
-        templateOptions = mapOf("bannerBackground" to "#FFFFFF")
+    cvConfiguration = CvConfigurationRequestDto(
+        includedCvContent = IncludedCvContentDto(
+            includedWorkExperience = listOf(IncludedCVItem(1, null)),
+            includedEducation = emptyList(),
+            includedProjects = emptyList(),
+            includedSkills = listOf(1),
+        ),
+        cvStyle = "talendo",
+        cvStyleOptions = mapOf("bannerBackground" to "#FFFFFF")
     ),
     documentChecklist = listOf("Uni Degree")
 )
@@ -127,12 +137,14 @@ class ApplicationTemplateServiceTest {
         assertEquals(existingTemplate.name, template.name)
         assertEquals(
             CvConfiguration(
-                listOf(CvEntrySelection(1, false)),
-                null,
-                null,
-                listOf(5),
-                "talendo",
-                mapOf("bannerBackground" to "#FFFFFF")
+                includedCvContent = IncludedCvContent(
+                    includedWorkExperience = listOf(CvEntrySelection(1, false)),
+                    includedEducation = emptyList(),
+                    includedProjects = emptyList(),
+                    includedSkills = listOf(5)
+                ),
+                cvStyle = "talendo",
+                cvStyleOptions = mapOf("bannerBackground" to "#FFFFFF")
             ), template.cvConfiguration
         )
         assertNull(template.documentChecklist)
@@ -185,7 +197,10 @@ class ApplicationTemplateServiceTest {
         assertNotNull(templateSlot.captured)
         assertNull(templateSlot.captured.id)
         assertEquals(validNewRequest.name, templateSlot.captured.name)
-        assertEquals("{\"includedWorkExperience\":[{\"entityId\":1,\"includeDescription\":true}],\"includedEducation\":null,\"includedProjects\":null,\"includedSkills\":[1],\"cvTemplate\":\"talendo\",\"templateParameters\":{\"bannerBackground\":\"#FFFFFF\"}}", templateSlot.captured.cvConfiguration)
+        assertEquals(
+            "{\"includedCvContent\":{\"includedWorkExperience\":[{\"entityId\":1,\"includeDescription\":true}],\"includedEducation\":[],\"includedProjects\":[],\"includedSkills\":[1]},\"cvStyle\":\"talendo\",\"cvStyleOptions\":{\"bannerBackground\":\"#FFFFFF\"}}",
+            templateSlot.captured.cvConfiguration
+        )
         assertEquals("[\"Uni Degree\"]", templateSlot.captured.documentChecklist)
     }
 

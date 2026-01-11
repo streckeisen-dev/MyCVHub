@@ -19,7 +19,6 @@ import kotlin.io.path.createTempDirectory
 
 private const val TEMPLATE_NOT_FOUND_MESSAGE = "$MYCV_KEY_PREFIX.cv.templateNotFound"
 private const val GENERATION_FAILED_MESSAGE = "$MYCV_KEY_PREFIX.cv.generationFailed"
-private const val NO_CV_ENTRIES_MESSAGE = "$MYCV_KEY_PREFIX.cv.noCvEntries"
 
 private const val PROFILE_PICTURE_FILE_NAME = "profile.jpg"
 private const val PROFILE_JSON_FILE_NAME = "profile.json"
@@ -33,38 +32,38 @@ class CVGeneratorService(
     private val typstService: TypstService,
     private val cvDataService: CVDataService
 ) {
-    suspend fun generateCV(
-        accountId: Long,
-        cvStyle: CVStyle,
-        includedWorkExperience: List<IncludedCVItem>?,
-        includedEduction: List<IncludedCVItem>?,
-        includedProjects: List<IncludedCVItem>?,
-        includedSkills: List<IncludedCVItem>?,
-        templateOptions: Map<String, String>?
-    ): Result<ByteArray> {
-        if (templateOptions != null) {
-            cvGeneratorValidationService.validateTemplateOptions(cvStyle, templateOptions)
-                .onFailure { return Result.failure(it) }
-        }
-
-        val completeTemplateOptions = cvStyle.options.associate { option ->
-            option.key to (templateOptions?.get(option.key) ?: option.defaultValue)
-        }
-
+    suspend fun generateCV(accountId: Long, cvConfiguration: CvConfigurationRequestDto): Result<ByteArray> {
         val profile = profileService.findByAccountId(accountId)
-            .onFailure { return Result.failure(it) }
             .getOrElse { return Result.failure(it) }
 
         cvGeneratorValidationService.validateProfileCompleteness(profile)
             .onFailure { return Result.failure(it) }
 
-        val workExperiences = cvDataService.filterWorkExperiences(profile.workExperiences, includedWorkExperience)
-        val education = cvDataService.filterEducation(profile.education, includedEduction)
-        val projects = cvDataService.filterProjects(profile.projects, includedProjects)
-        val skills = cvDataService.filterSkills(profile.skills, includedSkills)
+        cvGeneratorValidationService.validateConfiguration(cvConfiguration, profile)
+            .onFailure { return Result.failure(it) }
 
-        val entryCount = workExperiences.size + education.size + projects.size + skills.size
-        if (entryCount == 0) return Result.failure(LocalizedException(NO_CV_ENTRIES_MESSAGE))
+        val cvStyle = CVStyle.fromStyleKey(cvConfiguration.cvStyle)!!
+
+        val completeStyleOptions = cvStyle.options.associate { option ->
+            option.key to (cvConfiguration.cvStyleOptions?.get(option.key) ?: option.defaultValue)
+        }
+
+        val workExperiences = cvDataService.filterWorkExperiences(
+            profile.workExperiences,
+            cvConfiguration.includedCvContent?.includedWorkExperience
+        )
+        val education = cvDataService.filterEducation(
+            profile.education,
+            cvConfiguration.includedCvContent?.includedEducation
+        )
+        val projects = cvDataService.filterProjects(
+            profile.projects,
+            cvConfiguration.includedCvContent?.includedProjects
+        )
+        val skills = cvDataService.filterSkills(
+            profile.skills,
+            cvConfiguration.includedCvContent?.includedSkills
+        )
 
         val tempDir = createTempDirectory("cv_$accountId")
         try {
@@ -92,12 +91,12 @@ class CVGeneratorService(
                     education,
                     projects,
                     skills,
-                    completeTemplateOptions
+                    completeStyleOptions
                 )
                 val profileJson = tempDir.resolve(PROFILE_JSON_FILE_NAME).createFile()
                 objectMapper.writeValue(profileJson.toFile(), cvData)
 
-                return@withContext typstService.compile(tempDir, "${cvStyle.cvTemplate}.typ", "cv_$accountId.pdf")
+                return@withContext typstService.compile(tempDir, "${cvStyle.styleKey}.typ", "cv_$accountId.pdf")
                     .fold(
                         onSuccess = { Result.success(it) },
                         onFailure = { Result.failure(LocalizedException(GENERATION_FAILED_MESSAGE)) }

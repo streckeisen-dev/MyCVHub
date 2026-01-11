@@ -12,9 +12,9 @@ import ch.streckeisen.mycv.backend.cv.profile.ProfileService
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePicture
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -100,6 +100,7 @@ class CVGeneratorServiceTest {
         }
 
         profileService = mockk {
+            every { findByAccountId(any()) } returns Result.failure(IllegalArgumentException())
             every { findByAccountId(eq(1)) } returns Result.success(completeProfile)
             every { findByAccountId(eq(5)) } returns Result.success(invalidProfile)
         }
@@ -162,14 +163,98 @@ class CVGeneratorServiceTest {
     }
 
     @Test
+    suspend fun testCVGenerationWithInvalidProfile() {
+        val result = cvGeneratorService.generateCV(50, mockk())
+
+        assertTrue { result.isFailure }
+        coVerify(exactly = 0) { typstService.compile(any(), any(), any()) }
+    }
+
+    @Test
+    suspend fun testCvGenerationWithIncompleteProfile() {
+        val result = cvGeneratorService.generateCV(5, mockk())
+
+        assertTrue { result.isFailure }
+        coVerify(exactly = 0) { typstService.compile(any(), any(), any()) }
+    }
+
+    @Test
+    suspend fun testCvGenerationWithInvalidConfiguration() {
+        val invalidConfig = mockk<CvConfigurationRequestDto>()
+        every { cvGeneratorValidationService.validateConfiguration(invalidConfig, any()) } returns Result.failure(
+            IllegalArgumentException()
+        )
+
+        val result = cvGeneratorService.generateCV(1, invalidConfig)
+
+        assertTrue { result.isFailure }
+        coVerify(exactly = 0) { typstService.compile(any(), any(), any()) }
+    }
+
+    @Test
+    suspend fun testCvGenerationWithProfilePictureNotFound() {
+        val config = CvConfigurationRequestDto(
+            cvStyle = "modern",
+            includedCvContent = null,
+            cvStyleOptions = null
+        )
+        every { cvGeneratorValidationService.validateConfiguration(config, any()) } returns Result.success(Unit)
+        every { profilePictureService.getCVPicture(1, any()) } returns Result.failure(IllegalArgumentException())
+
+        val result = cvGeneratorService.generateCV(1, config)
+
+        assertTrue { result.isFailure }
+        coVerify(exactly = 0) { typstService.compile(any(), any(), any()) }
+    }
+
+    @Test
+    suspend fun testCvGenerationCvCompilationFails() {
+        val config = CvConfigurationRequestDto(
+            cvStyle = "modern",
+            includedCvContent = null,
+            cvStyleOptions = null
+        )
+        every { cvGeneratorValidationService.validateConfiguration(config, any()) } returns Result.success(Unit)
+        coEvery { typstService.compile(any(), any(), any()) } returns Result.failure(IllegalArgumentException())
+
+        val result = cvGeneratorService.generateCV(1, config)
+
+        assertTrue { result.isFailure }
+        coVerify(exactly = 1) { typstService.compile(any(), any(), any()) }
+    }
+
+    @Test
+    suspend fun testSuccessfulCvGeneration() {
+        val config = CvConfigurationRequestDto(
+            cvStyle = "modern",
+            includedCvContent = null,
+            cvStyleOptions = null
+        )
+        every { cvGeneratorValidationService.validateConfiguration(config, any()) } returns Result.success(Unit)
+        coEvery { typstService.compile(any(), any(), any()) } returns Result.success(ByteArray(10))
+
+        val result = cvGeneratorService.generateCV(1, config)
+
+        assertTrue { result.isSuccess }
+        coVerify(exactly = 1) { typstService.compile(any(), any(), any()) }
+    }
+
+    /*@Test
     fun testCVGenerationWithoutCustomization() = runTest {
+        every { cvGeneratorValidationService.validateConfiguration(any(), any()) } returns Result.success(Unit)
         coEvery { typstService.compile(any(), eq(TALENDO_TEMPLATE), eq(OUTPUT_PDF)) } returns Result.success(
             ByteArray(
                 10
             )
         )
 
-        val result = cvGeneratorService.generateCV(1, CVStyle.TALENDO, null, null, null, null, null)
+        val result = cvGeneratorService.generateCV(
+            1, CvConfigurationRequestDto(
+                cvStyle = "talendo",
+                includedCvContent = null,
+                cvStyleOptions = null
+            )
+        )
 
         assertTrue { result.isSuccess }
     }
@@ -184,12 +269,16 @@ class CVGeneratorServiceTest {
 
         val result = cvGeneratorService.generateCV(
             1,
-            CVStyle.TALENDO,
-            listOf(IncludedCVItem(1, true)),
-            null,
-            null,
-            null,
-            null
+            CvConfigurationRequestDto(
+                cvStyle = "talendo",
+                includedCvContent = IncludedCvContentDto(
+                    includedWorkExperience = listOf(IncludedCVItem(1, true)),
+                    includedEducation = emptyList(),
+                    includedProjects = emptyList(),
+                    includedSkills = emptyList(),
+                ),
+                cvStyleOptions = null
+            )
         )
 
         assertTrue { result.isSuccess }
@@ -205,12 +294,17 @@ class CVGeneratorServiceTest {
 
         val result = cvGeneratorService.generateCV(
             1,
-            CVStyle.TALENDO,
-            emptyList(),
-            emptyList(),
-            emptyList(),
-            emptyList(),
-            null
+            CvConfigurationRequestDto(
+                cvStyle = "talendo",
+                includedCvContent = IncludedCvContentDto(
+                    includedWorkExperience = emptyList(),
+                    includedEducation = emptyList(),
+                    includedProjects = emptyList(),
+                    includedSkills = emptyList(),
+                ),
+
+                null
+            )
         )
 
         assertTrue { result.isFailure }
@@ -218,7 +312,13 @@ class CVGeneratorServiceTest {
 
     @Test
     fun testCVGenerationWithIncompleteProfile() = runTest {
-        val result = cvGeneratorService.generateCV(5, CVStyle.MODERN, null, null, null, null, null)
+        val result = cvGeneratorService.generateCV(
+            5, CvConfigurationRequestDto(
+                cvStyle = "modern",
+                includedCvContent = null,
+                cvStyleOptions = null
+            )
+        )
 
         assertTrue { result.isFailure }
     }
@@ -226,18 +326,17 @@ class CVGeneratorServiceTest {
     @Test
     fun testCVGenerationWithInvalidTemplateOptions() = runTest {
         val options = mapOf(CVStyle.TALENDO.options.first().key to "invalid")
-        every { cvGeneratorValidationService.validateTemplateOptions(any(), eq(options)) } returns Result.failure(
-            IllegalArgumentException()
-        )
+        every { cvGeneratorValidationService.validateStyleOptions(any(), eq(options), any()) } answers {
+            thirdArg<ValidationException.ValidationErrorBuilder>().addError("invalid", "invalid")
+        }
 
         val result = cvGeneratorService.generateCV(
             1,
-            CVStyle.TALENDO,
-            null,
-            null,
-            null,
-            null,
-            options
+            CvConfigurationRequestDto(
+                cvStyle = "talendo",
+                null,
+                options
+            )
         )
 
         assertTrue { result.isFailure }
@@ -246,18 +345,17 @@ class CVGeneratorServiceTest {
     @Test
     fun testCVGenerationWithNonexistentTemplateOptions() = runTest {
         val options = mapOf("invalid" to "invalid")
-        every { cvGeneratorValidationService.validateTemplateOptions(any(), eq(options)) } returns Result.failure(
-            IllegalArgumentException()
-        )
+        every { cvGeneratorValidationService.validateStyleOptions(any(), eq(options), any()) } answers {
+            thirdArg<ValidationException.ValidationErrorBuilder>().addError("invalid", "invalid")
+        }
 
         val result = cvGeneratorService.generateCV(
             1,
-            CVStyle.TALENDO,
-            null,
-            null,
-            null,
-            null,
-            options
+            CvConfigurationRequestDto(
+                cvStyle = "talendo",
+                includedCvContent = null,
+                cvStyleOptions = options
+            )
         )
 
         assertTrue { result.isFailure }
@@ -266,18 +364,17 @@ class CVGeneratorServiceTest {
     @Test
     fun testCVGenerationWithUnsupportedTemplateOptions() = runTest {
         val options = mapOf("invalid" to "invalid")
-        every { cvGeneratorValidationService.validateTemplateOptions(any(), eq(options)) } returns Result.failure(
-            IllegalArgumentException()
-        )
+        every { cvGeneratorValidationService.validateStyleOptions(any(), eq(options), any()) } answers {
+            thirdArg<ValidationException.ValidationErrorBuilder>().addError("invalid", "invalid")
+        }
 
         val result = cvGeneratorService.generateCV(
             1,
-            CVStyle.MODERN,
-            null,
-            null,
-            null,
-            null,
-            options
+            CvConfigurationRequestDto(
+                cvStyle = "modern",
+                includedCvContent = null,
+                options
+            )
         )
 
         assertTrue { result.isFailure }
@@ -292,22 +389,22 @@ class CVGeneratorServiceTest {
         )
         val options = mapOf(CVStyle.TALENDO.options.first().key to "#FFFFFF")
         every {
-            cvGeneratorValidationService.validateTemplateOptions(
+            cvGeneratorValidationService.validateStyleOptions(
                 eq(CVStyle.TALENDO),
-                eq(options)
+                eq(options),
+                any()
             )
-        } returns Result.success(Unit)
+        } just Runs
 
         val result = cvGeneratorService.generateCV(
             1,
-            CVStyle.TALENDO,
-            null,
-            null,
-            null,
-            null,
-            options
+            CvConfigurationRequestDto(
+                cvStyle = "talendo",
+                includedCvContent = null,
+                options
+            )
         )
 
         assertTrue { result.isSuccess }
-    }
+    }*/
 }

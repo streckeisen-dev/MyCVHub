@@ -44,6 +44,7 @@ shared:
     source: "Source"
     comment: "Comment"
     acceptTos: "I have read and accept the following documents: "
+    documentName: "Document Name"
   
   validations: 
     required: "{label} must not be blank"
@@ -282,6 +283,7 @@ frontend:
 
   application:
     title: "Applications"
+    overview: "Overview"
     singular: "Application"
     notFound: "Application not found"
     noEntries: "You don't have any applications yet."
@@ -317,6 +319,17 @@ frontend:
     loadingError: "Failed to load applications"
     statusLoadingError: "Failed to load application status filter"
     transitionError: "Failed to update application status"
+
+  applicationTemplate:
+    title: "Application Templates"
+    noEntries: "No application templates yet."
+    cvContent: "CV Content"
+    documentChecklist: "Document Checklist"
+    documentChecklistHint: "You can use this checklist to remind yourself of the documents you need to submit for your application."
+    editor:
+      add: "Add Application Template"
+      edit: "Edit Application Template"
+      saveError: "Failed to save application template"
   
   notFound:
     headline: "Where are you going?"
