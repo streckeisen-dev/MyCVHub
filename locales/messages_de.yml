@@ -70,6 +70,10 @@ frontend:
     save: "Speichern"
     cancel: "Abbrechen"
 
+  crud:
+    edit: "Bearbeiten"
+    delete: "Löschen"
+
   validations:
     fileSizeValidator: "Datei muss kleiner als {maxSize} MB sein"
     numberWithinRange: "{name} muss zwischen {min} und {max} sein"
@@ -320,15 +324,22 @@ frontend:
     transitionError: "Bewerbungs-Status konnte nicht aktualisiert werden"
 
   applicationTemplate:
+    backToOverview: "Zurück zur Übersicht"
     title: "Bewerbungsvorlagen"
     noEntries: "Noch keine Bewerbungsvorlagen vorhanden"
     cvContent: "Lebenslaufinhalt"
     documentChecklist: "Dokumenten Checkliste"
     documentChecklistHint: "Du kannst diese Checklist als Erinnerungsstütze verwenden, damit du bei Bewerbungen keine Dokumente vergisst."
+    view: "Bewerbungsvorlage ansehen"
     editor:
       add: "Bewerbungsvorlage erstellen"
       edit: "Bewerbungsvorlage bearbeiten"
       saveError: "Bewerbungsvorlage konnte nicht gespeichert werden"
+    delete:
+      title: "Bewerbungsvorlage löschen"
+      confirmationText: "Wenn du fortfährst und diese Bewerbungsvorlage löschst, wird diese definitiv gelöscht. Bis du sicher dass du diese Bewerbungsvorlage löschen möchtest?"
+      deleteSuccess: "Bewerbungsvorlage wurde erfolgreich gelöscht"
+      deleteError: "Bewerbungsvorlage konnte nicht gelöscht werden"
 
   notFound:
     headline: "Wo willst du hin?"
@@ -598,6 +609,7 @@ backend:
       invalidTemplate: "Bewerbungsvorlage ist ungültig"
       unknownCvEntries: "Einige referenzierte Lebenslauf-Einträge existieren nicht"
       nameTaken: "Der Name dieser Bewerbungsvorlage ist bereits vergeben"
+      emptyDocumentChecklist: "Die Dokumenten Checklist muss entweder 'null' sein oder gültige Werte enthalten"
   account:
     notFound: "Account nicht gefunden"
     verification:
@@ -638,7 +650,6 @@ backend:
   cv:
     templateNotFound: "CV Vorlage nicht gefunden"
     generationFailed: "Dein PDF CV konnte nicht generiert werden"
-    noCvEntries: "Es gibt keine CV Einträge um ein PDF zu generieren"
     style:
       modern:
         name: "Modern CV"
@@ -647,10 +658,17 @@ backend:
         name: "Talendo"
         description: "Eine leicht modifizierte Version der CV Vorlage aus dem <a href=\"https://talendo.ch\">Talendo</a> Career Starter Magazin."
         bannerBackground: "Banner Hintergrundfarbe"
-    templateOptions:
-      unknown: "Die Vorlagen-Einstellung gibt es nicht."
-      invalid: "Die Vorlagen-Einstellung ist ungültig."
-      missing: "Diese Vorlagen-Einstellung benötigt einen Wert."
+    validation:
+      noCvEntries: "Es gibt keine Lebenslaufeinträge um ein PDF zu generieren"
+      invalidConfig: "Die Lebenslaufkonfiguration ist ungültig"
+      invalidStyle: "Dieses Lebenslauf-Design existiert nicht"
+      incompleteProfile: "Dein Lebenslauf-Profil ist nicht bereit um Lebensläufe zu generieren"
+      incompleteContentConfig: "Die Konfiguration des Lebenslauf-Inhalts ist nicht vollständig"
+      unknownCvEntries: "Die Konfiguration des Lebenslauf-Inhalts referenziert nicht existierende Einträge"
+      templateOptions:
+        unknown: "Diese Vorlagen-Einstellung gibt es nicht."
+        invalid: "Diese Vorlagen-Einstellung ist ungültig."
+        missing: "Diese Vorlagen-Einstellung benötigt einen Wert."
 
   application:
     transition:

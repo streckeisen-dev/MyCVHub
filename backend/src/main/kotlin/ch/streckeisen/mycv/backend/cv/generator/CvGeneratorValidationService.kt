@@ -17,7 +17,7 @@ private const val INCLUDED_EDUCATION_FIELD = "includedEducation"
 private const val INCLUDED_PROJECTS_FIELD = "includedProjects"
 private const val INCLUDED_SKILLS_FIELD = "includedSkills"
 
-private const val CV_MESSAGE_PREFIX = "$MYCV_KEY_PREFIX.cv"
+private const val CV_MESSAGE_PREFIX = "$MYCV_KEY_PREFIX.cv.validation"
 
 private const val MISSING_TEMPLATE_OPTION = "$CV_MESSAGE_PREFIX.templateOptions.missing"
 private const val INVALID_TEMPLATE_OPTION = "$CV_MESSAGE_PREFIX.templateOptions.invalid"

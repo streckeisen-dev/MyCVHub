@@ -69,6 +69,10 @@ frontend:
   forms: 
     save: "Save"
     cancel: "Cancel"
+
+  crud:
+    edit: "Edit"
+    delete: "Delete"
   
   validations:
     fileSizeValidator: "File must be less than {maxSize} MB"
@@ -321,15 +325,22 @@ frontend:
     transitionError: "Failed to update application status"
 
   applicationTemplate:
+    backToOverview: "Back to Overview"
     title: "Application Templates"
     noEntries: "No application templates yet."
     cvContent: "CV Content"
     documentChecklist: "Document Checklist"
     documentChecklistHint: "You can use this checklist to remind yourself of the documents you need to submit for your application."
+    view: "View Application Template"
     editor:
       add: "Add Application Template"
       edit: "Edit Application Template"
       saveError: "Failed to save application template"
+    delete:
+      title: "Delete Application Template"
+      confirmationText: "If you go ahead and delete this application template, the template will be permanently deleted. Are you sure you want to delete this application template?"
+      deleteSuccess: "Application template successfully deleted"
+      deleteError: "Failed to delete application template"
   
   notFound:
     headline: "Where are you going?"
@@ -598,6 +609,7 @@ backend:
       invalidTemplate: "Application template is invalid"
       unknownCvEntries: "Some referenced CV entries don't exist"
       nameTaken: "Application template name is already taken"
+      emptyDocumentChecklist: "Document checklist must be 'null' or contain valid entries"
   account:
     notFound: "Account not found"
     verification:
@@ -638,7 +650,6 @@ backend:
   cv:
     templateNotFound: "CV template not found"
     generationFailed: "Your PDF CV could not be generated"
-    noCvEntries: "There are no CV entries to generate a PDF"
     style:
       modern:
         name: "Modern CV"
@@ -647,10 +658,17 @@ backend:
         name: "Talendo"
         description: "A slightly modified version of the CV template from the <a href=\"https://talendo.ch\">Talendo</a> Career Starter magazine."
         bannerBackground: "Banner Background Color"
-    templateOptions:
-      unknown: "Unknown template option"
-      invalid: "Invalid template option"
-      missing: "Missing template option"
+    validation:
+      noCvEntries: "There are no CV entries to generate a PDF"
+      invalidConfig: "CV configuration is invalid"
+      invalidStyle: "This CV design doesn't exist"
+      incompleteProfile: "Your CV profile is not ready to generate CVs"
+      incompleteContentConfig: "CV content configuration is incomplete"
+      unknownCvEntries: "CV content configuration references unknown CV entries"
+      templateOptions:
+        unknown: "Unknown template option"
+        invalid: "Invalid template option"
+        missing: "Missing template option"
 
   application:
     transition:
