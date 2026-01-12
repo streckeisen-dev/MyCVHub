@@ -1,31 +1,22 @@
-import { WorkExperienceDto } from '@/types/profile/workExperience/WorkExperienceDto.ts'
-import { EducationDto } from '@/types/profile/education/EducationDto.ts'
-import { ProjectDto } from '@/types/profile/project/ProjectDto.ts'
 import { SkillDto } from '@/types/profile/skill/SkillDto.ts'
 import { useTranslation } from 'react-i18next'
-import {
-  CvContentTreeRoot,
-  SelectedCvContent
-} from '@/components/cv/CvContentTreeRoot.tsx'
+import { CvContentTreeRoot, SelectedCvContent } from '@/components/cv/CvContentTreeRoot.tsx'
 import { SkillTreeRoot } from '@/components/cv/SkillTreeRoot.tsx'
 import { KeyValueObject } from '@/types/KeyValueObject.ts'
+import { ProfileDto } from '@/types/profile/ProfileDto.ts'
 
 export interface CvContent {
-  workExperience: SelectedCvContent[];
-  education: SelectedCvContent[];
-  projects: SelectedCvContent[];
-  skills: SelectedCvContent[];
+  workExperience: SelectedCvContent[]
+  education: SelectedCvContent[]
+  projects: SelectedCvContent[]
+  skills: number[]
 }
 
 export type CvCustomizationViewProps = Readonly<{
-  content: {
-    workExperience: WorkExperienceDto[];
-    education: EducationDto[];
-    projects: ProjectDto[];
-    skills: SkillDto[];
-  };
-  value: CvContent;
-  onChange: (content: CvContent) => void;
+  profile: ProfileDto
+  value: CvContent
+  onChange: (content: CvContent) => void
+  disabled: boolean
 }>
 
 function groupSkills(
@@ -40,9 +31,9 @@ function groupSkills(
 
 export function CvContentCustomizationView(props: CvCustomizationViewProps) {
   const { t } = useTranslation()
-  const { content, value, onChange } = props
+  const { profile, value, onChange, disabled } = props
 
-  const groupedSkills = content.skills.reduce(groupSkills, {})
+  const groupedSkills = profile.skills.reduce(groupSkills, {})
 
   function handleWorkExperienceChange(experiences: SelectedCvContent[]) {
     onChange({
@@ -65,7 +56,7 @@ export function CvContentCustomizationView(props: CvCustomizationViewProps) {
     })
   }
 
-  function handleSkillChange(skills: SelectedCvContent[]) {
+  function handleSkillChange(skills: number[]) {
     onChange({
       ...value,
       skills: skills
@@ -73,14 +64,12 @@ export function CvContentCustomizationView(props: CvCustomizationViewProps) {
   }
 
   return (
-    <div className="w-full rounded-lg p-2 sm:min-w-xs md:min-w-md lg:min-w-lg xl:min-w-xl">
-      {content.workExperience.length > 0 && (
+    <div className="w-full rounded-lg p-2 sm:min-w-xs md:min-w-md lg:min-w-lg">
+      {profile.workExperiences.length > 0 && (
         <CvContentTreeRoot
           title={t('workExperience.title')}
-          content={content.workExperience.map((experience) => {
-            const selected = value.workExperience.find(
-              (w) => w.id === experience.id
-            )
+          content={profile.workExperiences.map((experience) => {
+            const selected = value.workExperience.find((w) => w.id === experience.id)
             return {
               id: experience.id,
               title: `${experience.jobTitle} @ ${experience.company}`,
@@ -89,15 +78,14 @@ export function CvContentCustomizationView(props: CvCustomizationViewProps) {
             }
           })}
           onChange={handleWorkExperienceChange}
+          disabled={disabled}
         />
       )}
-      {content.education.length > 0 && (
+      {profile.education.length > 0 && (
         <CvContentTreeRoot
           title={t('education.title')}
-          content={content.education.map((education) => {
-            const selected = value.education.find(
-              (e) => e.id === education.id
-            )
+          content={profile.education.map((education) => {
+            const selected = value.education.find((e) => e.id === education.id)
             return {
               id: education.id,
               title: `${education.degreeName} @ ${education.institution}`,
@@ -106,15 +94,14 @@ export function CvContentCustomizationView(props: CvCustomizationViewProps) {
             }
           })}
           onChange={handleEducationChange}
+          disabled={disabled}
         />
       )}
-      {content.projects.length > 0 && (
+      {profile.projects.length > 0 && (
         <CvContentTreeRoot
           title={t('project.title')}
-          content={content.projects.map((project) => {
-            const selected = value.projects.find(
-              (p) => p.id === project.id
-            )
+          content={profile.projects.map((project) => {
+            const selected = value.projects.find((p) => p.id === project.id)
             return {
               id: project.id,
               title: project.name,
@@ -123,9 +110,10 @@ export function CvContentCustomizationView(props: CvCustomizationViewProps) {
             }
           })}
           onChange={handleProjectChange}
+          disabled={disabled}
         />
       )}
-      {content.skills.length > 0 && (
+      {profile.skills.length > 0 && (
         <SkillTreeRoot
           content={Object.keys(groupedSkills).map((type) => {
             return {
@@ -134,12 +122,13 @@ export function CvContentCustomizationView(props: CvCustomizationViewProps) {
                 return {
                   id: skill.id,
                   title: skill.name,
-                  selected: value.skills.some((s) => s.id === skill.id)
+                  selected: value.skills.includes(skill.id)
                 }
               })
             }
           })}
           onChange={handleSkillChange}
+          disabled={disabled}
         />
       )}
     </div>

@@ -334,7 +334,7 @@ export function ApplicationTable(props: ApplicationTableProps) {
       >
         {(application) => {
           return (
-            <TableRow key={application.id} className={''}>
+            <TableRow key={application.id}>
               {(column) => <TableCell key={column}>{renderCell(application, column)}</TableCell>}
             </TableRow>
           )
