@@ -1,6 +1,7 @@
 package ch.streckeisen.mycv.backend.applicationTemplate
 
 import ch.streckeisen.mycv.backend.applicationTemplate.dto.ApplicationTemplateUpdateDto
+import ch.streckeisen.mycv.backend.cv.generator.CVStyle
 import ch.streckeisen.mycv.backend.cv.generator.CvConfigurationRequestDto
 import ch.streckeisen.mycv.backend.cv.generator.CvGeneratorValidationService
 import ch.streckeisen.mycv.backend.cv.generator.IncludedCVItem
@@ -455,5 +456,67 @@ class ApplicationTemplateValidationServiceTest {
         )
 
         assertFalse { validationErrorBuilder.hasErrors() }
+    }
+
+    @Test
+    fun testValidateCvConfigurationWithEmptyDocumentList() {
+        val result = applicationTemplateValidationService.validateUpdate(
+            1,
+            ApplicationTemplateUpdateDto(
+                null,
+                "test",
+                CvConfigurationRequestDto(
+                    CVStyle.MODERN.styleKey,
+                    null,
+                    null
+                ),
+                emptyList()
+            ),
+            profile
+        )
+
+        assertTrue { result.isFailure }
+        assertValidationResult(result, false, 1)
+    }
+
+    @Test
+    fun testValidateCvConfigurationWithEmptyValuesInDocumentList() {
+        val result = applicationTemplateValidationService.validateUpdate(
+            1,
+            ApplicationTemplateUpdateDto(
+                null,
+                "test",
+                CvConfigurationRequestDto(
+                    CVStyle.MODERN.styleKey,
+                    null,
+                    null
+                ),
+                listOf("")
+            ),
+            profile
+        )
+
+        assertTrue { result.isFailure }
+        assertValidationResult(result, false, 1)
+    }
+
+    @Test
+    fun testValidateCvConfigurationWithValidValuesInDocumentList() {
+        val result = applicationTemplateValidationService.validateUpdate(
+            1,
+            ApplicationTemplateUpdateDto(
+                null,
+                "test",
+                CvConfigurationRequestDto(
+                    CVStyle.MODERN.styleKey,
+                    null,
+                    null
+                ),
+                listOf("one doc", "another doc")
+            ),
+            profile
+        )
+
+        assertTrue { result.isSuccess }
     }
 }

@@ -4,6 +4,7 @@ import ch.streckeisen.mycv.backend.applicationTemplate.dto.ApplicationTemplateUp
 import ch.streckeisen.mycv.backend.cv.generator.CVStyle
 import ch.streckeisen.mycv.backend.cv.generator.CvConfigurationRequestDto
 import ch.streckeisen.mycv.backend.cv.generator.CvGeneratorValidationService
+import ch.streckeisen.mycv.backend.cv.generator.IncludedCvContentDto
 import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
@@ -65,18 +66,13 @@ class ApplicationTemplateValidationService(
             validateCvConfiguration(applicationTemplateUpdate.cvConfiguration, profile, validationErrorBuilder)
         }
 
-        if (applicationTemplateUpdate.documentChecklist != null) {
-            if (applicationTemplateUpdate.documentChecklist.isEmpty()) {
-                validationErrorBuilder.addError(
-                    DOC_CHECKLIST_FIELD,
-                    messagesService.getMessage(EMPTY_DOC_CHECKLIST_MESSAGE)
-                )
-            } else if (applicationTemplateUpdate.documentChecklist.any { it.isNullOrBlank() }) {
-                validationErrorBuilder.addError(
-                    DOC_CHECKLIST_FIELD,
-                    messagesService.getMessage(EMPTY_DOC_CHECKLIST_MESSAGE)
-                )
-            }
+        if (applicationTemplateUpdate.documentChecklist != null
+            && (applicationTemplateUpdate.documentChecklist.isEmpty() || applicationTemplateUpdate.documentChecklist.any { it.isNullOrBlank() })
+        ) {
+            validationErrorBuilder.addError(
+                DOC_CHECKLIST_FIELD,
+                messagesService.getMessage(EMPTY_DOC_CHECKLIST_MESSAGE)
+            )
         }
 
         if (validationErrorBuilder.hasErrors()) {
@@ -108,48 +104,7 @@ class ApplicationTemplateValidationService(
             )
         } else {
             if (cvConfiguration.includedCvContent != null) {
-                val unknownWorkExperience =
-                    cvConfiguration.includedCvContent.includedWorkExperience?.filter { includedExperience ->
-                        profile.workExperiences.none { includedExperience.id == it.id }
-                    }
-                val unknownEducation =
-                    cvConfiguration.includedCvContent.includedEducation?.filter { includedEducation ->
-                        profile.education.none { includedEducation.id == it.id }
-                    }
-                val unknownProjects = cvConfiguration.includedCvContent.includedProjects?.filter { includedProject ->
-                    profile.projects.none { includedProject.id == it.id }
-                }
-                val unknownSkills = cvConfiguration.includedCvContent.includedSkills?.filter { includedSkillId ->
-                    profile.skills.none { it.id == includedSkillId }
-                }
-
-                if (!unknownWorkExperience.isNullOrEmpty()) {
-                    validationErrorBuilder.addError(
-                        INCLUDED_EXPERIENCE_FIELD,
-                        messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
-                    )
-                }
-
-                if (!unknownEducation.isNullOrEmpty()) {
-                    validationErrorBuilder.addError(
-                        INCLUDED_EDUCATION_FIELD,
-                        messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
-                    )
-                }
-
-                if (!unknownProjects.isNullOrEmpty()) {
-                    validationErrorBuilder.addError(
-                        INCLUDED_PROJECTS_FIELD,
-                        messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
-                    )
-                }
-
-                if (!unknownSkills.isNullOrEmpty()) {
-                    validationErrorBuilder.addError(
-                        INCLUDED_SKILLS_FIELD,
-                        messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
-                    )
-                }
+                validateCvContentConfig(cvConfiguration.includedCvContent, profile, validationErrorBuilder)
             }
         }
 
@@ -158,6 +113,55 @@ class ApplicationTemplateValidationService(
                 cvTemplate,
                 cvConfiguration.cvStyleOptions,
                 validationErrorBuilder
+            )
+        }
+    }
+
+    private fun validateCvContentConfig(
+        cvContent: IncludedCvContentDto,
+        profile: ProfileEntity,
+        validationErrorBuilder: ValidationException.ValidationErrorBuilder
+    ) {
+        val unknownWorkExperience =
+            cvContent.includedWorkExperience?.filter { includedExperience ->
+                profile.workExperiences.none { includedExperience.id == it.id }
+            }
+        val unknownEducation =
+            cvContent.includedEducation?.filter { includedEducation ->
+                profile.education.none { includedEducation.id == it.id }
+            }
+        val unknownProjects = cvContent.includedProjects?.filter { includedProject ->
+            profile.projects.none { includedProject.id == it.id }
+        }
+        val unknownSkills = cvContent.includedSkills?.filter { includedSkillId ->
+            profile.skills.none { it.id == includedSkillId }
+        }
+
+        if (!unknownWorkExperience.isNullOrEmpty()) {
+            validationErrorBuilder.addError(
+                INCLUDED_EXPERIENCE_FIELD,
+                messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
+            )
+        }
+
+        if (!unknownEducation.isNullOrEmpty()) {
+            validationErrorBuilder.addError(
+                INCLUDED_EDUCATION_FIELD,
+                messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
+            )
+        }
+
+        if (!unknownProjects.isNullOrEmpty()) {
+            validationErrorBuilder.addError(
+                INCLUDED_PROJECTS_FIELD,
+                messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
+            )
+        }
+
+        if (!unknownSkills.isNullOrEmpty()) {
+            validationErrorBuilder.addError(
+                INCLUDED_SKILLS_FIELD,
+                messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
             )
         }
     }

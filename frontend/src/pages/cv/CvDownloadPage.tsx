@@ -21,7 +21,7 @@ import {
 } from '@/types/cv/CvConfigurationRequestDto.ts'
 
 function convertToSelectionRequest(selection: SelectedCvContent): CvEntrySelectionRequestDto {
-  return { entityId: selection.id, includedDescription: selection.includeDescription }
+  return { id: selection.id, includeDescription: selection.includeDescription }
 }
 
 export function CvDownloadPage() {

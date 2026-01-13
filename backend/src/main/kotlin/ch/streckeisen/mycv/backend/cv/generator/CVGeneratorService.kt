@@ -6,6 +6,7 @@ import ch.streckeisen.mycv.backend.cv.profile.ProfileService
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
 import ch.streckeisen.mycv.backend.exceptions.LocalizedException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.apache.commons.io.FileUtils
@@ -30,7 +31,8 @@ class CVGeneratorService(
     private val profilePictureService: ProfilePictureService,
     private val objectMapper: ObjectMapper,
     private val typstService: TypstService,
-    private val cvDataService: CVDataService
+    private val cvDataService: CVDataService,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
     suspend fun generateCV(accountId: Long, cvConfiguration: CvConfigurationRequestDto): Result<ByteArray> {
         val profile = profileService.findByAccountId(accountId)
@@ -73,7 +75,7 @@ class CVGeneratorService(
                 return Result.failure(LocalizedException(TEMPLATE_NOT_FOUND_MESSAGE))
             }
 
-            return withContext(Dispatchers.IO) {
+            return withContext(dispatcher) {
                 @OptIn(ExperimentalPathApi::class)
                 Path.of(cvTemplate).copyToRecursively(tempDir, overwrite = true, followLinks = false)
 

@@ -151,6 +151,27 @@ class ApplicationTemplateServiceTest {
     }
 
     @Test
+    fun testFindByIdWithNonexistentTemplate() {
+        val result = applicationTemplateService.findById(1, 10)
+
+        assertTrue { result.isFailure }
+    }
+
+    @Test
+    fun testFindByIdWithUnauthorizedAccount() {
+        val result = applicationTemplateService.findById(2, 1)
+
+        assertTrue { result.isFailure }
+    }
+
+    @Test
+    fun testFindById() {
+        val result = applicationTemplateService.findById(1, 1)
+
+        assertTrue { result.isSuccess }
+    }
+
+    @Test
     fun testSaveExistingTemplateWithWrongId() {
         val result = applicationTemplateService.save(
             accountId = 1, applicationTemplate = ApplicationTemplateUpdateDto(

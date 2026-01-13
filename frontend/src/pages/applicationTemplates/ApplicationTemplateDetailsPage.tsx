@@ -29,7 +29,7 @@ import { CheckboxInput } from '@/components/input/CheckboxInput.tsx'
 
 function toSelectedContent(selection: CvEntrySelectionDto): SelectedCvContent {
   return {
-    id: selection.entityId,
+    id: selection.id,
     includeDescription: selection.includeDescription
   }
 }

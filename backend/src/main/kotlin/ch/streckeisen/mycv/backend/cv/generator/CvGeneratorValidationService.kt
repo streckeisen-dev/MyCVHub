@@ -52,72 +52,7 @@ class CvGeneratorValidationService(
         }
 
         if (cvConfiguration.includedCvContent != null) {
-            if (
-                cvConfiguration.includedCvContent.includedWorkExperience == null
-                || cvConfiguration.includedCvContent.includedEducation == null
-                || cvConfiguration.includedCvContent.includedProjects == null
-                || cvConfiguration.includedCvContent.includedSkills == null
-            ) {
-                validationErrorBuilder.addError(
-                    INCLUDED_CONTENT_FIELD,
-                    messagesService.getMessage(INCOMPLETE_CONTENT_CONFIG_MESSAGE)
-                )
-            } else {
-                if (
-                    cvConfiguration.includedCvContent.includedWorkExperience.isEmpty()
-                    && cvConfiguration.includedCvContent.includedEducation.isEmpty()
-                    && cvConfiguration.includedCvContent.includedProjects.isEmpty()
-                    && cvConfiguration.includedCvContent.includedSkills.isEmpty()
-                ) {
-                    validationErrorBuilder.addError(
-                        INCLUDED_CONTENT_FIELD,
-                        messagesService.getMessage(NO_CV_ENTRIES_MESSAGE)
-                    )
-                } else {
-                    val unknownWorkExperience =
-                        cvConfiguration.includedCvContent.includedWorkExperience.filter { includedExperience ->
-                            profile.workExperiences.none { includedExperience.id == it.id }
-                        }
-                    val unknownEducation =
-                        cvConfiguration.includedCvContent.includedEducation.filter { includedEducation ->
-                            profile.education.none { includedEducation.id == it.id }
-                        }
-                    val unknownProjects = cvConfiguration.includedCvContent.includedProjects.filter { includedProject ->
-                        profile.projects.none { includedProject.id == it.id }
-                    }
-                    val unknownSkills = cvConfiguration.includedCvContent.includedSkills.filter { includedSkillId ->
-                        profile.skills.none { it.id == includedSkillId }
-                    }
-
-                    if (unknownWorkExperience.isNotEmpty()) {
-                        validationErrorBuilder.addError(
-                            "$INCLUDED_CONTENT_FIELD.$INCLUDED_EXPERIENCE_FIELD",
-                            messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
-                        )
-                    }
-
-                    if (unknownEducation.isNotEmpty()) {
-                        validationErrorBuilder.addError(
-                            "$INCLUDED_CONTENT_FIELD.$INCLUDED_EDUCATION_FIELD",
-                            messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
-                        )
-                    }
-
-                    if (unknownProjects.isNotEmpty()) {
-                        validationErrorBuilder.addError(
-                            "$INCLUDED_CONTENT_FIELD.$INCLUDED_PROJECTS_FIELD",
-                            messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
-                        )
-                    }
-
-                    if (unknownSkills.isNotEmpty()) {
-                        validationErrorBuilder.addError(
-                            "$INCLUDED_CONTENT_FIELD.$INCLUDED_SKILLS_FIELD",
-                            messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
-                        )
-                    }
-                }
-            }
+            validateCvContent(cvConfiguration.includedCvContent, profile, validationErrorBuilder)
         }
 
         if (validationErrorBuilder.hasErrors()) {
@@ -181,6 +116,79 @@ class CvGeneratorValidationService(
                     validationErrorBuilder.addError(
                         "templateOptions.[${option.key}]",
                         messagesService.getMessage(MISSING_TEMPLATE_OPTION)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun validateCvContent(
+        cvContent: IncludedCvContentDto,
+        profile: ProfileEntity,
+        validationErrorBuilder: ValidationException.ValidationErrorBuilder
+    ) {
+        if (
+            cvContent.includedWorkExperience == null
+            || cvContent.includedEducation == null
+            || cvContent.includedProjects == null
+            || cvContent.includedSkills == null
+        ) {
+            validationErrorBuilder.addError(
+                INCLUDED_CONTENT_FIELD,
+                messagesService.getMessage(INCOMPLETE_CONTENT_CONFIG_MESSAGE)
+            )
+        } else {
+            if (
+                cvContent.includedWorkExperience.isEmpty()
+                && cvContent.includedEducation.isEmpty()
+                && cvContent.includedProjects.isEmpty()
+                && cvContent.includedSkills.isEmpty()
+            ) {
+                validationErrorBuilder.addError(
+                    INCLUDED_CONTENT_FIELD,
+                    messagesService.getMessage(NO_CV_ENTRIES_MESSAGE)
+                )
+            } else {
+                val unknownWorkExperience =
+                    cvContent.includedWorkExperience.filter { includedExperience ->
+                        profile.workExperiences.none { includedExperience.id == it.id }
+                    }
+                val unknownEducation =
+                    cvContent.includedEducation.filter { includedEducation ->
+                        profile.education.none { includedEducation.id == it.id }
+                    }
+                val unknownProjects = cvContent.includedProjects.filter { includedProject ->
+                    profile.projects.none { includedProject.id == it.id }
+                }
+                val unknownSkills = cvContent.includedSkills.filter { includedSkillId ->
+                    profile.skills.none { it.id == includedSkillId }
+                }
+
+                if (unknownWorkExperience.isNotEmpty()) {
+                    validationErrorBuilder.addError(
+                        "$INCLUDED_CONTENT_FIELD.$INCLUDED_EXPERIENCE_FIELD",
+                        messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
+                    )
+                }
+
+                if (unknownEducation.isNotEmpty()) {
+                    validationErrorBuilder.addError(
+                        "$INCLUDED_CONTENT_FIELD.$INCLUDED_EDUCATION_FIELD",
+                        messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
+                    )
+                }
+
+                if (unknownProjects.isNotEmpty()) {
+                    validationErrorBuilder.addError(
+                        "$INCLUDED_CONTENT_FIELD.$INCLUDED_PROJECTS_FIELD",
+                        messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
+                    )
+                }
+
+                if (unknownSkills.isNotEmpty()) {
+                    validationErrorBuilder.addError(
+                        "$INCLUDED_CONTENT_FIELD.$INCLUDED_SKILLS_FIELD",
+                        messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
                     )
                 }
             }

@@ -59,10 +59,10 @@ function toSelectedCvContent(o: WorkExperienceDto | EducationDto | ProjectDto): 
 }
 
 export function CvConfigurationEditor(props: CvConfigurationEditorProps): ReactNode {
-  const { cvStyles, profile, config, onChange, disabled } = props
+  const { cvStyles, profile, config, onChange, disabled = false } = props
   const { t } = useTranslation()
 
-  const [selectedCvStyle, setSelectedCvStyle] = useState<CVStyleDto | undefined>(undefined)
+  const [selectedCvStyle, setSelectedCvStyle] = useState<CVStyleDto | undefined>(cvStyles.find(style => style.key === config.cvStyle))
 
   function handleStyleSelected(style: CVStyleDto) {
     if (disabled || !onChange) return
@@ -155,7 +155,7 @@ export function CvConfigurationEditor(props: CvConfigurationEditorProps): ReactN
 
       {config.cvStyle && (
         <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {((disabled == true && config.cvContent != null) || disabled == false) && (
+          {((disabled && config.cvContent != null) || !disabled) && (
             <div className="flex flex-col gap-2 items-center">
               <Button variant="light" startContent={<FaSliders />} onPress={toggleCustomizeContent}>
                 {t('cv.customizeContent')}
@@ -165,14 +165,14 @@ export function CvConfigurationEditor(props: CvConfigurationEditorProps): ReactN
                   profile={profile}
                   value={config.cvContent}
                   onChange={handleContentChange}
-                  disabled={disabled ?? false}
+                  disabled={disabled}
                 />
               )}
             </div>
           )}
           {selectedCvStyle &&
             selectedCvStyle.options.length > 0 &&
-            ((disabled === true && config.cvStyleOptions != null) || disabled === false) && (
+            ((disabled && config.cvStyleOptions != null) || !disabled) && (
               <div className="flex flex-col gap-2 items-center">
                 <Button
                   variant="light"

@@ -12,6 +12,6 @@ export interface CvConfigurationDto {
 }
 
 export interface CvEntrySelectionDto {
-  entityId: number
+  id: number
   includeDescription: boolean
 }

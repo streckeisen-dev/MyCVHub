@@ -37,7 +37,7 @@ interface ApplicationTemplateFormData {
 
 function convertSelectionToSelectedCvContent(selected: CvEntrySelectionDto): SelectedCvContent {
   return {
-    id: selected.entityId,
+    id: selected.id,
     includeDescription: selected.includeDescription
   }
 }
@@ -46,8 +46,8 @@ function convertSelectedCvContentToSelectionRequest(
   selected: SelectedCvContent
 ): CvEntrySelectionRequestDto {
   return {
-    entityId: selected.id,
-    includedDescription: selected.includeDescription
+    id: selected.id,
+    includeDescription: selected.includeDescription
   }
 }
 
