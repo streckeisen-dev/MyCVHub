@@ -9,12 +9,10 @@ import {
   TableCell,
   TableColumn,
   TableHeader,
-  TableRow,
-  Tooltip
+  TableRow
 } from '@heroui/react'
 import { ColumnSize } from '@react-types/table'
 import { Key } from '@react-types/shared'
-import { TableButton } from '@/components/TableButton.tsx'
 import { FaEye, FaTrash } from 'react-icons/fa6'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import { useNavigate } from 'react-router-dom'
@@ -25,6 +23,7 @@ import { addErrorToast } from '@/helpers/ToastHelper.ts'
 import { ProfileDto } from '@/types/profile/ProfileDto.ts'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { DeleteApplicationTemplateModal } from '@/components/applicationTemplate/DeleteApplicationTemplateModal.tsx'
+import { TooltipButton } from '@/components/TooltipButton.tsx'
 
 interface ColumnDefinition {
   key: string
@@ -88,8 +87,8 @@ export function ApplicationTemplateOverviewPage(): ReactNode {
   }
 
   function handleDelete(id: number) {
-    setTemplates(prev => {
-      return prev.filter(template => template.id !== id)
+    setTemplates((prev) => {
+      return prev.filter((template) => template.id !== id)
     })
   }
 
@@ -100,19 +99,19 @@ export function ApplicationTemplateOverviewPage(): ReactNode {
       case 'actions':
         return (
           <div className="flex gap-2 items-center">
-            <Tooltip color="primary" content={t('applicationTemplate.view')}>
-              <TableButton className="text-primary" onClick={() => handleView(template.id)}>
-                <FaEye />
-              </TableButton>
-            </Tooltip>
+            <TooltipButton
+              color="primary"
+              content={t('applicationTemplate.view')}
+              onClick={() => handleView(template.id)}
+            >
+              <FaEye />
+            </TooltipButton>
             <DeleteApplicationTemplateModal
               id={template.id}
               trigger={
-                <Tooltip color="danger" content={t('applicationTemplate.delete.title')}>
-                  <TableButton className="text-danger">
-                    <FaTrash />
-                  </TableButton>
-                </Tooltip>
+                <TooltipButton color="danger" content={t('applicationTemplate.delete.title')}>
+                  <FaTrash />
+                </TooltipButton>
               }
               onDelete={() => handleDelete(template.id)}
             />

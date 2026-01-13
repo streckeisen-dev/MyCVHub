@@ -1,14 +1,24 @@
-import { ReactNode, useState } from 'react'
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react'
+import { cloneElement, ReactElement, ReactNode, useState } from 'react'
+import {
+  Button,
+  ButtonProps,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  TooltipProps
+} from '@heroui/react'
 import { h3 } from '@/styles/primitives.ts'
 import { useTranslation } from 'react-i18next'
 import ApplicationTemplateApi from '@/api/ApplicationTemplateApi.ts'
 import { addErrorToast, addSuccessToast } from '@/helpers/ToastHelper.ts'
 import { RestError } from '@/types/RestError.ts'
+import { TableButtonProps } from '@/components/TableButton.tsx'
 
 export type DeleteApplicationTemplateModalProps = Readonly<{
   id: number
-  trigger: ReactNode
+  trigger: ReactElement<ButtonProps | TableButtonProps | TooltipProps>
   onDelete: () => void
 }>
 
@@ -46,11 +56,22 @@ export function DeleteApplicationTemplateModal(
     }
   }
 
+  const triggerButtonProps = Object.hasOwn(trigger.props, 'onPress')
+    ? {
+        ...trigger.props,
+        onPress: handleModalOpen
+      }
+    : {
+        ...trigger.props,
+        onClick: handleModalOpen
+      }
+
+  // eslint-disable-next-line @eslint-react/no-clone-element
+  const triggerButton = cloneElement(trigger, triggerButtonProps)
+
   return (
     <>
-      <span onClick={handleModalOpen} className="w-fit flex items-center" role="button">
-        {trigger}
-      </span>
+      {triggerButton}
       <Modal
         isOpen={isModalOpen}
         onClose={handleModalClose}
