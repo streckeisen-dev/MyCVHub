@@ -61,7 +61,7 @@ export function ApplicationTemplateDetailsPage(): ReactNode {
 
   useEffect(() => {
     async function loadData() {
-      const templateId = params.id ? parseInt(params.id) : undefined
+      const templateId = params.id ? Number.parseInt(params.id) : undefined
       if (templateId) {
         try {
           const styles = await CvApi.getCVStyles(i18n.language)

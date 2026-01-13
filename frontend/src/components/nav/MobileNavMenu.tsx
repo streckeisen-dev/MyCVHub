@@ -63,7 +63,7 @@ export function MobileNavMenu(props: MobileNavMenuProps): ReactNode {
         {SITE_CONFIG.navItems
           .filter((item) => item.predicate(user))
           .map((item) => {
-            if (Object.prototype.hasOwnProperty.call(item, 'children')) {
+            if (Object.hasOwn(item, 'children')) {
               const node = item as NavItemNode
               const Icon = expandedNavItem === node.id ? FaChevronUp : FaChevronDown
               return (

@@ -89,7 +89,7 @@ export function ApplicationTemplateOverviewPage(): ReactNode {
 
   function handleDelete(id: number) {
     setTemplates(prev => {
-      return [...prev.filter(template => template.id !== id)]
+      return prev.filter(template => template.id !== id)
     })
   }
 

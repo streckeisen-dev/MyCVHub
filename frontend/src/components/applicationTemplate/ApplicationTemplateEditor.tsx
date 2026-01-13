@@ -5,12 +5,9 @@ import { useTranslation } from 'react-i18next'
 import { FormButtons } from '@/components/FormButtons.tsx'
 import { ApplicationTemplateDto } from '@/types/applicationTemplate/ApplicationTemplateDto.ts'
 import { ProfileDto } from '@/types/profile/ProfileDto.ts'
-import { SelectedCvContent } from '@/components/cv/CvContentTreeRoot.tsx'
-import { CvEntrySelectionDto } from '@/types/applicationTemplate/CvConfigurationDto.ts'
 import { v7 as uuid } from 'uuid'
 import { FaPlus, FaTrash } from 'react-icons/fa6'
 import { ApplicationTemplateUpdateDto } from '@/types/applicationTemplate/ApplicationTemplateUpdateDto.ts'
-import { CvEntrySelectionRequestDto } from '@/types/cv/CvConfigurationRequestDto.ts'
 import ApplicationTemplateApi from '@/api/ApplicationTemplateApi.ts'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { extractFormErrors } from '@/helpers/FormHelper.ts'
@@ -35,22 +32,6 @@ interface ApplicationTemplateFormData {
   documents: { id: string; name: string }[]
 }
 
-function convertSelectionToSelectedCvContent(selected: CvEntrySelectionDto): SelectedCvContent {
-  return {
-    id: selected.id,
-    includeDescription: selected.includeDescription
-  }
-}
-
-function convertSelectedCvContentToSelectionRequest(
-  selected: SelectedCvContent
-): CvEntrySelectionRequestDto {
-  return {
-    id: selected.id,
-    includeDescription: selected.includeDescription
-  }
-}
-
 export function ApplicationTemplateEditor(props: EditApplicationTemplateModalProps): ReactNode {
   const { onSave, onCancel, initialValue, profile, cvStyles } = props
   const { t, i18n } = useTranslation()
@@ -62,15 +43,9 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
       cvStyle: initialValue?.cvConfiguration.cvStyle,
       cvContent:
         (initialValue?.cvConfiguration.includedCvContent && {
-          workExperience: initialValue.cvConfiguration.includedCvContent.includedWorkExperience.map(
-            convertSelectionToSelectedCvContent
-          ),
-          education: initialValue.cvConfiguration.includedCvContent.includedEducation.map(
-            convertSelectionToSelectedCvContent
-          ),
-          projects: initialValue.cvConfiguration.includedCvContent.includedProjects.map(
-            convertSelectionToSelectedCvContent
-          ),
+          workExperience: initialValue.cvConfiguration.includedCvContent.includedWorkExperience,
+          education: initialValue.cvConfiguration.includedCvContent.includedEducation,
+          projects: initialValue.cvConfiguration.includedCvContent.includedProjects,
           skills: initialValue.cvConfiguration.includedCvContent.includedSkills
         }) ??
         undefined,
@@ -127,7 +102,7 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
     setData((prev) => {
       return {
         ...prev,
-        documents: [...prev.documents.filter((doc) => doc.id !== id)]
+        documents: prev.documents.filter((doc) => doc.id !== id)
       }
     })
   }
@@ -143,15 +118,9 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
         cvStyle: data.cvConfig.cvStyle,
         cvStyleOptions: data.cvConfig.cvStyleOptions,
         includedCvContent: data.cvConfig.cvContent && {
-          includedWorkExperience: data.cvConfig.cvContent?.workExperience.map(
-            convertSelectedCvContentToSelectionRequest
-          ),
-          includedEducation: data.cvConfig.cvContent?.education.map(
-            convertSelectedCvContentToSelectionRequest
-          ),
-          includedProjects: data.cvConfig.cvContent?.projects.map(
-            convertSelectedCvContentToSelectionRequest
-          ),
+          includedWorkExperience: data.cvConfig.cvContent?.workExperience,
+          includedEducation: data.cvConfig.cvContent?.education,
+          includedProjects: data.cvConfig.cvContent?.projects,
           includedSkills: data.cvConfig.cvContent?.skills
         }
       },

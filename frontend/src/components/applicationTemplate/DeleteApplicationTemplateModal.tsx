@@ -48,7 +48,7 @@ export function DeleteApplicationTemplateModal(
 
   return (
     <>
-      <span onClick={handleModalOpen} className="w-fit flex items-center">
+      <span onClick={handleModalOpen} className="w-fit flex items-center" role="button">
         {trigger}
       </span>
       <Modal

@@ -40,7 +40,7 @@ function renderNavLinks(
   return navLinks
     .filter((item) => item.predicate(user))
     .map((item) => {
-      if (Object.prototype.hasOwnProperty.call(item, 'children')) {
+      if (Object.hasOwn(item, 'children')) {
         const node: NavItemNode = item as NavItemNode
         return (
           <Dropdown key={node.id}>

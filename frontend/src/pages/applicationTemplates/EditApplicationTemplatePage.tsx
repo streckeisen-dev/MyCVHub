@@ -42,7 +42,7 @@ export function EditApplicationTemplatePage(): ReactNode {
         addErrorToast(t('profile.loadingError'), error?.message ?? t('error.genericMessage'))
       }
 
-      const templateId = params.id ? parseInt(params.id) : undefined
+      const templateId = params.id ? Number.parseInt(params.id) : undefined
       if (templateId) {
         try {
           const template = await ApplicationTemplateApi.getApplicationTemplate(

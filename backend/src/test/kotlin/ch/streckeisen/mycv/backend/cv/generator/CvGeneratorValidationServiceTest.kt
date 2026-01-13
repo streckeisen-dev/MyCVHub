@@ -144,7 +144,7 @@ class CvGeneratorValidationServiceTest {
         val options = mapOf(CVStyle.TALENDO.options.first().key to "invalid")
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
-        val result = cvGeneratorValidationService.validateStyleOptions(CVStyle.TALENDO, options, validationErrorBuilder)
+        cvGeneratorValidationService.validateStyleOptions(CVStyle.TALENDO, options, validationErrorBuilder)
 
         assertTrue { validationErrorBuilder.hasErrors() }
         assertEquals(1, validationErrorBuilder.build("").errors.size)
