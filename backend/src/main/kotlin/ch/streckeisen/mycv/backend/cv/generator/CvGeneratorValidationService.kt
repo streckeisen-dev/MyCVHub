@@ -149,49 +149,57 @@ class CvGeneratorValidationService(
                     messagesService.getMessage(NO_CV_ENTRIES_MESSAGE)
                 )
             } else {
-                val unknownWorkExperience =
-                    cvContent.includedWorkExperience.filter { includedExperience ->
-                        profile.workExperiences.none { includedExperience.id == it.id }
-                    }
-                val unknownEducation =
-                    cvContent.includedEducation.filter { includedEducation ->
-                        profile.education.none { includedEducation.id == it.id }
-                    }
-                val unknownProjects = cvContent.includedProjects.filter { includedProject ->
-                    profile.projects.none { includedProject.id == it.id }
-                }
-                val unknownSkills = cvContent.includedSkills.filter { includedSkillId ->
-                    profile.skills.none { it.id == includedSkillId }
-                }
-
-                if (unknownWorkExperience.isNotEmpty()) {
-                    validationErrorBuilder.addError(
-                        "$INCLUDED_CONTENT_FIELD.$INCLUDED_EXPERIENCE_FIELD",
-                        messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
-                    )
-                }
-
-                if (unknownEducation.isNotEmpty()) {
-                    validationErrorBuilder.addError(
-                        "$INCLUDED_CONTENT_FIELD.$INCLUDED_EDUCATION_FIELD",
-                        messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
-                    )
-                }
-
-                if (unknownProjects.isNotEmpty()) {
-                    validationErrorBuilder.addError(
-                        "$INCLUDED_CONTENT_FIELD.$INCLUDED_PROJECTS_FIELD",
-                        messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
-                    )
-                }
-
-                if (unknownSkills.isNotEmpty()) {
-                    validationErrorBuilder.addError(
-                        "$INCLUDED_CONTENT_FIELD.$INCLUDED_SKILLS_FIELD",
-                        messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
-                    )
-                }
+                validateCvContentItems(cvContent, profile, validationErrorBuilder)
             }
+        }
+    }
+
+    private fun validateCvContentItems(
+        cvContent: IncludedCvContentDto,
+        profile: ProfileEntity,
+        validationErrorBuilder: ValidationException.ValidationErrorBuilder
+    ) {
+        val unknownWorkExperience =
+            cvContent.includedWorkExperience!!.filter { includedExperience ->
+                profile.workExperiences.none { includedExperience.id == it.id }
+            }
+        val unknownEducation =
+            cvContent.includedEducation!!.filter { includedEducation ->
+                profile.education.none { includedEducation.id == it.id }
+            }
+        val unknownProjects = cvContent.includedProjects!!.filter { includedProject ->
+            profile.projects.none { includedProject.id == it.id }
+        }
+        val unknownSkills = cvContent.includedSkills!!.filter { includedSkillId ->
+            profile.skills.none { it.id == includedSkillId }
+        }
+
+        if (unknownWorkExperience.isNotEmpty()) {
+            validationErrorBuilder.addError(
+                "$INCLUDED_CONTENT_FIELD.$INCLUDED_EXPERIENCE_FIELD",
+                messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
+            )
+        }
+
+        if (unknownEducation.isNotEmpty()) {
+            validationErrorBuilder.addError(
+                "$INCLUDED_CONTENT_FIELD.$INCLUDED_EDUCATION_FIELD",
+                messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
+            )
+        }
+
+        if (unknownProjects.isNotEmpty()) {
+            validationErrorBuilder.addError(
+                "$INCLUDED_CONTENT_FIELD.$INCLUDED_PROJECTS_FIELD",
+                messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
+            )
+        }
+
+        if (unknownSkills.isNotEmpty()) {
+            validationErrorBuilder.addError(
+                "$INCLUDED_CONTENT_FIELD.$INCLUDED_SKILLS_FIELD",
+                messagesService.getMessage(UNKNOWN_CV_ENTRY_MESSAGE_KEY)
+            )
         }
     }
 }
