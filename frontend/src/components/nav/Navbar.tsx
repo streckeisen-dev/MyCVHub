@@ -1,13 +1,14 @@
 import {
-  Divider,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Link,
   link as linkStyles,
   Navbar as HeroUINavbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  NavbarMenu,
-  NavbarMenuItem,
   NavbarMenuToggle
 } from '@heroui/react'
 import clsx from 'clsx'
@@ -23,10 +24,70 @@ import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router-dom'
 
 import classes from './Navbar.module.css'
-import { use, useState } from 'react'
-import { AuthorizationContext } from '@/context/AuthorizationContext.tsx'
-import { SITE_CONFIG } from '@/config/RouteTree.tsx'
+import { ReactNode, use, useState } from 'react'
+import { AuthorizationContext, AuthorizedUser } from '@/context/AuthorizationContext.tsx'
+import { NavItemConfig, NavItemLeaf, NavItemNode, SITE_CONFIG } from '@/config/RouteTree.tsx'
 import { ExternalLink } from '@/components/ExternalLink.tsx'
+import { TFunction } from 'i18next'
+import { FaChevronDown } from 'react-icons/fa6'
+import { MobileNavMenu } from '@/components/nav/MobileNavMenu.tsx'
+
+function renderNavLinks(
+  navLinks: NavItemConfig[],
+  user: AuthorizedUser | undefined,
+  t: TFunction
+): ReactNode {
+  return navLinks
+    .filter((item) => item.predicate(user))
+    .map((item) => {
+      if (Object.hasOwn(item, 'children')) {
+        const node: NavItemNode = item as NavItemNode
+        return (
+          <Dropdown key={node.id}>
+            <NavbarItem>
+              <DropdownTrigger>
+                <button type="button" className="flex gap-2 text-medium">
+                  {t(node.label)}
+                  <FaChevronDown size={15} className="self-center-safe" />
+                </button>
+              </DropdownTrigger>
+            </NavbarItem>
+            <DropdownMenu>
+              {node.children.map((subItem) => (
+                <DropdownItem key={subItem.id}>{renderLink(subItem, user, t)}</DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
+        )
+      } else {
+        const leaf: NavItemLeaf = item as NavItemLeaf
+        return <NavbarItem key={item.id}>{renderLink(leaf, user, t)}</NavbarItem>
+      }
+    })
+}
+
+function renderLink(
+  navLink: NavItemLeaf,
+  user: AuthorizedUser | undefined,
+  t: TFunction
+): ReactNode {
+  return (
+    <NavLink
+      className={({ isActive }) =>
+        clsx(
+          linkStyles({ color: 'foreground' }),
+          'data-[active=true]:text-primary data-[active=true]:font-medium',
+          isActive ? classes.activeLink : ''
+        )
+      }
+      color="foreground"
+      to={typeof navLink.href === 'string' ? navLink.href : navLink.href(user)}
+      target={navLink.newTab ? '_blank' : '_self'}
+    >
+      {t(navLink.label)}
+    </NavLink>
+  )
+}
 
 export const Navbar = () => {
   const { t } = useTranslation()
@@ -53,26 +114,7 @@ export const Navbar = () => {
           </Link>
         </NavbarBrand>
         <div className="hidden xl:flex gap-4 justify-start ml-20">
-          {SITE_CONFIG.navItems
-            .filter((item) => item.predicate(user))
-            .map((item) => (
-              <NavbarItem key={item.id}>
-                <NavLink
-                  className={({ isActive }) =>
-                    clsx(
-                      linkStyles({ color: 'foreground' }),
-                      'data-[active=true]:text-primary data-[active=true]:font-medium',
-                      isActive ? classes.activeLink : ''
-                    )
-                  }
-                  color="foreground"
-                  to={typeof item.href === 'string' ? item.href : item.href(user)}
-                  target={item.newTab ? '_blank' : '_self'}
-                >
-                  {t(item.label)}
-                </NavLink>
-              </NavbarItem>
-            ))}
+          {renderNavLinks(SITE_CONFIG.navItems, user, t)}
         </div>
       </NavbarContent>
 
@@ -94,39 +136,7 @@ export const Navbar = () => {
         <NavbarMenuToggle className="xl:hidden" />
       </NavbarContent>
 
-      <NavbarMenu>
-        <div className="mx-4 mt-2 flex flex-col gap-2">
-          {SITE_CONFIG.navItems
-            .filter((item) => item.predicate(user))
-            .map((item) => (
-              <NavbarMenuItem key={item.id}>
-                <NavLink
-                  className={({ isActive }) =>
-                    clsx(
-                      linkStyles({ color: 'foreground' }),
-                      'data-[active=true]:text-primary data-[active=true]:font-medium',
-                      isActive ? classes.activeLink : ''
-                    )
-                  }
-                  color="foreground"
-                  to={typeof item.href === 'string' ? item.href : item.href(user)}
-                  target={item.newTab ? '_blank' : '_self'}
-                  onClick={handleLinkClick}
-                >
-                  {t(item.label)}
-                </NavLink>
-              </NavbarMenuItem>
-            ))}
-        </div>
-
-        <div className="flex sm:hidden flex-col grow justify-end">
-          <Divider />
-          <div className="mx-4 my-2 flex gap-2">
-            <AccountMenu dropdownPlacement="top" onNavigate={handleLinkClick} />
-            {user == null && <LanguageSwitcher className="ml-auto" />}
-          </div>
-        </div>
-      </NavbarMenu>
+      <MobileNavMenu onLinkClick={handleLinkClick} />
     </HeroUINavbar>
   )
 }

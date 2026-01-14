@@ -85,7 +85,7 @@ class CVDataServiceTest {
             val preparedExperience = result[i]
             val incl = includedItems[i]
 
-            if (incl.includeDescription) {
+            if (incl.includeDescription ?: true) {
                 assertEquals(experience, preparedExperience)
             } else {
                 assertEquals(experience.id, preparedExperience.id)
@@ -144,7 +144,7 @@ class CVDataServiceTest {
             val preparedEntry = result[i]
             val incl = includedItems[i]
 
-            if (incl.includeDescription) {
+            if (incl.includeDescription ?: true) {
                 assertEquals(educationEntry, preparedEntry)
             } else {
                 assertEquals(educationEntry.id, preparedEntry.id)
@@ -202,7 +202,7 @@ class CVDataServiceTest {
             val preparedProject = result[i]
             val incl = includedItems[i]
 
-            if (incl.includeDescription) {
+            if (incl.includeDescription ?: true) {
                 assertEquals(project, preparedProject)
             } else {
                 assertEquals(project.id, preparedProject.id)
@@ -230,7 +230,7 @@ class CVDataServiceTest {
     @Test
     fun testFilterSkillsWithIdFilter() {
         val skills = skills()
-        val includedItems = listOf(IncludedCVItem(1, true), IncludedCVItem(3, true))
+        val includedItems = listOf(1L, 3L)
 
         val result = cvDataService.filterSkills(skills, includedItems)
 
@@ -250,7 +250,7 @@ class CVDataServiceTest {
     @Test
     fun testFilterSkillsWithDescriptionFilter() {
         val skills = skills()
-        val includedItems = listOf(IncludedCVItem(1, false), IncludedCVItem(2, true))
+        val includedItems = listOf(1L, 2L)
 
         val result = cvDataService.filterSkills(skills, includedItems)
 

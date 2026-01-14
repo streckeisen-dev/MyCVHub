@@ -28,6 +28,10 @@ import { ApplicationDetailsPage } from '@/pages/applications/ApplicationDetailsP
 import { OAuthFailurePage } from '@/pages/account/oauth/OAuthFailurePage.tsx'
 import { TermsOfServicePage } from '@/pages/policy/TermsOfServicePage.tsx'
 import { AboutPage } from '@/AboutPage.tsx'
+import { ApplicationTemplateOverviewPage } from '@/pages/applicationTemplates/ApplicationTemplateOverviewPage.tsx'
+import { ApplicationTemplateDetailsPage } from '@/pages/applicationTemplates/ApplicationTemplateDetailsPage.tsx'
+import { AddApplicationTemplatePage } from '@/pages/applicationTemplates/AddApplicationTemplatePage.tsx'
+import { EditApplicationTemplatePage } from '@/pages/applicationTemplates/EditApplicationTemplatePage.tsx'
 
 type MyCvRouteObject = Omit<RouteObject, 'children'> & {
   id: string
@@ -136,13 +140,39 @@ const ROUTE_DEFINITIONS = defineRoutes([
         children: [
           {
             id: 'ApplicationsOverview',
-            index: true,
+            path: 'overview',
             element: <ApplicationsPage />
           },
           {
             id: 'ApplicationDetail',
             path: ':id',
             element: <ApplicationDetailsPage />
+          },
+          {
+            id: 'ApplicationTemplateRoot',
+            path: 'templates',
+            children: [
+              {
+                id: 'ApplicationTemplateOverview',
+                index: true,
+                element: <ApplicationTemplateOverviewPage />
+              },
+              {
+                id: 'AddApplicationTemplate',
+                path: 'add',
+                element: <AddApplicationTemplatePage />
+              },
+              {
+                id: 'EditApplicationTemplate',
+                path: 'edit/:id',
+                element: <EditApplicationTemplatePage />
+              },
+              {
+                id: 'ApplicationTemplateDetails',
+                path: ':id',
+                element: <ApplicationTemplateDetailsPage />
+              }
+            ]
           }
         ]
       },
@@ -313,13 +343,22 @@ export function getRoutePath(routeId: RouteId, hash?: string, ...params: string[
   return path
 }
 
-interface NavItemConfig {
+export interface NavItemLeaf {
   id: string
   label: string
   href: string | ((user: AuthorizedUser | undefined) => string)
   predicate: (user: AuthorizedUser | undefined) => boolean
   newTab?: boolean
 }
+
+export interface NavItemNode {
+  id: string,
+  label: string,
+  predicate: (user: AuthorizedUser | undefined) => boolean,
+  children: NavItemLeaf[]
+}
+
+export type NavItemConfig = NavItemNode | NavItemLeaf
 
 const navItems: NavItemConfig[] = [
   {
@@ -350,8 +389,21 @@ const navItems: NavItemConfig[] = [
   {
     id: 'applications',
     label: 'application.title',
-    href: getRoutePath(RouteId.ApplicationsOverview),
-    predicate: (user: AuthorizedUser | undefined) => user?.hasProfile ?? false
+    predicate: (user: AuthorizedUser | undefined) => user?.hasProfile ?? false,
+    children: [
+      {
+        id: 'applicationsOverview',
+        label: 'application.overview',
+        href: getRoutePath(RouteId.ApplicationsOverview),
+        predicate: () => true
+      },
+      {
+        id: 'applicationTemplates',
+        label: 'applicationTemplate.title',
+        href: getRoutePath(RouteId.ApplicationTemplateOverview),
+        predicate: () => true
+      }
+    ]
   },
   {
     id: 'about',

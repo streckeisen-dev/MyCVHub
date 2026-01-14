@@ -35,7 +35,7 @@ import { useNavigate } from 'react-router-dom'
 import { ApplicationStatus } from '@/components/application/ApplicationStatus.tsx'
 import { CheckboxInput } from '@/components/input/CheckboxInput.tsx'
 import { ArchiveApplicationButton } from '@/components/application/ArchiveApplicationButton.tsx'
-import { TableButton } from '@/components/TableButton.tsx'
+import { TableButton } from '@/components/btn/TableButton.tsx'
 import { FaArrowRotateLeft, FaEye } from 'react-icons/fa6'
 import ApplicationFilterService from '@/components/application/ApplicationFilterService.ts'
 
@@ -338,7 +338,7 @@ export function ApplicationTable(props: ApplicationTableProps) {
       >
         {(application) => {
           return (
-            <TableRow key={application.id} className={''}>
+            <TableRow key={application.id}>
               {(column) => <TableCell key={column}>{renderCell(application, column)}</TableCell>}
             </TableRow>
           )

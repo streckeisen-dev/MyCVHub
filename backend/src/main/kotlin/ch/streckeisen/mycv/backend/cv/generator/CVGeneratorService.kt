@@ -2,17 +2,14 @@ package ch.streckeisen.mycv.backend.cv.generator
 
 import ch.streckeisen.mycv.backend.cv.generator.data.CVDataService
 import ch.streckeisen.mycv.backend.cv.generator.typst.TypstService
-import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
 import ch.streckeisen.mycv.backend.exceptions.LocalizedException
-import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
-import ch.streckeisen.mycv.backend.util.isValidHexColor
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.apache.commons.io.FileUtils
-import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Service
 import tools.jackson.databind.ObjectMapper
 import java.nio.file.Path
@@ -23,56 +20,52 @@ import kotlin.io.path.createTempDirectory
 
 private const val TEMPLATE_NOT_FOUND_MESSAGE = "$MYCV_KEY_PREFIX.cv.templateNotFound"
 private const val GENERATION_FAILED_MESSAGE = "$MYCV_KEY_PREFIX.cv.generationFailed"
-private const val INCOMPLETE_PROFILE_MESSAGE = "$MYCV_KEY_PREFIX.cv.incompleteProfile"
-private const val NO_CV_ENTRIES_MESSAGE = "$MYCV_KEY_PREFIX.cv.noCvEntries"
-private const val UNSUPPORTED_TEMPLATE_OPTIONS = "$MYCV_KEY_PREFIX.cv.templateOptions.unsupported"
-private const val UNKNOWN_TEMPLATE_OPTION = "$MYCV_KEY_PREFIX.cv.templateOptions.unknown"
-private const val MISSING_TEMPLATE_OPTION = "$MYCV_KEY_PREFIX.cv.templateOptions.missing"
-private const val INVALID_TEMPLATE_OPTION = "$MYCV_KEY_PREFIX.cv.templateOptions.invalid"
 
 private const val PROFILE_PICTURE_FILE_NAME = "profile.jpg"
 private const val PROFILE_JSON_FILE_NAME = "profile.json"
 
 @Service
 class CVGeneratorService(
+    private val cvGeneratorValidationService: CvGeneratorValidationService,
     private val profileService: ProfileService,
     private val profilePictureService: ProfilePictureService,
     private val objectMapper: ObjectMapper,
     private val typstService: TypstService,
-    private val cvDataService: CVDataService
+    private val cvDataService: CVDataService,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
-    suspend fun generateCV(
-        accountId: Long,
-        cvStyle: CVStyle,
-        includedWorkExperience: List<IncludedCVItem>?,
-        includedEduction: List<IncludedCVItem>?,
-        includedProjects: List<IncludedCVItem>?,
-        includedSkills: List<IncludedCVItem>?,
-        templateOptions: Map<String, String>?
-    ): Result<ByteArray> {
-        if (templateOptions != null) {
-            validateTemplateOptions(cvStyle, templateOptions)
-                .onFailure { return Result.failure(it) }
-        }
-
-        val completeTemplateOptions = cvStyle.options.associate { option ->
-            option.key to (templateOptions?.get(option.key) ?: option.defaultValue)
-        }
-
+    suspend fun generateCV(accountId: Long, cvConfiguration: CvConfigurationRequestDto): Result<ByteArray> {
         val profile = profileService.findByAccountId(accountId)
-            .onFailure { return Result.failure(it) }
             .getOrElse { return Result.failure(it) }
 
-        verifyProfileCompleteness(profile)
+        cvGeneratorValidationService.validateProfileCompleteness(profile)
             .onFailure { return Result.failure(it) }
 
-        val workExperiences = cvDataService.filterWorkExperiences(profile.workExperiences, includedWorkExperience)
-        val education = cvDataService.filterEducation(profile.education, includedEduction)
-        val projects = cvDataService.filterProjects(profile.projects, includedProjects)
-        val skills = cvDataService.filterSkills(profile.skills, includedSkills)
+        cvGeneratorValidationService.validateConfiguration(cvConfiguration, profile)
+            .onFailure { return Result.failure(it) }
 
-        val entryCount = workExperiences.size + education.size + projects.size + skills.size
-        if (entryCount == 0) return Result.failure(LocalizedException(NO_CV_ENTRIES_MESSAGE))
+        val cvStyle = CVStyle.fromStyleKey(cvConfiguration.cvStyle)!!
+
+        val completeStyleOptions = cvStyle.options.associate { option ->
+            option.key to (cvConfiguration.cvStyleOptions?.get(option.key) ?: option.defaultValue)
+        }
+
+        val workExperiences = cvDataService.filterWorkExperiences(
+            profile.workExperiences,
+            cvConfiguration.includedCvContent?.includedWorkExperience
+        )
+        val education = cvDataService.filterEducation(
+            profile.education,
+            cvConfiguration.includedCvContent?.includedEducation
+        )
+        val projects = cvDataService.filterProjects(
+            profile.projects,
+            cvConfiguration.includedCvContent?.includedProjects
+        )
+        val skills = cvDataService.filterSkills(
+            profile.skills,
+            cvConfiguration.includedCvContent?.includedSkills
+        )
 
         val tempDir = createTempDirectory("cv_$accountId")
         try {
@@ -82,7 +75,7 @@ class CVGeneratorService(
                 return Result.failure(LocalizedException(TEMPLATE_NOT_FOUND_MESSAGE))
             }
 
-            return withContext(Dispatchers.IO) {
+            return withContext(dispatcher) {
                 @OptIn(ExperimentalPathApi::class)
                 Path.of(cvTemplate).copyToRecursively(tempDir, overwrite = true, followLinks = false)
 
@@ -100,12 +93,12 @@ class CVGeneratorService(
                     education,
                     projects,
                     skills,
-                    completeTemplateOptions
+                    completeStyleOptions
                 )
                 val profileJson = tempDir.resolve(PROFILE_JSON_FILE_NAME).createFile()
                 objectMapper.writeValue(profileJson.toFile(), cvData)
 
-                return@withContext typstService.compile(tempDir, "${cvStyle.cvTemplate}.typ", "cv_$accountId.pdf")
+                return@withContext typstService.compile(tempDir, "${cvStyle.styleKey}.typ", "cv_$accountId.pdf")
                     .fold(
                         onSuccess = { Result.success(it) },
                         onFailure = { Result.failure(LocalizedException(GENERATION_FAILED_MESSAGE)) }
@@ -113,60 +106,6 @@ class CVGeneratorService(
             }
         } finally {
             FileUtils.deleteDirectory(tempDir.toFile())
-        }
-    }
-
-    private fun verifyProfileCompleteness(profile: ProfileEntity): Result<Unit> {
-        if (!profile.account.isVerified || profile.account.accountDetails == null) {
-            return Result.failure(LocalizedException(INCOMPLETE_PROFILE_MESSAGE))
-        }
-
-        return Result.success(Unit)
-    }
-
-    private fun validateTemplateOptions(cvStyle: CVStyle, templateOptions: Map<String, String>): Result<Unit> {
-        val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
-        if (cvStyle.options.isEmpty() && templateOptions.isNotEmpty()) {
-            validationErrorBuilder.addError("templateOptions", UNSUPPORTED_TEMPLATE_OPTIONS)
-        }
-
-        templateOptions.keys.forEach { key ->
-            val option = cvStyle.options.find { it.key == key }
-            if (option == null) {
-                validationErrorBuilder.addError("templateOptions.[$key]", UNKNOWN_TEMPLATE_OPTION)
-            } else {
-                val value = templateOptions[key]
-                if (value == null) {
-                    validationErrorBuilder.addError("templateOptions.[$key]", MISSING_TEMPLATE_OPTION)
-                } else {
-                    validateOption(option, value, validationErrorBuilder)
-                }
-            }
-        }
-
-        if (validationErrorBuilder.hasErrors()) {
-            return Result.failure(validationErrorBuilder.build(INVALID_TEMPLATE_OPTION))
-        }
-        return Result.success(Unit)
-    }
-
-    private fun validateOption(
-        option: CVStyleOption,
-        value: String,
-        validationErrorBuilder: ValidationException.ValidationErrorBuilder
-    ) {
-        when (option.type) {
-            CVStyleOptionType.COLOR -> {
-                if (!isValidHexColor(value)) {
-                    validationErrorBuilder.addError("templateOptions.[${option.key}]", INVALID_TEMPLATE_OPTION)
-                }
-            }
-
-            CVStyleOptionType.STRING -> {
-                if (StringUtils.isBlank(value)) {
-                    validationErrorBuilder.addError("templateOptions.[${option.key}]", MISSING_TEMPLATE_OPTION)
-                }
-            }
         }
     }
 }

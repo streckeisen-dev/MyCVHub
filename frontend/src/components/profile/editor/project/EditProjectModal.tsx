@@ -14,7 +14,7 @@ import {
 import { ProjectDto } from '@/types/profile/project/ProjectDto.ts'
 import { useTranslation } from 'react-i18next'
 import { h3, h4 } from '@/styles/primitives.ts'
-import { FormButtons } from '@/components/FormButtons.tsx'
+import { FormButtons } from '@/components/btn/FormButtons.tsx'
 import { ChangeEvent, FormEvent, useState } from 'react'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { DateInput } from '@/components/input/DateInput.tsx'

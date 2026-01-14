@@ -19,6 +19,7 @@ export type CvContentTreeRootProps = Readonly<{
   title: string
   content: CvContentTreeLeaf[]
   onChange: (selected: SelectedCvContent[]) => void
+  disabled: boolean
 }>
 
 function toSelectedCvContent(leaf: CvContentTreeLeaf): SelectedCvContent {
@@ -30,7 +31,7 @@ function toSelectedCvContent(leaf: CvContentTreeLeaf): SelectedCvContent {
 
 export function CvContentTreeRoot(props: CvContentTreeRootProps) {
   const { t } = useTranslation()
-  const { title, content, onChange } = props
+  const { title, content, onChange, disabled } = props
 
   const [isExpanded, setIsExpanded] = useState(false)
   const isRootSelected = content.every((leaf) => leaf.selected)
@@ -46,6 +47,7 @@ export function CvContentTreeRoot(props: CvContentTreeRootProps) {
   }
 
   function handleLeafChange(id: number, isSelected: boolean) {
+    if (disabled) return
     if (isSelected) {
       onChange([
         ...content.map(toSelectedCvContent),
@@ -60,6 +62,7 @@ export function CvContentTreeRoot(props: CvContentTreeRootProps) {
   }
 
   function handleDescriptionChange(id: number, includeDescription: boolean) {
+    if (disabled) return
     onChange([
       ...content.filter((l) => l.id !== id && l.selected).map(toSelectedCvContent),
       {
@@ -71,9 +74,10 @@ export function CvContentTreeRoot(props: CvContentTreeRootProps) {
 
   return (
     <div>
-      <div className="grid grid-cols-[5%_5%_auto_10%] gap-3 p-2">
+      <div className="flex gap-x-2 p-2">
         <Icon onClick={toggleExpand} className="cursor-pointer self-center" />
         <Checkbox
+          isDisabled={disabled}
           isSelected={isRootSelected}
           onValueChange={handleRootChange}
           isIndeterminate={!isRootSelected && content.some((leaf) => leaf.selected)}
@@ -83,19 +87,21 @@ export function CvContentTreeRoot(props: CvContentTreeRootProps) {
       {isExpanded && (
         <div>
           {content.map((leaf) => (
-            <div key={leaf.id} className="grid grid-cols-[12%_5%_auto_30%] gap-3 p-2 items-center">
-              <span></span>
+            <div key={leaf.id} className="flex gap-x-2 p-2 pl-12 items-center">
               <Checkbox
+                isDisabled={disabled}
                 isSelected={leaf.selected}
                 onValueChange={(isSelected) => handleLeafChange(leaf.id, isSelected)}
               />
-              <p>{leaf.title}</p>
+              <p className="grow text-wrap max-w-45">{leaf.title}</p>
               <Switch
-                className="col-span-2 col-start-3 md:col-start-auto md:col-span-1"
+                size="sm"
+                isDisabled={!leaf.selected || disabled}
+                className="max-w-30"
                 isSelected={leaf.includeDescription}
                 onValueChange={(val) => handleDescriptionChange(leaf.id, val)}
               >
-                {t('cv.showDescription')}
+                <p className="text-sm">{t('cv.showDescription')}</p>
               </Switch>
             </div>
           ))}

@@ -12,7 +12,7 @@ import {
 } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import { h3 } from '@/styles/primitives.ts'
-import { FormButtons } from '@/components/FormButtons.tsx'
+import { FormButtons } from '@/components/btn/FormButtons.tsx'
 import { ChangeEvent, FormEvent, useState } from 'react'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import ProfileApi from '@/api/ProfileApi.ts'

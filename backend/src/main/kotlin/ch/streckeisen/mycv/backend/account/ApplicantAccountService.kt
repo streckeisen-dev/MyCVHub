@@ -75,7 +75,9 @@ class ApplicantAccountService(
             id = existingAccount.id,
             profile = existingAccount.profile,
             oauthIntegrations = existingAccount.oauthIntegrations,
-            accountVerification = existingAccount.accountVerification
+            accountVerification = existingAccount.accountVerification,
+            applications = existingAccount.applications,
+            applicationTemplates = existingAccount.applicationTemplates
         )
         val result = applicantAccountRepository.save(account)
         if (!account.isVerified) {

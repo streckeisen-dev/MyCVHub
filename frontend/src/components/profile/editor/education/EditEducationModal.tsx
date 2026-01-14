@@ -11,7 +11,7 @@ import {
 } from '@heroui/react'
 import { EducationDto } from '@/types/profile/education/EducationDto.ts'
 import { useTranslation } from 'react-i18next'
-import { FormButtons } from '@/components/FormButtons.tsx'
+import { FormButtons } from '@/components/btn/FormButtons.tsx'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { EducationUpdateDto } from '@/types/profile/education/EducationUpdateDto.ts'
 import { toDateString } from '@/helpers/DateHelper.ts'

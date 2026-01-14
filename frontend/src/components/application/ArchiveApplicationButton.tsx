@@ -14,7 +14,7 @@ import { h3 } from '@/styles/primitives.ts'
 import ApplicationApi from '@/api/ApplicationApi.ts'
 import { RestError } from '@/types/RestError.ts'
 import { addErrorToast, addSuccessToast } from '@/helpers/ToastHelper.ts'
-import { TableButton } from '@/components/TableButton.tsx'
+import { TableButton } from '@/components/btn/TableButton.tsx'
 
 export type ArchiveApplicationButtonProps = Readonly<{
   id: number

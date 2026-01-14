@@ -1,6 +1,7 @@
 package ch.streckeisen.mycv.backend.cv.generator.typst
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.withContext
@@ -12,14 +13,16 @@ import kotlin.io.path.pathString
 private val logger = KotlinLogging.logger { }
 
 @Service
-class TypstService {
+class TypstService(
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+) {
 
     suspend fun compile(
         workingDir: Path,
         sourceFile: String,
         outputFile: String
     ): Result<ByteArray> =
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             val sourcePath = workingDir.resolve(sourceFile).pathString
             val outputPath = workingDir.resolve(outputFile).pathString
             val process = ProcessBuilder(

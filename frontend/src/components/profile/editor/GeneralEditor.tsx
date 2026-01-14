@@ -11,7 +11,7 @@ import { Form, Input, Textarea } from '@heroui/react'
 import { twoColumnForm } from '@/styles/primitives.ts'
 import { SwitchInput } from '@/components/input/SwitchInput.tsx'
 import { FaCamera } from 'react-icons/fa6'
-import { FormButtons } from '@/components/FormButtons.tsx'
+import { FormButtons } from '@/components/btn/FormButtons.tsx'
 import { addSuccessToast } from '@/helpers/ToastHelper.ts'
 import { extractFormErrors } from '@/helpers/FormHelper.ts'
 
