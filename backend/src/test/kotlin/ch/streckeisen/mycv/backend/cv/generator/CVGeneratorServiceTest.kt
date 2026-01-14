@@ -42,7 +42,7 @@ class CVGeneratorServiceTest {
             every { getCVPicture(eq(1), any()) } returns Result.success(
                 ProfilePicture(
                     "profile.jpg",
-                    this.javaClass.classLoader.getResource("profile.JPG")!!.toURI()
+                    this.javaClass.classLoader.getResource("profile.png")!!.toURI()
                 )
             )
         }

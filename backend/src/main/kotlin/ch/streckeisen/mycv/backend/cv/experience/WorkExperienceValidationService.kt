@@ -20,7 +20,10 @@ class WorkExperienceValidationService(
     private val stringValidator: StringValidator,
     private val messagesService: MessagesService
 ) {
-    fun validateWorkExperience(workExperience: WorkExperienceUpdateDto): Result<Unit> {
+    fun validateWorkExperience(
+        workExperience: WorkExperienceUpdateDto,
+        allowFutureStart: Boolean = false
+    ): Result<Unit> {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
         stringValidator.validateRequiredString(
@@ -47,7 +50,7 @@ class WorkExperienceValidationService(
         if (workExperience.positionStart == null) {
             val error = messagesService.requiredFieldMissingError(POSITION_START_FIELD_KEY)
             validationErrorBuilder.addError(POSITION_START_FIELD_KEY, error)
-        } else if (workExperience.positionStart.isAfter(LocalDate.now())) {
+        } else if (!allowFutureStart && workExperience.positionStart.isAfter(LocalDate.now())) {
             val error = messagesService.dateIsInFutureError(POSITION_START_FIELD_KEY)
             validationErrorBuilder.addError(POSITION_START_FIELD_KEY, error)
         }

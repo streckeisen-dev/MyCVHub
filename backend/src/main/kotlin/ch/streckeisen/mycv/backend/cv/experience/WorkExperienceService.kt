@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import kotlin.jvm.optionals.getOrElse
 
+private const val NOT_FOUND_MESSAGE_KEY = "${MYCV_KEY_PREFIX}.workExperience.notFound"
+private const val ACCESSED_DENIED_MESSAGE_KEY = "${MYCV_KEY_PREFIX}.workExperience.accessDenied"
+
 @Service
 class WorkExperienceService(
     private val workExperienceRepository: WorkExperienceRepository,
@@ -14,14 +17,18 @@ class WorkExperienceService(
     private val profileService: ProfileService
 ) {
     @Transactional
-    fun save(applicantId: Long, workExperience: WorkExperienceUpdateDto): Result<WorkExperienceEntity> {
+    fun save(
+        applicantId: Long,
+        workExperience: WorkExperienceUpdateDto,
+        allowFutureStartDate: Boolean = false
+    ): Result<WorkExperienceEntity> {
         val existingWorkExperience = if (workExperience.id != null) {
             workExperienceRepository.findById(workExperience.id)
-                .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.workExperience.notFound")) }
+                .getOrElse { return Result.failure(LocalizedException(NOT_FOUND_MESSAGE_KEY)) }
         } else null
 
         if (existingWorkExperience != null && existingWorkExperience.profile.account.id != applicantId) {
-            return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.workExperience.accessDenied"))
+            return Result.failure(LocalizedException(ACCESSED_DENIED_MESSAGE_KEY))
         }
 
         val profile = if (existingWorkExperience != null) {
@@ -32,7 +39,7 @@ class WorkExperienceService(
                 .getOrNull()!!
         }
 
-        workExperienceValidationService.validateWorkExperience(workExperience)
+        workExperienceValidationService.validateWorkExperience(workExperience, allowFutureStartDate)
             .onFailure { return Result.failure(it) }
 
         return Result.success(
@@ -54,11 +61,11 @@ class WorkExperienceService(
     @Transactional
     fun delete(applicantId: Long, workExperienceId: Long): Result<Unit> {
         val workExperience = workExperienceRepository.findById(workExperienceId).getOrElse {
-            return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.workExperience.notFound"))
+            return Result.failure(LocalizedException(NOT_FOUND_MESSAGE_KEY))
         }
 
         if (applicantId != workExperience.profile.account.id) {
-            return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.workExperience.accessDenied"))
+            return Result.failure(LocalizedException(ACCESSED_DENIED_MESSAGE_KEY))
         }
 
         workExperienceRepository.delete(workExperience)

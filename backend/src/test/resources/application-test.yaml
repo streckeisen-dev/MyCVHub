@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mycv
+    username: postgres
+    password: postgres
+  security.oauth2.client.registration.github.redirect-uri: "{baseUrl}/api/auth/oauth2/callback/github"
+
+  liquibase:
+    enabled: false
+
+logging:
+  file.name: ./logs/mycv.log
+
+cloudinary:
+  cloud-name: test-cloud
+  api-key: test-api-key
+  api-secret: fake-api-secret
+
+my-cv:
+  security:
+    jwt:
+      secret: fake-jwt-secret
+  frontend:
+    base-url: http://localhost:3000/ui
+
+GITHUB_CLIENT_ID: fake-github-client
+GITHUB_CLIENT_SECRET: fake-github-client-secret
+MAILGUN_SMTP_PASSWORD: fake-smpt-pw
+MAILGUN_SMTP_USERNAME: fake-smtp-user

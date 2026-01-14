@@ -32,32 +32,36 @@ async function getApplicationStatuses(locale: string): Promise<ApplicationStatus
   }
 }
 
+export interface ApplicationSearchRequest {
+  page: number
+  searchTerm: string | undefined
+  status: string | undefined
+  includeArchived: boolean | undefined
+  sort: SortDescriptor | undefined
+  pageSize: string
+}
+
 async function search(
-  page: number,
-  searchTerm: string | undefined,
-  status: string | undefined,
-  includeArchived: boolean | undefined,
-  sort: SortDescriptor | undefined,
-  pageSize: string,
+  searchRequest: ApplicationSearchRequest,
   locale: string,
   signal: AbortSignal
 ): Promise<Page<ApplicationSearchDto>> {
   const params = new URLSearchParams({
-    page: page.toString(),
-    pageSize: pageSize
+    page: searchRequest.page.toString(),
+    pageSize: searchRequest.pageSize
   })
-  if (searchTerm) {
-    params.append('searchTerm', searchTerm)
+  if (searchRequest.searchTerm) {
+    params.append('searchTerm', searchRequest.searchTerm)
   }
-  if (status) {
+  if (searchRequest.status) {
     params.append('status', status)
   }
-  if (includeArchived) {
-    params.append('includeArchived', includeArchived.toString())
+  if (searchRequest.includeArchived) {
+    params.append('includeArchived', searchRequest.includeArchived.toString())
   }
-  if (sort) {
-    params.append('sort', sort.column as string)
-    params.append('sortDirection', sort.direction)
+  if (searchRequest.sort) {
+    params.append('sort', searchRequest.sort.column as string)
+    params.append('sortDirection', searchRequest.sort.direction)
   }
   try {
     const response = await fetchFromApi(`/application/search?${params.toString()}`, locale, {

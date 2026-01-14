@@ -4,7 +4,9 @@ import ch.streckeisen.mycv.backend.locale.MessagesService
 import ch.streckeisen.mycv.backend.util.StringValidator
 import ch.streckeisen.mycv.backend.util.executeParameterizedTest
 import io.mockk.mockk
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -32,6 +34,22 @@ class WorkExperienceValidationServiceTest {
             isValid,
             numberOfErrors
         ) { workExperienceValidationService.validateWorkExperience(workExperienceUpdate) }
+    }
+
+    @Test
+    fun testValidateWorkExperienceAllowingFutureStart() {
+        val workExperienceUpdate = WorkExperienceUpdateDto(
+            null,
+            "Job",
+            "Location",
+            "Company",
+            LocalDate.now().plusDays(1),
+            null,
+            "description"
+        )
+        val result = workExperienceValidationService.validateWorkExperience(workExperienceUpdate, true)
+
+        assertTrue(result.isSuccess)
     }
 
     companion object {

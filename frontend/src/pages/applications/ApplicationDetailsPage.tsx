@@ -148,19 +148,23 @@ export function ApplicationDetailsPage(): ReactNode {
                     </DropdownMenu>
                   </Dropdown>
                 )}
-                <Button
-                  className="ml-auto"
-                  startContent={<FaPen />}
-                  color="primary"
-                  onPress={handleEdit}
-                >
-                  {t('application.editor.edit')}
-                </Button>
+                {!application.status.isTerminal && (
+                  <Button
+                    className="ml-auto"
+                    startContent={<FaPen />}
+                    color="primary"
+                    onPress={handleEdit}
+                  >
+                    {t('application.editor.edit')}
+                  </Button>
+                )}
               </div>
             )}
-            {application.isArchived && <div className="bg-warning-400 rounded-lg w-full p-2 text-center">
-              <p>{t('application.archivedDescription')}</p>
-            </div>}
+            {application.isArchived && (
+              <div className="bg-warning-400 rounded-lg w-full p-2 text-center">
+                <p>{t('application.archivedDescription')}</p>
+              </div>
+            )}
             <Accordion selectionMode="multiple" defaultExpandedKeys="all" variant="bordered">
               <AccordionItem key="details" title={t('application.details')}>
                 <AttributeList
@@ -222,7 +226,7 @@ export function ApplicationDetailsPage(): ReactNode {
       )}
       {application && currentTransition != null && (
         <ApplicationTransitionModal
-          application={application.id}
+          application={application}
           transition={currentTransition}
           onSave={handleSave}
           onClose={handleTransitionCancel}

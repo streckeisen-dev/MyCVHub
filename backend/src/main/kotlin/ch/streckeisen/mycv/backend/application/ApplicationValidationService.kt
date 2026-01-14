@@ -2,6 +2,7 @@ package ch.streckeisen.mycv.backend.application
 
 import ch.streckeisen.mycv.backend.application.dto.ApplicationTransitionRequestDto
 import ch.streckeisen.mycv.backend.application.dto.ApplicationUpdateDto
+import ch.streckeisen.mycv.backend.cv.experience.WorkExperienceValidationService
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
@@ -21,7 +22,8 @@ private const val COMMENT_FIELD_KEY = "comment"
 @Service
 class ApplicationValidationService(
     private val stringValidator: StringValidator,
-    private val messagesService: MessagesService
+    private val messagesService: MessagesService,
+    private val workExperienceValidationService: WorkExperienceValidationService
 ) {
     fun validateUpdate(update: ApplicationUpdateDto): Result<Unit> {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
@@ -71,6 +73,14 @@ class ApplicationValidationService(
             maxLength = TRANSITION_COMMENT_MAX_LENGTH,
             validationErrorBuilder
         )
+
+        if (transitionRequest.scheduledWorkExperience != null) {
+            val updatedRequest = transitionRequest.scheduledWorkExperience.toUpdateRequest()
+            workExperienceValidationService.validateWorkExperience(updatedRequest, allowFutureStart = true)
+                .onFailure { ex ->
+                    (ex as ValidationException).errors.forEach { validationErrorBuilder.addError(it.key, it.value) }
+                }
+        }
 
         if (validationErrorBuilder.hasErrors()) {
             return Result.failure(validationErrorBuilder.build(TRANSITION_VALIDATION_ERROR_KEY))

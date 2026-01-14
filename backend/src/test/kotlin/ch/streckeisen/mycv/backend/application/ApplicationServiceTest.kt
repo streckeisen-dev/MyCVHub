@@ -4,6 +4,8 @@ import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
 import ch.streckeisen.mycv.backend.account.ApplicantAccountService
 import ch.streckeisen.mycv.backend.application.dto.ApplicationTransitionRequestDto
 import ch.streckeisen.mycv.backend.application.dto.ApplicationUpdateDto
+import ch.streckeisen.mycv.backend.application.dto.ScheduledWorkExperienceDto
+import ch.streckeisen.mycv.backend.scheduled.SchedulerService
 import io.mockk.CapturingSlot
 import io.mockk.Runs
 import io.mockk.every
@@ -19,6 +21,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.Optional
 
@@ -72,6 +75,18 @@ private val existingApplicationTwo = ApplicationEntity(
     account = secondAccount
 )
 
+private val existingApplicationThree = ApplicationEntity(
+    id = 3,
+    jobTitle = "job",
+    company = "comp",
+    status = ApplicationStatus.OFFER_RECEIVED,
+    createdAt = LocalDateTime.of(2025, 12, 1, 15, 19),
+    updatedAt = LocalDateTime.of(2025, 12, 20, 7, 5),
+    source = null,
+    description = "test",
+    account = secondAccount
+)
+
 private val validUpdateRequestWithoutId = ApplicationUpdateDto(
     null,
     "job",
@@ -96,8 +111,18 @@ private val validUpdateRequestWithNotExistingId = ApplicationUpdateDto(
     null
 )
 
-private val validTransitionRequest = ApplicationTransitionRequestDto(1, "comment")
-private val validTransitionRequestForTerminalApplication = ApplicationTransitionRequestDto(2, null)
+private val validTransitionRequest = ApplicationTransitionRequestDto(1, "comment", null)
+private val validTransitionRequestForTerminalApplication = ApplicationTransitionRequestDto(2, null, null)
+
+private val invalidHiredWithScheduledWorkExperience = ApplicationTransitionRequestDto(
+    3, null,
+    ScheduledWorkExperienceDto(null, null, null, null, null)
+)
+
+private val validHiredWithScheduledWorkExperience = ApplicationTransitionRequestDto(
+    3, null,
+    ScheduledWorkExperienceDto("new job", "new place", "new company", LocalDate.now().plusMonths(1), "TBD")
+)
 
 class ApplicationServiceTest {
     private lateinit var capturedApplication: CapturingSlot<ApplicationEntity>
@@ -107,6 +132,7 @@ class ApplicationServiceTest {
     private lateinit var applicationHistoryRepository: ApplicationHistoryRepository
     private lateinit var applicationValidationService: ApplicationValidationService
     private lateinit var applicationAccountService: ApplicantAccountService
+    private lateinit var schedulerService: SchedulerService
     private lateinit var applicationService: ApplicationService
 
     @BeforeEach
@@ -118,6 +144,7 @@ class ApplicationServiceTest {
             every { findById(any()) } returns Optional.empty()
             every { findById(eq(1)) } returns Optional.of(existingApplication)
             every { findById(eq(2)) } returns Optional.of(existingApplicationTwo)
+            every { findById(eq(3)) } returns Optional.of(existingApplicationThree)
 
             every { save(capture(capturedApplication)) } returns mockk {}
 
@@ -135,17 +162,20 @@ class ApplicationServiceTest {
             every { validateTransition(any()) } returns Result.failure(IllegalArgumentException())
             every { validateTransition(validTransitionRequest) } returns Result.success(Unit)
             every { validateTransition(validTransitionRequestForTerminalApplication) } returns Result.success(Unit)
+            every { validateTransition(validHiredWithScheduledWorkExperience) } returns Result.success(Unit)
         }
         applicationAccountService = mockk {
             every { findById(any()) } returns Result.failure(IllegalArgumentException())
             every { findById(eq(1)) } returns Result.success(validAccount)
             every { findById(eq(2)) } returns Result.success(secondAccount)
         }
+        schedulerService = mockk(relaxed = true)
         applicationService = ApplicationService(
             applicationRepository,
             applicationHistoryRepository,
             applicationValidationService,
-            applicationAccountService
+            applicationAccountService,
+            schedulerService
         )
     }
 
@@ -293,6 +323,33 @@ class ApplicationServiceTest {
         assertTrue { result.isFailure }
         verify(exactly = 0) { applicationHistoryRepository.save(any()) }
         verify(exactly = 0) { applicationRepository.save(any()) }
+    }
+
+    @Test
+    fun testTransitionWithInvalidScheduledWorkExperience() {
+        val result = applicationService.transition(
+            2,
+            ApplicationTransition.OFFER_ACCEPTED.id,
+            invalidHiredWithScheduledWorkExperience
+        )
+
+        assertTrue { result.isFailure }
+        verify(exactly = 0) { applicationHistoryRepository.save(any()) }
+        verify(exactly = 0) { applicationRepository.save(any()) }
+        verify(exactly = 0) { schedulerService.scheduleWorkExperienceAddition(any()) }
+    }
+
+    @Test
+    fun testTransitionWithScheduledWorkExperience() {
+        val result = applicationService.transition(2,
+            ApplicationTransition.OFFER_ACCEPTED.id,
+            validHiredWithScheduledWorkExperience
+        )
+
+        assertTrue { result.isSuccess }
+        verify(exactly = 1) { applicationHistoryRepository.save(any()) }
+        verify(exactly = 1) { applicationRepository.save(any()) }
+        verify(exactly = 1) { schedulerService.scheduleWorkExperienceAddition(any()) }
     }
 
     @Test
