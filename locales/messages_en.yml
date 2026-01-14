@@ -263,6 +263,7 @@ frontend:
     styleExplanation: "Select your preferred CV template below — your information will be formatted automatically in the design you choose."
     select: "Choose This Design"
     styleError: "Could not load the available CV Designs"
+    download: "CV Download"
     generateError: "There was a problem while creating your PDF-CV"
     moreSoon: "More coming soon..."
     moreSoonText: "Soon you can choose from more CV designs."
