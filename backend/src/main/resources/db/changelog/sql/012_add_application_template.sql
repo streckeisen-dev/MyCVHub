@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset lstreckeisen:11
+--changeset lstreckeisen:12
 --validCheckSum: any
 
 CREATE TABLE application_template_entity
