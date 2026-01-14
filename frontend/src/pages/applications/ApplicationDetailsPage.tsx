@@ -28,6 +28,7 @@ import { ApplicationTransitionModal } from '@/components/application/Application
 import { ApplicationTransitionDto } from '@/types/application/ApplicationTransitionDto.ts'
 import { formatDateTime } from '@/helpers/DateHelper.ts'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
+import { CvDownload } from '@/components/download/cv/CvDownload.tsx'
 
 function getApplicationAttributes(application: ApplicationDetailsDto, t: TFunction): Attribute[] {
   const attributes: Attribute[] = [
@@ -62,7 +63,7 @@ export function ApplicationDetailsPage(): ReactNode {
   )
 
   useEffect(() => {
-    async function loadApplication() {
+    async function loadData() {
       if (!params.id) {
         setIsLoading(false)
         return
@@ -81,7 +82,7 @@ export function ApplicationDetailsPage(): ReactNode {
       }
     }
 
-    loadApplication()
+    loadData()
   }, [])
 
   function handleEdit() {
@@ -165,7 +166,11 @@ export function ApplicationDetailsPage(): ReactNode {
                 <p>{t('application.archivedDescription')}</p>
               </div>
             )}
-            <Accordion selectionMode="multiple" defaultExpandedKeys="all" variant="bordered">
+            <Accordion
+              selectionMode="multiple"
+              defaultExpandedKeys={['details', 'description', 'history']}
+              variant="bordered"
+            >
               <AccordionItem key="details" title={t('application.details')}>
                 <AttributeList
                   attributes={getApplicationAttributes(application, t)}
@@ -180,6 +185,13 @@ export function ApplicationDetailsPage(): ReactNode {
                 <div className={bgClasses}>
                   <p className="whitespace-break-spaces">{application.description}</p>
                 </div>
+              </AccordionItem>
+              <AccordionItem
+                key="cvDownload"
+                title={t('cv.download')}
+                hidden={application.status.key !== 'UNSENT'}
+              >
+                <CvDownload />
               </AccordionItem>
               <AccordionItem
                 key="history"

@@ -1,7 +1,7 @@
 import { SkillDto } from '@/types/profile/skill/SkillDto.ts'
 import { useTranslation } from 'react-i18next'
-import { CvContentTreeRoot, SelectedCvContent } from '@/components/cv/CvContentTreeRoot.tsx'
-import { SkillTreeRoot } from '@/components/cv/SkillTreeRoot.tsx'
+import { CvContentTreeRoot, SelectedCvContent } from '@/components/download/cv/CvContentTreeRoot.tsx'
+import { SkillTreeRoot } from '@/components/download/cv/SkillTreeRoot.tsx'
 import { KeyValueObject } from '@/types/KeyValueObject.ts'
 import { ProfileDto } from '@/types/profile/ProfileDto.ts'
 

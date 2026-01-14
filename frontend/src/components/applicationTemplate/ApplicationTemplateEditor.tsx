@@ -15,7 +15,7 @@ import { RestError } from '@/types/RestError.ts'
 import {
   CvConfigurationData,
   CvConfigurationEditor
-} from '@/components/cv/CvConfigurationEditor.tsx'
+} from '@/components/download/cv/CvConfigurationEditor.tsx'
 import { CVStyleDto } from '@/types/cv/CVStyleDto.ts'
 
 export type EditApplicationTemplateModalProps = Readonly<{

@@ -1,35 +1,29 @@
-import { useTranslation } from 'react-i18next'
-import { centerSection, h3, h4 } from '@/styles/primitives.ts'
-import { useEffect, useState } from 'react'
-import { CVStyleDto } from '@/types/cv/CVStyleDto.ts'
-import { Button } from '@heroui/react'
-import { Empty } from '@/components/Empty.tsx'
-import CvApi from '@/api/CvApi.ts'
-import { ProfileDto } from '@/types/profile/ProfileDto.ts'
-import ProfileApi from '@/api/ProfileApi.ts'
-import { RestError } from '@/types/RestError.ts'
-import { SelectedCvContent } from '@/components/cv/CvContentTreeRoot.tsx'
-import { addErrorToast } from '@/helpers/ToastHelper.ts'
 import {
   CvConfigurationData,
   CvConfigurationEditor
-} from '@/components/cv/CvConfigurationEditor.tsx'
+} from '@/components/download/cv/CvConfigurationEditor.tsx'
+import { Button } from '@heroui/react'
+import { useEffect, useState } from 'react'
+import { CVStyleDto } from '@/types/cv/CVStyleDto.ts'
+import { ProfileDto } from '@/types/profile/ProfileDto.ts'
+import CvApi from '@/api/CvApi.ts'
+import ProfileApi from '@/api/ProfileApi.ts'
+import { RestError } from '@/types/RestError.ts'
+import { addErrorToast } from '@/helpers/ToastHelper.ts'
+import { CvConfigurationRequestDto } from '@/types/cv/CvConfigurationRequestDto.ts'
+import { useTranslation } from 'react-i18next'
 import { LoadingWrapper } from '@/layouts/LoadingWrapper.tsx'
-import {
-  CvConfigurationRequestDto,
-  CvEntrySelectionRequestDto
-} from '@/types/cv/CvConfigurationRequestDto.ts'
+import { ApplicationTemplateDto } from '@/types/applicationTemplate/ApplicationTemplateDto.ts'
+import ApplicationTemplateApi from '@/api/ApplicationTemplateApi.ts'
+import { Empty } from '@/components/Empty.tsx'
 
-function convertToSelectionRequest(selection: SelectedCvContent): CvEntrySelectionRequestDto {
-  return { id: selection.id, includeDescription: selection.includeDescription }
-}
-
-export function CvDownloadPage() {
+export function CvDownload() {
   const { t, i18n } = useTranslation()
 
   const [isLoading, setIsLoading] = useState(true)
   const [cvStyles, setCvStyles] = useState<CVStyleDto[]>()
   const [profile, setProfile] = useState<ProfileDto>()
+  const [templates, setTemplates] = useState<ApplicationTemplateDto[]>()
   const [cvConfig, setCvConfig] = useState<CvConfigurationData>({
     cvStyle: '',
     cvContent: undefined,
@@ -38,16 +32,14 @@ export function CvDownloadPage() {
   const [isGenerating, setIsGenerating] = useState<boolean>(false)
 
   useEffect(() => {
-    async function loadCvStyles() {
+    async function loadData() {
       try {
         const result = await CvApi.getCVStyles(i18n.language)
         setCvStyles(result)
       } finally {
         setIsLoading(false)
       }
-    }
 
-    async function loadProfile() {
       try {
         const result = await ProfileApi.getProfile(i18n.language)
         setProfile(result)
@@ -55,10 +47,22 @@ export function CvDownloadPage() {
         const error = (e as RestError).errorDto
         addErrorToast(t('profile.loadingError'), error?.message ?? t('error.genericMessage'))
       }
+
+      try {
+        const result = await ApplicationTemplateApi.getApplicationTemplates(i18n.language)
+        setTemplates(result)
+      } catch (e) {
+        const error = (e as RestError).errorDto
+        addErrorToast(
+          t('applicationTemplate.loadingError'),
+          error?.message ?? t('error.genericMesssage')
+        )
+      } finally {
+        setIsLoading(false)
+      }
     }
 
-    loadCvStyles()
-    loadProfile()
+    loadData()
   }, [])
 
   async function handleDownload() {
@@ -77,9 +81,9 @@ export function CvDownloadPage() {
     setIsGenerating(true)
     const request: CvConfigurationRequestDto = {
       includedCvContent: cvConfig.cvContent && {
-        includedWorkExperience: cvConfig.cvContent.workExperience.map(convertToSelectionRequest),
-        includedEducation: cvConfig.cvContent.education.map(convertToSelectionRequest),
-        includedProjects: cvConfig.cvContent.projects.map(convertToSelectionRequest),
+        includedWorkExperience: cvConfig.cvContent.workExperience,
+        includedEducation: cvConfig.cvContent.education,
+        includedProjects: cvConfig.cvContent.projects,
         includedSkills: cvConfig.cvContent.skills
       },
       cvStyle: cvConfig.cvStyle,
@@ -109,17 +113,13 @@ export function CvDownloadPage() {
 
   return (
     <LoadingWrapper isLoading={isLoading}>
-      {cvStyles && profile ? (
-        <section className={centerSection()}>
-          <h3 className={h3()}>{t('cv.generate')}</h3>
-          <p>{t('cv.intro')}</p>
-          <h4 className={h4()}>{t('cv.style')}</h4>
-          <p>{t('cv.styleExplanation')}</p>
-
+      {profile && cvStyles && templates ? (
+        <>
           <CvConfigurationEditor
             config={cvConfig}
             profile={profile}
             cvStyles={cvStyles}
+            templates={templates}
             onChange={handleCvConfigChange}
           />
 
@@ -129,11 +129,11 @@ export function CvDownloadPage() {
             isLoading={isGenerating}
             isDisabled={cvConfig.cvStyle == null}
           >
-            {t('cv.download')}
+            {t('downloads.action')}
           </Button>
-        </section>
+        </>
       ) : (
-        <Empty headline={t('cv.styleError')} />
+        <Empty headline={t('cv.stylesError')} />
       )}
     </LoadingWrapper>
   )
