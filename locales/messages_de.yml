@@ -262,6 +262,7 @@ frontend:
     styleExplanation: "Wähle unten das Lebenslauf-Design aus, das dir am besten gefällt. Deine Informationen werden automatisch im von dir gewählten Design formattiert."
     select: "Wähle dieses Design"
     styleError: "Die verfügbaren Lebenslauf-Designs konnten nicht geladen werden"
+    download: "Lebenslauf herunterladen"
     generateError: "Beim Erstellen deines PDF-Lebenslauf ist ein Problem aufgetreten"
     moreSoon: "Bald kommt mehr..."
     moreSoonText: "Bald kommen mehr Lebenslauf-Designs aus denen du wählen kannst."
