@@ -1,4 +1,4 @@
-import { FormButtons } from '@/components/FormButtons.tsx'
+import { FormButtons } from '@/components/btn/FormButtons.tsx'
 
 function dummyHandleCancel() {
   // empty

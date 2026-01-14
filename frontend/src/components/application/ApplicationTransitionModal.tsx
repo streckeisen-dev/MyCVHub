@@ -9,7 +9,7 @@ import {
 } from '@heroui/react'
 import { ApplicationTransitionDto } from '@/types/application/ApplicationTransitionDto.ts'
 import { FormEvent, useRef, useState } from 'react'
-import { FormButtons } from '@/components/FormButtons.tsx'
+import { FormButtons } from '@/components/btn/FormButtons.tsx'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { useTranslation } from 'react-i18next'
 import { ApplicationDetailsDto } from '@/types/application/ApplicationDetailsDto.ts'

@@ -23,7 +23,7 @@ import { addErrorToast } from '@/helpers/ToastHelper.ts'
 import { ProfileDto } from '@/types/profile/ProfileDto.ts'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { DeleteApplicationTemplateModal } from '@/components/applicationTemplate/DeleteApplicationTemplateModal.tsx'
-import { TooltipButton } from '@/components/TooltipButton.tsx'
+import { TooltipButton } from '@/components/btn/TooltipButton.tsx'
 
 interface ColumnDefinition {
   key: string

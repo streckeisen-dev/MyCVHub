@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next'
 import ApplicationTemplateApi from '@/api/ApplicationTemplateApi.ts'
 import { addErrorToast, addSuccessToast } from '@/helpers/ToastHelper.ts'
 import { RestError } from '@/types/RestError.ts'
-import { TableButtonProps } from '@/components/TableButton.tsx'
+import { TableButtonProps } from '@/components/btn/TableButton.tsx'
 
 export type DeleteApplicationTemplateModalProps = Readonly<{
   id: number

@@ -4,7 +4,7 @@ import { PasswordForm, PasswordFormState, PasswordInput } from '@/components/acc
 import { useTranslation } from 'react-i18next'
 import { Form } from '@heroui/react'
 import { PasswordRequirements } from '@/components/account/PasswordRequirements.tsx'
-import { FormButtons } from '@/components/FormButtons.tsx'
+import { FormButtons } from '@/components/btn/FormButtons.tsx'
 import { useNavigate } from 'react-router-dom'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import AccountApi from '@/api/AccountApi.ts'
