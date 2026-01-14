@@ -81,7 +81,6 @@ frontend:
   app:
     home: "Home"
     publicProfile: "Public Profile"
-    generateCV: "Download CV"
   
   home: 
     welcome: 
@@ -257,12 +256,12 @@ frontend:
       deleteError: "Failed to delete project"
 
   cv:
+    name: "CV"
     generate: "Download your CV as PDF"
     intro: "Create and download your professional CV, ready to include with your job applications."
     style: "CV Design"
     styleExplanation: "Select your preferred CV template below — your information will be formatted automatically in the design you choose."
     select: "Choose This Design"
-    download: "Download Your CV"
     styleError: "Could not load the available CV Designs"
     generateError: "There was a problem while creating your PDF-CV"
     moreSoon: "More coming soon..."
@@ -328,6 +327,7 @@ frontend:
   applicationTemplate:
     backToOverview: "Back to Overview"
     title: "Application Templates"
+    singular: "Application Template"
     noEntries: "No application templates yet."
     cvContent: "CV Content"
     documentChecklist: "Document Checklist"
@@ -342,6 +342,10 @@ frontend:
       confirmationText: "If you go ahead and delete this application template, the template will be permanently deleted. Are you sure you want to delete this application template?"
       deleteSuccess: "Application template successfully deleted"
       deleteError: "Failed to delete application template"
+
+  downloads:
+    title: "Downloads"
+    action: "Download"
   
   notFound:
     headline: "Where are you going?"

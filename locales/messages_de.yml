@@ -81,7 +81,6 @@ frontend:
   app:
     home: "Start"
     publicProfile: "Öffentliches Profil"
-    generateCV: "CV Herunterladen"
 
   home:
     welcome:
@@ -256,18 +255,18 @@ frontend:
       deleteError: "Projekt konnte nicht gelöscht werden"
 
   cv:
-    generate: "Lade deinen CV als PDF herunter"
-    intro: "Erstelle deinen professionellen CV und lade ihn herunter, damit du ihn deinen Bewerbungen beilegen kannst"
+    name: 'Lebenslauf'
+    generate: "Lade deinen Lebenslauf als PDF herunter"
+    intro: "Erstelle deinen professionellen Lebenslauf und lade ihn herunter, damit du ihn deinen Bewerbungen beilegen kannst"
     style: "CV Design"
-    styleExplanation: "Wähle unten das CV Design aus, das dir am besten gefällt. Deine Informationen werden automatisch im von dir gewählten Design formattiert."
+    styleExplanation: "Wähle unten das Lebenslauf-Design aus, das dir am besten gefällt. Deine Informationen werden automatisch im von dir gewählten Design formattiert."
     select: "Wähle dieses Design"
-    download: "Lade deinen CV herunter"
-    styleError: "Die verfügbaren CV Designs konnten nicht geladen werden"
-    generateError: "Beim Erstellen deines PDF-CV ist ein Problem aufgetreten"
+    styleError: "Die verfügbaren Lebenslauf-Designs konnten nicht geladen werden"
+    generateError: "Beim Erstellen deines PDF-Lebenslauf ist ein Problem aufgetreten"
     moreSoon: "Bald kommt mehr..."
-    moreSoonText: "Bald kommen mehr CV Designs aus denen du wählen kannst."
+    moreSoonText: "Bald kommen mehr Lebenslauf-Designs aus denen du wählen kannst."
     showDescription: "Beschreibung anzeigen"
-    noItemsSelected: "Du musst mindestens ein CV Element auswählen"
+    noItemsSelected: "Du musst mindestens ein Lebenslauf Element auswählen"
     customizeContent: "Inhalt anpassen"
     customizeTemplate: "Vorlage personalisieren"
 
@@ -327,6 +326,7 @@ frontend:
   applicationTemplate:
     backToOverview: "Zurück zur Übersicht"
     title: "Bewerbungsvorlagen"
+    singular: "Bewerbungsvorlage"
     noEntries: "Noch keine Bewerbungsvorlagen vorhanden"
     cvContent: "Lebenslaufinhalt"
     documentChecklist: "Dokumenten Checkliste"
@@ -341,6 +341,10 @@ frontend:
       confirmationText: "Wenn du fortfährst und diese Bewerbungsvorlage löschst, wird diese definitiv gelöscht. Bis du sicher dass du diese Bewerbungsvorlage löschen möchtest?"
       deleteSuccess: "Bewerbungsvorlage wurde erfolgreich gelöscht"
       deleteError: "Bewerbungsvorlage konnte nicht gelöscht werden"
+
+  downloads:
+    title: "Downloads"
+    action: "Herunterladen"
 
   notFound:
     headline: "Wo willst du hin?"

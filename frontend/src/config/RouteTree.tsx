@@ -22,7 +22,7 @@ import { CreateProfilePage } from '@/pages/profile/CreateProfilePage.tsx'
 import { EditProfilePage } from '@/pages/profile/EditProfilePage.tsx'
 import { ApplicationsPage } from '@/pages/applications/ApplicationsPage.tsx'
 import { AuthorizedUser } from '@/context/AuthorizationContext.tsx'
-import { CvDownloadPage } from '@/pages/cv/CvDownloadPage.tsx'
+import { CvDownloadPage } from '@/pages/download/CvDownloadPage.tsx'
 import { SecurityCheck } from '@/components/security/SecurityCheck.tsx'
 import { ApplicationDetailsPage } from '@/pages/applications/ApplicationDetailsPage.tsx'
 import { OAuthFailurePage } from '@/pages/account/oauth/OAuthFailurePage.tsx'
@@ -360,7 +360,7 @@ export interface NavItemNode {
 
 export type NavItemConfig = NavItemNode | NavItemLeaf
 
-const navItems: NavItemConfig[] = [
+const NAV_ITEMS: NavItemConfig[] = [
   {
     id: 'home',
     label: 'app.home',
@@ -379,12 +379,6 @@ const navItems: NavItemConfig[] = [
     href: (user) => getRoutePath(RouteId.PublicProfile, undefined, user?.username ?? ''),
     predicate: (user: AuthorizedUser | undefined) => user?.hasProfile ?? false,
     newTab: true
-  },
-  {
-    id: 'cvDownload',
-    label: 'app.generateCV',
-    href: getRoutePath(RouteId.CvDownload),
-    predicate: (user: AuthorizedUser | undefined) => user?.hasProfile ?? false
   },
   {
     id: 'applications',
@@ -406,6 +400,19 @@ const navItems: NavItemConfig[] = [
     ]
   },
   {
+    id: 'downloads',
+    label: 'downloads.title',
+    predicate: (user: AuthorizedUser | undefined) => user?.hasProfile ?? false,
+    children: [
+      {
+        id: 'cvDownload',
+        label: 'cv.name',
+        href: getRoutePath(RouteId.CvDownload),
+        predicate: () => true
+      }
+    ]
+  },
+  {
     id: 'about',
     label: 'about.title',
     href: getRoutePath(RouteId.About),
@@ -416,7 +423,7 @@ const navItems: NavItemConfig[] = [
 export const SITE_CONFIG = {
   name: 'MyCVHub',
   description: 'Create beautiful CVs and keep track of your job applications.',
-  navItems: navItems,
+  navItems: NAV_ITEMS,
   accountMenu: [
     {
       label: 'account.title',

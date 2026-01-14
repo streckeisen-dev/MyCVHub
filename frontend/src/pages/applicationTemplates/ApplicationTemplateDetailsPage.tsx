@@ -21,8 +21,8 @@ import {
 import {
   CvConfigurationData,
   CvConfigurationEditor
-} from '@/components/cv/CvConfigurationEditor.tsx'
-import { SelectedCvContent } from '@/components/cv/CvContentTreeRoot.tsx'
+} from '@/components/download/cv/CvConfigurationEditor.tsx'
+import { SelectedCvContent } from '@/components/download/cv/CvContentTreeRoot.tsx'
 import CvApi from '@/api/CvApi.ts'
 import { CVStyleDto } from '@/types/cv/CVStyleDto.ts'
 import { CheckboxInput } from '@/components/input/CheckboxInput.tsx'

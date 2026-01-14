@@ -1,13 +1,21 @@
-import { ReactNode, useState } from 'react'
-import { Button, Card, CardBody, CardFooter, CardHeader } from '@heroui/react'
+import { ReactNode } from 'react'
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader
+} from '@heroui/react'
 import { ProfileDto } from '@/types/profile/ProfileDto.ts'
 import { CVStyleDto, CVStyleOptionDto } from '@/types/cv/CVStyleDto.ts'
 import {
   CvContent,
   CvContentCustomizationView
-} from '@/components/cv/CvContentCustomizationView.tsx'
+} from '@/components/download/cv/CvContentCustomizationView.tsx'
 import { FaSliders } from 'react-icons/fa6'
-import { CvStyleCustomizationView } from '@/components/cv/CvStyleCustomizationView.tsx'
+import { CvStyleCustomizationView } from '@/components/download/cv/CvStyleCustomizationView.tsx'
 import sanitizeHtml from 'sanitize-html'
 import { KeyValueObject } from '@/types/KeyValueObject.ts'
 import talendoCvStyle from '@/assets/cv_styles/talendo.jpg'
@@ -16,7 +24,9 @@ import { useTranslation } from 'react-i18next'
 import { WorkExperienceDto } from '@/types/profile/workExperience/WorkExperienceDto.ts'
 import { EducationDto } from '@/types/profile/education/EducationDto.ts'
 import { ProjectDto } from '@/types/profile/project/ProjectDto.ts'
-import { SelectedCvContent } from '@/components/cv/CvContentTreeRoot.tsx'
+import { SelectedCvContent } from '@/components/download/cv/CvContentTreeRoot.tsx'
+import { ApplicationTemplateDto } from '@/types/applicationTemplate/ApplicationTemplateDto.ts'
+import { Key } from '@react-types/shared'
 
 const cvStyleImages: KeyValueObject<string> = {
   talendo: talendoCvStyle,
@@ -33,6 +43,7 @@ export type CvConfigurationEditorProps = Readonly<{
   profile: ProfileDto
   cvStyles: CVStyleDto[]
   config: CvConfigurationData
+  templates?: ApplicationTemplateDto[]
   onChange?: (config: CvConfigurationData) => void
   disabled?: boolean
 }>
@@ -59,14 +70,13 @@ function toSelectedCvContent(o: WorkExperienceDto | EducationDto | ProjectDto): 
 }
 
 export function CvConfigurationEditor(props: CvConfigurationEditorProps): ReactNode {
-  const { cvStyles, profile, config, onChange, disabled = false } = props
+  const { cvStyles, profile, config, templates, onChange, disabled = false } = props
   const { t } = useTranslation()
 
-  const [selectedCvStyle, setSelectedCvStyle] = useState<CVStyleDto | undefined>(cvStyles.find(style => style.key === config.cvStyle))
+  const selectedCvStyle = cvStyles.find((s) => s.key === config.cvStyle)
 
   function handleStyleSelected(style: CVStyleDto) {
     if (disabled || !onChange) return
-    setSelectedCvStyle(style)
     onChange({
       ...config,
       cvStyle: style.key,
@@ -118,8 +128,41 @@ export function CvConfigurationEditor(props: CvConfigurationEditorProps): ReactN
     })
   }
 
+  function handleTemplateChange(templateKey: Key | null) {
+    if (!templates || templateKey == null) return
+    const template = templates.find((t) => t.id === Number.parseInt(templateKey as string))
+    console.log(template)
+    if (template && onChange) {
+      onChange({
+        cvStyle: template.cvConfiguration.cvStyle,
+        cvStyleOptions: template.cvConfiguration.cvStyleOptions,
+        cvContent: template.cvConfiguration.includedCvContent
+          ? {
+              workExperience: template.cvConfiguration.includedCvContent.includedWorkExperience,
+              education: template.cvConfiguration.includedCvContent.includedEducation,
+              projects: template.cvConfiguration.includedCvContent.includedProjects,
+              skills: template.cvConfiguration.includedCvContent.includedSkills
+            }
+          : undefined
+      })
+    }
+  }
+
   return (
-    <div className="w-full">
+    <div className="w-full flex flex-col gap-2">
+      {templates && (
+        <div className="w-fit 2xl:pl-5">
+          <Autocomplete
+            name="applicationTemplate"
+            label={t('applicationTemplate.singular')}
+            onSelectionChange={handleTemplateChange}
+          >
+            {templates.map((template) => (
+              <AutocompleteItem key={template.id}>{template.name}</AutocompleteItem>
+            ))}
+          </Autocomplete>
+        </div>
+      )}
       <div className="flex flex-col sm:flex-row justify-center gap-4">
         {cvStyles.map((cvStyle) => (
           <Card
