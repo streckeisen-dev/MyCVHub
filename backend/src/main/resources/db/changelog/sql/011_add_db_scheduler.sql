@@ -1,3 +1,8 @@
+--liquibase formatted sql
+
+--changeset lstreckeisen:11
+--validCheckSum: any
+
 create table db_scheduler_scheduled_tasks
 (
     task_name            text                     not null,
