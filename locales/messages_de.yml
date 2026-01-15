@@ -676,6 +676,19 @@ backend:
         invalid: "Diese Vorlagen-Einstellung ist ungültig."
         missing: "Diese Vorlagen-Einstellung benötigt einen Wert."
 
+  coverletter:
+    templateNotFound: "Bewerbungsschreiben-Vorlage nicht gefunden"
+    generationFailed: "Dein Bewerbugnsschreiben konnte nicht generiert werden"
+    incompleteAccount: "Dein Account ist nicht bereit um Bewerbungsschreiben zu generieren"
+    validation:
+      invalidLanguage: "Sprache is ungültig"
+      invalidStyle: "Bewerbungsschreiben-Design ist ungültig"
+      applicationMissing: "Bewerbungsinformationen werded benötigt um ein Bewerbungsschreiben zu generieren"
+      addresseeOrContactMissing: "Eine Ansprechsperson oder ein genereller Anredssat ist erforderlich um ein Bewerbungsschreiben zu generieren"
+      companyAddressMissing: "Firme-Adresse ist erforderlich um ein Bewerbungsschreiben zu generieren"
+      invalidDocuments: "'Angehängte Dokumente' ist ungültig"
+      error: "Bewerbungsschreiben-Generierungsanfrage ist ungültig"
+
   application:
     transition:
       sent: "Bewerbung verschickt"

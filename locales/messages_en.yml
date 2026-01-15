@@ -676,6 +676,19 @@ backend:
         invalid: "Invalid template option"
         missing: "Missing template option"
 
+  coverletter:
+    templateNotFound: "Cover letter template not found"
+    generationFailed: "Your cover letter could not be generated"
+    incompleteAccount: "Your account is not ready to generate cover letters"
+    validation:
+      invalidLanguage: "Language is invalid"
+      invalidStyle: "Cover letter style is invalid"
+      applicationMissing: "Application information is required for cover letter generation"
+      addresseeOrContactMissing: "Either a contact person or an addressee is required for the cover letter greeting"
+      companyAddressMissing: "Company address is required"
+      invalidDocuments: "'Attached documents' is invalid"
+      error: "Cover letter generation request is invalid"
+
   application:
     transition:
       sent: "Application sent"
