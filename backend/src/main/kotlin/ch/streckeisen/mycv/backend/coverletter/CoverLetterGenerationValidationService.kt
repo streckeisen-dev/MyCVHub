@@ -12,11 +12,15 @@ private const val APPLICATION_FIELD = "application"
 private const val JOB_TITLE_FIELD = "$APPLICATION_FIELD.jobTitle"
 private const val COMPANY_FIELD = "$APPLICATION_FIELD.company"
 private const val CONTACT_PERSON_FIELD = "$APPLICATION_FIELD.contactPerson"
+private const val CONTACT_PERSON_FIRST_NAME_FIELD = "$APPLICATION_FIELD.contactPerson.firstName"
+private const val CONTACT_PERSON_LAST_NAME_FIELD = "$APPLICATION_FIELD.contactPerson.lastName"
 private const val ADDRESSEE_FIELD = "$APPLICATION_FIELD.addressee"
 private const val SALUTATION_FIELD = "$APPLICATION_FIELD.salutation"
+private const val CONTENT_FIELD = "$APPLICATION_FIELD.coverLetterContent"
+private const val CLOSING_FIELD = "$APPLICATION_FIELD.closing"
 private const val COMPANY_ADDRESS_FIELD = "$APPLICATION_FIELD.companyAddress"
 private const val COMPANY_STREET_FIELD = "$COMPANY_ADDRESS_FIELD.street"
-private const val COMPANY_ZIP_FIELD = "$COMPANY_ADDRESS_FIELD.zipCode"
+private const val COMPANY_ZIP_FIELD = "$COMPANY_ADDRESS_FIELD.postcode"
 private const val COMPANY_CITY_FIELD = "$COMPANY_ADDRESS_FIELD.city"
 private const val DOCUMENTS_FIELD = "attachedDocuments"
 
@@ -88,11 +92,19 @@ class CoverLetterGenerationValidationService(
             validationErrorBuilder = validationErrorBuilder
         )
 
-        stringValidator.validateOptionalString(
-            optionalField = CONTACT_PERSON_FIELD,
-            value = application.contactPerson,
-            validationErrorBuilder = validationErrorBuilder
-        )
+        if (application.contactPerson != null) {
+            stringValidator.validateRequiredString(
+                requiredField = CONTACT_PERSON_FIRST_NAME_FIELD,
+                value = application.contactPerson.firstName,
+                validationErrorBuilder = validationErrorBuilder
+            )
+
+            stringValidator.validateRequiredString(
+                requiredField = CONTACT_PERSON_LAST_NAME_FIELD,
+                value = application.contactPerson.lastName,
+                validationErrorBuilder = validationErrorBuilder
+            )
+        }
 
         stringValidator.validateOptionalString(
             optionalField = ADDRESSEE_FIELD,
@@ -100,7 +112,7 @@ class CoverLetterGenerationValidationService(
             validationErrorBuilder = validationErrorBuilder
         )
 
-        if (application.addressee.isNullOrBlank() && application.contactPerson.isNullOrBlank()) {
+        if (application.addressee.isNullOrBlank() && application.contactPerson == null) {
             val error = messagesService.getMessage(MISSING_ADDRESSEE_CONTACT_MESSAGE_KEY)
             validationErrorBuilder.addError(CONTACT_PERSON_FIELD, error)
             validationErrorBuilder.addError(ADDRESSEE_FIELD, error)
@@ -109,6 +121,18 @@ class CoverLetterGenerationValidationService(
         stringValidator.validateRequiredString(
             requiredField = SALUTATION_FIELD,
             value = application.salutation,
+            validationErrorBuilder = validationErrorBuilder
+        )
+
+        stringValidator.validateRequiredString(
+            requiredField = CONTENT_FIELD,
+            value = application.coverLetterContent,
+            validationErrorBuilder = validationErrorBuilder
+        )
+
+        stringValidator.validateRequiredString(
+            requiredField = CLOSING_FIELD,
+            value = application.closing,
             validationErrorBuilder = validationErrorBuilder
         )
 
@@ -124,7 +148,7 @@ class CoverLetterGenerationValidationService(
 
             stringValidator.validateRequiredString(
                 requiredField = COMPANY_ZIP_FIELD,
-                value = application.companyAddress.zipCode,
+                value = application.companyAddress.postcode,
                 validationErrorBuilder = validationErrorBuilder
             )
 

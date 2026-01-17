@@ -23,11 +23,12 @@ class StringValidator(
         maxLength: Int?,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
+        val messageFieldKey = requiredField.split(".").last()
         if (value.isNullOrBlank()) {
-            val error = messagesService.requiredFieldMissingError(requiredField)
+            val error = messagesService.requiredFieldMissingError(messageFieldKey)
             validationErrorBuilder.addError(requiredField, error)
         } else if (maxLength != null && value.length > maxLength) {
-            val error = messagesService.fieldMaxLengthExceededError(requiredField, JOB_TITLE_MAX_LENGTH)
+            val error = messagesService.fieldMaxLengthExceededError(messageFieldKey, JOB_TITLE_MAX_LENGTH)
             validationErrorBuilder.addError(requiredField, error)
         }
     }
@@ -49,11 +50,12 @@ class StringValidator(
         maxLength: Int?,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
+        val messageFieldKey = optionalField.split(".").last()
         if (value == "") {
-            val error = messagesService.eitherNullOrValue(optionalField)
+            val error = messagesService.eitherNullOrValue(messageFieldKey)
             validationErrorBuilder.addError(optionalField, error)
         } else if (maxLength != null && !value.isNullOrBlank() && value.length > maxLength) {
-            val error = messagesService.fieldMaxLengthExceededError(optionalField, maxLength)
+            val error = messagesService.fieldMaxLengthExceededError(messageFieldKey, maxLength)
             validationErrorBuilder.addError(optionalField, error)
         }
     }

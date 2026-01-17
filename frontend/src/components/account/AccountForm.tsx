@@ -13,12 +13,12 @@ import { CountryDto } from '@/types/country/CountryDto.ts'
 import CountryApi from '@/api/CountryApi.ts'
 import { AccountEditorData } from '@/types/account/AccountEditorData.ts'
 import { Key } from '@react-types/shared'
-import { SUPPOERTED_LANGUAGES } from '@/config/Languages.ts'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { AccountDto } from '@/types/account/AccountDto.ts'
 import { stringToCalendarDate } from '@/helpers/DateHelper.ts'
 import { getLocalTimeZone, today } from '@internationalized/date'
 import { addErrorToast } from '@/helpers/ToastHelper.ts'
+import { LanguageInput } from '@/components/input/LanguageInput.tsx'
 
 export function toAccountEditorData(account: AccountDto): AccountEditorData {
   return {
@@ -155,19 +155,13 @@ export function AccountForm(props: AccountFormProps): React.ReactNode {
           errorMessage={errorMessages.birthday}
         />
 
-        <Autocomplete
-          label={t('fields.language')}
-          name="language"
+        <LanguageInput
           isRequired
           selectedKey={state.language}
           onSelectionChange={handleLanguageChange}
           isInvalid={errorMessages.language != null}
           errorMessage={errorMessages.language}
-        >
-          {SUPPOERTED_LANGUAGES.map((lang) => (
-            <AutocompleteItem key={lang.key}>{lang.name}</AutocompleteItem>
-          ))}
-        </Autocomplete>
+        />
       </div>
 
       <div className="flex flex-col gap-6">

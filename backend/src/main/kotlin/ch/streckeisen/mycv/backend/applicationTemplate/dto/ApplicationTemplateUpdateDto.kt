@@ -6,5 +6,5 @@ data class ApplicationTemplateUpdateDto(
     val id: Long?,
     val name: String?,
     val cvConfiguration: CvConfigurationRequestDto?,
-    val documentChecklist: List<String?>?
+    val documents: List<String?>?
 )

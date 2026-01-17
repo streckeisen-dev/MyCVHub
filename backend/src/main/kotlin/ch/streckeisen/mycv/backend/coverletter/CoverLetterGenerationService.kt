@@ -85,14 +85,20 @@ class CoverLetterGenerationService(
                     application = CoverLetterApplication(
                         jobTitle = request.application!!.jobTitle!!,
                         company = request.application.company!!,
-                        contactPerson = request.application.contactPerson,
+                        contactPerson = if (request.application.contactPerson != null) {
+                            CoverLetterContactPerson(
+                                firstName = request.application.contactPerson.firstName!!,
+                                lastName = request.application.contactPerson.lastName!!
+                            )
+                        } else null,
                         addressee = request.application.addressee,
                         salutation = request.application.salutation!!,
                         companyAddress = CoverLetterCompanyAddress(
                             line1 = request.application.companyAddress!!.street!!,
-                            line2 = "${request.application.companyAddress.zipCode} ${request.application.companyAddress.city}"
+                            line2 = "${request.application.companyAddress.postcode} ${request.application.companyAddress.city}"
                         ),
-                        content = request.application.content!!
+                        content = request.application.coverLetterContent!!,
+                        closing = request.application.closing!!
                     ),
                     documents = request.attachedDocuments?.map { it!! }
                 )

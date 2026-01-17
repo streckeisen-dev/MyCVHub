@@ -4,5 +4,5 @@ data class ApplicationTemplateDto(
     val id: Long,
     val name: String,
     val cvConfiguration: CvConfigurationDto,
-    val documentChecklist: List<String>?
+    val documents: List<String>?
 )

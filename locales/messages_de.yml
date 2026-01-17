@@ -45,6 +45,10 @@ shared:
     source: "Quelle"
     acceptTos: "Ich habe die folgenden Dokumente gelesen und akzeptiere diese: "
     documentName: "Dokument Name"
+    salutation: "Anrede"
+    addressee: "Adressat"
+    coverLetterContent: "Inhalt Bewerbungsschreiben"
+    closing: "Grussformel"
 
   validations:
     required: "{label} darf nicht leer sein"
@@ -271,6 +275,20 @@ frontend:
     customizeContent: "Inhalt anpassen"
     customizeTemplate: "Vorlage personalisieren"
 
+  coverLetter:
+    name: "Bewerbungsschreiben"
+    stylesError: "Bewerbungsschreiben-Designs konnten nicht geladen werden"
+    mirrorProfileImage: "Soll dein Profilbild im Bewerbungsschreiben gespiegelt werden?"
+    knownContactPerson: "Gibt es eine Kontaktperson für diese Bewerbung?"
+    contactPerson: "Kontaktperson"
+    addresseeHint: "Wenn du keine Kontaktperson hast, kannst du einen Adressat wie z.B. 'Rekrutierungs-Team' verwenden."
+    salutationContactPersonHint: "Andrede für das Bewerbungsschreiben, welche mit dem Nachnamen der Kontaktperson kombiniert wird. Zum Beispiel 'Sehr geehrter Herr <Kontaktperson>'"
+    salutationAddresseeHint: "Andrede für das Bewerbungsschrieben, welche mit dem Adressat kombiniert wird. Zum Beispiel, 'Sehr geehrte <Addressat>'"
+    companyInfo: "Company Information"
+    coverLetterHint: "Ein gutes Bewerbungsschrieben sollte die folgenden Fragen beantworten:\n- Wieso bist du an dieser Stelle und an dieser Firma interessiert?\n- Was sind deine Qualifikationen?\n- Wieso bist du die richtige Person für diese Position?\n- Wann kannst du in der Position beginnen?"
+    closingHint: "Grussformel mit der du das Bewerbungsschreiben abschliesst. Zum Beispiel 'Mit freundlichen Grüssen'"
+    downloadFailed: "Failed to create your cover letter"
+
   theme:
     title: "Design"
     description: "Standardmäßig wird dein Lebenslauf im hellen Design von MyCVHub angezeigt. Unten kannst du die verwendeten Farben nach deinem Geschmack anpassen.\nAchte auf Farben, die den Text gut lesbar und professionell machen.\n\nTipps:\n- Hintergrundfarbe: Wähle eine weiche, neutrale Farbe um dein Profil elegant aussehen zu lassen.\n- Kopfzeilenfarbe: Nimm eine Farbe die etwas kontrast zur Hintergrundfarbe erstellt, um die Kopfzeile hervorzuheben."
@@ -330,8 +348,8 @@ frontend:
     singular: "Bewerbungsvorlage"
     noEntries: "Noch keine Bewerbungsvorlagen vorhanden"
     cvContent: "Lebenslaufinhalt"
-    documentChecklist: "Dokumenten Checkliste"
-    documentChecklistHint: "Du kannst diese Checklist als Erinnerungsstütze verwenden, damit du bei Bewerbungen keine Dokumente vergisst."
+    applicationDocuments: "Dokumenten Checkliste"
+    applicationDocumentsHint: "Du kannst diese Checklist als Erinnerungsstütze verwenden, damit du bei Bewerbungen keine Dokumente vergisst."
     view: "Bewerbungsvorlage ansehen"
     editor:
       add: "Bewerbungsvorlage erstellen"
@@ -615,7 +633,7 @@ backend:
       invalidTemplate: "Bewerbungsvorlage ist ungültig"
       unknownCvEntries: "Einige referenzierte Lebenslauf-Einträge existieren nicht"
       nameTaken: "Der Name dieser Bewerbungsvorlage ist bereits vergeben"
-      emptyDocumentChecklist: "Die Dokumenten Checklist muss entweder 'null' sein oder gültige Werte enthalten"
+      emptyDocuments: "Die Dokumenten Checklist muss entweder 'null' sein oder gültige Werte enthalten"
   account:
     notFound: "Account nicht gefunden"
     verification:
@@ -680,6 +698,10 @@ backend:
     templateNotFound: "Bewerbungsschreiben-Vorlage nicht gefunden"
     generationFailed: "Dein Bewerbugnsschreiben konnte nicht generiert werden"
     incompleteAccount: "Dein Account ist nicht bereit um Bewerbungsschreiben zu generieren"
+    style:
+      modern:
+        name: "Modern CV"
+        description: "Das Modern CV Design ist ein modernes und professionell wirkendes Design für Lebensläufe und Bewerungsschreiben. Diese Version basiert auf der <a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV Vorlage</a>, welche eine Variante der beliebten <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX-Vorlage ist."
     validation:
       invalidLanguage: "Sprache is ungültig"
       invalidStyle: "Bewerbungsschreiben-Design ist ungültig"

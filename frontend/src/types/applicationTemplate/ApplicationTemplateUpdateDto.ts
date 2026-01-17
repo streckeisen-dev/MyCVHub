@@ -4,5 +4,5 @@ export interface ApplicationTemplateUpdateDto {
   id?: number
   name?: string
   cvConfiguration?: CvConfigurationRequestDto
-  documentChecklist?: string[]
+  documents?: string[]
 }

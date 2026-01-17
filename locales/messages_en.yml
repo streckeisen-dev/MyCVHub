@@ -45,6 +45,10 @@ shared:
     comment: "Comment"
     acceptTos: "I have read and accept the following documents: "
     documentName: "Document Name"
+    salutation: "Salutation"
+    addressee: "Addressee"
+    coverLetterContent: "Cover Letter Content"
+    closing: "Closing"
   
   validations: 
     required: "{label} must not be blank"
@@ -271,6 +275,20 @@ frontend:
     noItemsSelected: "You need to select at least one CV item"
     customizeContent: "Adjust CV Content"
     customizeTemplate: "Customize Template"
+
+  coverLetter:
+    name: "Cover Letter"
+    stylesError: "Could not load the available cover letter styles"
+    mirrorProfileImage: "Should the profile image be mirrored on the cover letter?"
+    knownContactPerson: "Do you have a contact person for this job application?"
+    contactPerson: "Contact Person"
+    addresseeHint: "If you don't have a contact person, you can use a generic addressee instead. For example, 'Recruiting-Team'."
+    salutationContactPersonHint: "Salutation for the cover letter that is combined with the contact persons last name. For example, 'Dear Mr. <Contact Person>'"
+    salutationAddresseeHint: "Salutation for the cover letter that is combined with the Addressee. For example, 'Dear <Addressee>'"
+    companyInfo: "Company Information"
+    coverLetterHint: "A good cover letter should answer the following questions:\n- Why are you interested in this position and this company?\n- What are your qualifications and experience?\n- Why are you suited for this position?\n- When are you available to start the position?"
+    closingHint: "The closing of your cover letter. For example 'Best regards'"
+    downloadFailed: "Failed to create your cover letter"
   
   theme:
     title: "Theme"
@@ -331,8 +349,8 @@ frontend:
     singular: "Application Template"
     noEntries: "No application templates yet."
     cvContent: "CV Content"
-    documentChecklist: "Document Checklist"
-    documentChecklistHint: "You can use this checklist to remind yourself of the documents you need to submit for your application."
+    applicationDocuments: "Application Documents"
+    applicationDocumentsHint: "Documents you need to submit with your application in addition to your cover letter. For example, a CV or degrees."
     view: "View Application Template"
     editor:
       add: "Add Application Template"
@@ -615,7 +633,7 @@ backend:
       invalidTemplate: "Application template is invalid"
       unknownCvEntries: "Some referenced CV entries don't exist"
       nameTaken: "Application template name is already taken"
-      emptyDocumentChecklist: "Document checklist must be 'null' or contain valid entries"
+      emptyDocuments: "Document checklist must be 'null' or contain valid entries"
   account:
     notFound: "Account not found"
     verification:
@@ -680,6 +698,11 @@ backend:
     templateNotFound: "Cover letter template not found"
     generationFailed: "Your cover letter could not be generated"
     incompleteAccount: "Your account is not ready to generate cover letters"
+    style:
+      modern:
+        name: "Modern CV"
+        description: "The Modern CV design is a modern, clean and professional design for CVs and cover letters. This version is based on the <a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV template</a>, which is a variation of the popular <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX template."
+
     validation:
       invalidLanguage: "Language is invalid"
       invalidStyle: "Cover letter style is invalid"

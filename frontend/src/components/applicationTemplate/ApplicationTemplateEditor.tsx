@@ -1,12 +1,11 @@
-import { FormEvent, Fragment, ReactNode, useState } from 'react'
-import { Button, Form, Input } from '@heroui/react'
+import { FormEvent, ReactNode, useState } from 'react'
+import { Form, Input } from '@heroui/react'
 import { centerSection, h1 } from '@/styles/primitives.ts'
 import { useTranslation } from 'react-i18next'
 import { FormButtons } from '@/components/btn/FormButtons.tsx'
 import { ApplicationTemplateDto } from '@/types/applicationTemplate/ApplicationTemplateDto.ts'
 import { ProfileDto } from '@/types/profile/ProfileDto.ts'
 import { v7 as uuid } from 'uuid'
-import { FaPlus, FaTrash } from 'react-icons/fa6'
 import { ApplicationTemplateUpdateDto } from '@/types/applicationTemplate/ApplicationTemplateUpdateDto.ts'
 import ApplicationTemplateApi from '@/api/ApplicationTemplateApi.ts'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
@@ -17,6 +16,10 @@ import {
   CvConfigurationEditor
 } from '@/components/download/cv/CvConfigurationEditor.tsx'
 import { CVStyleDto } from '@/types/cv/CVStyleDto.ts'
+import {
+  ApplicationDocument,
+  ApplicationDocumentsEditor
+} from '@/components/applicationTemplate/ApplicationDocumentsEditor.tsx'
 
 export type EditApplicationTemplateModalProps = Readonly<{
   onSave: (template: ApplicationTemplateDto) => void
@@ -29,7 +32,7 @@ export type EditApplicationTemplateModalProps = Readonly<{
 interface ApplicationTemplateFormData {
   name: string
   cvConfig: CvConfigurationData
-  documents: { id: string; name: string }[]
+  documents: ApplicationDocument[]
 }
 
 export function ApplicationTemplateEditor(props: EditApplicationTemplateModalProps): ReactNode {
@@ -51,7 +54,7 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
         undefined,
       cvStyleOptions: initialValue?.cvConfiguration.cvStyleOptions
     },
-    documents: initialValue?.documentChecklist?.map((name) => ({ id: uuid(), name })) ?? []
+    documents: initialValue?.documents?.map((name) => ({ id: uuid(), name })) ?? []
   })
   const [errorMessages, setErrorMessages] = useState<ErrorMessages>({})
 
@@ -70,14 +73,14 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
     clearError('cvConfiguration')
   }
 
-  function handleDocumentChange(id: string, value: string) {
+  function handleDocumentChange(docs: ApplicationDocument[]) {
     setData((prev) => {
       return {
         ...prev,
-        documents: [...prev.documents.filter((doc) => doc.id !== id), { id, name: value }]
+        documents: docs
       }
     })
-    clearError('documentChecklist')
+    clearError('documents')
   }
 
   function clearError(field: string) {
@@ -86,24 +89,6 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
         ...prev,
         [field]: undefined
       } as ErrorMessages
-    })
-  }
-
-  function handleAddDocument() {
-    setData((prev) => {
-      return {
-        ...prev,
-        documents: [...prev.documents, { id: uuid(), name: '' }]
-      }
-    })
-  }
-
-  function handleRemoveDocument(id: string) {
-    setData((prev) => {
-      return {
-        ...prev,
-        documents: prev.documents.filter((doc) => doc.id !== id)
-      }
     })
   }
 
@@ -124,8 +109,7 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
           includedSkills: data.cvConfig.cvContent?.skills
         }
       },
-      documentChecklist:
-        data.documents.length > 0 ? data.documents.map((doc) => doc.name) : undefined
+      documents: data.documents.length > 0 ? data.documents.map((doc) => doc.name) : undefined
     }
     try {
       const saved = await ApplicationTemplateApi.saveApplicationTemplate(request, i18n.language)
@@ -165,44 +149,11 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
           )}
         </div>
 
-        <div>
-          <label className="text-default-500">{t('applicationTemplate.documentChecklist')}</label>
-          <p className="text-default-400">{t('applicationTemplate.documentChecklistHint')}</p>
-          <div className="grid grid-cols-12 gap-2 items-center mt-4">
-            {data.documents.map((doc) => (
-              <Fragment key={doc.id}>
-                <Input
-                  isRequired
-                  className="col-span-10"
-                  label={t('fields.documentName')}
-                  value={doc.name}
-                  onValueChange={(val) => handleDocumentChange(doc.id, val)}
-                />
-                <Button
-                  className="col-span-2"
-                  isIconOnly
-                  color="danger"
-                  onPress={() => handleRemoveDocument(doc.id)}
-                  radius="full"
-                >
-                  <FaTrash />
-                </Button>
-              </Fragment>
-            ))}
-            <Button
-              className="col-span-12"
-              isIconOnly
-              color="primary"
-              onPress={handleAddDocument}
-              radius="full"
-            >
-              <FaPlus />
-            </Button>
-          </div>
-          {errorMessages.documentChecklist && (
-            <p className="text-danger text-sm mt-1">{errorMessages.documentChecklist}</p>
-          )}
-        </div>
+        <ApplicationDocumentsEditor
+          documents={data.documents}
+          onChange={handleDocumentChange}
+          errorMessages={errorMessages}
+        />
 
         <FormButtons onCancel={onCancel} isSaving={isSaving} />
       </Form>

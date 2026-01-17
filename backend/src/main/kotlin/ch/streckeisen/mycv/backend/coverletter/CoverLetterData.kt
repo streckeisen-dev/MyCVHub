@@ -20,14 +20,20 @@ data class CoverLetterAuthor(
 data class CoverLetterApplication(
     val jobTitle: String,
     val company: String,
-    val contactPerson: String?,
+    val contactPerson: CoverLetterContactPerson?,
     val addressee: String?,
     val salutation: String,
     val companyAddress: CoverLetterCompanyAddress,
-    val content: String
+    val content: String,
+    val closing: String
 )
 
 data class CoverLetterCompanyAddress(
     val line1: String,
     val line2: String
+)
+
+data class CoverLetterContactPerson(
+    val firstName: String,
+    val lastName: String
 )

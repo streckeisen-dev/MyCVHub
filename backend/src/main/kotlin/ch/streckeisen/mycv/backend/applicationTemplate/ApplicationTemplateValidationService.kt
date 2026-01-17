@@ -16,7 +16,7 @@ private const val NAME_FIELD_KEY = "name"
 private const val CV_TEMPLATE_FIELD = "cvTemplate"
 private const val CV_CONFIG_FILED = "cvConfiguration"
 private const val PROFILE_FIELD = "profile"
-private const val DOC_CHECKLIST_FIELD = "documentChecklist"
+private const val DOCS_FIELD = "applicationDocuments"
 private const val INCLUDED_EXPERIENCE_FIELD = "includedWorkExperience"
 private const val INCLUDED_EDUCATION_FIELD = "includedEducation"
 private const val INCLUDED_PROJECTS_FIELD = "includedProjects"
@@ -28,7 +28,7 @@ private const val INVALID_CV_STYLE_MESSAGE_KEY = "$APPLICATION_TEMPLATE_MESSAGE_
 private const val INVALID_TEMPLATE_MESSAGE_KEY = "$APPLICATION_TEMPLATE_MESSAGE_PREFIX.invalidTemplate"
 private const val UNKNOWN_CV_ENTRY_MESSAGE_KEY = "$APPLICATION_TEMPLATE_MESSAGE_PREFIX.unknownCvEntries"
 private const val NAME_TAKEN_MESSAGE_KEY = "$APPLICATION_TEMPLATE_MESSAGE_PREFIX.nameTaken"
-private const val EMPTY_DOC_CHECKLIST_MESSAGE = "$APPLICATION_TEMPLATE_MESSAGE_PREFIX.emptyDocumentChecklist"
+private const val EMPTY_DOCS_MESSAGE = "$APPLICATION_TEMPLATE_MESSAGE_PREFIX.emptyDocuments"
 
 @Service
 class ApplicationTemplateValidationService(
@@ -66,12 +66,12 @@ class ApplicationTemplateValidationService(
             validateCvConfiguration(applicationTemplateUpdate.cvConfiguration, profile, validationErrorBuilder)
         }
 
-        if (applicationTemplateUpdate.documentChecklist != null
-            && (applicationTemplateUpdate.documentChecklist.isEmpty() || applicationTemplateUpdate.documentChecklist.any { it.isNullOrBlank() })
+        if (applicationTemplateUpdate.documents != null
+            && (applicationTemplateUpdate.documents.isEmpty() || applicationTemplateUpdate.documents.any { it.isNullOrBlank() })
         ) {
             validationErrorBuilder.addError(
-                DOC_CHECKLIST_FIELD,
-                messagesService.getMessage(EMPTY_DOC_CHECKLIST_MESSAGE)
+                DOCS_FIELD,
+                messagesService.getMessage(EMPTY_DOCS_MESSAGE)
             )
         }
 

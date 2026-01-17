@@ -10,7 +10,7 @@ import tools.jackson.core.type.TypeReference
 import tools.jackson.databind.ObjectMapper
 
 
-fun ApplicationTemplate.toDto() = ApplicationTemplateDto(id, name, cvConfiguration.toDto(), documentChecklist)
+fun ApplicationTemplate.toDto() = ApplicationTemplateDto(id, name, cvConfiguration.toDto(), documents)
 
 fun CvConfiguration.toDto() = CvConfigurationDto(
     cvStyle = cvStyle,
@@ -33,8 +33,8 @@ fun ApplicationTemplateEntity.toFullObject(objectMapper: ObjectMapper) = Applica
     id = id!!,
     name = name,
     cvConfiguration = objectMapper.readValue(cvConfiguration, CvConfiguration::class.java),
-    documentChecklist = if (documentChecklist == null) null else objectMapper.readValue(
-        documentChecklist,
+    documents = if (documents == null) null else objectMapper.readValue(
+        documents,
         object : TypeReference<List<String>>() {}
     )
 )

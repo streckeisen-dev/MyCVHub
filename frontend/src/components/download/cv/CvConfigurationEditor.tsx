@@ -1,13 +1,5 @@
 import { ReactNode } from 'react'
-import {
-  Autocomplete,
-  AutocompleteItem,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader
-} from '@heroui/react'
+import { Autocomplete, AutocompleteItem, Button } from '@heroui/react'
 import { ProfileDto } from '@/types/profile/ProfileDto.ts'
 import { CVStyleDto, CVStyleOptionDto } from '@/types/cv/CVStyleDto.ts'
 import {
@@ -16,7 +8,6 @@ import {
 } from '@/components/download/cv/CvContentCustomizationView.tsx'
 import { FaSliders } from 'react-icons/fa6'
 import { CvStyleCustomizationView } from '@/components/download/cv/CvStyleCustomizationView.tsx'
-import sanitizeHtml from 'sanitize-html'
 import { KeyValueObject } from '@/types/KeyValueObject.ts'
 import talendoCvStyle from '@/assets/cv_styles/talendo.jpg'
 import modernCvStyle from '@/assets/cv_styles/modern.jpg'
@@ -27,6 +18,7 @@ import { ProjectDto } from '@/types/profile/project/ProjectDto.ts'
 import { SelectedCvContent } from '@/components/download/cv/CvContentTreeRoot.tsx'
 import { ApplicationTemplateDto } from '@/types/applicationTemplate/ApplicationTemplateDto.ts'
 import { Key } from '@react-types/shared'
+import { SelectableGallery } from '@/components/SelectableGallery.tsx'
 
 const cvStyleImages: KeyValueObject<string> = {
   talendo: talendoCvStyle,
@@ -47,12 +39,6 @@ export type CvConfigurationEditorProps = Readonly<{
   onChange?: (config: CvConfigurationData) => void
   disabled?: boolean
 }>
-
-function sanitize(html: string): string {
-  return sanitizeHtml(html, {
-    allowedTags: ['p', 'a']
-  })
-}
 
 function getDefaultStyleOptions(options: CVStyleOptionDto[]): KeyValueObject<string> {
   const data: KeyValueObject<string> = {}
@@ -75,8 +61,11 @@ export function CvConfigurationEditor(props: CvConfigurationEditorProps): ReactN
 
   const selectedCvStyle = cvStyles.find((s) => s.key === config.cvStyle)
 
-  function handleStyleSelected(style: CVStyleDto) {
+  function handleStyleSelected(styleKey: string) {
     if (disabled || !onChange) return
+    const style = cvStyles.find((s) => s.key === styleKey)
+    if (!style) return
+
     onChange({
       ...config,
       cvStyle: style.key,
@@ -163,38 +152,18 @@ export function CvConfigurationEditor(props: CvConfigurationEditorProps): ReactN
           </Autocomplete>
         </div>
       )}
-      <div className="flex flex-col sm:flex-row justify-center gap-4">
-        {cvStyles.map((cvStyle) => (
-          <Card
-            key={cvStyle.key}
-            className="w-full lg:max-w-lg p-2"
-            style={{
-              border:
-                cvStyle.key === config.cvStyle ? '2px solid hsl(var(--heroui-primary))' : 'none'
-            }}
-          >
-            <CardHeader>
-              <p className="font-bold text-large">{cvStyle.name}</p>
-            </CardHeader>
-            <CardBody className="flex flex-col gap-2">
-              <img src={cvStyleImages[cvStyle.key]} alt={`Example of ${cvStyle.name} CV style`} />
-              <p
-                className={'text-default-600'}
-                dangerouslySetInnerHTML={{
-                  __html: sanitize(cvStyle.description)
-                }}
-              />
-            </CardBody>
-            {profile && !disabled && (
-              <CardFooter>
-                <Button color="primary" onPress={() => handleStyleSelected(cvStyle)}>
-                  {t('cv.select')}
-                </Button>
-              </CardFooter>
-            )}
-          </Card>
-        ))}
-      </div>
+      <SelectableGallery
+        items={cvStyles.map((style) => ({
+          key: style.key,
+          name: style.name,
+          image: cvStyleImages[style.key],
+          alt: `Example of ${style.name} CV style`,
+          description: style.description
+        }))}
+        selected={selectedCvStyle?.key}
+        disabled={disabled}
+        onSelect={handleStyleSelected}
+      />
 
       {config.cvStyle && (
         <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">

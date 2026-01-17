@@ -175,7 +175,7 @@ class ApplicationTemplateValidationServiceTest {
                     cvStyle = null,
                     cvStyleOptions = null
                 ),
-                documentChecklist = null
+                documents = null
             ),
             profile
         )
@@ -195,7 +195,7 @@ class ApplicationTemplateValidationServiceTest {
                     cvStyle = "talendo",
                     cvStyleOptions = null
                 ),
-                documentChecklist = null
+                documents = null
             ),
             profile
         )

@@ -61,8 +61,8 @@ class ApplicationTemplateService(
             id = existingTemplate?.id,
             name = applicationTemplate.name!!,
             cvConfiguration = objectMapper.writeValueAsString(applicationTemplate.cvConfiguration!!.toCvConfiguration()),
-            documentChecklist = if (applicationTemplate.documentChecklist != null) objectMapper.writeValueAsString(
-                applicationTemplate.documentChecklist
+            documents = if (applicationTemplate.documents != null) objectMapper.writeValueAsString(
+                applicationTemplate.documents
             ) else null,
             account = profile.account
         )

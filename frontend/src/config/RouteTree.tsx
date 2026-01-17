@@ -32,6 +32,7 @@ import { ApplicationTemplateOverviewPage } from '@/pages/applicationTemplates/Ap
 import { ApplicationTemplateDetailsPage } from '@/pages/applicationTemplates/ApplicationTemplateDetailsPage.tsx'
 import { AddApplicationTemplatePage } from '@/pages/applicationTemplates/AddApplicationTemplatePage.tsx'
 import { EditApplicationTemplatePage } from '@/pages/applicationTemplates/EditApplicationTemplatePage.tsx'
+import { CoverLetterDownloadPage } from '@/pages/download/CoverLetterDownloadPage.tsx'
 
 type MyCvRouteObject = Omit<RouteObject, 'children'> & {
   id: string
@@ -193,9 +194,20 @@ const ROUTE_DEFINITIONS = defineRoutes([
         ]
       },
       {
-        id: 'CvDownload',
-        path: 'download/cv',
-        element: <CvDownloadPage />
+        id: 'DownloadRoot',
+        path: 'download',
+        children: [
+          {
+            id: 'CvDownload',
+            path: 'cv',
+            element: <CvDownloadPage />
+          },
+          {
+            id: 'CoverLetterDownload',
+            path: 'cover-letter',
+            element: <CoverLetterDownloadPage />
+          }
+        ]
       },
       {
         id: 'About',
@@ -408,6 +420,12 @@ const NAV_ITEMS: NavItemConfig[] = [
         id: 'cvDownload',
         label: 'cv.name',
         href: getRoutePath(RouteId.CvDownload),
+        predicate: () => true
+      },
+      {
+        id: 'coverLetterDownload',
+        label: 'coverLetter.name',
+        href: getRoutePath(RouteId.CoverLetterDownload),
         predicate: () => true
       }
     ]

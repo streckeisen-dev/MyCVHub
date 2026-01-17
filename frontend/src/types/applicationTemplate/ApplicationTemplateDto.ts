@@ -4,5 +4,5 @@ export interface ApplicationTemplateDto {
   id: number
   name: string
   cvConfiguration: CvConfigurationDto
-  documentChecklist: string[] | undefined
+  documents: string[] | undefined
 }

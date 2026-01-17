@@ -59,7 +59,7 @@ private val existingTemplate = ApplicationTemplateEntity(
             }
         }
     """.trimIndent(),
-    documentChecklist = null,
+    documents = null,
     account = mockk {
         every { id } returns 1L
         every { profile } returns existingProfile
@@ -79,7 +79,7 @@ private val validNewRequest = ApplicationTemplateUpdateDto(
         cvStyle = "talendo",
         cvStyleOptions = mapOf("bannerBackground" to "#FFFFFF")
     ),
-    documentChecklist = listOf("Uni Degree")
+    documents = listOf("Uni Degree")
 )
 
 class ApplicationTemplateServiceTest {
@@ -102,7 +102,7 @@ class ApplicationTemplateServiceTest {
 
             every { save(capture(templateSlot)) } answers {
                 val arg = firstArg<ApplicationTemplateEntity>()
-                ApplicationTemplateEntity(100, arg.account, arg.name, arg.cvConfiguration, arg.documentChecklist)
+                ApplicationTemplateEntity(100, arg.account, arg.name, arg.cvConfiguration, arg.documents)
             }
 
             every { delete(any()) } just runs
@@ -147,7 +147,7 @@ class ApplicationTemplateServiceTest {
                 cvStyleOptions = mapOf("bannerBackground" to "#FFFFFF")
             ), template.cvConfiguration
         )
-        assertNull(template.documentChecklist)
+        assertNull(template.documents)
     }
 
     @Test
@@ -178,7 +178,7 @@ class ApplicationTemplateServiceTest {
                 id = 5,
                 name = null,
                 cvConfiguration = null,
-                documentChecklist = null
+                documents = null
             )
         )
 
@@ -194,7 +194,7 @@ class ApplicationTemplateServiceTest {
                 id = 1,
                 name = null,
                 cvConfiguration = null,
-                documentChecklist = null
+                documents = null
             )
         )
 
@@ -222,7 +222,7 @@ class ApplicationTemplateServiceTest {
             "{\"includedCvContent\":{\"includedWorkExperience\":[{\"entityId\":1,\"includeDescription\":true}],\"includedEducation\":[],\"includedProjects\":[],\"includedSkills\":[1]},\"cvStyle\":\"talendo\",\"cvStyleOptions\":{\"bannerBackground\":\"#FFFFFF\"}}",
             templateSlot.captured.cvConfiguration
         )
-        assertEquals("[\"Uni Degree\"]", templateSlot.captured.documentChecklist)
+        assertEquals("[\"Uni Degree\"]", templateSlot.captured.documents)
     }
 
     @Test

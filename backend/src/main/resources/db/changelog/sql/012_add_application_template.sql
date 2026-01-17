@@ -5,11 +5,11 @@
 
 CREATE TABLE application_template_entity
 (
-    id                 BIGSERIAL    NOT NULL,
-    name               VARCHAR(100) NOT NULL,
-    cv_configuration   TEXT         NOT NULL,
-    document_checklist TEXT         NULL,
-    account_id         BIGINT       NOT NULL
+    id               BIGSERIAL    NOT NULL,
+    name             VARCHAR(100) NOT NULL,
+    cv_configuration TEXT         NOT NULL,
+    documents        TEXT         NULL,
+    account_id       BIGINT       NOT NULL
 );
 ALTER TABLE application_template_entity
     ADD CONSTRAINT pk_application_template_entity PRIMARY KEY (id);

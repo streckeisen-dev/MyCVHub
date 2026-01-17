@@ -214,8 +214,8 @@
     )
   }
   
-  let signature = {
-    text(weight: "light", if(signature != none) {signature} else { if (language == "de") {"Mit freundlichen Grüssen"} else {"Kind regards"}})
+  let fullSignature = {
+    text(weight: "light", signature)
     linebreak()
     linebreak()
     linebreak()
@@ -228,7 +228,7 @@
   letter-heading
   body
   linebreak()
-  signature
+  fullSignature
   align(bottom,
     closing
   )
@@ -293,6 +293,7 @@
   language: config.language,
   font: "Times New Roman",
   show-footer: false,
+  signature: config.application.closing,
   closing: {
     if (config.documents != none) {
       if (config.language == "de") [Anhang:] else [Attached Documents:]
@@ -301,12 +302,11 @@
   }
 )
 
-#let companyAddress = config.application.companyAddress.split(", ")
 #hiring-entity-info(
   target: if (config.application.contactPerson != none) {config.application.contactPerson} else {none},
   name: config.application.company,
-  street: companyAddress.at(0),
-  city: companyAddress.at(1),
+  street: config.application.companyAddress.line1,
+  city: config.application.companyAddress.line1,
 )
 
 #letter-heading(

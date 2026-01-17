@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/cover-letter")
+@RequestMapping("/api/cover-letter")
 class CoverLetterGenerationResource(
     private val coverLetterGenerationService: CoverLetterGenerationService,
     private val messagesService: MessagesService

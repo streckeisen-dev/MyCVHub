@@ -151,12 +151,14 @@ export function ApplicationTemplateDetailsPage(): ReactNode {
               config={toConfigData(template.cvConfiguration)}
               disabled
             />
-            {template.documentChecklist && (
+            {template.documents && (
               <div>
-                <h4 className={h4()}>{t('applicationTemplate.documentChecklist')}</h4>
-                <p className="text-default-400">{t('applicationTemplate.documentChecklistHint')}</p>
+                <h4 className={h4()}>{t('applicationTemplate.applicationDocuments')}</h4>
+                <p className="text-default-400">
+                  {t('applicationTemplate.applicationDocumentsHint')}
+                </p>
                 <div className="flex flex-col gap-2 mt-2">
-                  {template.documentChecklist.map((doc) => (
+                  {template.documents.map((doc) => (
                     <CheckboxInput key={doc} label={doc} isDisabled />
                   ))}
                 </div>
