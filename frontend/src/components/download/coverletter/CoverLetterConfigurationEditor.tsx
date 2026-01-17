@@ -48,7 +48,7 @@ export type CoverLetterEditorProps = Readonly<{
   config: CoverLetterConfigurationData
   disabled?: boolean
   onChange?: (config: CoverLetterConfigurationData) => void
-  errorMessages?: KeyValueObject<string>
+  errorMessages?: ErrorMessages
   application?: ApplicationDetailsDto
 }>
 
