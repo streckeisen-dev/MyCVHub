@@ -97,10 +97,10 @@ export function CoverLetterDownload(): ReactNode {
           postcode: coverLetterConfig.companyPostcode,
           city: coverLetterConfig.companyCity
         },
-        coverLetterContent: coverLetterConfig.coverLetterContent,
+        content: coverLetterConfig.coverLetterContent,
         closing: coverLetterConfig.closing
       },
-      attachedDocuments:
+      documents:
         coverLetterConfig.documents.length > 0
           ? coverLetterConfig.documents.map((doc) => doc.name)
           : undefined

@@ -47,8 +47,10 @@ shared:
     documentName: "Dokument Name"
     salutation: "Anrede"
     addressee: "Adressat"
-    coverLetterContent: "Inhalt Bewerbungsschreiben"
+    content: "Inhalt"
     closing: "Grussformel"
+    cvStyle: "Lebenslauf-Design"
+    documents: "Dokumente"
 
   validations:
     required: "{label} darf nicht leer sein"
@@ -77,6 +79,10 @@ frontend:
   crud:
     edit: "Bearbeiten"
     delete: "Löschen"
+
+  general:
+    yes: "Ja"
+    no: "Nein"
 
   validations:
     fileSizeValidator: "Datei muss kleiner als {maxSize} MB sein"
@@ -264,6 +270,7 @@ frontend:
     intro: "Erstelle deinen professionellen Lebenslauf und lade ihn herunter, damit du ihn deinen Bewerbungen beilegen kannst"
     style: "CV Design"
     styleExplanation: "Wähle unten das Lebenslauf-Design aus, das dir am besten gefällt. Deine Informationen werden automatisch im von dir gewählten Design formattiert."
+    imageAlt: "Beispiel des {styleName} Lebenslauf-Designs"
     select: "Wähle dieses Design"
     styleError: "Die verfügbaren Lebenslauf-Designs konnten nicht geladen werden"
     download: "Lebenslauf herunterladen"
@@ -288,6 +295,7 @@ frontend:
     coverLetterHint: "Ein gutes Bewerbungsschrieben sollte die folgenden Fragen beantworten:\n- Wieso bist du an dieser Stelle und an dieser Firma interessiert?\n- Was sind deine Qualifikationen?\n- Wieso bist du die richtige Person für diese Position?\n- Wann kannst du in der Position beginnen?"
     closingHint: "Grussformel mit der du das Bewerbungsschreiben abschliesst. Zum Beispiel 'Mit freundlichen Grüssen'"
     downloadFailed: "Failed to create your cover letter"
+    content: "Inhalt Bewerbungsschreiben"
 
   theme:
     title: "Design"
@@ -348,8 +356,8 @@ frontend:
     singular: "Bewerbungsvorlage"
     noEntries: "Noch keine Bewerbungsvorlagen vorhanden"
     cvContent: "Lebenslaufinhalt"
-    applicationDocuments: "Dokumenten Checkliste"
-    applicationDocumentsHint: "Du kannst diese Checklist als Erinnerungsstütze verwenden, damit du bei Bewerbungen keine Dokumente vergisst."
+    applicationDocuments: "Bewerbungsdokumente"
+    applicationDocumentsHint: "Eine Liste von Dokumenten die du deinem Bewerbungschreiben beilegen willst. Z.B. dein Lebenslauf oder Ausbildungs-Abschlüsse"
     view: "Bewerbungsvorlage ansehen"
     editor:
       add: "Bewerbungsvorlage erstellen"
@@ -633,7 +641,7 @@ backend:
       invalidTemplate: "Bewerbungsvorlage ist ungültig"
       unknownCvEntries: "Einige referenzierte Lebenslauf-Einträge existieren nicht"
       nameTaken: "Der Name dieser Bewerbungsvorlage ist bereits vergeben"
-      emptyDocuments: "Die Dokumenten Checklist muss entweder 'null' sein oder gültige Werte enthalten"
+      coverLetterConfigurationMissing: "Bewerbungsschreiben-Konfiguration fehlt"
   account:
     notFound: "Account nicht gefunden"
     verification:
@@ -689,7 +697,7 @@ backend:
       incompleteProfile: "Dein Lebenslauf-Profil ist nicht bereit um Lebensläufe zu generieren"
       incompleteContentConfig: "Die Konfiguration des Lebenslauf-Inhalts ist nicht vollständig"
       unknownCvEntries: "Die Konfiguration des Lebenslauf-Inhalts referenziert nicht existierende Einträge"
-      templateOptions:
+      cvStyleOptions:
         unknown: "Diese Vorlagen-Einstellung gibt es nicht."
         invalid: "Diese Vorlagen-Einstellung ist ungültig."
         missing: "Diese Vorlagen-Einstellung benötigt einen Wert."
@@ -708,7 +716,7 @@ backend:
       applicationMissing: "Bewerbungsinformationen werded benötigt um ein Bewerbungsschreiben zu generieren"
       addresseeOrContactMissing: "Eine Ansprechsperson oder ein genereller Anredssat ist erforderlich um ein Bewerbungsschreiben zu generieren"
       companyAddressMissing: "Firme-Adresse ist erforderlich um ein Bewerbungsschreiben zu generieren"
-      invalidDocuments: "'Angehängte Dokumente' ist ungültig"
+      invalidDocuments: "'Dokumente' sind ungültig"
       error: "Bewerbungsschreiben-Generierungsanfrage ist ungültig"
 
   application:

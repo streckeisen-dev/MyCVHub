@@ -61,9 +61,7 @@ class ApplicationTemplateService(
             id = existingTemplate?.id,
             name = applicationTemplate.name!!,
             cvConfiguration = objectMapper.writeValueAsString(applicationTemplate.cvConfiguration!!.toCvConfiguration()),
-            documents = if (applicationTemplate.documents != null) objectMapper.writeValueAsString(
-                applicationTemplate.documents
-            ) else null,
+            coverLetterConfiguration = objectMapper.writeValueAsString(applicationTemplate.coverLetterConfiguration!!.toCvConfiguration()),
             account = profile.account
         )
 

@@ -47,8 +47,10 @@ shared:
     documentName: "Document Name"
     salutation: "Salutation"
     addressee: "Addressee"
-    coverLetterContent: "Cover Letter Content"
+    content: "Content"
     closing: "Closing"
+    cvStyle: "CV Style"
+    documents: "Documents"
   
   validations: 
     required: "{label} must not be blank"
@@ -77,6 +79,10 @@ frontend:
   crud:
     edit: "Edit"
     delete: "Delete"
+
+  general:
+    yes: "Yes"
+    no: "No"
   
   validations:
     fileSizeValidator: "File must be less than {maxSize} MB"
@@ -265,6 +271,7 @@ frontend:
     intro: "Create and download your professional CV, ready to include with your job applications."
     style: "CV Design"
     styleExplanation: "Select your preferred CV template below — your information will be formatted automatically in the design you choose."
+    imageAlt: "Example of {styleName} CV design"
     select: "Choose This Design"
     styleError: "Could not load the available CV Designs"
     download: "CV Download"
@@ -289,6 +296,7 @@ frontend:
     coverLetterHint: "A good cover letter should answer the following questions:\n- Why are you interested in this position and this company?\n- What are your qualifications and experience?\n- Why are you suited for this position?\n- When are you available to start the position?"
     closingHint: "The closing of your cover letter. For example 'Best regards'"
     downloadFailed: "Failed to create your cover letter"
+    content: "Cover Letter Content"
   
   theme:
     title: "Theme"
@@ -633,7 +641,7 @@ backend:
       invalidTemplate: "Application template is invalid"
       unknownCvEntries: "Some referenced CV entries don't exist"
       nameTaken: "Application template name is already taken"
-      emptyDocuments: "Document checklist must be 'null' or contain valid entries"
+      coverLetterConfigurationMissing: "Cover letter configuration is missing"
   account:
     notFound: "Account not found"
     verification:
@@ -689,7 +697,7 @@ backend:
       incompleteProfile: "Your CV profile is not ready to generate CVs"
       incompleteContentConfig: "CV content configuration is incomplete"
       unknownCvEntries: "CV content configuration references unknown CV entries"
-      templateOptions:
+      cvStyleOptions:
         unknown: "Unknown template option"
         invalid: "Invalid template option"
         missing: "Missing template option"
@@ -709,7 +717,7 @@ backend:
       applicationMissing: "Application information is required for cover letter generation"
       addresseeOrContactMissing: "Either a contact person or an addressee is required for the cover letter greeting"
       companyAddressMissing: "Company address is required"
-      invalidDocuments: "'Attached documents' is invalid"
+      invalidDocuments: "'Documents' are invalid"
       error: "Cover letter generation request is invalid"
 
   application:

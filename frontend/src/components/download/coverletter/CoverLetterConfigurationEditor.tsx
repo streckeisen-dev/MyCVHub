@@ -1,8 +1,5 @@
 import { ChangeEvent, ReactNode, useMemo } from 'react'
-import { SelectableGallery } from '@/components/SelectableGallery.tsx'
 import { CoverLetterStyleDto } from '@/types/coverletter/CoverLetterStyleDto.ts'
-import ModernCoverLetter from '@/assets/cl_styles/modern.png'
-import { KeyValueObject } from '@/types/KeyValueObject.ts'
 import { Form, Input, Textarea } from '@heroui/react'
 import { LanguageInput } from '@/components/input/LanguageInput.tsx'
 import { Key } from '@react-types/shared'
@@ -16,10 +13,7 @@ import { ApplicationDetailsDto } from '@/types/application/ApplicationDetailsDto
 import { h5 } from '@/styles/primitives.ts'
 import { CheckboxInput } from '@/components/input/CheckboxInput.tsx'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
-
-const coverLetterImages: KeyValueObject<string> = {
-  modern: ModernCoverLetter
-}
+import { CoverLetterGallery } from '@/components/download/coverletter/CoverLetterGallery.tsx'
 
 export interface CoverLetterConfigurationData {
   language: string | undefined
@@ -88,9 +82,9 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
 
   function updateConfig(name: string, value: unknown) {
     if (disabled || !onChange) return
-    Object.keys(errors).filter(errorKey => errorKey.endsWith(name)).forEach(
-      errorKey => errors[errorKey] = undefined
-    )
+    Object.keys(errors)
+      .filter((errorKey) => errorKey.endsWith(name))
+      .forEach((errorKey) => (errors[errorKey] = undefined))
     onChange({
       ...config,
       [name]: value
@@ -136,16 +130,10 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
 
   return (
     <div className="flex flex-col gap-10 w-full 2xl:max-w-3/4">
-      <SelectableGallery
-        items={styles.map((style) => ({
-          key: style.key,
-          name: style.name,
-          image: coverLetterImages[style.key],
-          alt: `Example of ${style.name} cover letter style`,
-          description: style.description
-        }))}
-        selected={selectedStyle?.key}
+      <CoverLetterGallery
+        styles={styles}
         onSelect={handleStyleSelected}
+        selectedStyle={selectedStyle?.key}
       />
 
       {selectedStyle && (
@@ -288,7 +276,7 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
                 minRows={20}
                 maxRows={50}
                 name="coverLetterContent"
-                label={t('fields.coverLetterContent')}
+                label={t('fields.content')}
                 description={
                   <p className="whitespace-break-spaces">{t('coverLetter.coverLetterHint')}</p>
                 }

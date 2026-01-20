@@ -13,6 +13,8 @@ import { Empty } from '@/components/Empty.tsx'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import { CVStyleDto } from '@/types/cv/CVStyleDto.ts'
 import CvApi from '@/api/CvApi.ts'
+import { CoverLetterStyleDto } from '@/types/coverletter/CoverLetterStyleDto.ts'
+import CoverLetterApi from '@/api/CoverLetterApi.ts'
 
 export function EditApplicationTemplatePage(): ReactNode {
   const { t, i18n } = useTranslation()
@@ -23,6 +25,7 @@ export function EditApplicationTemplatePage(): ReactNode {
   const [template, setTemplate] = useState<ApplicationTemplateDto>()
   const [profile, setProfile] = useState<ProfileDto>()
   const [cvStyles, setCvStyles] = useState<CVStyleDto[]>()
+  const [coverLetterStyles, setCoverLetterStyles] = useState<CoverLetterStyleDto[]>()
 
   useEffect(() => {
     async function loadData() {
@@ -32,6 +35,14 @@ export function EditApplicationTemplatePage(): ReactNode {
       } catch (e) {
         const error = (e as RestError).errorDto
         addErrorToast(t('cv.styleError'), error?.message ?? t('error.genericMessage'))
+      }
+
+      try {
+        const styles = await CoverLetterApi.getStyles(i18n.language)
+        setCoverLetterStyles(styles)
+      } catch (e) {
+        const error = (e as RestError).errorDto
+        addErrorToast(t('coverLetter.stylesError'), error?.message ?? t('error.genericMessage'))
       }
 
       try {
@@ -79,13 +90,14 @@ export function EditApplicationTemplatePage(): ReactNode {
 
   return (
     <LoadingWrapper isLoading={isLoading}>
-      {profile && template && cvStyles ? (
+      {profile && template && cvStyles && coverLetterStyles ? (
         <ApplicationTemplateEditor
           onSave={handleSave}
           onCancel={handleCancel}
           profile={profile}
           initialValue={template}
           cvStyles={cvStyles}
+          coverLetterStyles={coverLetterStyles}
         />
       ) : (
         <Empty headline={'Error'} />

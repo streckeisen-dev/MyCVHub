@@ -5,7 +5,7 @@ export interface CoverLetterApplicationDto {
   addressee: string | undefined
   salutation: string | undefined
   companyAddress: CoverLetterCompanyAddressDto | undefined
-  coverLetterContent: string | undefined
+  content: string | undefined
   closing: string | undefined
 }
 

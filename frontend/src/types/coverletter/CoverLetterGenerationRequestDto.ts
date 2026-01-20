@@ -5,5 +5,5 @@ export interface CoverLetterGenerationRequestDto {
   style: string | undefined
   mirrorProfileImage: boolean | undefined
   application: CoverLetterApplicationDto | undefined
-  attachedDocuments: string[] | undefined
+  documents: string[] | undefined
 }

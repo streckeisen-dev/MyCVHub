@@ -19,6 +19,6 @@ class ApplicationTemplateEntity(
 
     val name: String,
     val cvConfiguration: String,
-    val documents: String?
+    val coverLetterConfiguration: String
 ) {
 }

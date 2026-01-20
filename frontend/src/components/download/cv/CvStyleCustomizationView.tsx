@@ -3,15 +3,17 @@ import { KeyValueObject } from '@/types/KeyValueObject.ts'
 import { ColorPicker } from '@/components/input/ColorPicker.tsx'
 import { Input } from '@heroui/react'
 import { CVStyleOptionType } from '@/types/cv/CVStyleOptionType.ts'
+import { ErrorMessages } from '@/types/ErrorMessages.ts'
 
 export type CvStyleCustomizationViewProps = Readonly<{
-  options: CVStyleOptionDto[];
-  value: KeyValueObject<string>;
-  onChange: (name: string, value: string) => void;
+  options: CVStyleOptionDto[]
+  value: KeyValueObject<string>
+  onChange: (name: string, value: string) => void
+  errorMessages?: ErrorMessages
 }>
 
 export function CvStyleCustomizationView(props: CvStyleCustomizationViewProps) {
-  const {options, value, onChange} = props
+  const { options, value, onChange, errorMessages } = props
 
   function handleChange(name: string, value: string) {
     onChange(name, value)
@@ -28,6 +30,7 @@ export function CvStyleCustomizationView(props: CvStyleCustomizationViewProps) {
               label={option.name}
               color={value[option.key]}
               onChange={(c) => handleChange(option.key, c.hex)}
+              errorMessage={errorMessages?.[option.key]}
             />
           )
         }
@@ -37,6 +40,8 @@ export function CvStyleCustomizationView(props: CvStyleCustomizationViewProps) {
             label={option.name}
             value={value[option.key]}
             onChange={(e) => handleChange(option.key, e.target.value)}
+            isInvalid={errorMessages?.[option.key] != null}
+            errorMessage={errorMessages?.[option.key]}
           />
         )
       })}

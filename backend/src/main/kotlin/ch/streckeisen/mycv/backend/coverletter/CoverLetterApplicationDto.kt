@@ -7,7 +7,7 @@ data class CoverLetterApplicationDto(
     val addressee: String?,
     val salutation: String?,
     val companyAddress: CoverLetterCompanyAddressDto?,
-    val coverLetterContent: String?,
+    val content: String?,
     val closing: String?
 )
 

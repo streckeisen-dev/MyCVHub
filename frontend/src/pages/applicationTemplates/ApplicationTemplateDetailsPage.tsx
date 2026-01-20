@@ -25,7 +25,13 @@ import {
 import { SelectedCvContent } from '@/components/download/cv/CvContentTreeRoot.tsx'
 import CvApi from '@/api/CvApi.ts'
 import { CVStyleDto } from '@/types/cv/CVStyleDto.ts'
+import { CoverLetterStyleDto } from '@/types/coverletter/CoverLetterStyleDto.ts'
+import CoverLetterApi from '@/api/CoverLetterApi.ts'
+import { CoverLetterConfigurationDto } from '@/types/applicationTemplate/CoverLetterConfigurationDto.ts'
+import { Attribute, AttributeList } from '@/components/AttributeList.tsx'
+import { TFunction } from 'i18next'
 import { CheckboxInput } from '@/components/input/CheckboxInput.tsx'
+import { CoverLetterGallery } from '@/components/download/coverletter/CoverLetterGallery.tsx'
 
 function toSelectedContent(selection: CvEntrySelectionDto): SelectedCvContent {
   return {
@@ -49,6 +55,41 @@ function toConfigData(cvConfig: CvConfigurationDto): CvConfigurationData {
   }
 }
 
+function getCoverLetterAttributes(config: CoverLetterConfigurationDto, t: TFunction): Attribute[] {
+  const attributes: Attribute[] = [
+    {
+      name: t('fields.language'),
+      value: config.language
+    },
+    {
+      name: t('coverLetter.mirrorProfileImage'),
+      value: config.mirrorProfileImage ? t('general.yes') : t('general.no')
+    },
+    {
+      name: t('coverLetter.content'),
+      value: <p className="whitespace-break-spaces">{config.content}</p>
+    },
+    {
+      name: t('fields.closing'),
+      value: config.closing
+    }
+  ]
+
+  if (config.documents) {
+    attributes.push({
+      name: t('applicationTemplate.applicationDocuments'),
+      value: (
+        <div className="flex flex-col gap-2 mt-2">
+          {config.documents.map((doc) => (
+            <CheckboxInput key={doc} label={doc} isDisabled />
+          ))}
+        </div>
+      )
+    })
+  }
+  return attributes
+}
+
 export function ApplicationTemplateDetailsPage(): ReactNode {
   const { t, i18n } = useTranslation()
   const params = useParams()
@@ -58,6 +99,7 @@ export function ApplicationTemplateDetailsPage(): ReactNode {
   const [template, setTemplate] = useState<ApplicationTemplateDto>()
   const [profile, setProfile] = useState<ProfileDto>()
   const [cvStyles, setCvStyles] = useState<CVStyleDto[]>()
+  const [coverLetterStyles, setCoverLetterStyles] = useState<CoverLetterStyleDto[]>()
 
   useEffect(() => {
     async function loadData() {
@@ -69,6 +111,14 @@ export function ApplicationTemplateDetailsPage(): ReactNode {
         } catch (e) {
           const error = (e as RestError).errorDto
           addErrorToast(t('cv.styleError'), error?.message ?? t('error.genericMessage'))
+        }
+
+        try {
+          const styles = await CoverLetterApi.getStyles(i18n.language)
+          setCoverLetterStyles(styles)
+        } catch (e) {
+          const error = (e as RestError).errorDto
+          addErrorToast(t('coverLetter.stylesError'), error?.message ?? t('error.genericMessage'))
         }
 
         try {
@@ -118,8 +168,8 @@ export function ApplicationTemplateDetailsPage(): ReactNode {
         >
           {t('applicationTemplate.backToOverview')}
         </Button>
-        {template && profile && cvStyles ? (
-          <div className="flex flex-col gap-10">
+        {template && profile && cvStyles && coverLetterStyles ? (
+          <div className="flex flex-col gap-10 items-center">
             <h1 className={`${h1()} self-center`}>{template.name}</h1>
             <div className="flex flex-wrap self-end gap-5 justify-end">
               <Button
@@ -145,25 +195,24 @@ export function ApplicationTemplateDetailsPage(): ReactNode {
               />
             </div>
 
+            <h4 className={h4()}>{t('cv.name')}</h4>
             <CvConfigurationEditor
               profile={profile}
               cvStyles={cvStyles}
               config={toConfigData(template.cvConfiguration)}
               disabled
             />
-            {template.documents && (
-              <div>
-                <h4 className={h4()}>{t('applicationTemplate.applicationDocuments')}</h4>
-                <p className="text-default-400">
-                  {t('applicationTemplate.applicationDocumentsHint')}
-                </p>
-                <div className="flex flex-col gap-2 mt-2">
-                  {template.documents.map((doc) => (
-                    <CheckboxInput key={doc} label={doc} isDisabled />
-                  ))}
-                </div>
-              </div>
-            )}
+
+            <h4 className={h4()}>{t('coverLetter.name')}</h4>
+            <CoverLetterGallery
+              styles={coverLetterStyles}
+              selectedStyle={template.coverLetterConfiguration.style}
+              disabled
+            />
+              <AttributeList
+                className="xl:max-w-3/4 gap-x-5"
+                attributes={getCoverLetterAttributes(template.coverLetterConfiguration, t)}
+              />
           </div>
         ) : (
           <Empty headline={t('applicationTemplate.notFound')} />

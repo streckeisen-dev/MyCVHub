@@ -16,13 +16,13 @@ private const val CONTACT_PERSON_FIRST_NAME_FIELD = "$APPLICATION_FIELD.contactP
 private const val CONTACT_PERSON_LAST_NAME_FIELD = "$APPLICATION_FIELD.contactPerson.lastName"
 private const val ADDRESSEE_FIELD = "$APPLICATION_FIELD.addressee"
 private const val SALUTATION_FIELD = "$APPLICATION_FIELD.salutation"
-private const val CONTENT_FIELD = "$APPLICATION_FIELD.coverLetterContent"
+private const val CONTENT_FIELD = "$APPLICATION_FIELD.content"
 private const val CLOSING_FIELD = "$APPLICATION_FIELD.closing"
 private const val COMPANY_ADDRESS_FIELD = "$APPLICATION_FIELD.companyAddress"
 private const val COMPANY_STREET_FIELD = "$COMPANY_ADDRESS_FIELD.street"
 private const val COMPANY_ZIP_FIELD = "$COMPANY_ADDRESS_FIELD.postcode"
 private const val COMPANY_CITY_FIELD = "$COMPANY_ADDRESS_FIELD.city"
-private const val DOCUMENTS_FIELD = "attachedDocuments"
+private const val DOCUMENTS_FIELD = "documents"
 
 private const val CL_VALIDATION_PREFIX_KEY = "$MYCV_KEY_PREFIX.coverletter.validation"
 private const val INVALID_LANGUAGE_MESSAGE_KEY = "$CL_VALIDATION_PREFIX_KEY.invalidLanguage"
@@ -41,21 +41,8 @@ class CoverLetterGenerationValidationService(
     fun validateGenerationRequest(request: CoverLetterGenerationRequestDto): Result<Unit> {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
-        stringValidator.validateRequiredString(
-            requiredField = LANGUAGE_FIELD,
-            value = request.language,
-            validationErrorBuilder = validationErrorBuilder
-        )
-
-        if (!messagesService.getSupportedLanguages().contains(request.language)) {
-            val error = messagesService.getMessage(INVALID_LANGUAGE_MESSAGE_KEY)
-            validationErrorBuilder.addError(LANGUAGE_FIELD, error)
-        }
-
-        if (CoverLetterStyle.fromStyleKey(request.style) == null) {
-            val error = messagesService.getMessage(INVALID_STYLE_MESSAGE_KEY)
-            validationErrorBuilder.addError(STYLE_FIELD, error)
-        }
+        validateLanguage(request.language, validationErrorBuilder)
+        validateCoverLetterStyle(request.style, validationErrorBuilder)
 
         if (request.application == null) {
             val error = messagesService.getMessage(MISSING_APPLICATION_MESSAGE_KEY)
@@ -64,10 +51,7 @@ class CoverLetterGenerationValidationService(
             validateApplication(request.application, validationErrorBuilder)
         }
 
-        if (request.attachedDocuments != null && request.attachedDocuments.any { it.isNullOrBlank() }) {
-            val error = messagesService.getMessage(INVALID_DOCUMENTS_MESSAGE_KEY)
-            validationErrorBuilder.addError(DOCUMENTS_FIELD, error)
-        }
+        validateDocuments(request.documents, validationErrorBuilder)
 
         if (validationErrorBuilder.hasErrors()) {
             return Result.failure(validationErrorBuilder.build(messagesService.getMessage(INVALID_REQUEST_MESSAGE_KEY)))
@@ -124,17 +108,9 @@ class CoverLetterGenerationValidationService(
             validationErrorBuilder = validationErrorBuilder
         )
 
-        stringValidator.validateRequiredString(
-            requiredField = CONTENT_FIELD,
-            value = application.coverLetterContent,
-            validationErrorBuilder = validationErrorBuilder
-        )
+        validateContent(application.content, validationErrorBuilder)
 
-        stringValidator.validateRequiredString(
-            requiredField = CLOSING_FIELD,
-            value = application.closing,
-            validationErrorBuilder = validationErrorBuilder
-        )
+        validateClosing(application.closing, validationErrorBuilder)
 
         if (application.companyAddress == null) {
             val error = messagesService.getMessage(MISSING_COMPANY_ADDRESS_MESSAGE_KEY)
@@ -157,6 +133,52 @@ class CoverLetterGenerationValidationService(
                 value = application.companyAddress.city,
                 validationErrorBuilder = validationErrorBuilder
             )
+        }
+    }
+
+    fun validateLanguage(language: String?, validationErrorBuilder: ValidationException.ValidationErrorBuilder) {
+        stringValidator.validateRequiredString(
+            requiredField = LANGUAGE_FIELD,
+            value = language,
+            validationErrorBuilder = validationErrorBuilder
+        )
+
+        if (!messagesService.getSupportedLanguages().contains(language)) {
+            val error = messagesService.getMessage(INVALID_LANGUAGE_MESSAGE_KEY)
+            validationErrorBuilder.addError(LANGUAGE_FIELD, error)
+        }
+    }
+
+    fun validateContent(content: String?, validationErrorBuilder: ValidationException.ValidationErrorBuilder) {
+        stringValidator.validateRequiredString(
+            requiredField = CONTENT_FIELD,
+            value = content,
+            validationErrorBuilder = validationErrorBuilder
+        )
+    }
+
+    fun validateClosing(content: String?, validationErrorBuilder: ValidationException.ValidationErrorBuilder) {
+        stringValidator.validateRequiredString(
+            requiredField = CLOSING_FIELD,
+            value = content,
+            validationErrorBuilder = validationErrorBuilder
+        )
+    }
+
+    fun validateCoverLetterStyle(style: String?, validationErrorBuilder: ValidationException.ValidationErrorBuilder) {
+        if (CoverLetterStyle.fromStyleKey(style) == null) {
+            val error = messagesService.getMessage(INVALID_STYLE_MESSAGE_KEY)
+            validationErrorBuilder.addError(STYLE_FIELD, error)
+        }
+    }
+
+    fun validateDocuments(
+        documents: List<String?>?,
+        validationErrorBuilder: ValidationException.ValidationErrorBuilder
+    ) {
+        if (documents != null && documents.any { it.isNullOrBlank() }) {
+            val error = messagesService.getMessage(INVALID_DOCUMENTS_MESSAGE_KEY)
+            validationErrorBuilder.addError(DOCUMENTS_FIELD, error)
         }
     }
 }

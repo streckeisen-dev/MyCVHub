@@ -5,5 +5,5 @@ data class CoverLetterGenerationRequestDto(
     val style: String?,
     val mirrorProfileImage: Boolean?,
     val application: CoverLetterApplicationDto?,
-    val attachedDocuments: List<String?>?
+    val documents: List<String?>?
 )

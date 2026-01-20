@@ -1,6 +1,6 @@
 import { FormEvent, ReactNode, useState } from 'react'
 import { Form, Input } from '@heroui/react'
-import { centerSection, h1 } from '@/styles/primitives.ts'
+import { centerSection, h1, h4 } from '@/styles/primitives.ts'
 import { useTranslation } from 'react-i18next'
 import { FormButtons } from '@/components/btn/FormButtons.tsx'
 import { ApplicationTemplateDto } from '@/types/applicationTemplate/ApplicationTemplateDto.ts'
@@ -9,17 +9,18 @@ import { v7 as uuid } from 'uuid'
 import { ApplicationTemplateUpdateDto } from '@/types/applicationTemplate/ApplicationTemplateUpdateDto.ts'
 import ApplicationTemplateApi from '@/api/ApplicationTemplateApi.ts'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
-import { extractFormErrors } from '@/helpers/FormHelper.ts'
+import { extractFormErrors, extractNestedErrors } from '@/helpers/FormHelper.ts'
 import { RestError } from '@/types/RestError.ts'
 import {
   CvConfigurationData,
   CvConfigurationEditor
 } from '@/components/download/cv/CvConfigurationEditor.tsx'
 import { CVStyleDto } from '@/types/cv/CVStyleDto.ts'
+import { CoverLetterStyleDto } from '@/types/coverletter/CoverLetterStyleDto.ts'
 import {
-  ApplicationDocument,
-  ApplicationDocumentsEditor
-} from '@/components/applicationTemplate/ApplicationDocumentsEditor.tsx'
+  ApplicationTemplateCoverLetterConfigurationEditor,
+  ApplicationTemplateCoverLetterData
+} from '@/components/applicationTemplate/ApplicationTemplateCoverLetterConfigurationEditor.tsx'
 
 export type EditApplicationTemplateModalProps = Readonly<{
   onSave: (template: ApplicationTemplateDto) => void
@@ -27,16 +28,17 @@ export type EditApplicationTemplateModalProps = Readonly<{
   initialValue?: ApplicationTemplateDto
   profile: ProfileDto
   cvStyles: CVStyleDto[]
+  coverLetterStyles: CoverLetterStyleDto[]
 }>
 
 interface ApplicationTemplateFormData {
   name: string
   cvConfig: CvConfigurationData
-  documents: ApplicationDocument[]
+  coverLetterConfig: ApplicationTemplateCoverLetterData
 }
 
 export function ApplicationTemplateEditor(props: EditApplicationTemplateModalProps): ReactNode {
-  const { onSave, onCancel, initialValue, profile, cvStyles } = props
+  const { onSave, onCancel, initialValue, profile, cvStyles, coverLetterStyles } = props
   const { t, i18n } = useTranslation()
 
   const [isSaving, setIsSaving] = useState<boolean>(false)
@@ -54,9 +56,20 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
         undefined,
       cvStyleOptions: initialValue?.cvConfiguration.cvStyleOptions
     },
-    documents: initialValue?.documents?.map((name) => ({ id: uuid(), name })) ?? []
+    coverLetterConfig: {
+      style: initialValue?.coverLetterConfiguration.style ?? undefined,
+      language: initialValue?.coverLetterConfiguration.language ?? i18n.language,
+      mirrorProfileImage: initialValue?.coverLetterConfiguration.mirrorProfileImage ?? false,
+      content: initialValue?.coverLetterConfiguration.content ?? '',
+      closing: initialValue?.coverLetterConfiguration.closing ?? '',
+      documents:
+        initialValue?.coverLetterConfiguration.documents?.map((name) => ({ id: uuid(), name })) ??
+        []
+    }
   })
   const [errorMessages, setErrorMessages] = useState<ErrorMessages>({})
+  const cvErrorMessages = extractNestedErrors(errorMessages, 'cvConfiguration')
+  const coverLetterErrorMessages = extractNestedErrors(errorMessages, 'coverLetterConfiguration')
 
   function handleNameChange(value: string) {
     setData((prev) => ({ ...prev, name: value }))
@@ -73,14 +86,13 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
     clearError('cvConfiguration')
   }
 
-  function handleDocumentChange(docs: ApplicationDocument[]) {
+  function handleCoverLetterConfigChange(value: ApplicationTemplateCoverLetterData) {
     setData((prev) => {
       return {
         ...prev,
-        documents: docs
+        coverLetterConfig: value
       }
     })
-    clearError('documents')
   }
 
   function clearError(field: string) {
@@ -109,7 +121,17 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
           includedSkills: data.cvConfig.cvContent?.skills
         }
       },
-      documents: data.documents.length > 0 ? data.documents.map((doc) => doc.name) : undefined
+      coverLetterConfiguration: {
+        style: data.coverLetterConfig.style,
+        language: data.coverLetterConfig.language,
+        mirrorProfileImage: data.coverLetterConfig.mirrorProfileImage,
+        content: data.coverLetterConfig.content !== '' ? data.coverLetterConfig.content : undefined,
+        closing: data.coverLetterConfig.closing !== '' ? data.coverLetterConfig.closing : undefined,
+        documents:
+          data.coverLetterConfig.documents.length > 0
+            ? data.coverLetterConfig.documents.map((doc) => doc.name)
+            : undefined
+      }
     }
     try {
       const saved = await ApplicationTemplateApi.saveApplicationTemplate(request, i18n.language)
@@ -137,22 +159,24 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
           errorMessage={errorMessages.name}
         />
 
-        <div>
-          <CvConfigurationEditor
-            profile={profile}
-            cvStyles={cvStyles}
-            config={data.cvConfig}
-            onChange={handleCvConfigChange}
-          />
-          {errorMessages.cvConfiguration && (
-            <p className="text-danger text-sm mt-1">{errorMessages.cvConfiguration}</p>
-          )}
-        </div>
+        <h4 className={h4()}>{t('cv.name')}</h4>
+        <CvConfigurationEditor
+          profile={profile}
+          cvStyles={cvStyles}
+          config={data.cvConfig}
+          onChange={handleCvConfigChange}
+          errorMessages={cvErrorMessages}
+        />
+        {errorMessages.cvConfiguration && (
+          <p className="text-danger text-sm mt-1">{errorMessages.cvConfiguration}</p>
+        )}
 
-        <ApplicationDocumentsEditor
-          documents={data.documents}
-          onChange={handleDocumentChange}
-          errorMessages={errorMessages}
+        <h4 className={h4()}>{t('coverLetter.name')}</h4>
+        <ApplicationTemplateCoverLetterConfigurationEditor
+          styles={coverLetterStyles}
+          config={data.coverLetterConfig}
+          onChange={handleCoverLetterConfigChange}
+          errorMessages={coverLetterErrorMessages}
         />
 
         <FormButtons onCancel={onCancel} isSaving={isSaving} />

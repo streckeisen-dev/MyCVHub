@@ -13,6 +13,10 @@ class ValidationException private constructor(message: String, val errors: Map<S
             return errors.isNotEmpty()
         }
 
+        fun errors(): Map<String, String> {
+            return errors
+        }
+
         fun build(message: String): ValidationException {
             return ValidationException(message, errors)
         }

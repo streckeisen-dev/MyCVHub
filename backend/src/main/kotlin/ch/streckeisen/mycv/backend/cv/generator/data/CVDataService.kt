@@ -100,7 +100,7 @@ class CVDataService(
         education: List<EducationEntity>,
         projects: List<ProjectEntity>,
         skills: List<SkillEntity>,
-        templateOptions: Map<String, String>
+        cvStyleOptions: Map<String, String>
     ): CVData {
         val locale = LocaleContextHolder.getLocale()
         val cvDateFormatter = DateTimeFormatter.ofPattern(CV_DATE_FORMAT, locale)
@@ -165,7 +165,7 @@ class CVDataService(
                     }
                 )
             },
-            templateOptions
+            cvStyleOptions
         )
     }
 

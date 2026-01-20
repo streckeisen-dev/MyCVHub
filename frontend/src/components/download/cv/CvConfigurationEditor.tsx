@@ -19,6 +19,8 @@ import { SelectedCvContent } from '@/components/download/cv/CvContentTreeRoot.ts
 import { ApplicationTemplateDto } from '@/types/applicationTemplate/ApplicationTemplateDto.ts'
 import { Key } from '@react-types/shared'
 import { SelectableGallery } from '@/components/SelectableGallery.tsx'
+import { ErrorMessages } from '@/types/ErrorMessages.ts'
+import { extractNestedErrors } from '@/helpers/FormHelper.ts'
 
 const cvStyleImages: KeyValueObject<string> = {
   talendo: talendoCvStyle,
@@ -38,6 +40,7 @@ export type CvConfigurationEditorProps = Readonly<{
   templates?: ApplicationTemplateDto[]
   onChange?: (config: CvConfigurationData) => void
   disabled?: boolean
+  errorMessages?: ErrorMessages
 }>
 
 function getDefaultStyleOptions(options: CVStyleOptionDto[]): KeyValueObject<string> {
@@ -56,10 +59,16 @@ function toSelectedCvContent(o: WorkExperienceDto | EducationDto | ProjectDto): 
 }
 
 export function CvConfigurationEditor(props: CvConfigurationEditorProps): ReactNode {
-  const { cvStyles, profile, config, templates, onChange, disabled = false } = props
+  const { cvStyles, profile, config, templates, onChange, disabled = false, errorMessages } = props
   const { t } = useTranslation()
 
   const selectedCvStyle = cvStyles.find((s) => s.key === config.cvStyle)
+  const cvStyleOptionErrors: ErrorMessages = errorMessages
+    ? extractNestedErrors(errorMessages, 'cvStyleOptions.')
+    : {}
+  const includedCvContentErrors: ErrorMessages = errorMessages
+    ? extractNestedErrors(errorMessages, 'includedCvContent.')
+    : {}
 
   function handleStyleSelected(styleKey: string) {
     if (disabled || !onChange) return
@@ -120,7 +129,6 @@ export function CvConfigurationEditor(props: CvConfigurationEditorProps): ReactN
   function handleTemplateChange(templateKey: Key | null) {
     if (!templates || templateKey == null) return
     const template = templates.find((t) => t.id === Number.parseInt(templateKey as string))
-    console.log(template)
     if (template && onChange) {
       onChange({
         cvStyle: template.cvConfiguration.cvStyle,
@@ -157,13 +165,14 @@ export function CvConfigurationEditor(props: CvConfigurationEditorProps): ReactN
           key: style.key,
           name: style.name,
           image: cvStyleImages[style.key],
-          alt: `Example of ${style.name} CV style`,
+          alt: t('cv.imageAlt', { styleName: style.name }),
           description: style.description
         }))}
         selected={selectedCvStyle?.key}
         disabled={disabled}
         onSelect={handleStyleSelected}
       />
+      {errorMessages?.cvStyle && <p className="text-danger text-sm">{errorMessages.cvStyle}</p>}
 
       {config.cvStyle && (
         <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -172,12 +181,16 @@ export function CvConfigurationEditor(props: CvConfigurationEditorProps): ReactN
               <Button variant="light" startContent={<FaSliders />} onPress={toggleCustomizeContent}>
                 {t('cv.customizeContent')}
               </Button>
+              {errorMessages?.includedCvContent && (
+                <p className="text-danger text-sm self-start">{errorMessages.includedCvContent}</p>
+              )}
               {config.cvContent && (
                 <CvContentCustomizationView
                   profile={profile}
                   value={config.cvContent}
                   onChange={handleContentChange}
                   disabled={disabled}
+                  errorMessages={includedCvContentErrors}
                 />
               )}
             </div>
@@ -198,6 +211,7 @@ export function CvConfigurationEditor(props: CvConfigurationEditorProps): ReactN
                     options={selectedCvStyle.options}
                     value={config.cvStyleOptions}
                     onChange={handleStyleOptionsChange}
+                    errorMessages={cvStyleOptionErrors}
                   />
                 )}
               </div>

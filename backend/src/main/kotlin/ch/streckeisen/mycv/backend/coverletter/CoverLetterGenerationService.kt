@@ -50,15 +50,15 @@ class CoverLetterGenerationService(
 
         val tempWorkingDir = createTempDirectory("cl_$accountId")
         try {
-            val cvTemplate =
+            val coverLetterTemplate =
                 this.javaClass.classLoader.getResource(CL_TEMPLATES_LOCATION)?.toURI()
-            if (cvTemplate == null) {
+            if (coverLetterTemplate == null) {
                 return Result.failure(LocalizedException(TEMPLATE_NOT_FOUND_MESSAGE))
             }
 
             return withContext(dispatcher) {
                 @OptIn(ExperimentalPathApi::class)
-                Path.of(cvTemplate).copyToRecursively(tempWorkingDir, overwrite = true, followLinks = false)
+                Path.of(coverLetterTemplate).copyToRecursively(tempWorkingDir, overwrite = true, followLinks = false)
 
                 profilePictureService.getCVPicture(accountId, account.profile)
                     .onFailure { return@withContext Result.failure(it) }
@@ -97,10 +97,10 @@ class CoverLetterGenerationService(
                             line1 = request.application.companyAddress!!.street!!,
                             line2 = "${request.application.companyAddress.postcode} ${request.application.companyAddress.city}"
                         ),
-                        content = request.application.coverLetterContent!!,
+                        content = request.application.content!!,
                         closing = request.application.closing!!
                     ),
-                    documents = request.attachedDocuments?.map { it!! }
+                    documents = request.documents?.map { it!! }
                 )
                 val configJson = tempWorkingDir.resolve(CL_CONFIG_FILE_NAME).createFile()
                 objectMapper.writeValue(configJson.toFile(), data)

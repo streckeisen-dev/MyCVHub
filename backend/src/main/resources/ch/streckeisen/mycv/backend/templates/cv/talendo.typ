@@ -7,7 +7,7 @@
   margin: (x: 5mm, y: 1cm),
   background: place(start, grid(
     columns: (7.5cm, auto),
-    block(fill: color.rgb(profile.templateOptions.bannerBackground), height: 100%, width: 100%)
+    block(fill: color.rgb(profile.cvStyleOptions.bannerBackground), height: 100%, width: 100%)
   ))
 )
 #set text(font: "Helvetica", size: 10pt)
