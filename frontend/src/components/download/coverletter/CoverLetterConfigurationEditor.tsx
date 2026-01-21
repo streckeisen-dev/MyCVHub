@@ -51,7 +51,8 @@ export type CoverLetterEditorProps = Readonly<{
 }>
 
 export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): ReactNode {
-  const { styles, config, disabled, onChange, errorMessages, application, templates, confined } = props
+  const { styles, config, disabled, onChange, errorMessages, application, templates, confined } =
+    props
   const { t } = useTranslation()
 
   const selectedStyle = styles.find((s) => s.key === config.style)
@@ -186,7 +187,11 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
             onSelectionChange={handleLanguageChange}
           />
 
-          <SwitchInput name="mirrorProfileImage" onChange={updateConfig}>
+          <SwitchInput
+            name="mirrorProfileImage"
+            isSelected={config.mirrorProfileImage}
+            onChange={updateConfig}
+          >
             {t('coverLetter.mirrorProfileImage')}
           </SwitchInput>
 

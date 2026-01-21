@@ -92,7 +92,7 @@ export function ApplicationTemplateCoverLetterConfigurationEditor(
         selectedStyle={config.style}
         onSelect={handleStyleSelected}
       />
-      {errors.style && <p className="text-danger text-sm">{errors.style}</p> }
+      {errors.style && <p className="text-danger text-sm">{errors.style}</p>}
 
       <LanguageInput
         isRequired
@@ -101,7 +101,11 @@ export function ApplicationTemplateCoverLetterConfigurationEditor(
         errorMessage={errors.language}
       />
 
-      <SwitchInput name="mirrorProfileImage" onChange={handleMirrorProfileImageChange}>
+      <SwitchInput
+        name="mirrorProfileImage"
+        onChange={handleMirrorProfileImageChange}
+        isSelected={config.mirrorProfileImage}
+      >
         {t('coverLetter.mirrorProfileImage')}
       </SwitchInput>
 
