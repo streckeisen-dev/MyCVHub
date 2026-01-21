@@ -12,7 +12,6 @@ import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
 import ch.streckeisen.mycv.backend.util.StringValidator
-import io.micrometer.observation.aop.ObservationKeyValueAnnotationHandler
 import org.springframework.stereotype.Service
 
 private const val NAME_FIELD_KEY = "name"
