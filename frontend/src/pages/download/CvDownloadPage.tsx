@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { centerSection, h3, h4 } from '@/styles/primitives.ts'
+import { centerSection, title } from '@/styles/primitives.ts'
 import { CvDownload } from '@/components/download/cv/CvDownload.tsx'
 
 export function CvDownloadPage() {
@@ -7,10 +7,8 @@ export function CvDownloadPage() {
 
   return (
     <section className={centerSection()}>
-      <h3 className={h3()}>{t('cv.generate')}</h3>
-      <p>{t('cv.intro')}</p>
-      <h4 className={h4()}>{t('cv.style')}</h4>
-      <p>{t('cv.styleExplanation')}</p>
+      <h1 className={title()}>{t('cv.title')}</h1>
+      <p className="md:max-w-1/4 text-center">{t('cv.description')}</p>
 
       <CvDownload />
     </section>

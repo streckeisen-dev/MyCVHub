@@ -18,19 +18,29 @@ import { Button } from '@heroui/react'
 import { CoverLetterGenerationRequestDto } from '@/types/coverletter/CoverLetterGenerationRequestDto.ts'
 import { openPdfInNewTab } from '@/helpers/DocumentHelper.ts'
 import { extractFormErrors } from '@/helpers/FormHelper.ts'
+import { ApplicationTemplateDto } from '@/types/applicationTemplate/ApplicationTemplateDto.ts'
+import ApplicationTemplateApi from '@/api/ApplicationTemplateApi.ts'
+import { ApplicationDetailsDto } from '@/types/application/ApplicationDetailsDto.ts'
 
-export function CoverLetterDownload(): ReactNode {
+export type CoverLetterDownloadProps = Readonly<{
+  application?: ApplicationDetailsDto
+  confined?: boolean
+}>
+
+export function CoverLetterDownload(props: CoverLetterDownloadProps): ReactNode {
+  const { application, confined } = props
   const { t, i18n } = useTranslation()
 
   const [isLoading, setIsLoading] = useState(true)
   const [coverLetterStyles, setCoverLetterStyles] = useState<CoverLetterStyleDto[]>()
   const [profile, setProfile] = useState<ProfileDto>()
+  const [templates, setTemplates] = useState<ApplicationTemplateDto[]>()
   const [coverLetterConfig, setCoverLetterConfig] = useState<CoverLetterConfigurationData>({
     style: undefined,
     language: i18n.language,
     mirrorProfileImage: false,
-    jobTitle: '',
-    company: '',
+    jobTitle: application?.jobTitle ?? '',
+    company: application?.company ?? '',
     contactPerson: {
       firstName: '',
       lastName: ''
@@ -55,6 +65,14 @@ export function CoverLetterDownload(): ReactNode {
       } catch (e) {
         const error = (e as RestError).errorDto
         addErrorToast(t('coverLetter.stylesError'), error?.message ?? t('error.genericMessage'))
+      }
+
+      try {
+        const result = await ApplicationTemplateApi.getApplicationTemplates(i18n.language)
+        setTemplates(result)
+      } catch (e) {
+        const error = (e as RestError).errorDto
+        addErrorToast(t('applicationTemplate.loadingError'), error?.message ?? t('error.genericMessage'))
       }
 
       try {
@@ -125,6 +143,9 @@ export function CoverLetterDownload(): ReactNode {
             config={coverLetterConfig}
             onChange={handleCoverLetterConfigChange}
             errorMessages={errorMessages}
+            templates={templates}
+            application={application}
+            confined={confined}
           />
 
           <Button

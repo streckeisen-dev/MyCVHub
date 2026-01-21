@@ -266,14 +266,12 @@ frontend:
 
   cv:
     name: 'Lebenslauf'
-    generate: "Lade deinen Lebenslauf als PDF herunter"
-    intro: "Erstelle deinen professionellen Lebenslauf und lade ihn herunter, damit du ihn deinen Bewerbungen beilegen kannst"
-    style: "CV Design"
-    styleExplanation: "Wähle unten das Lebenslauf-Design aus, das dir am besten gefällt. Deine Informationen werden automatisch im von dir gewählten Design formattiert."
+    title: "Erstelle dienen Lebenslauf"
+    description: "Dein Lebenslauf-Design ist gespeichert und bereit. Wähle dein lieblings Design unten aus, bestimme welche Lebenslauf-Einträge enthalten sein sollen und passe die Design-Vorlage nach deinen Bedürfnissen an. Mit einer gespeicherten Bewerbungsvorlage kannst du deine Präferenzen schnell und einfach anwenden."
+    stylesHeading: "Wähle dein Lebenslauf-Design"
     imageAlt: "Beispiel des {styleName} Lebenslauf-Designs"
     select: "Wähle dieses Design"
     styleError: "Die verfügbaren Lebenslauf-Designs konnten nicht geladen werden"
-    download: "Lebenslauf herunterladen"
     generateError: "Beim Erstellen deines PDF-Lebenslauf ist ein Problem aufgetreten"
     moreSoon: "Bald kommt mehr..."
     moreSoonText: "Bald kommen mehr Lebenslauf-Designs aus denen du wählen kannst."
@@ -285,17 +283,21 @@ frontend:
   coverLetter:
     name: "Bewerbungsschreiben"
     stylesError: "Bewerbungsschreiben-Designs konnten nicht geladen werden"
+    applicationInfo: "Bewerbungs-Informationen"
     mirrorProfileImage: "Soll dein Profilbild im Bewerbungsschreiben gespiegelt werden?"
     knownContactPerson: "Gibt es eine Kontaktperson für diese Bewerbung?"
     contactPerson: "Kontaktperson"
     addresseeHint: "Wenn du keine Kontaktperson hast, kannst du einen Adressat wie z.B. 'Rekrutierungs-Team' verwenden."
     salutationContactPersonHint: "Andrede für das Bewerbungsschreiben, welche mit dem Nachnamen der Kontaktperson kombiniert wird. Zum Beispiel 'Sehr geehrter Herr <Kontaktperson>'"
     salutationAddresseeHint: "Andrede für das Bewerbungsschrieben, welche mit dem Adressat kombiniert wird. Zum Beispiel, 'Sehr geehrte <Addressat>'"
-    companyInfo: "Company Information"
+    companyInfo: "Firmen-Informationen"
     coverLetterHint: "Ein gutes Bewerbungsschrieben sollte die folgenden Fragen beantworten:\n- Wieso bist du an dieser Stelle und an dieser Firma interessiert?\n- Was sind deine Qualifikationen?\n- Wieso bist du die richtige Person für diese Position?\n- Wann kannst du in der Position beginnen?"
     closingHint: "Grussformel mit der du das Bewerbungsschreiben abschliesst. Zum Beispiel 'Mit freundlichen Grüssen'"
     downloadFailed: "Failed to create your cover letter"
     content: "Inhalt Bewerbungsschreiben"
+    download:
+      title: "Erstelle dein Bewerbungsschreiben"
+      description: "Gib deinen Bewerbungs-Angaben ein, wähle dein lieblings Design aus und lade deine professionelles Bewerbungsschreiben herunter. Mit einen Bewerbungsvorlage kannst du deine Präferenzen schnell und einfach anwenden."
 
   theme:
     title: "Design"
@@ -359,6 +361,7 @@ frontend:
     applicationDocuments: "Bewerbungsdokumente"
     applicationDocumentsHint: "Eine Liste von Dokumenten die du deinem Bewerbungschreiben beilegen willst. Z.B. dein Lebenslauf oder Ausbildungs-Abschlüsse"
     view: "Bewerbungsvorlage ansehen"
+    usageHint: "Wähle eine Vorlage um deine Präferenzen schnell und einfach anzuwenden."
     editor:
       add: "Bewerbungsvorlage erstellen"
       edit: "Bewerbungsvorlage bearbeiten"

@@ -29,6 +29,7 @@ import { ApplicationTransitionDto } from '@/types/application/ApplicationTransit
 import { formatDateTime } from '@/helpers/DateHelper.ts'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import { CvDownload } from '@/components/download/cv/CvDownload.tsx'
+import { CoverLetterDownload } from '@/components/download/coverletter/CoverLetterDownload.tsx'
 
 function getApplicationAttributes(application: ApplicationDetailsDto, t: TFunction): Attribute[] {
   const attributes: Attribute[] = [
@@ -188,10 +189,17 @@ export function ApplicationDetailsPage(): ReactNode {
               </AccordionItem>
               <AccordionItem
                 key="cvDownload"
-                title={t('cv.download')}
+                title={t('cv.title')}
                 hidden={application.status.key !== 'UNSENT'}
               >
                 <CvDownload />
+              </AccordionItem>
+              <AccordionItem
+                key="coverLetterDownload"
+                title={t('coverLetter.download.title')}
+                hidden={application.status.key !== 'UNSENT'}
+              >
+                <CoverLetterDownload application={application} confined />
               </AccordionItem>
               <AccordionItem
                 key="history"

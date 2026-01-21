@@ -1,6 +1,6 @@
 import { ChangeEvent, ReactNode, useMemo } from 'react'
 import { CoverLetterStyleDto } from '@/types/coverletter/CoverLetterStyleDto.ts'
-import { Form, Input, Textarea } from '@heroui/react'
+import { Autocomplete, AutocompleteItem, Form, Input, Textarea } from '@heroui/react'
 import { LanguageInput } from '@/components/input/LanguageInput.tsx'
 import { Key } from '@react-types/shared'
 import { SwitchInput } from '@/components/input/SwitchInput.tsx'
@@ -10,10 +10,12 @@ import {
   ApplicationDocumentsEditor
 } from '@/components/applicationTemplate/ApplicationDocumentsEditor.tsx'
 import { ApplicationDetailsDto } from '@/types/application/ApplicationDetailsDto.ts'
-import { h5 } from '@/styles/primitives.ts'
+import { h4, h5 } from '@/styles/primitives.ts'
 import { CheckboxInput } from '@/components/input/CheckboxInput.tsx'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { CoverLetterGallery } from '@/components/download/coverletter/CoverLetterGallery.tsx'
+import { ApplicationTemplateDto } from '@/types/applicationTemplate/ApplicationTemplateDto.ts'
+import { v7 as uuid } from 'uuid'
 
 export interface CoverLetterConfigurationData {
   language: string | undefined
@@ -44,10 +46,12 @@ export type CoverLetterEditorProps = Readonly<{
   onChange?: (config: CoverLetterConfigurationData) => void
   errorMessages?: ErrorMessages
   application?: ApplicationDetailsDto
+  templates?: ApplicationTemplateDto[]
+  confined?: boolean
 }>
 
 export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): ReactNode {
-  const { styles, config, disabled, onChange, errorMessages, application } = props
+  const { styles, config, disabled, onChange, errorMessages, application, templates, confined } = props
   const { t } = useTranslation()
 
   const selectedStyle = styles.find((s) => s.key === config.style)
@@ -128,8 +132,43 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
     })
   }
 
+  function handleTemplateChange(templateKey: Key | null) {
+    if (!templateKey || !onChange || disabled) return
+
+    const template = templates?.find(
+      (template) => template.id === Number.parseInt(templateKey as string)
+    )
+    if (!template) return
+
+    onChange({
+      ...config,
+      style: template.coverLetterConfiguration.style,
+      language: template.coverLetterConfiguration.language,
+      mirrorProfileImage: template.coverLetterConfiguration.mirrorProfileImage,
+      coverLetterContent: template.coverLetterConfiguration.content,
+      closing: template.coverLetterConfiguration.closing,
+      documents:
+        template.coverLetterConfiguration.documents?.map((doc) => ({ id: uuid(), name: doc })) ?? []
+    })
+  }
+  const containerMaxWidth = confined ? '' : '2xl:max-w-3/4'
+  const formMaxWidth = confined ? 'max-w-9/10' : '2xl:max-w-1/2'
+
   return (
-    <div className="flex flex-col gap-10 w-full 2xl:max-w-3/4">
+    <div className={`flex flex-col gap-10 w-full ${containerMaxWidth}`}>
+      {templates && (
+        <Autocomplete
+          className="w-fit self-center"
+          name="applicationTemplate"
+          label={t('applicationTemplate.singular')}
+          onSelectionChange={handleTemplateChange}
+        >
+          {templates.map((template) => (
+            <AutocompleteItem key={template.id}>{template.name}</AutocompleteItem>
+          ))}
+        </Autocomplete>
+      )}
+
       <CoverLetterGallery
         styles={styles}
         onSelect={handleStyleSelected}
@@ -139,7 +178,7 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
       {selectedStyle && (
         <Form
           onSubmit={(e) => e.preventDefault()}
-          className="flex flex-col gap-6 self-center w-full 2xl:max-w-1/2"
+          className={`flex flex-col gap-6 self-center w-full ${formMaxWidth}`}
         >
           <LanguageInput
             isRequired
@@ -153,7 +192,7 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
 
           {errorMessages && (
             <>
-              <h5 className={h5()}>Application Information</h5>
+              <h4 className={h4()}>{t('coverLetter.applicationInfo')}</h4>
               {application == null && (
                 <Input
                   isRequired
@@ -226,7 +265,7 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
                 errorMessage={errors['application.salutation']}
               />
 
-              <p className="font-bold">{t('coverLetter.companyInfo')}</p>
+              <h5 className={h5()}>{t('coverLetter.companyInfo')}</h5>
 
               {application == null && (
                 <Input
@@ -270,7 +309,7 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
                 errorMessage={errors['application.companyAddress.city']}
               />
 
-              <h5 className={h5()}>{t('fields.coverLetterContent')}</h5>
+              <h4 className={h4()}>{t('coverLetter.content')}</h4>
               <Textarea
                 isRequired
                 minRows={20}

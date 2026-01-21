@@ -21,6 +21,7 @@ import { Key } from '@react-types/shared'
 import { SelectableGallery } from '@/components/SelectableGallery.tsx'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { extractNestedErrors } from '@/helpers/FormHelper.ts'
+import { h4 } from '@/styles/primitives.ts'
 
 const cvStyleImages: KeyValueObject<string> = {
   talendo: talendoCvStyle,
@@ -146,13 +147,14 @@ export function CvConfigurationEditor(props: CvConfigurationEditorProps): ReactN
   }
 
   return (
-    <div className="w-full flex flex-col gap-2">
+    <div className="w-full flex flex-col gap-2 items-center">
       {templates && (
         <div className="w-fit 2xl:pl-5">
           <Autocomplete
             name="applicationTemplate"
             label={t('applicationTemplate.singular')}
             onSelectionChange={handleTemplateChange}
+            description={t('applicationTemplate.usageHint')}
           >
             {templates.map((template) => (
               <AutocompleteItem key={template.id}>{template.name}</AutocompleteItem>
@@ -160,6 +162,7 @@ export function CvConfigurationEditor(props: CvConfigurationEditorProps): ReactN
           </Autocomplete>
         </div>
       )}
+      <h4 className={h4()}>{t('cv.stylesHeading')}</h4>
       <SelectableGallery
         items={cvStyles.map((style) => ({
           key: style.key,
