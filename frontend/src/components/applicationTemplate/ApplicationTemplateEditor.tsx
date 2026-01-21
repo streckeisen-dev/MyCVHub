@@ -125,8 +125,8 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
         style: data.coverLetterConfig.style,
         language: data.coverLetterConfig.language,
         mirrorProfileImage: data.coverLetterConfig.mirrorProfileImage,
-        content: data.coverLetterConfig.content !== '' ? data.coverLetterConfig.content : undefined,
-        closing: data.coverLetterConfig.closing !== '' ? data.coverLetterConfig.closing : undefined,
+        content: data.coverLetterConfig.content === '' ? undefined : data.coverLetterConfig.content,
+        closing: data.coverLetterConfig.closing === '' ? undefined : data.coverLetterConfig.closing,
         documents:
           data.coverLetterConfig.documents.length > 0
             ? data.coverLetterConfig.documents.map((doc) => doc.name)

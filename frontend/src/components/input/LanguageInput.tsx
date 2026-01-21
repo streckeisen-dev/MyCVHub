@@ -3,7 +3,7 @@ import { Autocomplete, AutocompleteItem, AutocompleteProps } from '@heroui/react
 import { SUPPOERTED_LANGUAGES } from '@/config/Languages.ts'
 import { useTranslation } from 'react-i18next'
 
-export type LanguageInputProps = Omit<AutocompleteProps, 'children'>
+export type LanguageInputProps = Readonly<Omit<AutocompleteProps, 'children'>>
 
 export function LanguageInput(props: LanguageInputProps): ReactNode {
   const { t } = useTranslation()
