@@ -176,7 +176,7 @@ class CoverLetterGenerationValidationService(
         documents: List<String?>?,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
-        if (documents != null && documents.any { it.isNullOrBlank() }) {
+        if (documents != null && (documents.isEmpty() || documents.any { it.isNullOrBlank() })) {
             val error = messagesService.getMessage(INVALID_DOCUMENTS_MESSAGE_KEY)
             validationErrorBuilder.addError(DOCUMENTS_FIELD, error)
         }

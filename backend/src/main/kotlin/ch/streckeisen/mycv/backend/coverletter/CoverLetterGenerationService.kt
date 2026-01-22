@@ -71,6 +71,14 @@ class CoverLetterGenerationService(
                         }
                     }
 
+                val authorAddressPart1 = "${account.accountDetails.street}${
+                    if (account.accountDetails.houseNumber == null) {
+                        ""
+                    } else {
+                        " " + account.accountDetails.houseNumber
+                    }
+                }"
+                val authorAddressPart2 = "${account.accountDetails.postcode} ${account.accountDetails.city}"
                 val data = CoverLetterData(
                     language = request.language!!,
                     mirrorProfileImage = request.mirrorProfileImage ?: false,
@@ -80,7 +88,7 @@ class CoverLetterGenerationService(
                         jobTitle = account.profile.jobTitle,
                         email = account.accountDetails.email,
                         phone = account.accountDetails.phone,
-                        address = "${account.accountDetails.street}, ${account.accountDetails.postcode} ${account.accountDetails.city}"
+                        address = "$authorAddressPart1, $authorAddressPart2"
                     ),
                     application = CoverLetterApplication(
                         jobTitle = request.application!!.jobTitle!!,
@@ -111,6 +119,8 @@ class CoverLetterGenerationService(
                         onFailure = { Result.failure(LocalizedException(GENERATION_FAILED_MESSAGE)) }
                     )
             }
+        } catch (ex: Exception) {
+            return Result.failure(ex)
         } finally {
             FileUtils.deleteDirectory(tempWorkingDir.toFile())
         }
