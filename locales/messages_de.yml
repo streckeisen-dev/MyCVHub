@@ -84,6 +84,9 @@ frontend:
     yes: "Ja"
     no: "Nein"
 
+  gallery:
+    select: "Auswählen"
+
   validations:
     fileSizeValidator: "Datei muss kleiner als {maxSize} MB sein"
     numberWithinRange: "{name} muss zwischen {min} und {max} sein"
@@ -270,7 +273,6 @@ frontend:
     description: "Dein Lebenslauf-Design ist gespeichert und bereit. Wähle dein lieblings Design unten aus, bestimme welche Lebenslauf-Einträge enthalten sein sollen und passe die Design-Vorlage nach deinen Bedürfnissen an. Mit einer gespeicherten Bewerbungsvorlage kannst du deine Präferenzen schnell und einfach anwenden."
     stylesHeading: "Wähle dein Lebenslauf-Design"
     imageAlt: "Beispiel des {styleName} Lebenslauf-Designs"
-    select: "Wähle dieses Design"
     styleError: "Die verfügbaren Lebenslauf-Designs konnten nicht geladen werden"
     generateError: "Beim Erstellen deines PDF-Lebenslauf ist ein Problem aufgetreten"
     moreSoon: "Bald kommt mehr..."

@@ -58,7 +58,7 @@ export function SelectableGallery(props: SelectableGalleryProps): ReactNode {
           {!disabled && (
             <CardFooter>
               <Button color="primary" onPress={() => handleSelected(item.key)}>
-                {t('cv.select')}
+                {t('gallery.select')}
               </Button>
             </CardFooter>
           )}

@@ -10,7 +10,7 @@ import { Empty } from '@/components/Empty.tsx'
 import { Button } from '@heroui/react'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import { FaArrowLeft, FaPen, FaTrash } from 'react-icons/fa6'
-import { h1, h4 } from '@/styles/primitives.ts'
+import { h1, h3, h4 } from '@/styles/primitives.ts'
 import { DeleteApplicationTemplateModal } from '@/components/applicationTemplate/DeleteApplicationTemplateModal.tsx'
 import { ProfileDto } from '@/types/profile/ProfileDto.ts'
 import ProfileApi from '@/api/ProfileApi.ts'
@@ -195,7 +195,7 @@ export function ApplicationTemplateDetailsPage(): ReactNode {
               />
             </div>
 
-            <h4 className={h4()}>{t('cv.name')}</h4>
+            <h3 className={h3()}>{t('cv.name')}</h3>
             <CvConfigurationEditor
               profile={profile}
               cvStyles={cvStyles}
@@ -203,7 +203,7 @@ export function ApplicationTemplateDetailsPage(): ReactNode {
               disabled
             />
 
-            <h4 className={h4()}>{t('coverLetter.name')}</h4>
+            <h3 className={h3()}>{t('coverLetter.name')}</h3>
             <CoverLetterGallery
               styles={coverLetterStyles}
               selectedStyle={template.coverLetterConfiguration.style}

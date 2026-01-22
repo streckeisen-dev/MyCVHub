@@ -1,6 +1,6 @@
 import { FormEvent, ReactNode, useState } from 'react'
 import { Form, Input } from '@heroui/react'
-import { centerSection, h1, h4 } from '@/styles/primitives.ts'
+import { centerSection, h1, h3, h4 } from '@/styles/primitives.ts'
 import { useTranslation } from 'react-i18next'
 import { FormButtons } from '@/components/btn/FormButtons.tsx'
 import { ApplicationTemplateDto } from '@/types/applicationTemplate/ApplicationTemplateDto.ts'
@@ -159,7 +159,7 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
           errorMessage={errorMessages.name}
         />
 
-        <h4 className={h4()}>{t('cv.name')}</h4>
+        <h3 className={h3()}>{t('cv.name')}</h3>
         <CvConfigurationEditor
           profile={profile}
           cvStyles={cvStyles}
@@ -171,7 +171,7 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
           <p className="text-danger text-sm mt-1">{errorMessages.cvConfiguration}</p>
         )}
 
-        <h4 className={h4()}>{t('coverLetter.name')}</h4>
+        <h3 className={h3()}>{t('coverLetter.name')}</h3>
         <ApplicationTemplateCoverLetterConfigurationEditor
           styles={coverLetterStyles}
           config={data.coverLetterConfig}

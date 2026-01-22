@@ -83,6 +83,9 @@ frontend:
   general:
     yes: "Yes"
     no: "No"
+
+  gallery:
+    select: "Select"
   
   validations:
     fileSizeValidator: "File must be less than {maxSize} MB"
@@ -271,7 +274,6 @@ frontend:
     description: "Your CV profile is saved and ready. Select your preferred template below, choose which entries to include, and customize the design. Use a personal application template to apply saved preferences instantly."
     stylesHeading: "Select your preferred CV design"
     imageAlt: "Example of {styleName} CV design"
-    select: "Choose This Design"
     styleError: "Could not load the available CV designs"
     generateError: "There was a problem while creating your CV PDF"
     moreSoon: "More coming soon..."

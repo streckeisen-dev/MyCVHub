@@ -42,8 +42,7 @@ export interface CoverLetterConfigurationData {
 export type CoverLetterEditorProps = Readonly<{
   styles: CoverLetterStyleDto[]
   config: CoverLetterConfigurationData
-  disabled?: boolean
-  onChange?: (config: CoverLetterConfigurationData) => void
+  onChange: (config: CoverLetterConfigurationData) => void
   errorMessages?: ErrorMessages
   application?: ApplicationDetailsDto
   templates?: ApplicationTemplateDto[]
@@ -51,8 +50,7 @@ export type CoverLetterEditorProps = Readonly<{
 }>
 
 export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): ReactNode {
-  const { styles, config, disabled, onChange, errorMessages, application, templates, confined } =
-    props
+  const { styles, config, onChange, errorMessages, application, templates, confined } = props
   const { t } = useTranslation()
 
   const selectedStyle = styles.find((s) => s.key === config.style)
@@ -62,7 +60,6 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
   }, [errorMessages])
 
   function handleStyleSelected(key: string) {
-    if (disabled || !onChange) return
     const style = styles.find((s) => s.key === key)
     if (!style) return
     onChange({
@@ -72,7 +69,6 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
   }
 
   function handleLanguageChange(value: Key | null) {
-    if (disabled || !onChange) return
     onChange({
       ...config,
       language: (value as string) ?? undefined
@@ -86,7 +82,6 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
   }
 
   function updateConfig(name: string, value: unknown) {
-    if (disabled || !onChange) return
     Object.keys(errors)
       .filter((errorKey) => errorKey.endsWith(name))
       .forEach((errorKey) => (errors[errorKey] = undefined))
@@ -97,7 +92,6 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
   }
 
   function handleKnownContactPersonChange(value: boolean) {
-    if (disabled || !onChange) return
     onChange({
       ...config,
       contactPerson: value
@@ -110,8 +104,6 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
   }
 
   function handleAddresseeChange(value: string) {
-    if (disabled || !onChange) return
-
     onChange({
       ...config,
       addressee: value,
@@ -120,8 +112,6 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
   }
 
   function handleContactPersonChange(name: string, value: string) {
-    if (disabled || !onChange) return
-
     onChange({
       ...config,
       addressee: '',
@@ -134,7 +124,7 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
   }
 
   function handleTemplateChange(templateKey: Key | null) {
-    if (!templateKey || !onChange || disabled) return
+    if (!templateKey) return
 
     const template = templates?.find(
       (template) => template.id === Number.parseInt(templateKey as string)

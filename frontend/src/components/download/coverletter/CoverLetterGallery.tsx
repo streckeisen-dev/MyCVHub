@@ -33,6 +33,7 @@ export function CoverLetterGallery(props: CoverLetterGalleryProps): ReactNode {
       }))}
       selected={selectedStyle}
       onSelect={handleStyleSelected}
+      disabled={disabled}
     />
   )
 }
