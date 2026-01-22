@@ -14,5 +14,5 @@ data class CVData(
     val skills: List<CVSkills>,
     val education: List<CVEntry>,
     val projects: List<CVEntry>,
-    val templateOptions: Map<String, String>
+    val cvStyleOptions: Map<String, String>
 )

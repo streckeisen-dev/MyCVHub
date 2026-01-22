@@ -4,6 +4,7 @@ import { CvContentTreeRoot, SelectedCvContent } from '@/components/download/cv/C
 import { SkillTreeRoot } from '@/components/download/cv/SkillTreeRoot.tsx'
 import { KeyValueObject } from '@/types/KeyValueObject.ts'
 import { ProfileDto } from '@/types/profile/ProfileDto.ts'
+import { ErrorMessages } from '@/types/ErrorMessages.ts'
 
 export interface CvContent {
   workExperience: SelectedCvContent[]
@@ -17,6 +18,7 @@ export type CvCustomizationViewProps = Readonly<{
   value: CvContent
   onChange: (content: CvContent) => void
   disabled: boolean
+  errorMessages?: ErrorMessages
 }>
 
 function groupSkills(
@@ -31,7 +33,7 @@ function groupSkills(
 
 export function CvContentCustomizationView(props: CvCustomizationViewProps) {
   const { t } = useTranslation()
-  const { profile, value, onChange, disabled } = props
+  const { profile, value, onChange, disabled, errorMessages } = props
 
   const groupedSkills = profile.skills.reduce(groupSkills, {})
 
@@ -79,6 +81,7 @@ export function CvContentCustomizationView(props: CvCustomizationViewProps) {
           })}
           onChange={handleWorkExperienceChange}
           disabled={disabled}
+          errorMessage={errorMessages?.includedWorkExperience}
         />
       )}
       {profile.education.length > 0 && (
@@ -95,6 +98,7 @@ export function CvContentCustomizationView(props: CvCustomizationViewProps) {
           })}
           onChange={handleEducationChange}
           disabled={disabled}
+          errorMessage={errorMessages?.includedEducation}
         />
       )}
       {profile.projects.length > 0 && (
@@ -111,6 +115,7 @@ export function CvContentCustomizationView(props: CvCustomizationViewProps) {
           })}
           onChange={handleProjectChange}
           disabled={disabled}
+          errorMessage={errorMessages?.includedProjects}
         />
       )}
       {profile.skills.length > 0 && (
@@ -129,6 +134,7 @@ export function CvContentCustomizationView(props: CvCustomizationViewProps) {
           })}
           onChange={handleSkillChange}
           disabled={disabled}
+          errorMessage={errorMessages?.includedSkills}
         />
       )}
     </div>

@@ -1,7 +1,9 @@
 package ch.streckeisen.mycv.backend.applicationTemplate
 
 import ch.streckeisen.mycv.backend.applicationTemplate.dto.ApplicationTemplateUpdateDto
-import ch.streckeisen.mycv.backend.cv.generator.CVStyle
+import ch.streckeisen.mycv.backend.applicationTemplate.dto.CoverLetterConfigurationUpdateDto
+import ch.streckeisen.mycv.backend.coverletter.CoverLetterGenerationValidationService
+import ch.streckeisen.mycv.backend.coverletter.CoverLetterStyle
 import ch.streckeisen.mycv.backend.cv.generator.CvConfigurationRequestDto
 import ch.streckeisen.mycv.backend.cv.generator.CvGeneratorValidationService
 import ch.streckeisen.mycv.backend.cv.generator.IncludedCVItem
@@ -59,6 +61,7 @@ private val invalidProfile: ProfileEntity = mockk()
 
 class ApplicationTemplateValidationServiceTest {
     private lateinit var cvGeneratorValidationService: CvGeneratorValidationService
+    private lateinit var coverLetterGenerationValidationService: CoverLetterGenerationValidationService
     private lateinit var applicationTemplateRepository: ApplicationTemplateRepository
     private lateinit var applicationTemplateValidationService: ApplicationTemplateValidationService
 
@@ -69,6 +72,29 @@ class ApplicationTemplateValidationServiceTest {
             every { validateProfileCompleteness(match { it == invalidProfile }) } returns Result.failure(
                 IllegalArgumentException("")
             )
+        }
+
+        coverLetterGenerationValidationService = mockk {
+            every { validateLanguage(any(), any())} answers {
+                secondArg<ValidationException.ValidationErrorBuilder>().addError("invalid", "invalid")
+            }
+            every { validateLanguage(eq("en"), any()) } just Runs
+            every { validateCoverLetterStyle(any(), any())} answers {
+                secondArg<ValidationException.ValidationErrorBuilder>().addError("invalid", "invalid")
+            }
+            every { validateCoverLetterStyle(eq(CoverLetterStyle.MODERN.styleKey), any()) } just Runs
+            every { validateContent(any(), any())} answers {
+                secondArg<ValidationException.ValidationErrorBuilder>().addError("invalid", "invalid")
+            }
+            every { validateContent(eq("c"), any()) } just Runs
+            every { validateClosing(any(), any())} answers {
+                secondArg<ValidationException.ValidationErrorBuilder>().addError("invalid", "invalid")
+            }
+            every { validateClosing(eq("d"), any()) } just Runs
+            every { validateDocuments(any(), any())} answers {
+                secondArg<ValidationException.ValidationErrorBuilder>().addError("invalid", "invalid")
+            }
+            every { validateDocuments(isNull(), any()) } just Runs
         }
 
         applicationTemplateRepository = mockk {
@@ -83,6 +109,7 @@ class ApplicationTemplateValidationServiceTest {
             ApplicationTemplateValidationService(
                 StringValidator(messagesService),
                 cvGeneratorValidationService,
+                coverLetterGenerationValidationService,
                 messagesService,
                 applicationTemplateRepository
             )
@@ -96,7 +123,7 @@ class ApplicationTemplateValidationServiceTest {
             profile
         )
 
-        assertValidationResult(result, false, 2)
+        assertValidationResult(result, false, 3)
     }
 
     @Test
@@ -112,7 +139,7 @@ class ApplicationTemplateValidationServiceTest {
             profile
         )
 
-        assertValidationResult(result, false, 2)
+        assertValidationResult(result, false, 3)
     }
 
     @Test
@@ -128,7 +155,7 @@ class ApplicationTemplateValidationServiceTest {
             profile
         )
 
-        assertValidationResult(result, false, 2)
+        assertValidationResult(result, false, 3)
     }
 
     @Test
@@ -144,7 +171,7 @@ class ApplicationTemplateValidationServiceTest {
             profile
         )
 
-        assertValidationResult(result, false, 1)
+        assertValidationResult(result, false, 2)
     }
 
     @Test
@@ -160,7 +187,7 @@ class ApplicationTemplateValidationServiceTest {
             profile
         )
 
-        assertValidationResult(result, false, 1)
+        assertValidationResult(result, false, 2)
     }
 
     @Test
@@ -175,16 +202,16 @@ class ApplicationTemplateValidationServiceTest {
                     cvStyle = null,
                     cvStyleOptions = null
                 ),
-                documentChecklist = null
+                coverLetterConfiguration = null
             ),
             profile
         )
 
-        assertValidationResult(result, false, 1)
+        assertValidationResult(result, false, 2)
     }
 
     @Test
-    fun testValidateApplicationTemplateWithValidCvConfig() {
+    fun testValidateApplicationTemplateWithValidConfig() {
         val result = applicationTemplateValidationService.validateUpdate(
             1,
             ApplicationTemplateUpdateDto(
@@ -195,7 +222,14 @@ class ApplicationTemplateValidationServiceTest {
                     cvStyle = "talendo",
                     cvStyleOptions = null
                 ),
-                documentChecklist = null
+                coverLetterConfiguration = CoverLetterConfigurationUpdateDto(
+                    style = CoverLetterStyle.MODERN.styleKey,
+                    language = "en",
+                    mirrorProfileImage = false,
+                    content = "c",
+                    closing = "d",
+                    documents = null
+                )
             ),
             profile
         )
@@ -459,64 +493,29 @@ class ApplicationTemplateValidationServiceTest {
     }
 
     @Test
-    fun testValidateCvConfigurationWithEmptyDocumentList() {
+    fun testValidateUpdateWithInvalidCoverLetterConfiguration() {
         val result = applicationTemplateValidationService.validateUpdate(
             1,
             ApplicationTemplateUpdateDto(
-                null,
-                "test",
-                CvConfigurationRequestDto(
-                    CVStyle.MODERN.styleKey,
-                    null,
-                    null
+                id = null,
+                name = "name",
+                cvConfiguration = CvConfigurationRequestDto(
+                    includedCvContent = null,
+                    cvStyle = "talendo",
+                    cvStyleOptions = null
                 ),
-                emptyList()
+                coverLetterConfiguration = CoverLetterConfigurationUpdateDto(
+                    style = null,
+                    language = null,
+                    mirrorProfileImage = null,
+                    content = null,
+                    closing = null,
+                    documents = null
+                )
             ),
             profile
         )
 
-        assertTrue { result.isFailure }
         assertValidationResult(result, false, 1)
-    }
-
-    @Test
-    fun testValidateCvConfigurationWithEmptyValuesInDocumentList() {
-        val result = applicationTemplateValidationService.validateUpdate(
-            1,
-            ApplicationTemplateUpdateDto(
-                null,
-                "test",
-                CvConfigurationRequestDto(
-                    CVStyle.MODERN.styleKey,
-                    null,
-                    null
-                ),
-                listOf("")
-            ),
-            profile
-        )
-
-        assertTrue { result.isFailure }
-        assertValidationResult(result, false, 1)
-    }
-
-    @Test
-    fun testValidateCvConfigurationWithValidValuesInDocumentList() {
-        val result = applicationTemplateValidationService.validateUpdate(
-            1,
-            ApplicationTemplateUpdateDto(
-                null,
-                "test",
-                CvConfigurationRequestDto(
-                    CVStyle.MODERN.styleKey,
-                    null,
-                    null
-                ),
-                listOf("one doc", "another doc")
-            ),
-            profile
-        )
-
-        assertTrue { result.isSuccess }
     }
 }

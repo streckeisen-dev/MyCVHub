@@ -18,11 +18,12 @@ export type SkillTreeRootProps = Readonly<{
   content: SkillCategories[]
   onChange: (selected: number[]) => void
   disabled: boolean
+  errorMessage?: string
 }>
 
 export function SkillTreeRoot(props: SkillTreeRootProps): ReactNode {
   const { t } = useTranslation()
-  const { content, onChange, disabled } = props
+  const { content, onChange, disabled, errorMessage } = props
 
   const [isExpanded, setIsExpanded] = useState(false)
   const isRootSelected = content.every((c) => c.children.every((leaf) => leaf.selected))
@@ -68,6 +69,7 @@ export function SkillTreeRoot(props: SkillTreeRootProps): ReactNode {
         />
         <p>{t('skills.title')}</p>
       </div>
+      {errorMessage && <p className="text-danger text-sm">{errorMessage}</p>}
       {isExpanded && (
         <div>
           {content.map((category) => (

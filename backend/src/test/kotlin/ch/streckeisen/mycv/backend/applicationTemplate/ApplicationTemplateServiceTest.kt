@@ -1,6 +1,7 @@
 package ch.streckeisen.mycv.backend.applicationTemplate
 
 import ch.streckeisen.mycv.backend.applicationTemplate.dto.ApplicationTemplateUpdateDto
+import ch.streckeisen.mycv.backend.applicationTemplate.dto.CoverLetterConfigurationUpdateDto
 import ch.streckeisen.mycv.backend.cv.generator.CvConfigurationRequestDto
 import ch.streckeisen.mycv.backend.cv.generator.IncludedCVItem
 import ch.streckeisen.mycv.backend.cv.generator.IncludedCvContentDto
@@ -59,7 +60,17 @@ private val existingTemplate = ApplicationTemplateEntity(
             }
         }
     """.trimIndent(),
-    documentChecklist = null,
+    coverLetterConfiguration = """
+        {
+            "style": "modern",
+            "language": "en",
+            "mirrorProfileImage": true,
+            "content": "c",
+            "closing": "d",
+            "documents": ["e"]
+            
+        }
+    """.trimIndent(),
     account = mockk {
         every { id } returns 1L
         every { profile } returns existingProfile
@@ -79,7 +90,14 @@ private val validNewRequest = ApplicationTemplateUpdateDto(
         cvStyle = "talendo",
         cvStyleOptions = mapOf("bannerBackground" to "#FFFFFF")
     ),
-    documentChecklist = listOf("Uni Degree")
+    coverLetterConfiguration = CoverLetterConfigurationUpdateDto(
+        style = "modern",
+        language = "en",
+        mirrorProfileImage = false,
+        content = "c",
+        closing = "d",
+        documents = listOf("Uni Degree")
+    )
 )
 
 class ApplicationTemplateServiceTest {
@@ -102,7 +120,7 @@ class ApplicationTemplateServiceTest {
 
             every { save(capture(templateSlot)) } answers {
                 val arg = firstArg<ApplicationTemplateEntity>()
-                ApplicationTemplateEntity(100, arg.account, arg.name, arg.cvConfiguration, arg.documentChecklist)
+                ApplicationTemplateEntity(100, arg.account, arg.name, arg.cvConfiguration, arg.coverLetterConfiguration)
             }
 
             every { delete(any()) } just runs
@@ -147,7 +165,16 @@ class ApplicationTemplateServiceTest {
                 cvStyleOptions = mapOf("bannerBackground" to "#FFFFFF")
             ), template.cvConfiguration
         )
-        assertNull(template.documentChecklist)
+        assertEquals(
+            CoverLetterConfiguration(
+                style = "modern",
+                language = "en",
+                mirrorProfileImage = true,
+                content = "c",
+                closing = "d",
+                documents = listOf("e")
+            ), template.coverLetterConfiguration
+        )
     }
 
     @Test
@@ -178,7 +205,7 @@ class ApplicationTemplateServiceTest {
                 id = 5,
                 name = null,
                 cvConfiguration = null,
-                documentChecklist = null
+                coverLetterConfiguration = null
             )
         )
 
@@ -194,7 +221,7 @@ class ApplicationTemplateServiceTest {
                 id = 1,
                 name = null,
                 cvConfiguration = null,
-                documentChecklist = null
+                coverLetterConfiguration = null
             )
         )
 
@@ -222,7 +249,8 @@ class ApplicationTemplateServiceTest {
             "{\"includedCvContent\":{\"includedWorkExperience\":[{\"entityId\":1,\"includeDescription\":true}],\"includedEducation\":[],\"includedProjects\":[],\"includedSkills\":[1]},\"cvStyle\":\"talendo\",\"cvStyleOptions\":{\"bannerBackground\":\"#FFFFFF\"}}",
             templateSlot.captured.cvConfiguration
         )
-        assertEquals("[\"Uni Degree\"]", templateSlot.captured.documentChecklist)
+
+        assertEquals("{\"style\":\"modern\",\"language\":\"en\",\"mirrorProfileImage\":false,\"content\":\"c\",\"closing\":\"d\",\"documents\":[\"Uni Degree\"]}", templateSlot.captured.coverLetterConfiguration)
     }
 
     @Test

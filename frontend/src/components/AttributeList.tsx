@@ -13,7 +13,7 @@ export type AttributeListProps = Readonly<{
 export function AttributeList(props: AttributeListProps) {
   const { attributes, className } = props
   return (
-    <dl className={`grid grid-cols-2 xl:grid-cols-[25%_auto] gap-y-2 w-full ${className}`}>
+    <dl className={`grid grid-cols-2 gap-y-2 w-full items-center ${className}`}>
       {attributes.map((attribute) => (
         <Fragment key={attribute.name}>
           <dt className="font-bold">{attribute.name}</dt>

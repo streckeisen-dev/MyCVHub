@@ -21,9 +21,6 @@ import org.junit.jupiter.api.Test
 import tools.jackson.databind.ObjectMapper
 import java.time.LocalDate
 
-private const val TALENDO_TEMPLATE = "talendo.typ"
-private const val OUTPUT_PDF = "cv_1.pdf"
-
 private val invalidProfile = ProfileEntity(
     jobTitle = "Invalid Job",
     bio = null,

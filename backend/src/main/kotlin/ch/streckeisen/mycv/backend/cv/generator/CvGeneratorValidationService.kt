@@ -19,9 +19,9 @@ private const val INCLUDED_SKILLS_FIELD = "includedSkills"
 
 private const val CV_MESSAGE_PREFIX = "$MYCV_KEY_PREFIX.cv.validation"
 
-private const val MISSING_TEMPLATE_OPTION = "$CV_MESSAGE_PREFIX.templateOptions.missing"
-private const val INVALID_TEMPLATE_OPTION = "$CV_MESSAGE_PREFIX.templateOptions.invalid"
-private const val UNKNOWN_TEMPLATE_OPTION = "$CV_MESSAGE_PREFIX.templateOptions.unknown"
+private const val MISSING_TEMPLATE_OPTION = "$CV_MESSAGE_PREFIX.cvStyleOptions.missing"
+private const val INVALID_TEMPLATE_OPTION = "$CV_MESSAGE_PREFIX.cvStyleOptions.invalid"
+private const val UNKNOWN_TEMPLATE_OPTION = "$CV_MESSAGE_PREFIX.cvStyleOptions.unknown"
 
 private const val INVALID_CONFIG_MESSAGE = "$CV_MESSAGE_PREFIX.invalidConfig"
 private const val INVALID_STYLE_MESSAGE = "$CV_MESSAGE_PREFIX.invalidStyle"
@@ -64,21 +64,21 @@ class CvGeneratorValidationService(
 
     fun validateStyleOptions(
         cvStyle: CVStyle,
-        templateOptions: Map<String, String>,
+        cvStyleOptions: Map<String, String>,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
-        templateOptions.keys.forEach { key ->
+        cvStyleOptions.keys.forEach { key ->
             val option = cvStyle.options.find { it.key == key }
             if (option == null) {
                 validationErrorBuilder.addError(
-                    "templateOptions.[$key]",
+                    "cvStyleOptions.[$key]",
                     messagesService.getMessage(UNKNOWN_TEMPLATE_OPTION)
                 )
             } else {
-                val value = templateOptions[key]
+                val value = cvStyleOptions[key]
                 if (value == null) {
                     validationErrorBuilder.addError(
-                        "templateOptions.[$key]",
+                        "cvStyleOptions.[$key]",
                         messagesService.getMessage(MISSING_TEMPLATE_OPTION)
                     )
                 } else {
@@ -105,7 +105,7 @@ class CvGeneratorValidationService(
             CVStyleOptionType.COLOR -> {
                 if (!isValidHexColor(value)) {
                     validationErrorBuilder.addError(
-                        "templateOptions.[${option.key}]",
+                        "cvStyleOptions.[${option.key}]",
                         messagesService.getMessage(INVALID_TEMPLATE_OPTION)
                     )
                 }
@@ -114,7 +114,7 @@ class CvGeneratorValidationService(
             CVStyleOptionType.STRING -> {
                 if (StringUtils.isBlank(value)) {
                     validationErrorBuilder.addError(
-                        "templateOptions.[${option.key}]",
+                        "cvStyleOptions.[${option.key}]",
                         messagesService.getMessage(MISSING_TEMPLATE_OPTION)
                     )
                 }

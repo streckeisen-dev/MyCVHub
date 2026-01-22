@@ -45,6 +45,12 @@ shared:
     comment: "Comment"
     acceptTos: "I have read and accept the following documents: "
     documentName: "Document Name"
+    salutation: "Salutation"
+    addressee: "Addressee"
+    content: "Content"
+    closing: "Closing"
+    cvStyle: "CV Style"
+    documents: "Documents"
   
   validations: 
     required: "{label} must not be blank"
@@ -73,6 +79,13 @@ frontend:
   crud:
     edit: "Edit"
     delete: "Delete"
+
+  general:
+    yes: "Yes"
+    no: "No"
+
+  gallery:
+    select: "Select"
   
   validations:
     fileSizeValidator: "File must be less than {maxSize} MB"
@@ -257,20 +270,37 @@ frontend:
 
   cv:
     name: "CV"
-    generate: "Download your CV as PDF"
-    intro: "Create and download your professional CV, ready to include with your job applications."
-    style: "CV Design"
-    styleExplanation: "Select your preferred CV template below — your information will be formatted automatically in the design you choose."
-    select: "Choose This Design"
-    styleError: "Could not load the available CV Designs"
-    download: "CV Download"
-    generateError: "There was a problem while creating your PDF-CV"
+    title: "Create your CV"
+    description: "Your CV profile is saved and ready. Select your preferred template below, choose which entries to include, and customize the design. Use a personal application template to apply saved preferences instantly."
+    stylesHeading: "Select your preferred CV design"
+    imageAlt: "Example of {styleName} CV design"
+    styleError: "Could not load the available CV designs"
+    generateError: "There was a problem while creating your CV PDF"
     moreSoon: "More coming soon..."
     moreSoonText: "Soon you can choose from more CV designs."
     showDescription: "Show description"
     noItemsSelected: "You need to select at least one CV item"
     customizeContent: "Adjust CV Content"
     customizeTemplate: "Customize Template"
+
+  coverLetter:
+    name: "Cover Letter"
+    stylesError: "Could not load the available cover letter styles"
+    mirrorProfileImage: "Should the profile image be mirrored on the cover letter?"
+    applicationInfo: "Application Information"
+    knownContactPerson: "Do you have a contact person for this job application?"
+    contactPerson: "Contact Person"
+    addresseeHint: "If you don't have a contact person, you can use a generic addressee instead. For example, 'Recruiting-Team'."
+    salutationContactPersonHint: "Salutation for the cover letter that is combined with the contact persons last name. For example, 'Dear Mr. <Contact Person>'"
+    salutationAddresseeHint: "Salutation for the cover letter that is combined with the Addressee. For example, 'Dear <Addressee>'"
+    companyInfo: "Company Information"
+    coverLetterHint: "A good cover letter should answer the following questions:\n- Why are you interested in this position and this company?\n- What are your qualifications and experience?\n- Why are you suited for this position?\n- When are you available to start the position?"
+    closingHint: "The closing of your cover letter. For example 'Best regards'"
+    downloadFailed: "Failed to create your cover letter"
+    content: "Cover Letter Content"
+    download:
+      title: "Create your Cover Letter"
+      description: "Focus on your content while we handle the formatting. Enter your letter details, select your preferred style, and download a professionally designed PDF in seconds. Use a personal template to get there even quicker."
   
   theme:
     title: "Theme"
@@ -331,9 +361,10 @@ frontend:
     singular: "Application Template"
     noEntries: "No application templates yet."
     cvContent: "CV Content"
-    documentChecklist: "Document Checklist"
-    documentChecklistHint: "You can use this checklist to remind yourself of the documents you need to submit for your application."
+    applicationDocuments: "Application Documents"
+    applicationDocumentsHint: "Documents you need to submit with your application in addition to your cover letter. For example, a CV or degrees."
     view: "View Application Template"
+    usageHint: "Select a template to apply saved preferences instantly."
     editor:
       add: "Add Application Template"
       edit: "Edit Application Template"
@@ -615,7 +646,7 @@ backend:
       invalidTemplate: "Application template is invalid"
       unknownCvEntries: "Some referenced CV entries don't exist"
       nameTaken: "Application template name is already taken"
-      emptyDocumentChecklist: "Document checklist must be 'null' or contain valid entries"
+      coverLetterConfigurationMissing: "Cover letter configuration is missing"
   account:
     notFound: "Account not found"
     verification:
@@ -671,10 +702,28 @@ backend:
       incompleteProfile: "Your CV profile is not ready to generate CVs"
       incompleteContentConfig: "CV content configuration is incomplete"
       unknownCvEntries: "CV content configuration references unknown CV entries"
-      templateOptions:
+      cvStyleOptions:
         unknown: "Unknown template option"
         invalid: "Invalid template option"
         missing: "Missing template option"
+
+  coverletter:
+    templateNotFound: "Cover letter template not found"
+    generationFailed: "Your cover letter could not be generated"
+    incompleteAccount: "Your account is not ready to generate cover letters"
+    style:
+      modern:
+        name: "Modern CV"
+        description: "The Modern CV design is a modern, clean and professional design for CVs and cover letters. This version is based on the <a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV template</a>, which is a variation of the popular <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX template."
+
+    validation:
+      invalidLanguage: "Language is invalid"
+      invalidStyle: "Cover letter style is invalid"
+      applicationMissing: "Application information is required for cover letter generation"
+      addresseeOrContactMissing: "Either a contact person or an addressee is required for the cover letter greeting"
+      companyAddressMissing: "Company address is required"
+      invalidDocuments: "'Documents' are invalid"
+      error: "Cover letter generation request is invalid"
 
   application:
     transition:

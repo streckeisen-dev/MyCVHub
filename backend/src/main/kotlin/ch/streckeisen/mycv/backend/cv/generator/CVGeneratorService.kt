@@ -24,6 +24,8 @@ private const val GENERATION_FAILED_MESSAGE = "$MYCV_KEY_PREFIX.cv.generationFai
 private const val PROFILE_PICTURE_FILE_NAME = "profile.jpg"
 private const val PROFILE_JSON_FILE_NAME = "profile.json"
 
+private const val CV_TEMPLATES_LOCATION = "ch/streckeisen/mycv/backend/templates/cv/"
+
 @Service
 class CVGeneratorService(
     private val cvGeneratorValidationService: CvGeneratorValidationService,
@@ -70,7 +72,7 @@ class CVGeneratorService(
         val tempDir = createTempDirectory("cv_$accountId")
         try {
             val cvTemplate =
-                this.javaClass.classLoader.getResource("ch/streckeisen/mycv/backend/cv_templates/")?.toURI()
+                this.javaClass.classLoader.getResource(CV_TEMPLATES_LOCATION)?.toURI()
             if (cvTemplate == null) {
                 return Result.failure(LocalizedException(TEMPLATE_NOT_FOUND_MESSAGE))
             }

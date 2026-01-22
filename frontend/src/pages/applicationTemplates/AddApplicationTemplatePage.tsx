@@ -12,6 +12,8 @@ import { RestError } from '@/types/RestError.ts'
 import { addErrorToast } from '@/helpers/ToastHelper.ts'
 import { CVStyleDto } from '@/types/cv/CVStyleDto.ts'
 import CvApi from '@/api/CvApi.ts'
+import { CoverLetterStyleDto } from '@/types/coverletter/CoverLetterStyleDto.ts'
+import CoverLetterApi from '@/api/CoverLetterApi.ts'
 
 export function AddApplicationTemplatePage(): ReactNode {
   const { t, i18n } = useTranslation()
@@ -20,6 +22,7 @@ export function AddApplicationTemplatePage(): ReactNode {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [profile, setProfile] = useState<ProfileDto>()
   const [cvStyles, setCvStyles] = useState<CVStyleDto[]>()
+  const [coverLetterStyles, setCoverLetterStyles] = useState<CoverLetterStyleDto[]>()
 
   useEffect(() => {
     async function loadData() {
@@ -29,6 +32,14 @@ export function AddApplicationTemplatePage(): ReactNode {
       } catch (e) {
         const error = (e as RestError).errorDto
         addErrorToast(t('profile.loadingError'), error?.message ?? t('error.genericMessage'))
+      }
+
+      try {
+        const styles = await CoverLetterApi.getStyles(i18n.language)
+        setCoverLetterStyles(styles)
+      } catch (e) {
+        const error = (e as RestError).errorDto
+        addErrorToast(t('coverLetter.stylesError'), error?.message ?? t('error.genericMessage'))
       }
 
       try {
@@ -54,10 +65,16 @@ export function AddApplicationTemplatePage(): ReactNode {
 
   return (
     <LoadingWrapper isLoading={isLoading}>
-      {profile == null || cvStyles == null ? (
+      {profile == null || cvStyles == null || coverLetterStyles == null ? (
         <Empty headline={'No profile'} />
       ) : (
-        <ApplicationTemplateEditor onSave={handleSave} onCancel={handleCancel} profile={profile} cvStyles={cvStyles} />
+        <ApplicationTemplateEditor
+          onSave={handleSave}
+          onCancel={handleCancel}
+          profile={profile}
+          cvStyles={cvStyles}
+          coverLetterStyles={coverLetterStyles}
+        />
       )}
     </LoadingWrapper>
   )

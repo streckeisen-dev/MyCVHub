@@ -16,6 +16,7 @@ import { LoadingWrapper } from '@/layouts/LoadingWrapper.tsx'
 import { ApplicationTemplateDto } from '@/types/applicationTemplate/ApplicationTemplateDto.ts'
 import ApplicationTemplateApi from '@/api/ApplicationTemplateApi.ts'
 import { Empty } from '@/components/Empty.tsx'
+import { openPdfInNewTab } from '@/helpers/DocumentHelper.ts'
 
 export function CvDownload() {
   const { t, i18n } = useTranslation()
@@ -91,14 +92,7 @@ export function CvDownload() {
     }
     try {
       const data = await CvApi.getCV(request, i18n.language)
-      const fileURL = globalThis.URL.createObjectURL(data)
-      const a = document.createElement('a')
-      a.href = fileURL
-      a.download = 'cv.pdf'
-      document.body.appendChild(a)
-      a.click()
-      a.remove()
-      globalThis.URL.revokeObjectURL(fileURL)
+      openPdfInNewTab(data)
     } catch (e) {
       const error = (e as RestError).errorDto
       addErrorToast(t('cv.generateError'), error?.message ?? t('error.genericMessage'))

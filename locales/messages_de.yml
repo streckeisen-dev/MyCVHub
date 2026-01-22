@@ -45,6 +45,12 @@ shared:
     source: "Quelle"
     acceptTos: "Ich habe die folgenden Dokumente gelesen und akzeptiere diese: "
     documentName: "Dokument Name"
+    salutation: "Anrede"
+    addressee: "Adressat"
+    content: "Inhalt"
+    closing: "Grussformel"
+    cvStyle: "Lebenslauf-Design"
+    documents: "Dokumente"
 
   validations:
     required: "{label} darf nicht leer sein"
@@ -73,6 +79,13 @@ frontend:
   crud:
     edit: "Bearbeiten"
     delete: "Löschen"
+
+  general:
+    yes: "Ja"
+    no: "Nein"
+
+  gallery:
+    select: "Auswählen"
 
   validations:
     fileSizeValidator: "Datei muss kleiner als {maxSize} MB sein"
@@ -256,13 +269,11 @@ frontend:
 
   cv:
     name: 'Lebenslauf'
-    generate: "Lade deinen Lebenslauf als PDF herunter"
-    intro: "Erstelle deinen professionellen Lebenslauf und lade ihn herunter, damit du ihn deinen Bewerbungen beilegen kannst"
-    style: "CV Design"
-    styleExplanation: "Wähle unten das Lebenslauf-Design aus, das dir am besten gefällt. Deine Informationen werden automatisch im von dir gewählten Design formattiert."
-    select: "Wähle dieses Design"
+    title: "Erstelle dienen Lebenslauf"
+    description: "Dein Lebenslauf-Design ist gespeichert und bereit. Wähle dein lieblings Design unten aus, bestimme welche Lebenslauf-Einträge enthalten sein sollen und passe die Design-Vorlage nach deinen Bedürfnissen an. Mit einer gespeicherten Bewerbungsvorlage kannst du deine Präferenzen schnell und einfach anwenden."
+    stylesHeading: "Wähle dein Lebenslauf-Design"
+    imageAlt: "Beispiel des {styleName} Lebenslauf-Designs"
     styleError: "Die verfügbaren Lebenslauf-Designs konnten nicht geladen werden"
-    download: "Lebenslauf herunterladen"
     generateError: "Beim Erstellen deines PDF-Lebenslauf ist ein Problem aufgetreten"
     moreSoon: "Bald kommt mehr..."
     moreSoonText: "Bald kommen mehr Lebenslauf-Designs aus denen du wählen kannst."
@@ -270,6 +281,25 @@ frontend:
     noItemsSelected: "Du musst mindestens ein Lebenslauf Element auswählen"
     customizeContent: "Inhalt anpassen"
     customizeTemplate: "Vorlage personalisieren"
+
+  coverLetter:
+    name: "Bewerbungsschreiben"
+    stylesError: "Bewerbungsschreiben-Designs konnten nicht geladen werden"
+    applicationInfo: "Bewerbungs-Informationen"
+    mirrorProfileImage: "Soll dein Profilbild im Bewerbungsschreiben gespiegelt werden?"
+    knownContactPerson: "Gibt es eine Kontaktperson für diese Bewerbung?"
+    contactPerson: "Kontaktperson"
+    addresseeHint: "Wenn du keine Kontaktperson hast, kannst du einen Adressat wie z.B. 'Rekrutierungs-Team' verwenden."
+    salutationContactPersonHint: "Andrede für das Bewerbungsschreiben, welche mit dem Nachnamen der Kontaktperson kombiniert wird. Zum Beispiel 'Sehr geehrter Herr <Kontaktperson>'"
+    salutationAddresseeHint: "Andrede für das Bewerbungsschrieben, welche mit dem Adressat kombiniert wird. Zum Beispiel, 'Sehr geehrte <Addressat>'"
+    companyInfo: "Firmen-Informationen"
+    coverLetterHint: "Ein gutes Bewerbungsschrieben sollte die folgenden Fragen beantworten:\n- Wieso bist du an dieser Stelle und an dieser Firma interessiert?\n- Was sind deine Qualifikationen?\n- Wieso bist du die richtige Person für diese Position?\n- Wann kannst du in der Position beginnen?"
+    closingHint: "Grussformel mit der du das Bewerbungsschreiben abschliesst. Zum Beispiel 'Mit freundlichen Grüssen'"
+    downloadFailed: "Failed to create your cover letter"
+    content: "Inhalt Bewerbungsschreiben"
+    download:
+      title: "Erstelle dein Bewerbungsschreiben"
+      description: "Gib deinen Bewerbungs-Angaben ein, wähle dein lieblings Design aus und lade deine professionelles Bewerbungsschreiben herunter. Mit einen Bewerbungsvorlage kannst du deine Präferenzen schnell und einfach anwenden."
 
   theme:
     title: "Design"
@@ -330,9 +360,10 @@ frontend:
     singular: "Bewerbungsvorlage"
     noEntries: "Noch keine Bewerbungsvorlagen vorhanden"
     cvContent: "Lebenslaufinhalt"
-    documentChecklist: "Dokumenten Checkliste"
-    documentChecklistHint: "Du kannst diese Checklist als Erinnerungsstütze verwenden, damit du bei Bewerbungen keine Dokumente vergisst."
+    applicationDocuments: "Bewerbungsdokumente"
+    applicationDocumentsHint: "Eine Liste von Dokumenten die du deinem Bewerbungschreiben beilegen willst. Z.B. dein Lebenslauf oder Ausbildungs-Abschlüsse"
     view: "Bewerbungsvorlage ansehen"
+    usageHint: "Wähle eine Vorlage um deine Präferenzen schnell und einfach anzuwenden."
     editor:
       add: "Bewerbungsvorlage erstellen"
       edit: "Bewerbungsvorlage bearbeiten"
@@ -615,7 +646,7 @@ backend:
       invalidTemplate: "Bewerbungsvorlage ist ungültig"
       unknownCvEntries: "Einige referenzierte Lebenslauf-Einträge existieren nicht"
       nameTaken: "Der Name dieser Bewerbungsvorlage ist bereits vergeben"
-      emptyDocumentChecklist: "Die Dokumenten Checklist muss entweder 'null' sein oder gültige Werte enthalten"
+      coverLetterConfigurationMissing: "Bewerbungsschreiben-Konfiguration fehlt"
   account:
     notFound: "Account nicht gefunden"
     verification:
@@ -671,10 +702,27 @@ backend:
       incompleteProfile: "Dein Lebenslauf-Profil ist nicht bereit um Lebensläufe zu generieren"
       incompleteContentConfig: "Die Konfiguration des Lebenslauf-Inhalts ist nicht vollständig"
       unknownCvEntries: "Die Konfiguration des Lebenslauf-Inhalts referenziert nicht existierende Einträge"
-      templateOptions:
+      cvStyleOptions:
         unknown: "Diese Vorlagen-Einstellung gibt es nicht."
         invalid: "Diese Vorlagen-Einstellung ist ungültig."
         missing: "Diese Vorlagen-Einstellung benötigt einen Wert."
+
+  coverletter:
+    templateNotFound: "Bewerbungsschreiben-Vorlage nicht gefunden"
+    generationFailed: "Dein Bewerbugnsschreiben konnte nicht generiert werden"
+    incompleteAccount: "Dein Account ist nicht bereit um Bewerbungsschreiben zu generieren"
+    style:
+      modern:
+        name: "Modern CV"
+        description: "Das Modern CV Design ist ein modernes und professionell wirkendes Design für Lebensläufe und Bewerungsschreiben. Diese Version basiert auf der <a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV Vorlage</a>, welche eine Variante der beliebten <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX-Vorlage ist."
+    validation:
+      invalidLanguage: "Sprache is ungültig"
+      invalidStyle: "Bewerbungsschreiben-Design ist ungültig"
+      applicationMissing: "Bewerbungsinformationen werded benötigt um ein Bewerbungsschreiben zu generieren"
+      addresseeOrContactMissing: "Eine Ansprechsperson oder ein genereller Anredssat ist erforderlich um ein Bewerbungsschreiben zu generieren"
+      companyAddressMissing: "Firme-Adresse ist erforderlich um ein Bewerbungsschreiben zu generieren"
+      invalidDocuments: "'Dokumente' sind ungültig"
+      error: "Bewerbungsschreiben-Generierungsanfrage ist ungültig"
 
   application:
     transition:

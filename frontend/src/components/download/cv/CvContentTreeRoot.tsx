@@ -20,6 +20,7 @@ export type CvContentTreeRootProps = Readonly<{
   content: CvContentTreeLeaf[]
   onChange: (selected: SelectedCvContent[]) => void
   disabled: boolean
+  errorMessage?: string
 }>
 
 function toSelectedCvContent(leaf: CvContentTreeLeaf): SelectedCvContent {
@@ -31,7 +32,7 @@ function toSelectedCvContent(leaf: CvContentTreeLeaf): SelectedCvContent {
 
 export function CvContentTreeRoot(props: CvContentTreeRootProps) {
   const { t } = useTranslation()
-  const { title, content, onChange, disabled } = props
+  const { title, content, onChange, disabled, errorMessage } = props
 
   const [isExpanded, setIsExpanded] = useState(false)
   const isRootSelected = content.every((leaf) => leaf.selected)
@@ -84,6 +85,7 @@ export function CvContentTreeRoot(props: CvContentTreeRootProps) {
         />
         <p>{title}</p>
       </div>
+      {errorMessage && <p className="text-danger text-sm">{errorMessage}</p> }
       {isExpanded && (
         <div>
           {content.map((leaf) => (

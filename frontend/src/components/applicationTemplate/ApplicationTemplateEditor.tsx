@@ -1,22 +1,26 @@
-import { FormEvent, Fragment, ReactNode, useState } from 'react'
-import { Button, Form, Input } from '@heroui/react'
-import { centerSection, h1 } from '@/styles/primitives.ts'
+import { FormEvent, ReactNode, useState } from 'react'
+import { Form, Input } from '@heroui/react'
+import { centerSection, h1, h3 } from '@/styles/primitives.ts'
 import { useTranslation } from 'react-i18next'
 import { FormButtons } from '@/components/btn/FormButtons.tsx'
 import { ApplicationTemplateDto } from '@/types/applicationTemplate/ApplicationTemplateDto.ts'
 import { ProfileDto } from '@/types/profile/ProfileDto.ts'
 import { v7 as uuid } from 'uuid'
-import { FaPlus, FaTrash } from 'react-icons/fa6'
 import { ApplicationTemplateUpdateDto } from '@/types/applicationTemplate/ApplicationTemplateUpdateDto.ts'
 import ApplicationTemplateApi from '@/api/ApplicationTemplateApi.ts'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
-import { extractFormErrors } from '@/helpers/FormHelper.ts'
+import { extractFormErrors, extractNestedErrors } from '@/helpers/FormHelper.ts'
 import { RestError } from '@/types/RestError.ts'
 import {
   CvConfigurationData,
   CvConfigurationEditor
 } from '@/components/download/cv/CvConfigurationEditor.tsx'
 import { CVStyleDto } from '@/types/cv/CVStyleDto.ts'
+import { CoverLetterStyleDto } from '@/types/coverletter/CoverLetterStyleDto.ts'
+import {
+  ApplicationTemplateCoverLetterConfigurationEditor,
+  ApplicationTemplateCoverLetterData
+} from '@/components/applicationTemplate/ApplicationTemplateCoverLetterConfigurationEditor.tsx'
 
 export type EditApplicationTemplateModalProps = Readonly<{
   onSave: (template: ApplicationTemplateDto) => void
@@ -24,16 +28,17 @@ export type EditApplicationTemplateModalProps = Readonly<{
   initialValue?: ApplicationTemplateDto
   profile: ProfileDto
   cvStyles: CVStyleDto[]
+  coverLetterStyles: CoverLetterStyleDto[]
 }>
 
 interface ApplicationTemplateFormData {
   name: string
   cvConfig: CvConfigurationData
-  documents: { id: string; name: string }[]
+  coverLetterConfig: ApplicationTemplateCoverLetterData
 }
 
 export function ApplicationTemplateEditor(props: EditApplicationTemplateModalProps): ReactNode {
-  const { onSave, onCancel, initialValue, profile, cvStyles } = props
+  const { onSave, onCancel, initialValue, profile, cvStyles, coverLetterStyles } = props
   const { t, i18n } = useTranslation()
 
   const [isSaving, setIsSaving] = useState<boolean>(false)
@@ -51,9 +56,20 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
         undefined,
       cvStyleOptions: initialValue?.cvConfiguration.cvStyleOptions
     },
-    documents: initialValue?.documentChecklist?.map((name) => ({ id: uuid(), name })) ?? []
+    coverLetterConfig: {
+      style: initialValue?.coverLetterConfiguration.style ?? undefined,
+      language: initialValue?.coverLetterConfiguration.language ?? i18n.language,
+      mirrorProfileImage: initialValue?.coverLetterConfiguration.mirrorProfileImage ?? false,
+      content: initialValue?.coverLetterConfiguration.content ?? '',
+      closing: initialValue?.coverLetterConfiguration.closing ?? '',
+      documents:
+        initialValue?.coverLetterConfiguration.documents?.map((name) => ({ id: uuid(), name })) ??
+        []
+    }
   })
   const [errorMessages, setErrorMessages] = useState<ErrorMessages>({})
+  const cvErrorMessages = extractNestedErrors(errorMessages, 'cvConfiguration')
+  const coverLetterErrorMessages = extractNestedErrors(errorMessages, 'coverLetterConfiguration')
 
   function handleNameChange(value: string) {
     setData((prev) => ({ ...prev, name: value }))
@@ -70,14 +86,13 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
     clearError('cvConfiguration')
   }
 
-  function handleDocumentChange(id: string, value: string) {
+  function handleCoverLetterConfigChange(value: ApplicationTemplateCoverLetterData) {
     setData((prev) => {
       return {
         ...prev,
-        documents: [...prev.documents.filter((doc) => doc.id !== id), { id, name: value }]
+        coverLetterConfig: value
       }
     })
-    clearError('documentChecklist')
   }
 
   function clearError(field: string) {
@@ -86,24 +101,6 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
         ...prev,
         [field]: undefined
       } as ErrorMessages
-    })
-  }
-
-  function handleAddDocument() {
-    setData((prev) => {
-      return {
-        ...prev,
-        documents: [...prev.documents, { id: uuid(), name: '' }]
-      }
-    })
-  }
-
-  function handleRemoveDocument(id: string) {
-    setData((prev) => {
-      return {
-        ...prev,
-        documents: prev.documents.filter((doc) => doc.id !== id)
-      }
     })
   }
 
@@ -124,8 +121,17 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
           includedSkills: data.cvConfig.cvContent?.skills
         }
       },
-      documentChecklist:
-        data.documents.length > 0 ? data.documents.map((doc) => doc.name) : undefined
+      coverLetterConfiguration: {
+        style: data.coverLetterConfig.style,
+        language: data.coverLetterConfig.language,
+        mirrorProfileImage: data.coverLetterConfig.mirrorProfileImage,
+        content: data.coverLetterConfig.content === '' ? undefined : data.coverLetterConfig.content,
+        closing: data.coverLetterConfig.closing === '' ? undefined : data.coverLetterConfig.closing,
+        documents:
+          data.coverLetterConfig.documents.length > 0
+            ? data.coverLetterConfig.documents.map((doc) => doc.name)
+            : undefined
+      }
     }
     try {
       const saved = await ApplicationTemplateApi.saveApplicationTemplate(request, i18n.language)
@@ -153,56 +159,25 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
           errorMessage={errorMessages.name}
         />
 
-        <div>
-          <CvConfigurationEditor
-            profile={profile}
-            cvStyles={cvStyles}
-            config={data.cvConfig}
-            onChange={handleCvConfigChange}
-          />
-          {errorMessages.cvConfiguration && (
-            <p className="text-danger text-sm mt-1">{errorMessages.cvConfiguration}</p>
-          )}
-        </div>
+        <h3 className={h3()}>{t('cv.name')}</h3>
+        <CvConfigurationEditor
+          profile={profile}
+          cvStyles={cvStyles}
+          config={data.cvConfig}
+          onChange={handleCvConfigChange}
+          errorMessages={cvErrorMessages}
+        />
+        {errorMessages.cvConfiguration && (
+          <p className="text-danger text-sm mt-1">{errorMessages.cvConfiguration}</p>
+        )}
 
-        <div>
-          <label className="text-default-500">{t('applicationTemplate.documentChecklist')}</label>
-          <p className="text-default-400">{t('applicationTemplate.documentChecklistHint')}</p>
-          <div className="grid grid-cols-12 gap-2 items-center mt-4">
-            {data.documents.map((doc) => (
-              <Fragment key={doc.id}>
-                <Input
-                  isRequired
-                  className="col-span-10"
-                  label={t('fields.documentName')}
-                  value={doc.name}
-                  onValueChange={(val) => handleDocumentChange(doc.id, val)}
-                />
-                <Button
-                  className="col-span-2"
-                  isIconOnly
-                  color="danger"
-                  onPress={() => handleRemoveDocument(doc.id)}
-                  radius="full"
-                >
-                  <FaTrash />
-                </Button>
-              </Fragment>
-            ))}
-            <Button
-              className="col-span-12"
-              isIconOnly
-              color="primary"
-              onPress={handleAddDocument}
-              radius="full"
-            >
-              <FaPlus />
-            </Button>
-          </div>
-          {errorMessages.documentChecklist && (
-            <p className="text-danger text-sm mt-1">{errorMessages.documentChecklist}</p>
-          )}
-        </div>
+        <h3 className={h3()}>{t('coverLetter.name')}</h3>
+        <ApplicationTemplateCoverLetterConfigurationEditor
+          styles={coverLetterStyles}
+          config={data.coverLetterConfig}
+          onChange={handleCoverLetterConfigChange}
+          errorMessages={coverLetterErrorMessages}
+        />
 
         <FormButtons onCancel={onCancel} isSaving={isSaving} />
       </Form>
