@@ -1,6 +1,6 @@
 import { FormEvent, ReactNode, useState } from 'react'
 import { Form, Input } from '@heroui/react'
-import { centerSection, h1, h3, h4 } from '@/styles/primitives.ts'
+import { centerSection, h1, h3 } from '@/styles/primitives.ts'
 import { useTranslation } from 'react-i18next'
 import { FormButtons } from '@/components/btn/FormButtons.tsx'
 import { ApplicationTemplateDto } from '@/types/applicationTemplate/ApplicationTemplateDto.ts'

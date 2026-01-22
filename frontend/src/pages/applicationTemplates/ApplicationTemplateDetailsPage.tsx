@@ -10,7 +10,7 @@ import { Empty } from '@/components/Empty.tsx'
 import { Button } from '@heroui/react'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import { FaArrowLeft, FaPen, FaTrash } from 'react-icons/fa6'
-import { h1, h3, h4 } from '@/styles/primitives.ts'
+import { h1, h3 } from '@/styles/primitives.ts'
 import { DeleteApplicationTemplateModal } from '@/components/applicationTemplate/DeleteApplicationTemplateModal.tsx'
 import { ProfileDto } from '@/types/profile/ProfileDto.ts'
 import ProfileApi from '@/api/ProfileApi.ts'
@@ -209,10 +209,10 @@ export function ApplicationTemplateDetailsPage(): ReactNode {
               selectedStyle={template.coverLetterConfiguration.style}
               disabled
             />
-              <AttributeList
-                className="xl:max-w-3/4 gap-x-5"
-                attributes={getCoverLetterAttributes(template.coverLetterConfiguration, t)}
-              />
+            <AttributeList
+              className="xl:max-w-3/4 gap-x-5"
+              attributes={getCoverLetterAttributes(template.coverLetterConfiguration, t)}
+            />
           </div>
         ) : (
           <Empty headline={t('applicationTemplate.notFound')} />
