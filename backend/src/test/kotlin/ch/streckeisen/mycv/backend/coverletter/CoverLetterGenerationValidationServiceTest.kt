@@ -7,10 +7,10 @@ import ch.streckeisen.mycv.backend.util.assertValidationResult
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+
+private const val COMPANY_NAME = "My Company"
 
 class CoverLetterGenerationValidationServiceTest {
     private lateinit var coverLetterGenerationValidationService: CoverLetterGenerationValidationService
@@ -202,7 +202,7 @@ class CoverLetterGenerationValidationServiceTest {
         coverLetterGenerationValidationService.validateApplication(
             CoverLetterApplicationDto(
                 jobTitle = null,
-                company = "My Company",
+                company = COMPANY_NAME,
                 contactPerson = null,
                 addressee = null,
                 salutation = null,
@@ -496,7 +496,7 @@ class CoverLetterGenerationValidationServiceTest {
         coverLetterGenerationValidationService.validateApplication(
             CoverLetterApplicationDto(
                 jobTitle = "Developer",
-                company = "My Company",
+                company = COMPANY_NAME,
                 contactPerson = CoverLetterContactPersonDto("first", "last"),
                 addressee = null,
                 salutation = "abc",
@@ -512,35 +512,39 @@ class CoverLetterGenerationValidationServiceTest {
 
     @Test
     fun testValidateGenerationRequestWithMissingApplication() {
-        val result = coverLetterGenerationValidationService.validateGenerationRequest(CoverLetterGenerationRequestDto(
-            language = "de",
-            style = CoverLetterStyle.MODERN.styleKey,
-            mirrorProfileImage = true,
-            documents = null,
-            application = null,
-        ))
+        val result = coverLetterGenerationValidationService.validateGenerationRequest(
+            CoverLetterGenerationRequestDto(
+                language = "de",
+                style = CoverLetterStyle.MODERN.styleKey,
+                mirrorProfileImage = true,
+                documents = null,
+                application = null,
+            )
+        )
 
         assertValidationResult(result, false, 1)
     }
 
     @Test
     fun testValidateGenerationRequestWithMissingMirrorProfileImage() {
-        val result = coverLetterGenerationValidationService.validateGenerationRequest(CoverLetterGenerationRequestDto(
-            language = "de",
-            style = CoverLetterStyle.MODERN.styleKey,
-            mirrorProfileImage = null,
-            documents = null,
-            application = CoverLetterApplicationDto(
-                jobTitle = "Developer",
-                company = "My Company",
-                contactPerson = CoverLetterContactPersonDto("first", "last"),
-                addressee = null,
-                salutation = "abc",
-                companyAddress = CoverLetterCompanyAddressDto("street", "1234", "c"),
-                content = "content",
-                closing = "close"
+        val result = coverLetterGenerationValidationService.validateGenerationRequest(
+            CoverLetterGenerationRequestDto(
+                language = "de",
+                style = CoverLetterStyle.MODERN.styleKey,
+                mirrorProfileImage = null,
+                documents = null,
+                application = CoverLetterApplicationDto(
+                    jobTitle = "Developer",
+                    company = COMPANY_NAME,
+                    contactPerson = CoverLetterContactPersonDto("first", "last"),
+                    addressee = null,
+                    salutation = "abc",
+                    companyAddress = CoverLetterCompanyAddressDto("street", "1234", "c"),
+                    content = "content",
+                    closing = "close"
+                )
             )
-        ))
+        )
 
         assertValidationResult(result, true, 0)
     }

@@ -44,6 +44,8 @@ private val validRequest = CoverLetterGenerationRequestDto(
     documents = null
 )
 
+private const val PROFILE_PICTURE_NAME = "profile.jpg"
+
 class CoverLetterGenerationServiceTest {
     private val profilePictureUri = this.javaClass.classLoader.getResource("profile.png")!!.toURI()
 
@@ -149,7 +151,7 @@ class CoverLetterGenerationServiceTest {
         every { objectMapper.writeValue(any<File>(), capture(slot)) } throws IllegalArgumentException()
         every { profilePictureService.getCVPicture(eq(1), any()) } returns Result.success(
             ProfilePicture(
-                "profile.jpg",
+                PROFILE_PICTURE_NAME,
                 profilePictureUri
             )
         )
@@ -193,7 +195,7 @@ class CoverLetterGenerationServiceTest {
     suspend fun testGenerateCoverLetterWithFailingCompilation() {
         every { profilePictureService.getCVPicture(eq(1), any()) } returns Result.success(
             ProfilePicture(
-                "profile.jpg",
+                PROFILE_PICTURE_NAME,
                 profilePictureUri
             )
         )
@@ -210,7 +212,7 @@ class CoverLetterGenerationServiceTest {
     suspend fun testGenerateCoverLetterSuccess() {
         every { profilePictureService.getCVPicture(eq(1), any()) } returns Result.success(
             ProfilePicture(
-                "profile.jpg",
+                PROFILE_PICTURE_NAME,
                 profilePictureUri
             )
         )
