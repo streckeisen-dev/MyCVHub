@@ -44,6 +44,13 @@ shared:
     status: "Status"
     source: "Quelle"
     acceptTos: "Ich habe die folgenden Dokumente gelesen und akzeptiere diese: "
+    documentName: "Dokument Name"
+    salutation: "Anrede"
+    addressee: "Adressat"
+    content: "Inhalt"
+    closing: "Grussformel"
+    cvStyle: "Lebenslauf-Design"
+    documents: "Dokumente"
 
   validations:
     required: "{label} darf nicht leer sein"
@@ -69,6 +76,17 @@ frontend:
     save: "Speichern"
     cancel: "Abbrechen"
 
+  crud:
+    edit: "Bearbeiten"
+    delete: "Löschen"
+
+  general:
+    yes: "Ja"
+    no: "Nein"
+
+  gallery:
+    select: "Auswählen"
+
   validations:
     fileSizeValidator: "Datei muss kleiner als {maxSize} MB sein"
     numberWithinRange: "{name} muss zwischen {min} und {max} sein"
@@ -76,7 +94,6 @@ frontend:
   app:
     home: "Start"
     publicProfile: "Öffentliches Profil"
-    generateCV: "CV Herunterladen"
 
   home:
     welcome:
@@ -251,20 +268,38 @@ frontend:
       deleteError: "Projekt konnte nicht gelöscht werden"
 
   cv:
-    generate: "Lade deinen CV als PDF herunter"
-    intro: "Erstelle deinen professionellen CV und lade ihn herunter, damit du ihn deinen Bewerbungen beilegen kannst"
-    style: "CV Design"
-    styleExplanation: "Wähle unten das CV Design aus, das dir am besten gefällt. Deine Informationen werden automatisch im von dir gewählten Design formattiert."
-    select: "Wähle dieses Design"
-    download: "Lade deinen CV herunter"
-    styleError: "Die verfügbaren CV Designs konnten nicht geladen werden"
-    generateError: "Beim Erstellen deines PDF-CV ist ein Problem aufgetreten"
+    name: 'Lebenslauf'
+    title: "Erstelle dienen Lebenslauf"
+    description: "Dein Lebenslauf-Design ist gespeichert und bereit. Wähle dein lieblings Design unten aus, bestimme welche Lebenslauf-Einträge enthalten sein sollen und passe die Design-Vorlage nach deinen Bedürfnissen an. Mit einer gespeicherten Bewerbungsvorlage kannst du deine Präferenzen schnell und einfach anwenden."
+    stylesHeading: "Wähle dein Lebenslauf-Design"
+    imageAlt: "Beispiel des {styleName} Lebenslauf-Designs"
+    styleError: "Die verfügbaren Lebenslauf-Designs konnten nicht geladen werden"
+    generateError: "Beim Erstellen deines PDF-Lebenslauf ist ein Problem aufgetreten"
     moreSoon: "Bald kommt mehr..."
-    moreSoonText: "Bald kommen mehr CV Designs aus denen du wählen kannst."
+    moreSoonText: "Bald kommen mehr Lebenslauf-Designs aus denen du wählen kannst."
     showDescription: "Beschreibung anzeigen"
-    noItemsSelected: "Du musst mindestens ein CV Element auswählen"
+    noItemsSelected: "Du musst mindestens ein Lebenslauf Element auswählen"
     customizeContent: "Inhalt anpassen"
     customizeTemplate: "Vorlage personalisieren"
+
+  coverLetter:
+    name: "Bewerbungsschreiben"
+    stylesError: "Bewerbungsschreiben-Designs konnten nicht geladen werden"
+    applicationInfo: "Bewerbungs-Informationen"
+    mirrorProfileImage: "Soll dein Profilbild im Bewerbungsschreiben gespiegelt werden?"
+    knownContactPerson: "Gibt es eine Kontaktperson für diese Bewerbung?"
+    contactPerson: "Kontaktperson"
+    addresseeHint: "Wenn du keine Kontaktperson hast, kannst du einen Adressat wie z.B. 'Rekrutierungs-Team' verwenden."
+    salutationContactPersonHint: "Andrede für das Bewerbungsschreiben, welche mit dem Nachnamen der Kontaktperson kombiniert wird. Zum Beispiel 'Sehr geehrter Herr <Kontaktperson>'"
+    salutationAddresseeHint: "Andrede für das Bewerbungsschrieben, welche mit dem Adressat kombiniert wird. Zum Beispiel, 'Sehr geehrte <Addressat>'"
+    companyInfo: "Firmen-Informationen"
+    coverLetterHint: "Ein gutes Bewerbungsschrieben sollte die folgenden Fragen beantworten:\n- Wieso bist du an dieser Stelle und an dieser Firma interessiert?\n- Was sind deine Qualifikationen?\n- Wieso bist du die richtige Person für diese Position?\n- Wann kannst du in der Position beginnen?"
+    closingHint: "Grussformel mit der du das Bewerbungsschreiben abschliesst. Zum Beispiel 'Mit freundlichen Grüssen'"
+    downloadFailed: "Failed to create your cover letter"
+    content: "Inhalt Bewerbungsschreiben"
+    download:
+      title: "Erstelle dein Bewerbungsschreiben"
+      description: "Gib deinen Bewerbungs-Angaben ein, wähle dein lieblings Design aus und lade deine professionelles Bewerbungsschreiben herunter. Mit einen Bewerbungsvorlage kannst du deine Präferenzen schnell und einfach anwenden."
 
   theme:
     title: "Design"
@@ -281,6 +316,7 @@ frontend:
 
   application:
     title: "Bewerbungen"
+    overview: "Übersicht"
     singular: "Bewerbung"
     notFound: "Bewerbung nicht gefunden"
     noEntries: "Du hast noch keine Bewerbungen."
@@ -290,6 +326,11 @@ frontend:
     as: "als"
     details: "Bewerbungsdetails"
     back: "Zurück zur Übersicht"
+    view: "Bewerbung ansehen"
+    archived: "Archiviert"
+    includeArchived: "Archivierte Bewerbungen anzeigen"
+    archivedDescription: "Diese Bewerbung ist archiviert."
+    hiredAutomation: "Willst du diese Position automatisch zu deinem Lebenslauf hinzufügen?"
     history:
       title: "Bewerbungsverlauf"
       from: "Alter Status"
@@ -298,6 +339,11 @@ frontend:
     editor:
       add: "Bewerbung erstellen"
       edit: "Bewerbung bearbeiten"
+      archive:
+        title: "Bewerbung archivieren"
+        confirmationText: "Wenn du fortfährst und diese Bewerbung archivierst, wirst du diese nicht mehr bearbeiten können. Bist du sicher dass du diese Bewerbung archivieren willst?"
+        archiveSuccess: "Bewerbung erfolgreich archiviert"
+        archiveError: "Bewerbung konnte nicht archiviert werden"
       delete:
         title: "Bewerbung löschen"
         confirmationText: "Wenn du fortfährst und diese Bewerung löschst, wird diese definitiv gelöscht. Du wirst sie nicht Wiederherstellen könne. Bist du sicher dass du diese Bewerbung löschen möchtest?"
@@ -307,6 +353,30 @@ frontend:
     loadingError: "Bewerbungen konnten nicht geladen werden"
     statusLoadingError: "Bewerungs-Status Filter Informationen konnten nicht geladen werden"
     transitionError: "Bewerbungs-Status konnte nicht aktualisiert werden"
+
+  applicationTemplate:
+    backToOverview: "Zurück zur Übersicht"
+    title: "Bewerbungsvorlagen"
+    singular: "Bewerbungsvorlage"
+    noEntries: "Noch keine Bewerbungsvorlagen vorhanden"
+    cvContent: "Lebenslaufinhalt"
+    applicationDocuments: "Bewerbungsdokumente"
+    applicationDocumentsHint: "Eine Liste von Dokumenten die du deinem Bewerbungschreiben beilegen willst. Z.B. dein Lebenslauf oder Ausbildungs-Abschlüsse"
+    view: "Bewerbungsvorlage ansehen"
+    usageHint: "Wähle eine Vorlage um deine Präferenzen schnell und einfach anzuwenden."
+    editor:
+      add: "Bewerbungsvorlage erstellen"
+      edit: "Bewerbungsvorlage bearbeiten"
+      saveError: "Bewerbungsvorlage konnte nicht gespeichert werden"
+    delete:
+      title: "Bewerbungsvorlage löschen"
+      confirmationText: "Wenn du fortfährst und diese Bewerbungsvorlage löschst, wird diese definitiv gelöscht. Bis du sicher dass du diese Bewerbungsvorlage löschen möchtest?"
+      deleteSuccess: "Bewerbungsvorlage wurde erfolgreich gelöscht"
+      deleteError: "Bewerbungsvorlage konnte nicht gelöscht werden"
+
+  downloads:
+    title: "Downloads"
+    action: "Herunterladen"
 
   notFound:
     headline: "Wo willst du hin?"
@@ -530,6 +600,7 @@ frontend:
       numberInformation: "Resultate {start}-{end} von {total}"
     search: "Suche"
     actions: "Aktionen"
+    resetFilter: "Filter zurücksetzen"
 
 backend:
   validations:
@@ -566,6 +637,16 @@ backend:
     accessDenied: "Du hast keinen Zugriff auf dieses Projekt"
     validation:
       error: "Validierung des Projekts ist fehlgeschlagen"
+  applicationTemplate:
+    notFound: "Bewerbungsvorlage nicht gefunden"
+    accessDenied: "Du hast keinen Zugriff auf diese Bewerbungsvorlage"
+    validation:
+      cvConfigurationMissing: "Lebenslauf-Konfiguration fehlt"
+      invalidCvStyle: "Lebenslauf-Stil ist ungültig"
+      invalidTemplate: "Bewerbungsvorlage ist ungültig"
+      unknownCvEntries: "Einige referenzierte Lebenslauf-Einträge existieren nicht"
+      nameTaken: "Der Name dieser Bewerbungsvorlage ist bereits vergeben"
+      coverLetterConfigurationMissing: "Bewerbungsschreiben-Konfiguration fehlt"
   account:
     notFound: "Account nicht gefunden"
     verification:
@@ -606,7 +687,6 @@ backend:
   cv:
     templateNotFound: "CV Vorlage nicht gefunden"
     generationFailed: "Dein PDF CV konnte nicht generiert werden"
-    noCvEntries: "Es gibt keine CV Einträge um ein PDF zu generieren"
     style:
       modern:
         name: "Modern CV"
@@ -615,11 +695,34 @@ backend:
         name: "Talendo"
         description: "Eine leicht modifizierte Version der CV Vorlage aus dem <a href=\"https://talendo.ch\">Talendo</a> Career Starter Magazin."
         bannerBackground: "Banner Hintergrundfarbe"
-    templateOptions:
-      unsupported: "Vorlagen-Einstellungen sind mit diesem CV Stil nicht kompatibel."
-      unknown: "Die Vorlagen-Einstellung gibt es nicht."
-      invalid: "Die Vorlagen-Einstellung ist ungültig."
-      missing: "Diese Vorlagen-Einstellung benötigt einen Wert."
+    validation:
+      noCvEntries: "Es gibt keine Lebenslaufeinträge um ein PDF zu generieren"
+      invalidConfig: "Die Lebenslaufkonfiguration ist ungültig"
+      invalidStyle: "Dieses Lebenslauf-Design existiert nicht"
+      incompleteProfile: "Dein Lebenslauf-Profil ist nicht bereit um Lebensläufe zu generieren"
+      incompleteContentConfig: "Die Konfiguration des Lebenslauf-Inhalts ist nicht vollständig"
+      unknownCvEntries: "Die Konfiguration des Lebenslauf-Inhalts referenziert nicht existierende Einträge"
+      cvStyleOptions:
+        unknown: "Diese Vorlagen-Einstellung gibt es nicht."
+        invalid: "Diese Vorlagen-Einstellung ist ungültig."
+        missing: "Diese Vorlagen-Einstellung benötigt einen Wert."
+
+  coverletter:
+    templateNotFound: "Bewerbungsschreiben-Vorlage nicht gefunden"
+    generationFailed: "Dein Bewerbugnsschreiben konnte nicht generiert werden"
+    incompleteAccount: "Dein Account ist nicht bereit um Bewerbungsschreiben zu generieren"
+    style:
+      modern:
+        name: "Modern CV"
+        description: "Das Modern CV Design ist ein modernes und professionell wirkendes Design für Lebensläufe und Bewerungsschreiben. Diese Version basiert auf der <a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV Vorlage</a>, welche eine Variante der beliebten <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX-Vorlage ist."
+    validation:
+      invalidLanguage: "Sprache is ungültig"
+      invalidStyle: "Bewerbungsschreiben-Design ist ungültig"
+      applicationMissing: "Bewerbungsinformationen werded benötigt um ein Bewerbungsschreiben zu generieren"
+      addresseeOrContactMissing: "Eine Ansprechsperson oder ein genereller Anredssat ist erforderlich um ein Bewerbungsschreiben zu generieren"
+      companyAddressMissing: "Firme-Adresse ist erforderlich um ein Bewerbungsschreiben zu generieren"
+      invalidDocuments: "'Dokumente' sind ungültig"
+      error: "Bewerbungsschreiben-Generierungsanfrage ist ungültig"
 
   application:
     transition:
@@ -629,7 +732,7 @@ backend:
       interviewEnded: "Interview beendet"
       offerReceived: "Angebot erhalten"
       offerAccepted: "Angebot akzeptiert"
-      offerRejected: "Angebot abgelehnt"
+      offerDeclined: "Angebot abgelehnt"
       withdrawn: "Zurückgezogen"
       notAllowed: "Diese Aktion ist nicht erlaubt"
       notFound: "Diese Aktion existiert nicht"
@@ -648,6 +751,8 @@ backend:
       transitionError: "Deine Status-Update Anfrage ist ungültig"
     notFound: "Bewerbung nicht gefunden"
     accessDenied: "Du hast keine Berechtigung diese Bewerbung zu sehen"
+    archived: "Du kannst eine archivierte Bewerbung nicht mehr bearbeiten"
+    archiveOpenNotAllowed: "Du kannst eine offene Bewerbung nicht archivieren"
 
   exceptions:
     db: "Ein Datenbank-Fehler ist aufgetreten. Bitte kontaktiere den Administrator"

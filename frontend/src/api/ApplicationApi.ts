@@ -8,9 +8,9 @@ import {
 import { RestError } from '@/types/RestError.ts'
 import { ApplicationUpdateRequestDto } from '@/types/application/ApplicationUpdateRequestDto.ts'
 import { ApplicationStatusDto } from '@/types/application/ApplicationStatusDto.ts'
-import { SortDescriptor } from '@heroui/react'
 import { ApplicationDetailsDto } from '@/types/application/ApplicationDetailsDto.ts'
 import { ApplicationTransitionRequestDto } from '@/types/application/ApplicationTransitionRequestDto.ts'
+import { ApplicationSearchRequest } from '@/types/application/ApplicationSearchRequest.ts'
 
 async function getApplication(id: number, locale: string): Promise<ApplicationDetailsDto> {
   try {
@@ -33,27 +33,26 @@ async function getApplicationStatuses(locale: string): Promise<ApplicationStatus
 }
 
 async function search(
-  page: number,
-  searchTerm: string | undefined,
-  status: string | undefined,
-  sort: SortDescriptor | undefined,
-  pageSize: string,
+  searchRequest: ApplicationSearchRequest,
   locale: string,
   signal: AbortSignal
 ): Promise<Page<ApplicationSearchDto>> {
   const params = new URLSearchParams({
-    page: page.toString(),
-    pageSize: pageSize
+    page: searchRequest.page.toString(),
+    pageSize: searchRequest.pageSize
   })
-  if (searchTerm) {
-    params.append('searchTerm', searchTerm)
+  if (searchRequest.searchTerm) {
+    params.append('searchTerm', searchRequest.searchTerm)
   }
-  if (status) {
-    params.append('status', status)
+  if (searchRequest.status) {
+    params.append('status', searchRequest.status)
   }
-  if (sort) {
-    params.append('sort', sort.column as string)
-    params.append('sortDirection', sort.direction)
+  if (searchRequest.includeArchived) {
+    params.append('includeArchived', searchRequest.includeArchived.toString())
+  }
+  if (searchRequest.sort) {
+    params.append('sort', searchRequest.sort.column as string)
+    params.append('sortDirection', searchRequest.sort.direction)
   }
   try {
     const response = await fetchFromApi(`/application/search?${params.toString()}`, locale, {
@@ -82,16 +81,32 @@ async function save(
   }
 }
 
-async function transition(transitionId: number, request: ApplicationTransitionRequestDto, locale: string): Promise<ApplicationDetailsDto> {
+async function transition(
+  transitionId: number,
+  request: ApplicationTransitionRequestDto,
+  locale: string
+): Promise<ApplicationDetailsDto> {
   try {
     const response = await fetchFromApi(`/application/transition/${transitionId}`, locale, {
-      method: 'POST',
+      method: 'PUT',
       body: JSON.stringify(request)
     })
     return await getJSONIfResponseIsOk<ApplicationDetailsDto>(response)
   } catch (e) {
     const error = (e as RestError).errorDto
     throw new RestError('Failed to transition application', error)
+  }
+}
+
+async function archive(id: number, locale: string): Promise<void> {
+  try {
+    const response = await fetchFromApi(`/application/${id}/archive`, locale, {
+      method: 'PUT'
+    })
+    await extractErrorIfResponseIsNotOk(response)
+  } catch (e) {
+    const error = (e as RestError).errorDto
+    throw new RestError('Failed to archive application', error)
   }
 }
 
@@ -113,5 +128,6 @@ export default {
   search,
   save,
   transition,
+  archive,
   deleteApplication
 }

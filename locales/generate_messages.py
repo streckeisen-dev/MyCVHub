@@ -7,6 +7,17 @@ import re
 import glob
 import argparse
 
+from yaml.resolver import Resolver
+
+for ch in "OoYyNn":
+    if len(Resolver.yaml_implicit_resolvers[ch]) == 1:
+        del Resolver.yaml_implicit_resolvers[ch]
+    else:
+        Resolver.yaml_implicit_resolvers[ch] = [
+            x for x in
+            Resolver.yaml_implicit_resolvers[ch] if x[0] != 'tag:yaml.org,2002:bool'
+        ]
+
 # Load the YAML file
 def load_yaml(yaml_file):
     with open(yaml_file, 'r', encoding='utf-8') as file:
@@ -96,7 +107,7 @@ def generate_i18n_files(gen_type, frontend_output_dir, backend_output_dir, key_p
 
     # Find and load all YAML files
     yaml_files = glob.glob(os.path.join('./', 'messages_*.yml'))
-    
+
     for yaml_file in yaml_files:
         data = load_yaml(yaml_file)
 
@@ -118,8 +129,8 @@ def generate_i18n_files(gen_type, frontend_output_dir, backend_output_dir, key_p
 
 parser = argparse.ArgumentParser(description="Generate i18n files for frontend and backend.")
 parser.add_argument(
-    "--type", 
-    choices=["all", "frontend", "backend"], 
+    "--type",
+    choices=["all", "frontend", "backend"],
     default="all",
     help="Specify which files to generate: 'all', 'frontend', or 'backend'."
 )

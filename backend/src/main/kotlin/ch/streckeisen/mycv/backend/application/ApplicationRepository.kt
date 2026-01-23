@@ -13,12 +13,14 @@ interface ApplicationRepository : JpaRepository<ApplicationEntity, Long> {
             FROM ApplicationEntity a
             WHERE a.account.id = :accountId 
                 AND (:searchTerm IS NULL OR a.jobTitle LIKE %:searchTerm% OR a.company LIKE %:searchTerm%)
-                AND (:status IS NULL OR a.status = :status)"""
+                AND (:status IS NULL OR a.status = :status)
+                AND (:includeArchived = TRUE OR a.isArchived = FALSE)"""
     )
     fun searchByAccountId(
         @Param("accountId") accountId: Long,
         @Param("searchTerm") searchTerm: String? = null,
         @Param("status") status: ApplicationStatus? = null,
+        @Param("includeArchived") includeArchived: Boolean = false,
         pageable: Pageable
     ): Page<ApplicationEntity>
 
@@ -27,6 +29,7 @@ interface ApplicationRepository : JpaRepository<ApplicationEntity, Long> {
         SELECT NEW ch.streckeisen.mycv.backend.application.ApplicationStat(a.status, COUNT(a))
         FROM ApplicationEntity a
         WHERE a.account.id = :accountId
+            AND a.isArchived = FALSE
         GROUP BY a.status
     """
     )

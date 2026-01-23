@@ -22,12 +22,17 @@ import { CreateProfilePage } from '@/pages/profile/CreateProfilePage.tsx'
 import { EditProfilePage } from '@/pages/profile/EditProfilePage.tsx'
 import { ApplicationsPage } from '@/pages/applications/ApplicationsPage.tsx'
 import { AuthorizedUser } from '@/context/AuthorizationContext.tsx'
-import { CvDownloadPage } from '@/pages/cv/CvDownloadPage.tsx'
+import { CvDownloadPage } from '@/pages/download/CvDownloadPage.tsx'
 import { SecurityCheck } from '@/components/security/SecurityCheck.tsx'
 import { ApplicationDetailsPage } from '@/pages/applications/ApplicationDetailsPage.tsx'
 import { OAuthFailurePage } from '@/pages/account/oauth/OAuthFailurePage.tsx'
 import { TermsOfServicePage } from '@/pages/policy/TermsOfServicePage.tsx'
 import { AboutPage } from '@/AboutPage.tsx'
+import { ApplicationTemplateOverviewPage } from '@/pages/applicationTemplates/ApplicationTemplateOverviewPage.tsx'
+import { ApplicationTemplateDetailsPage } from '@/pages/applicationTemplates/ApplicationTemplateDetailsPage.tsx'
+import { AddApplicationTemplatePage } from '@/pages/applicationTemplates/AddApplicationTemplatePage.tsx'
+import { EditApplicationTemplatePage } from '@/pages/applicationTemplates/EditApplicationTemplatePage.tsx'
+import { CoverLetterDownloadPage } from '@/pages/download/CoverLetterDownloadPage.tsx'
 
 type MyCvRouteObject = Omit<RouteObject, 'children'> & {
   id: string
@@ -136,13 +141,39 @@ const ROUTE_DEFINITIONS = defineRoutes([
         children: [
           {
             id: 'ApplicationsOverview',
-            index: true,
+            path: 'overview',
             element: <ApplicationsPage />
           },
           {
             id: 'ApplicationDetail',
             path: ':id',
             element: <ApplicationDetailsPage />
+          },
+          {
+            id: 'ApplicationTemplateRoot',
+            path: 'templates',
+            children: [
+              {
+                id: 'ApplicationTemplateOverview',
+                index: true,
+                element: <ApplicationTemplateOverviewPage />
+              },
+              {
+                id: 'AddApplicationTemplate',
+                path: 'add',
+                element: <AddApplicationTemplatePage />
+              },
+              {
+                id: 'EditApplicationTemplate',
+                path: 'edit/:id',
+                element: <EditApplicationTemplatePage />
+              },
+              {
+                id: 'ApplicationTemplateDetails',
+                path: ':id',
+                element: <ApplicationTemplateDetailsPage />
+              }
+            ]
           }
         ]
       },
@@ -163,9 +194,20 @@ const ROUTE_DEFINITIONS = defineRoutes([
         ]
       },
       {
-        id: 'CvDownload',
-        path: 'download/cv',
-        element: <CvDownloadPage />
+        id: 'DownloadRoot',
+        path: 'download',
+        children: [
+          {
+            id: 'CvDownload',
+            path: 'cv',
+            element: <CvDownloadPage />
+          },
+          {
+            id: 'CoverLetterDownload',
+            path: 'cover-letter',
+            element: <CoverLetterDownloadPage />
+          }
+        ]
       },
       {
         id: 'About',
@@ -313,7 +355,7 @@ export function getRoutePath(routeId: RouteId, hash?: string, ...params: string[
   return path
 }
 
-interface NavItemConfig {
+export interface NavItemLeaf {
   id: string
   label: string
   href: string | ((user: AuthorizedUser | undefined) => string)
@@ -321,7 +363,16 @@ interface NavItemConfig {
   newTab?: boolean
 }
 
-const navItems: NavItemConfig[] = [
+export interface NavItemNode {
+  id: string,
+  label: string,
+  predicate: (user: AuthorizedUser | undefined) => boolean,
+  children: NavItemLeaf[]
+}
+
+export type NavItemConfig = NavItemNode | NavItemLeaf
+
+const NAV_ITEMS: NavItemConfig[] = [
   {
     id: 'home',
     label: 'app.home',
@@ -342,16 +393,42 @@ const navItems: NavItemConfig[] = [
     newTab: true
   },
   {
-    id: 'cvDownload',
-    label: 'app.generateCV',
-    href: getRoutePath(RouteId.CvDownload),
-    predicate: (user: AuthorizedUser | undefined) => user?.hasProfile ?? false
-  },
-  {
     id: 'applications',
     label: 'application.title',
-    href: getRoutePath(RouteId.ApplicationsOverview),
-    predicate: (user: AuthorizedUser | undefined) => user?.hasProfile ?? false
+    predicate: (user: AuthorizedUser | undefined) => user?.hasProfile ?? false,
+    children: [
+      {
+        id: 'applicationsOverview',
+        label: 'application.overview',
+        href: getRoutePath(RouteId.ApplicationsOverview),
+        predicate: () => true
+      },
+      {
+        id: 'applicationTemplates',
+        label: 'applicationTemplate.title',
+        href: getRoutePath(RouteId.ApplicationTemplateOverview),
+        predicate: () => true
+      }
+    ]
+  },
+  {
+    id: 'downloads',
+    label: 'downloads.title',
+    predicate: (user: AuthorizedUser | undefined) => user?.hasProfile ?? false,
+    children: [
+      {
+        id: 'cvDownload',
+        label: 'cv.name',
+        href: getRoutePath(RouteId.CvDownload),
+        predicate: () => true
+      },
+      {
+        id: 'coverLetterDownload',
+        label: 'coverLetter.name',
+        href: getRoutePath(RouteId.CoverLetterDownload),
+        predicate: () => true
+      }
+    ]
   },
   {
     id: 'about',
@@ -364,7 +441,7 @@ const navItems: NavItemConfig[] = [
 export const SITE_CONFIG = {
   name: 'MyCVHub',
   description: 'Create beautiful CVs and keep track of your job applications.',
-  navItems: navItems,
+  navItems: NAV_ITEMS,
   accountMenu: [
     {
       label: 'account.title',

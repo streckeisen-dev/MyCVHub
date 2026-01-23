@@ -16,3 +16,12 @@ export function extractFormErrors(
     addErrorToast(errorMessage, error?.message ?? t('error.genericMessage'))
   }
 }
+
+export function extractNestedErrors(errorMessages: ErrorMessages, prefix: string): ErrorMessages {
+  return Object.keys(errorMessages)
+    .filter((key) => key.startsWith(prefix))
+    .reduce(
+      (prev, key) => ({ ...prev, [key.replace(prefix, '')]: errorMessages[key] }),
+      {}
+    )
+}

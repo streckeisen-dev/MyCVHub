@@ -1,1 +1,0 @@
-export type AuthResponseDto = { language: undefined | string };

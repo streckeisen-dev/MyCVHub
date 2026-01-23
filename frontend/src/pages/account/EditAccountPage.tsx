@@ -13,7 +13,7 @@ import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import { RestError } from '@/types/RestError.ts'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { AuthorizationContext } from '@/context/AuthorizationContext.tsx'
-import { FormButtons } from '@/components/FormButtons.tsx'
+import { FormButtons } from '@/components/btn/FormButtons.tsx'
 import { extractFormErrors } from '@/helpers/FormHelper.ts'
 
 export function EditAccountPage(): React.ReactNode {

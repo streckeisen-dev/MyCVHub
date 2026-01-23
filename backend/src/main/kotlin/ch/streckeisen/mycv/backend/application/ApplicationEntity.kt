@@ -26,6 +26,7 @@ class ApplicationEntity(
     val updatedAt: LocalDateTime? = null,
     val source: String? = null,
     val description: String? = null,
+    val isArchived: Boolean = false,
 
     @OneToMany(mappedBy = "application", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
     val history: List<ApplicationHistoryEntity> = listOf(),

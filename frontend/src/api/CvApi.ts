@@ -1,11 +1,7 @@
 import { CVStyleDto } from '@/types/cv/CVStyleDto.ts'
-import {
-  extractErrorIfResponseIsNotOk,
-  fetchFromApi,
-  getJSONIfResponseIsOk
-} from '@/api/ApiHelper.ts'
+import { extractErrorIfResponseIsNotOk, fetchFromApi, getJSONIfResponseIsOk } from '@/api/ApiHelper.ts'
 import { RestError } from '@/types/RestError.ts'
-import { CVGenerationRequestDto } from '@/types/cv/CVGenerationRequestDto.ts'
+import { CvConfigurationRequestDto } from '@/types/cv/CvConfigurationRequestDto.ts'
 
 async function getCVStyles(locale: string): Promise<CVStyleDto[]> {
   try {
@@ -18,18 +14,16 @@ async function getCVStyles(locale: string): Promise<CVStyleDto[]> {
 }
 
 async function getCV(
-  style: string,
-  generationRequest: CVGenerationRequestDto,
+  generationRequest: CvConfigurationRequestDto,
   locale: string
 ): Promise<Blob | MediaSource> {
   try {
-    const response = await fetchFromApi(`/cv/generate?style=${style}`, locale, {
+    const response = await fetchFromApi('/cv/generate', locale, {
       method: 'POST',
       body: JSON.stringify(generationRequest)
     })
     await extractErrorIfResponseIsNotOk(response)
-    const blob = await response.blob()
-    return blob
+    return await response.blob()
   } catch (e) {
     const error = (e as RestError).errorDto
     throw new RestError('Failed to generate CV', error)

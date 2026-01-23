@@ -3,14 +3,14 @@ import { Chip, ChipVariantProps } from '@heroui/react'
 import { ApplicationStatusDto } from '@/types/application/ApplicationStatusDto.ts'
 
 const STATUS_COLOR_MAP: Record<string, ChipVariantProps['color']> = {
-  UNSENT: 'default',
-  WAITING_FOR_FIRST_RESPONSE: 'secondary',
+  UNSENT: 'primary',
+  WAITING_FOR_FIRST_RESPONSE: 'primary',
   REJECTED: 'danger',
   INTERVIEW_SCHEDULED: 'secondary',
   WAITING_FOR_INTERVIEW_FEEDBACK: 'secondary',
   OFFER_RECEIVED: 'secondary',
-  OFFER_DECLINED: 'warning',
-  WITHDRAWN: 'warning',
+  OFFER_DECLINED: 'default',
+  WITHDRAWN: 'default',
   HIRED: 'success'
 }
 

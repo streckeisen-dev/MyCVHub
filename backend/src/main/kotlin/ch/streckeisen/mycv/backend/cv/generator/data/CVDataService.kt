@@ -30,7 +30,7 @@ class CVDataService(
         includedItems == null || includedItems.any { incl -> incl.id == w.id }
     }.map { w ->
         val includedExperience = includedItems?.find { incl -> incl.id == w.id }
-        if (includedItems != null && includedExperience != null && !includedExperience.includeDescription) {
+        if (includedItems != null && includedExperience != null && !(includedExperience.includeDescription ?: true)) {
             WorkExperienceEntity(
                 w.id,
                 w.jobTitle,
@@ -51,7 +51,7 @@ class CVDataService(
         includedItems == null || includedItems.any { incl -> incl.id == e.id }
     }.map { e ->
         val includedEducation = includedItems?.find { incl -> incl.id == e.id }
-        if (includedItems != null && includedEducation != null && !includedEducation.includeDescription) {
+        if (includedItems != null && includedEducation != null && !(includedEducation.includeDescription ?: true)) {
             EducationEntity(
                 e.id,
                 e.institution,
@@ -73,7 +73,7 @@ class CVDataService(
         includedItems == null || includedItems.any { incl -> incl.id == p.id }
     }.map { p ->
         val includedProject = includedItems?.find { incl -> incl.id == p.id }
-        if (includedItems != null && includedProject != null && !includedProject.includeDescription) {
+        if (includedItems != null && includedProject != null && !(includedProject.includeDescription ?: true)) {
             ProjectEntity(
                 p.id,
                 p.name,
@@ -89,9 +89,9 @@ class CVDataService(
 
     fun filterSkills(
         skills: List<SkillEntity>,
-        includedItems: List<IncludedCVItem>?
+        includedItems: List<Long>?
     ): List<SkillEntity> = skills.filter { s ->
-        includedItems == null || includedItems.any { incl -> incl.id == s.id }
+        includedItems == null || includedItems.any { skillId -> skillId == s.id }
     }
 
     fun createCVData(
@@ -100,7 +100,7 @@ class CVDataService(
         education: List<EducationEntity>,
         projects: List<ProjectEntity>,
         skills: List<SkillEntity>,
-        templateOptions: Map<String, String>
+        cvStyleOptions: Map<String, String>
     ): CVData {
         val locale = LocaleContextHolder.getLocale()
         val cvDateFormatter = DateTimeFormatter.ofPattern(CV_DATE_FORMAT, locale)
@@ -165,7 +165,7 @@ class CVDataService(
                     }
                 )
             },
-            templateOptions
+            cvStyleOptions
         )
     }
 

@@ -44,6 +44,13 @@ shared:
     source: "Source"
     comment: "Comment"
     acceptTos: "I have read and accept the following documents: "
+    documentName: "Document Name"
+    salutation: "Salutation"
+    addressee: "Addressee"
+    content: "Content"
+    closing: "Closing"
+    cvStyle: "CV Style"
+    documents: "Documents"
   
   validations: 
     required: "{label} must not be blank"
@@ -68,6 +75,17 @@ frontend:
   forms: 
     save: "Save"
     cancel: "Cancel"
+
+  crud:
+    edit: "Edit"
+    delete: "Delete"
+
+  general:
+    yes: "Yes"
+    no: "No"
+
+  gallery:
+    select: "Select"
   
   validations:
     fileSizeValidator: "File must be less than {maxSize} MB"
@@ -76,7 +94,6 @@ frontend:
   app:
     home: "Home"
     publicProfile: "Public Profile"
-    generateCV: "Download CV"
   
   home: 
     welcome: 
@@ -252,20 +269,38 @@ frontend:
       deleteError: "Failed to delete project"
 
   cv:
-    generate: "Download your CV as PDF"
-    intro: "Create and download your professional CV, ready to include with your job applications."
-    style: "CV Design"
-    styleExplanation: "Select your preferred CV template below — your information will be formatted automatically in the design you choose."
-    select: "Choose This Design"
-    download: "Download Your CV"
-    styleError: "Could not load the available CV Designs"
-    generateError: "There was a problem while creating your PDF-CV"
+    name: "CV"
+    title: "Create your CV"
+    description: "Your CV profile is saved and ready. Select your preferred template below, choose which entries to include, and customize the design. Use a personal application template to apply saved preferences instantly."
+    stylesHeading: "Select your preferred CV design"
+    imageAlt: "Example of {styleName} CV design"
+    styleError: "Could not load the available CV designs"
+    generateError: "There was a problem while creating your CV PDF"
     moreSoon: "More coming soon..."
     moreSoonText: "Soon you can choose from more CV designs."
     showDescription: "Show description"
     noItemsSelected: "You need to select at least one CV item"
     customizeContent: "Adjust CV Content"
     customizeTemplate: "Customize Template"
+
+  coverLetter:
+    name: "Cover Letter"
+    stylesError: "Could not load the available cover letter styles"
+    mirrorProfileImage: "Should the profile image be mirrored on the cover letter?"
+    applicationInfo: "Application Information"
+    knownContactPerson: "Do you have a contact person for this job application?"
+    contactPerson: "Contact Person"
+    addresseeHint: "If you don't have a contact person, you can use a generic addressee instead. For example, 'Recruiting-Team'."
+    salutationContactPersonHint: "Salutation for the cover letter that is combined with the contact persons last name. For example, 'Dear Mr. <Contact Person>'"
+    salutationAddresseeHint: "Salutation for the cover letter that is combined with the Addressee. For example, 'Dear <Addressee>'"
+    companyInfo: "Company Information"
+    coverLetterHint: "A good cover letter should answer the following questions:\n- Why are you interested in this position and this company?\n- What are your qualifications and experience?\n- Why are you suited for this position?\n- When are you available to start the position?"
+    closingHint: "The closing of your cover letter. For example 'Best regards'"
+    downloadFailed: "Failed to create your cover letter"
+    content: "Cover Letter Content"
+    download:
+      title: "Create your Cover Letter"
+      description: "Focus on your content while we handle the formatting. Enter your letter details, select your preferred style, and download a professionally designed PDF in seconds. Use a personal template to get there even quicker."
   
   theme:
     title: "Theme"
@@ -282,6 +317,7 @@ frontend:
 
   application:
     title: "Applications"
+    overview: "Overview"
     singular: "Application"
     notFound: "Application not found"
     noEntries: "You don't have any applications yet."
@@ -291,6 +327,11 @@ frontend:
     as: "as"
     details: "Application Details"
     back: "Back to Overview"
+    view: "View Application"
+    archived: "Archived"
+    includeArchived: "Include archived applications"
+    archivedDescription: "This application is archived."
+    hiredAutomation: "Do you want to automatically add this new position to your CV profile?"
     history:
       title: "Application History"
       from: "Old Status"
@@ -299,6 +340,11 @@ frontend:
     editor:
       add: "Add Application"
       edit: "Edit Application"
+      archive:
+        title: "Archive Application"
+        confirmationText: "If you go ahead and archive this application, it will be removed from your active applications and you won't be able to edit its content anymore."
+        archiveSuccess: "Application successfully archived"
+        archiveError: "Failed to archive application"
       delete:
         title: "Delete Application"
         confirmationText: "If you go ahead and delete this application, it will be permanently deleted. You will not be able to recover it. Are you sure you want to delete this application?"
@@ -308,6 +354,30 @@ frontend:
     loadingError: "Failed to load applications"
     statusLoadingError: "Failed to load application status filter"
     transitionError: "Failed to update application status"
+
+  applicationTemplate:
+    backToOverview: "Back to Overview"
+    title: "Application Templates"
+    singular: "Application Template"
+    noEntries: "No application templates yet."
+    cvContent: "CV Content"
+    applicationDocuments: "Application Documents"
+    applicationDocumentsHint: "Documents you need to submit with your application in addition to your cover letter. For example, a CV or degrees."
+    view: "View Application Template"
+    usageHint: "Select a template to apply saved preferences instantly."
+    editor:
+      add: "Add Application Template"
+      edit: "Edit Application Template"
+      saveError: "Failed to save application template"
+    delete:
+      title: "Delete Application Template"
+      confirmationText: "If you go ahead and delete this application template, the template will be permanently deleted. Are you sure you want to delete this application template?"
+      deleteSuccess: "Application template successfully deleted"
+      deleteError: "Failed to delete application template"
+
+  downloads:
+    title: "Downloads"
+    action: "Download"
   
   notFound:
     headline: "Where are you going?"
@@ -530,6 +600,7 @@ frontend:
       numberInformation: "Showing entries {start}-{end} of {total}"
     search: "Search"
     actions: "Actions"
+    resetFilter: "Reset Filters"
 
 backend:
   validations:
@@ -566,6 +637,16 @@ backend:
     accessDenied: "You don't have access to this project"
     validation:
       error: "Project validation failed"
+  applicationTemplate:
+    notFound: "Application template not found"
+    accessDenied: "You don't have access to this application template"
+    validation:
+      cvConfigurationMissing: "CV configuration is missing"
+      invalidCvStyle: "Invalid CV style"
+      invalidTemplate: "Application template is invalid"
+      unknownCvEntries: "Some referenced CV entries don't exist"
+      nameTaken: "Application template name is already taken"
+      coverLetterConfigurationMissing: "Cover letter configuration is missing"
   account:
     notFound: "Account not found"
     verification:
@@ -606,20 +687,43 @@ backend:
   cv:
     templateNotFound: "CV template not found"
     generationFailed: "Your PDF CV could not be generated"
-    noCvEntries: "There are no CV entries to generate a PDF"
     style:
       modern:
         name: "Modern CV"
-        description: "A slightly modified version of the <a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV template</a>, which is a variation of the <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX template."
+        description: "The Modern CV design is a traditional single-column design with personal details in the header and section dividers throughout. It is a classic and straightforward design with a clean, minimalist layout. This version is based on the <a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV template</a>, which is a variation of the popular <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX template."
       talendo:
         name: "Talendo"
-        description: "A slightly modified version of the CV template from the <a href=\"https://talendo.ch\">Talendo</a> Career Starter magazine."
+        description: "The Talendo design is a modern two-column design with a sidebar for personal details and a timeline layout for your professional history. It is clean, professional, and well-structured with clear visual hierarchy. This version is a variation of the CV template from the <a href=\"https://talendo.ch\">Talendo</a> Career Starter magazine."
         bannerBackground: "Banner Background Color"
-    templateOptions:
-      unsupported: "Template options are not supported for this CV style."
-      unknown: "Unknown template option"
-      invalid: "Invalid template option"
-      missing: "Missing template option"
+    validation:
+      noCvEntries: "There are no CV entries to generate a PDF"
+      invalidConfig: "CV configuration is invalid"
+      invalidStyle: "This CV design doesn't exist"
+      incompleteProfile: "Your CV profile is not ready to generate CVs"
+      incompleteContentConfig: "CV content configuration is incomplete"
+      unknownCvEntries: "CV content configuration references unknown CV entries"
+      cvStyleOptions:
+        unknown: "Unknown template option"
+        invalid: "Invalid template option"
+        missing: "Missing template option"
+
+  coverletter:
+    templateNotFound: "Cover letter template not found"
+    generationFailed: "Your cover letter could not be generated"
+    incompleteAccount: "Your account is not ready to generate cover letters"
+    style:
+      modern:
+        name: "Modern CV"
+        description: "The Modern CV design is a classic cover letter format with sender and recipient details at the top, followed by a formal letter body. The design is traditional and professional with clean spacing and standard business letter structure. This version is based on the <a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV template</a>, which is a variation of the popular <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX template."
+
+    validation:
+      invalidLanguage: "Language is invalid"
+      invalidStyle: "Cover letter style is invalid"
+      applicationMissing: "Application information is required for cover letter generation"
+      addresseeOrContactMissing: "Either a contact person or an addressee is required for the cover letter greeting"
+      companyAddressMissing: "Company address is required"
+      invalidDocuments: "'Documents' are invalid"
+      error: "Cover letter generation request is invalid"
 
   application:
     transition:
@@ -629,7 +733,7 @@ backend:
       interviewEnded: "Interview ended"
       offerReceived: "Received job offer"
       offerAccepted: "Accepted job offer"
-      offerRejected: "Rejected job offer"
+      offerDeclined: "Declined job offer"
       withdrawn: "Withdrawn"
       notAllowed: "Requested application transition is not allowed"
       notFound: "Requested application transition does not exist"
@@ -648,6 +752,8 @@ backend:
       transitionError: "Your transition request is invalid"
     notFound: "Application not found"
     accessDenied: "You don't have access to this application"
+    archived: "You can't modify archived applications"
+    archiveOpenNotAllowed: "You can't archive an open application"
 
   exceptions:
     db: "A database error occurred. Please contact the administrator"

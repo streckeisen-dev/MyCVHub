@@ -9,7 +9,7 @@ import { PasswordForm, PasswordFormState } from '@/components/account/PasswordFo
 import { AccountForm } from '@/components/account/AccountForm.tsx'
 import { Form } from '@heroui/react'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
-import { FormButtons } from '@/components/FormButtons.tsx'
+import { FormButtons } from '@/components/btn/FormButtons.tsx'
 import { PasswordRequirements } from '@/components/account/PasswordRequirements.tsx'
 import { toDateString } from '@/helpers/DateHelper.ts'
 import AccountApi from '@/api/AccountApi.ts'
