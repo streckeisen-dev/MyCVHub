@@ -24,7 +24,7 @@ import { Key } from '@react-types/shared'
 import { formatDateTime } from '@/helpers/DateHelper.ts'
 import { ApplicationStatusDto } from '@/types/application/ApplicationStatusDto.ts'
 import { useAsyncList } from '@react-stately/data'
-import ApplicationApi, { ApplicationSearchRequest } from '@/api/ApplicationApi.ts'
+import ApplicationApi from '@/api/ApplicationApi.ts'
 import { RestError } from '@/types/RestError.ts'
 import { addErrorToast } from '@/helpers/ToastHelper.ts'
 import { FaSearch } from 'react-icons/fa'
@@ -38,6 +38,7 @@ import { ArchiveApplicationButton } from '@/components/application/ArchiveApplic
 import { TableButton } from '@/components/btn/TableButton.tsx'
 import { FaArrowRotateLeft, FaEye } from 'react-icons/fa6'
 import ApplicationFilterService from '@/components/application/ApplicationFilterService.ts'
+import { ApplicationSearchRequest } from '@/types/application/ApplicationSearchRequest.ts'
 
 const ROWS_PER_PAGE_OPTIONS = ['5', '10', '25']
 

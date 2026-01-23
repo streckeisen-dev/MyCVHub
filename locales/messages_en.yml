@@ -690,10 +690,10 @@ backend:
     style:
       modern:
         name: "Modern CV"
-        description: "A slightly modified version of the <a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV template</a>, which is a variation of the <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX template."
+        description: "The Modern CV design is a traditional single-column design with personal details in the header and section dividers throughout. It is a classic and straightforward design with a clean, minimalist layout. This version is based on the <a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV template</a>, which is a variation of the popular <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX template."
       talendo:
         name: "Talendo"
-        description: "A slightly modified version of the CV template from the <a href=\"https://talendo.ch\">Talendo</a> Career Starter magazine."
+        description: "The Talendo design is a modern two-column design with a sidebar for personal details and a timeline layout for your professional history. It is clean, professional, and well-structured with clear visual hierarchy. This version is a variation of the CV template from the <a href=\"https://talendo.ch\">Talendo</a> Career Starter magazine."
         bannerBackground: "Banner Background Color"
     validation:
       noCvEntries: "There are no CV entries to generate a PDF"
@@ -714,7 +714,7 @@ backend:
     style:
       modern:
         name: "Modern CV"
-        description: "The Modern CV design is a modern, clean and professional design for CVs and cover letters. This version is based on the <a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV template</a>, which is a variation of the popular <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX template."
+        description: "The Modern CV design is a classic cover letter format with sender and recipient details at the top, followed by a formal letter body. The design is traditional and professional with clean spacing and standard business letter structure. This version is based on the <a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV template</a>, which is a variation of the popular <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX template."
 
     validation:
       invalidLanguage: "Language is invalid"
