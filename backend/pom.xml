@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.0.1</version>
+		<version>4.0.2</version>
 		<relativePath/>
 	</parent>
 
@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>com.github.kagkarlsson</groupId>
 			<artifactId>db-scheduler-spring-boot-4-starter</artifactId>
-			<version>16.7.0</version>
+			<version>16.7.1</version>
 		</dependency>
 
 		<!-- for CV download -->
@@ -135,7 +135,7 @@
 		<dependency>
 			<groupId>com.googlecode.libphonenumber</groupId>
 			<artifactId>libphonenumber</artifactId>
-			<version>9.0.21</version>
+			<version>9.0.23</version>
 		</dependency>
 
         <dependency>
@@ -156,7 +156,7 @@
 		<dependency>
 			<groupId>io.mockk</groupId>
 			<artifactId>mockk-jvm</artifactId>
-			<version>1.14.7</version>
+			<version>1.14.9</version>
 			<scope>test</scope>
 		</dependency>
         <dependency>
