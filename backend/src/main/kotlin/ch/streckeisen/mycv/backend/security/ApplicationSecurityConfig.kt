@@ -45,11 +45,10 @@ class ApplicationSecurityConfig(
                         "/api/account/verification",
                         "/api/public/**",
                         "/api/auth/oauth2/**",
-                        "/actuator/**",
-                        "/ui/**",
-                        "/"
+                        "/actuator/**"
                     ).permitAll()
-                    .anyRequest().authenticated()
+                    .requestMatchers("/api/**").authenticated()
+                    .anyRequest().permitAll()
             }
             .formLogin { login ->
                 login.disable()
