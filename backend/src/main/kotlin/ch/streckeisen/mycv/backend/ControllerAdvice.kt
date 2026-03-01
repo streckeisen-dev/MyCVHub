@@ -45,7 +45,7 @@ class ControllerAdvice(
     @ExceptionHandler
     fun handleDatabaseError(ex: DataAccessException): ResponseEntity<ErrorDto> {
         logger.error(ex.message, ex)
-        return ResponseEntity.badRequest()
+        return ResponseEntity.internalServerError()
             .body(ErrorDto(messagesService.getMessage(DATA_ACCESS_ERROR_KEY)))
     }
 

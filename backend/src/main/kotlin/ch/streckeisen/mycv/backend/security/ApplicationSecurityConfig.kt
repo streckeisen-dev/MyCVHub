@@ -4,6 +4,7 @@ import ch.streckeisen.mycv.backend.account.auth.oauth.MyCvOAuth2AuthorizationReq
 import ch.streckeisen.mycv.backend.account.auth.oauth.OAuth2FailureHandler
 import ch.streckeisen.mycv.backend.account.auth.oauth.OAuth2SuccessHandler
 import ch.streckeisen.mycv.backend.locale.MessagesService
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationProvider
@@ -26,14 +27,28 @@ class ApplicationSecurityConfig(
     private val messagesService: MessagesService,
     private val oAuth2SuccessHandler: OAuth2SuccessHandler,
     private val oAuth2FailureHandler: OAuth2FailureHandler,
-    private val clientRegistrationRepository: ClientRegistrationRepository
+    private val clientRegistrationRepository: ClientRegistrationRepository,
+    @param:Value($$"${my-cv.security.cors.allowed-origins:}")
+    private val corsAllowedOrigins: String
 ) {
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf { csrf -> csrf.disable() }
             .authorizeHttpRequests { requests ->
-                requests.anyRequest().permitAll()
+                requests
+                    .requestMatchers(
+                        "/api/auth/login",
+                        "/api/auth/signup",
+                        "/api/auth/refresh",
+                        "/api/auth/logout",
+                        "/api/account/verification",
+                        "/api/public/**",
+                        "/api/auth/oauth2/**",
+                        "/actuator/**"
+                    ).permitAll()
+                    .requestMatchers("/api/**").authenticated()
+                    .anyRequest().permitAll()
             }
             .formLogin { login ->
                 login.disable()
@@ -78,8 +93,11 @@ class ApplicationSecurityConfig(
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.addAllowedOrigin("http://localhost:3000")
         configuration.allowCredentials = true
+        corsAllowedOrigins.split(",")
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+            .forEach { configuration.addAllowedOrigin(it) }
 
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)

@@ -79,5 +79,6 @@ export async function fetchFromApi(
    const headers = new Headers()
    headers.append('Content-Type', 'application/json')
    headers.append('Accept-Language', locale)
+   headers.append('X-Requested-With', 'XMLHttpRequest')
    return headers
  }

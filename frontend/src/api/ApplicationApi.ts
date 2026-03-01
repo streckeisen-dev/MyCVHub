@@ -5,7 +5,6 @@ import {
   fetchFromApi,
   getJSONIfResponseIsOk
 } from '@/api/ApiHelper.ts'
-import { RestError } from '@/types/RestError.ts'
 import { ApplicationUpdateRequestDto } from '@/types/application/ApplicationUpdateRequestDto.ts'
 import { ApplicationStatusDto } from '@/types/application/ApplicationStatusDto.ts'
 import { ApplicationDetailsDto } from '@/types/application/ApplicationDetailsDto.ts'
@@ -13,23 +12,13 @@ import { ApplicationTransitionRequestDto } from '@/types/application/Application
 import { ApplicationSearchRequest } from '@/types/application/ApplicationSearchRequest.ts'
 
 async function getApplication(id: number, locale: string): Promise<ApplicationDetailsDto> {
-  try {
-    const response = await fetchFromApi(`/application/${id}`, locale)
-    return await getJSONIfResponseIsOk<ApplicationDetailsDto>(response)
-  } catch (e) {
-    const error = (e as RestError).errorDto
-    throw new RestError('Failed to load application', error)
-  }
+  const response = await fetchFromApi(`/application/${id}`, locale)
+  return getJSONIfResponseIsOk<ApplicationDetailsDto>(response)
 }
 
 async function getApplicationStatuses(locale: string): Promise<ApplicationStatusDto[]> {
-  try {
-    const response = await fetchFromApi('/application/statuses', locale)
-    return await getJSONIfResponseIsOk<ApplicationStatusDto[]>(response)
-  } catch (e) {
-    const error = (e as RestError).errorDto
-    throw new RestError('Failed to load application statuses', error)
-  }
+  const response = await fetchFromApi('/application/statuses', locale)
+  return getJSONIfResponseIsOk<ApplicationStatusDto[]>(response)
 }
 
 async function search(
@@ -54,31 +43,21 @@ async function search(
     params.append('sort', searchRequest.sort.column as string)
     params.append('sortDirection', searchRequest.sort.direction)
   }
-  try {
-    const response = await fetchFromApi(`/application/search?${params.toString()}`, locale, {
-      signal
-    })
-    return await getJSONIfResponseIsOk<Page<ApplicationSearchDto>>(response)
-  } catch (e) {
-    const error = (e as RestError).errorDto
-    throw new RestError('Failed to load applications', error)
-  }
+  const response = await fetchFromApi(`/application/search?${params.toString()}`, locale, {
+    signal
+  })
+  return getJSONIfResponseIsOk<Page<ApplicationSearchDto>>(response)
 }
 
 async function save(
   updateRequest: ApplicationUpdateRequestDto,
   locale: string
 ): Promise<ApplicationDetailsDto> {
-  try {
-    const response = await fetchFromApi('/application', locale, {
-      method: 'POST',
-      body: JSON.stringify(updateRequest)
-    })
-    return await getJSONIfResponseIsOk<ApplicationDetailsDto>(response)
-  } catch (e) {
-    const error = (e as RestError).errorDto
-    throw new RestError('Failed to save application', error)
-  }
+  const response = await fetchFromApi('/application', locale, {
+    method: 'POST',
+    body: JSON.stringify(updateRequest)
+  })
+  return getJSONIfResponseIsOk<ApplicationDetailsDto>(response)
 }
 
 async function transition(
@@ -86,40 +65,25 @@ async function transition(
   request: ApplicationTransitionRequestDto,
   locale: string
 ): Promise<ApplicationDetailsDto> {
-  try {
-    const response = await fetchFromApi(`/application/transition/${transitionId}`, locale, {
-      method: 'PUT',
-      body: JSON.stringify(request)
-    })
-    return await getJSONIfResponseIsOk<ApplicationDetailsDto>(response)
-  } catch (e) {
-    const error = (e as RestError).errorDto
-    throw new RestError('Failed to transition application', error)
-  }
+  const response = await fetchFromApi(`/application/transition/${transitionId}`, locale, {
+    method: 'PUT',
+    body: JSON.stringify(request)
+  })
+  return getJSONIfResponseIsOk<ApplicationDetailsDto>(response)
 }
 
 async function archive(id: number, locale: string): Promise<void> {
-  try {
-    const response = await fetchFromApi(`/application/${id}/archive`, locale, {
-      method: 'PUT'
-    })
-    await extractErrorIfResponseIsNotOk(response)
-  } catch (e) {
-    const error = (e as RestError).errorDto
-    throw new RestError('Failed to archive application', error)
-  }
+  const response = await fetchFromApi(`/application/${id}/archive`, locale, {
+    method: 'PUT'
+  })
+  await extractErrorIfResponseIsNotOk(response)
 }
 
 async function deleteApplication(id: number, locale: string): Promise<void> {
-  try {
-    const response = await fetchFromApi(`/application/${id}`, locale, {
-      method: 'DELETE'
-    })
-    await extractErrorIfResponseIsNotOk(response)
-  } catch (e) {
-    const error = (e as RestError).errorDto
-    throw new RestError('Failed to delete application', error)
-  }
+  const response = await fetchFromApi(`/application/${id}`, locale, {
+    method: 'DELETE'
+  })
+  await extractErrorIfResponseIsNotOk(response)
 }
 
 export default {

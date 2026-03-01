@@ -61,11 +61,11 @@ export function AuthorizationProvider(props: Readonly<PropsWithChildren>): React
       }
     }
     getAuth()
-  }, [])
+  }, [i18n])
 
   useEffect(() => {
     handleUserUpdate()
-  }, [])
+  }, [handleUserUpdate])
 
   const handleLogout = useCallback<LogoutFunction>(() => {
     setAuthUser(undefined)
