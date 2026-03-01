@@ -80,10 +80,11 @@ db-scheduler:
 my-cv:
   security:
     jwt:
-      secret: ${JWT_SECRET}
       access:
+        secret: ${JWT_ACCESS_SECRET}
         expiration-time: 3600000
       refresh:
+        secret: ${JWT_REFRESH_SECRET}
         expiration-time: 432000000
   account:
     verification:

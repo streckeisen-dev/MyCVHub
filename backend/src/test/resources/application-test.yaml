@@ -19,7 +19,10 @@ cloudinary:
 my-cv:
   security:
     jwt:
-      secret: fake-jwt-secret
+      access:
+        secret: wHqRTjE8tXtgm/zhvn1qmmxLkcA+MvjnbX0aLkNhLm4=
+      refresh:
+        secret: AXElBHoFbc5nZ2QACGIsRHY/adM8f7WDRaoI5KsJBGA=
   frontend:
     base-url: http://localhost:3000/ui
 

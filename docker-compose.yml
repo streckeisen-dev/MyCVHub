@@ -17,7 +17,8 @@ services:
       - MYCV_DATASOURCE=jdbc:postgresql://postgres:5432/mycv
       - MYCV_DB_USERNAME=postgres
       - MYCV_DB_PASSWORD=postgres
-      - JWT_SECRET=wHqRTjE8tXtgm/zhvn1qmmxLkcA+MvjnbX0aLkNhLm4=
+      - JWT_ACCESS_SECRET=wHqRTjE8tXtgm/zhvn1qmmxLkcA+MvjnbX0aLkNhLm4=
+      - JWT_REFRESH_SECRET=AXElBHoFbc5nZ2QACGIsRHY/adM8f7WDRaoI5KsJBGA=
       - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
       - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
       - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}

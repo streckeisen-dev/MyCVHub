@@ -19,7 +19,7 @@ class UserDetailsServiceImpl(
         if (username.isNullOrBlank()) {
             return Result.failure(IllegalArgumentException("Username cannot be null or blank"))
         }
-        val applicantAccount: ApplicantAccountEntity = applicantAccountRepository.findByUsername(username)
+        val applicantAccount: ApplicantAccountEntity = applicantAccountRepository.findByUsernameWithDetails(username)
             .getOrElse { return Result.failure(UsernameNotFoundException("There is no user with username $username")) }
 
         return Result.success(MyCvUserDetails(applicantAccount))

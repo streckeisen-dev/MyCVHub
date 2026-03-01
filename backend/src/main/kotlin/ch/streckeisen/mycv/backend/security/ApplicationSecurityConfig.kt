@@ -33,7 +33,20 @@ class ApplicationSecurityConfig(
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf { csrf -> csrf.disable() }
             .authorizeHttpRequests { requests ->
-                requests.anyRequest().permitAll()
+                requests
+                    .requestMatchers(
+                        "/api/auth/login",
+                        "/api/auth/signup",
+                        "/api/auth/refresh",
+                        "/api/auth/logout",
+                        "/api/account/verification",
+                        "/api/public/**",
+                        "/api/auth/oauth2/**",
+                        "/actuator/**",
+                        "/ui/**",
+                        "/"
+                    ).permitAll()
+                    .anyRequest().authenticated()
             }
             .formLogin { login ->
                 login.disable()

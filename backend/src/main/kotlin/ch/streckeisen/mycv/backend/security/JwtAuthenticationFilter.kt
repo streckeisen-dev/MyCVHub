@@ -33,7 +33,7 @@ class JwtAuthenticationFilter(
         }
 
         try {
-            val userEmail = jwtService.extractUsername(accessToken)
+            val userEmail = jwtService.extractUsernameFromAccessToken(accessToken)
 
             val authentication = SecurityContextHolder.getContext().authentication
             if (userEmail != null && authentication == null) {
@@ -57,7 +57,7 @@ class JwtAuthenticationFilter(
     private fun authenticateUser(userEmail: String, accessToken: String, request: HttpServletRequest) {
         userDetailsService.loadUserByUsernameAsResult(userEmail)
             .onSuccess { userDetails ->
-                if (jwtService.isTokenValid(accessToken, userDetails)) {
+                if (jwtService.isAccessTokenValid(accessToken, userDetails)) {
                     val principal = MyCvPrincipal(
                         userDetails.username,
                         userDetails.account.id!!,
