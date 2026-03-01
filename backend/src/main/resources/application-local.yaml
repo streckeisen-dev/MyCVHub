@@ -10,6 +10,8 @@ logging:
 
 my-cv:
   security:
+    cors:
+      allowed-origins: http://localhost:3000
     jwt:
       access:
         secret: wHqRTjE8tXtgm/zhvn1qmmxLkcA+MvjnbX0aLkNhLm4=

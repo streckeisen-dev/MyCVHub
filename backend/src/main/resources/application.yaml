@@ -79,6 +79,8 @@ db-scheduler:
   polling-interval: 1s
 my-cv:
   security:
+    cors:
+      allowed-origins: ${MYCV_CORS_ALLOWED_ORIGINS:}
     jwt:
       access:
         secret: ${JWT_ACCESS_SECRET}

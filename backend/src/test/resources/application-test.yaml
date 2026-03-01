@@ -18,6 +18,8 @@ cloudinary:
 
 my-cv:
   security:
+    cors:
+      allowed-origins:
     jwt:
       access:
         secret: wHqRTjE8tXtgm/zhvn1qmmxLkcA+MvjnbX0aLkNhLm4=
