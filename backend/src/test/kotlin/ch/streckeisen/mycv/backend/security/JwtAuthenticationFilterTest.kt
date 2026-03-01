@@ -95,8 +95,8 @@ class JwtAuthenticationFilterTest {
             every { name } returns ACCESS_TOKEN_NAME
             every { value } returns token
         })
-        every { jwtService.extractUsername(eq(token)) } returns userName
-        every { jwtService.isTokenValid(any(), any()) } returns true
+        every { jwtService.extractUsernameFromAccessToken(eq(token)) } returns userName
+        every { jwtService.isAccessTokenValid(any(), any()) } returns true
         every { userDetailsService.loadUserByUsernameAsResult(eq(userName)) } returns Result.success(userDetails)
 
         jwtAuthenticationFilter.doFilter(request, response, filterChain)
@@ -120,7 +120,7 @@ class JwtAuthenticationFilterTest {
             every { name } returns ACCESS_TOKEN_NAME
             every { value } returns "abcdefg"
         })
-        every { jwtService.extractUsername(eq("abcdefg")) } returns "username"
+        every { jwtService.extractUsernameFromAccessToken(eq("abcdefg")) } returns "username"
         val authToken = UsernamePasswordAuthenticationToken(MyCvPrincipal("username", 1, AccountStatus.VERIFIED, Locale.ENGLISH), null, listOf())
         authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
         SecurityContextHolder.getContext().authentication = authToken
@@ -145,7 +145,7 @@ class JwtAuthenticationFilterTest {
             every { name } returns ACCESS_TOKEN_NAME
             every { value } returns "abcdefg"
         })
-        every { jwtService.extractUsername(any()) } throws mockk<ExpiredJwtException>()
+        every { jwtService.extractUsernameFromAccessToken(any()) } throws mockk<ExpiredJwtException>()
 
         jwtAuthenticationFilter.doFilter(request, response, filterChain)
 
@@ -163,7 +163,7 @@ class JwtAuthenticationFilterTest {
             every { name } returns ACCESS_TOKEN_NAME
             every { value } returns "abcdefg"
         })
-        every { jwtService.extractUsername(any()) } throws RuntimeException("Something went wrong")
+        every { jwtService.extractUsernameFromAccessToken(any()) } throws RuntimeException("Something went wrong")
 
         jwtAuthenticationFilter.doFilter(request, response, filterChain)
 

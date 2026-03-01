@@ -8,6 +8,9 @@ import java.util.Optional
 interface ApplicantAccountRepository : CrudRepository<ApplicantAccountEntity, Long> {
     fun findByUsername(username: String): Optional<ApplicantAccountEntity>
 
+    @Query("SELECT a FROM ApplicantAccountEntity a LEFT JOIN FETCH a.accountDetails WHERE a.username = :username")
+    fun findByUsernameWithDetails(username: String): Optional<ApplicantAccountEntity>
+
     @Query("SELECT a FROM ApplicantAccountEntity a WHERE a.accountDetails.email = :email")
     fun findByEmail(email: String): Optional<ApplicantAccountEntity>
 

@@ -4,52 +4,31 @@ import {
   fetchFromApi,
   getJSONIfResponseIsOk
 } from '@/api/ApiHelper.ts'
-import { RestError } from '@/types/RestError.ts'
 import { ApplicationTemplateUpdateDto } from '@/types/applicationTemplate/ApplicationTemplateUpdateDto.ts'
 
 async function getApplicationTemplates(locale: string): Promise<ApplicationTemplateDto[]> {
-  try {
-    const response = await fetchFromApi('/application-template', locale)
-    return await getJSONIfResponseIsOk<ApplicationTemplateDto[]>(response)
-  } catch (e) {
-    const error = (e as RestError).errorDto
-    throw new RestError('Failed to load application templates', error)
-  }
+  const response = await fetchFromApi('/application-template', locale)
+  return getJSONIfResponseIsOk<ApplicationTemplateDto[]>(response)
 }
 
 async function getApplicationTemplate(id: number, locale: string): Promise<ApplicationTemplateDto> {
-  try {
-    const response = await fetchFromApi(`/application-template/${id}`, locale)
-    return await getJSONIfResponseIsOk<ApplicationTemplateDto>(response)
-  } catch (e) {
-    const error = (e as RestError).errorDto
-    throw new RestError('Failed to load application template', error)
-  }
+  const response = await fetchFromApi(`/application-template/${id}`, locale)
+  return getJSONIfResponseIsOk<ApplicationTemplateDto>(response)
 }
 
 async function saveApplicationTemplate(request: ApplicationTemplateUpdateDto, locale: string): Promise<ApplicationTemplateDto> {
-  try {
-    const response = await fetchFromApi('/application-template', locale, {
-      method: 'POST',
-      body: JSON.stringify(request)
-    })
-    return await getJSONIfResponseIsOk<ApplicationTemplateDto>(response)
-  } catch (e) {
-    const error = (e as RestError).errorDto
-    throw new RestError('Failed to save application template', error)
-  }
+  const response = await fetchFromApi('/application-template', locale, {
+    method: 'POST',
+    body: JSON.stringify(request)
+  })
+  return getJSONIfResponseIsOk<ApplicationTemplateDto>(response)
 }
 
 async function deleteApplicationTemplate(id: number, locale: string): Promise<void> {
-  try {
-    const response = await fetchFromApi(`/application-template/${id}`, locale, {
-      method: 'DELETE'
-    })
-    await extractErrorIfResponseIsNotOk(response)
-  } catch (e) {
-    const error = (e as RestError).errorDto
-    throw new RestError('Failed to delete application template', error)
-  }
+  const response = await fetchFromApi(`/application-template/${id}`, locale, {
+    method: 'DELETE'
+  })
+  await extractErrorIfResponseIsNotOk(response)
 }
 
 export default {

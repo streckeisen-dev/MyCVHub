@@ -81,9 +81,9 @@ class AuthTokenServiceTest {
             }
         )
 
-        every { jwtService.extractUsername(eq(oldRefreshToken)) } returns name
+        every { jwtService.extractUsernameFromRefreshToken(eq(oldRefreshToken)) } returns name
         every { userDetailsService.loadUserByUsernameAsResult(eq(name)) } returns Result.success(user)
-        every { jwtService.isTokenValid(any(), any()) } returns true
+        every { jwtService.isRefreshTokenValid(any(), any()) } returns true
 
         val validationResult = authTokenService.validateRefreshToken(oldRefreshToken)
 
@@ -94,7 +94,7 @@ class AuthTokenServiceTest {
     @Test
     fun testVerifyRefreshTokenWithInvalidToken() {
         val oldRefreshToken = "old_refresh_token"
-        every { jwtService.extractUsername(eq(oldRefreshToken)) } returns null
+        every { jwtService.extractUsernameFromRefreshToken(eq(oldRefreshToken)) } returns null
         every { userDetailsService.loadUserByUsernameAsResult(any()) } returns Result.failure(BadCredentialsException(""))
 
         val refreshResult = authTokenService.validateRefreshToken(oldRefreshToken)
@@ -113,9 +113,9 @@ class AuthTokenServiceTest {
             }
         )
 
-        every { jwtService.extractUsername(eq(oldRefreshToken)) } returns name
+        every { jwtService.extractUsernameFromRefreshToken(eq(oldRefreshToken)) } returns name
         every { userDetailsService.loadUserByUsernameAsResult(eq(name)) } returns Result.success(user)
-        every { jwtService.isTokenValid(any(), any()) } returns false
+        every { jwtService.isRefreshTokenValid(any(), any()) } returns false
 
         val refreshResult = authTokenService.validateRefreshToken(oldRefreshToken)
 

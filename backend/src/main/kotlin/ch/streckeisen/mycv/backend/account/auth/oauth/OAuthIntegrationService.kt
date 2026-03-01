@@ -177,8 +177,6 @@ class OAuthIntegrationService(
         return when (oAuthType) {
             OAuthType.GITHUB -> Result.success(githubService.getUserEmail(oauthId, accessToken))
                 .getOrElse { Result.failure(it) }
-
-            OAuthType.LINKED_IN -> TODO()
         }
     }
 }
