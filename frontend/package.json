@@ -41,7 +41,7 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@eslint-react/eslint-plugin": "^2.13.0",
+    "@eslint-react/eslint-plugin": "^4.2.1",
     "@eslint/js": "^10.0.1",
     "@types/jest": "^30.0.0",
     "@types/lodash.debounce": "^4",
