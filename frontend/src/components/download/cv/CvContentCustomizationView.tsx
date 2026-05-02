@@ -35,7 +35,7 @@ export function CvContentCustomizationView(props: CvCustomizationViewProps) {
   const { t } = useTranslation()
   const { profile, value, onChange, disabled, errorMessages } = props
 
-  const groupedSkills = profile.skills.reduce(groupSkills, {})
+  const groupedSkills = profile.skills.reduce((skills: KeyValueObject<SkillDto[]>, skill: SkillDto) => groupSkills(skills, skill), {})
 
   function handleWorkExperienceChange(experiences: SelectedCvContent[]) {
     onChange({
