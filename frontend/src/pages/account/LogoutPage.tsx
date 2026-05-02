@@ -14,6 +14,8 @@ export function LogoutPage(): React.ReactNode {
   const { user, handleLogout } = use(AuthorizationContext)
 
   useEffect(() => {
+    let navigateBackTimeout: ReturnType<typeof setTimeout> | undefined
+
     async function logout() {
       if (!user) {
         navigate(getRoutePath(RouteId.Home))
@@ -26,14 +28,19 @@ export function LogoutPage(): React.ReactNode {
       } catch (e) {
         const error = (e as RestError).errorDto
         addErrorToast(t('account.logout.error'), error?.message ?? t('error.genericMessage'))
-        // eslint-disable-next-line @eslint-react/web-api/no-leaked-timeout
-        setTimeout(() => {
+        navigateBackTimeout = setTimeout(() => {
           navigate(-1)
         }, 2000)
       }
     }
     logout()
-  }, [])
+
+    return () => {
+      if (navigateBackTimeout) {
+        clearTimeout(navigateBackTimeout)
+      }
+    }
+  }, [handleLogout, i18n.language, navigate, t, user])
 
   return (
     <Empty
