@@ -44,7 +44,9 @@ class CoverLetterGenerationService(
         val account = applicantAccountService.findById(accountId)
             .getOrElse { return Result.failure(it) }
 
-        if (!account.isVerified || account.accountDetails == null || account.profile == null) {
+        val accountDetails = account.accountDetails
+        val profile = account.profile
+        if (!account.isVerified || accountDetails == null || profile == null) {
             return Result.failure(LocalizedException(INCOMPLETE_ACCOUNT_MESSAGE))
         }
 
@@ -60,7 +62,7 @@ class CoverLetterGenerationService(
                 @OptIn(ExperimentalPathApi::class)
                 Path.of(coverLetterTemplate).copyToRecursively(tempWorkingDir, overwrite = true, followLinks = false)
 
-                profilePictureService.getCVPicture(accountId, account.profile)
+                profilePictureService.getCVPicture(accountId, profile)
                     .onFailure { return@withContext Result.failure(it) }
                     .onSuccess { profilePictureDto ->
                         profilePictureDto.uri.toURL().openStream().use {
@@ -71,23 +73,23 @@ class CoverLetterGenerationService(
                         }
                     }
 
-                val authorAddressPart1 = "${account.accountDetails.street}${
-                    if (account.accountDetails.houseNumber == null) {
+                val authorAddressPart1 = "${accountDetails.street}${
+                    if (accountDetails.houseNumber == null) {
                         ""
                     } else {
-                        " " + account.accountDetails.houseNumber
+                        " " + accountDetails.houseNumber
                     }
                 }"
-                val authorAddressPart2 = "${account.accountDetails.postcode} ${account.accountDetails.city}"
+                val authorAddressPart2 = "${accountDetails.postcode} ${accountDetails.city}"
                 val data = CoverLetterData(
                     language = request.language!!,
                     mirrorProfileImage = request.mirrorProfileImage ?: false,
                     author = CoverLetterAuthor(
-                        firstName = account.accountDetails.firstName,
-                        lastName = account.accountDetails.lastName,
-                        jobTitle = account.profile.jobTitle,
-                        email = account.accountDetails.email,
-                        phone = account.accountDetails.phone,
+                        firstName = accountDetails.firstName,
+                        lastName = accountDetails.lastName,
+                        jobTitle = profile.jobTitle,
+                        email = accountDetails.email,
+                        phone = accountDetails.phone,
                         address = "$authorAddressPart1, $authorAddressPart2"
                     ),
                     application = CoverLetterApplication(

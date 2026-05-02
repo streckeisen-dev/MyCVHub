@@ -19,10 +19,11 @@ class EmailService(
 ) {
 
     fun sendAccountVerificationEmail(recipient: ApplicantAccountEntity, verificationToken: String): Result<Unit> {
-        if (recipient.accountDetails == null) {
+        val accountDetails = recipient.accountDetails
+        if (accountDetails == null) {
             return Result.failure(IllegalStateException("Account has no email address. Cannot send account verification email."))
         }
-        logger.debug { "Sending account verification email to ${recipient.accountDetails.email}..." }
+        logger.debug { "Sending account verification email to ${accountDetails.email}..." }
         val message = mailSender.createMimeMessage()
         val helper = MimeMessageHelper(message, true)
 
@@ -31,7 +32,7 @@ class EmailService(
 
         try {
             helper.setFrom(senderEmail)
-            helper.setTo(recipient.accountDetails.email)
+            helper.setTo(accountDetails.email)
             helper.setSubject("MyCVHub: Verify you email address")
             helper.setText(body, true)
             mailSender.send(message)

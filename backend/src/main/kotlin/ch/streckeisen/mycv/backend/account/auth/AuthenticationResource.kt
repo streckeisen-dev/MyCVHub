@@ -52,19 +52,21 @@ class AuthenticationResource(
         return applicantAccountService.findById(principal.id)
             .fold(
                 onSuccess = { account ->
-                    val displayName = if (account.accountDetails != null) {
-                        account.accountDetails.firstName + " " + account.accountDetails.lastName
+                    val accountDetails = account.accountDetails
+                    val profile = account.profile
+                    val displayName = if (accountDetails != null) {
+                        accountDetails.firstName + " " + accountDetails.lastName
                     } else null
-                    val hasProfile = account.profile != null
+                    val hasProfile = profile != null
                     val thumbnail = if (hasProfile) {
-                        profilePictureService.getThumbnail(account.id, account.profile).getOrNull()
+                        profilePictureService.getThumbnail(account.id, profile).getOrNull()
                     } else null
                     ResponseEntity.ok(
                         AuthResponseDto(
                             username = principal.username,
                             authLevel = principal.status,
                             displayName = displayName,
-                            language = account.accountDetails?.language,
+                            language = accountDetails?.language,
                             hasProfile = hasProfile,
                             thumbnail = if (thumbnail != null) {
                                 ThumbnailDto(thumbnail.uri.toString())

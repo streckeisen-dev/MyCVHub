@@ -104,16 +104,17 @@ class CVDataService(
     ): CVData {
         val locale = LocaleContextHolder.getLocale()
         val cvDateFormatter = DateTimeFormatter.ofPattern(CV_DATE_FORMAT, locale)
+        val accountDetails = profile.account.accountDetails!!
         return CVData(
             language = locale.language,
-            firstName = profile.account.accountDetails!!.firstName,
-            lastName = profile.account.accountDetails.lastName,
+            firstName = accountDetails.firstName,
+            lastName = accountDetails.lastName,
             jobTitle = profile.jobTitle,
             bio = profile.bio,
-            email = profile.account.accountDetails.email,
-            phone = profile.account.accountDetails.phone,
-            address = getAddressString(profile.account.accountDetails),
-            birthday = getBirthday(profile.account.accountDetails.birthday),
+            email = accountDetails.email,
+            phone = accountDetails.phone,
+            address = getAddressString(accountDetails),
+            birthday = getBirthday(accountDetails.birthday),
             workExperiences = workExperience.map {
                 CVEntry(
                     title = it.jobTitle,
