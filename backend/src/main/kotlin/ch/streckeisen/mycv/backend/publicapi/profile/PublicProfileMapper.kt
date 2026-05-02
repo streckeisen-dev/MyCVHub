@@ -15,28 +15,31 @@ import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicProfileThemeDto
 import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicSkillDto
 import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicWorkExperienceDto
 
-fun ProfileEntity.toPublicDto(profilePicture: String): PublicProfileDto = PublicProfileDto(
-    firstName = account.accountDetails!!.firstName,
-    lastName = account.accountDetails.lastName,
-    jobTitle = jobTitle,
-    bio = bio,
-    email = if (isEmailPublic) account.accountDetails.email else null,
-    phone = if (isPhonePublic) account.accountDetails.phone else null,
-    address = if (isAddressPublic) PublicAddressDto(
-        account.accountDetails.street,
-        account.accountDetails.houseNumber,
-        account.accountDetails.postcode,
-        account.accountDetails.city,
-        account.accountDetails.country
-    ) else null,
-    profilePicture = profilePicture,
-    workExperiences = workExperiences.map { it.toPublicDto(hideDescriptions) }.toList(),
-    skills = skills.map { it.toPublicDto() }.toList(),
-    education = education.map { it.toPublicDto(hideDescriptions) }.toList(),
-    projects = projects.map { it.toPublicDto(hideDescriptions) }.toList(),
-    theme = profileTheme?.toPublicDto(),
-    language = account.accountDetails.language
-)
+fun ProfileEntity.toPublicDto(profilePicture: String): PublicProfileDto {
+    val details = account.accountDetails!!
+    return PublicProfileDto(
+        firstName = details.firstName,
+        lastName = details.lastName,
+        jobTitle = jobTitle,
+        bio = bio,
+        email = if (isEmailPublic) details.email else null,
+        phone = if (isPhonePublic) details.phone else null,
+        address = if (isAddressPublic) PublicAddressDto(
+            details.street,
+            details.houseNumber,
+            details.postcode,
+            details.city,
+            details.country
+        ) else null,
+        profilePicture = profilePicture,
+        workExperiences = workExperiences.map { it.toPublicDto(hideDescriptions) }.toList(),
+        skills = skills.map { it.toPublicDto() }.toList(),
+        education = education.map { it.toPublicDto(hideDescriptions) }.toList(),
+        projects = projects.map { it.toPublicDto(hideDescriptions) }.toList(),
+        theme = profileTheme?.toPublicDto(),
+        language = details.language
+    )
+}
 
 fun EducationEntity.toPublicDto(hideDescription: Boolean) = PublicEducationDto(
     institution,

@@ -91,11 +91,12 @@ class AuthenticationService(
         val existingAccount = applicantAccountRepository.findById(accountId)
             .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.account.notFound")) }
 
-        if (existingAccount.password == null) {
+        val existingPassword = existingAccount.password
+        if (existingPassword == null) {
             throw LocalizedException("${MYCV_KEY_PREFIX}.auth.changePassword.passwordNotSet")
         }
 
-        authenticationValidationService.validateChangePasswordRequest(changePasswordDto, existingAccount.password)
+        authenticationValidationService.validateChangePasswordRequest(changePasswordDto, existingPassword)
             .onFailure { return Result.failure(it) }
 
         val encodedNewPassword = encodePassword(changePasswordDto.password)
