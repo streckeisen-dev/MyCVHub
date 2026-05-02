@@ -128,7 +128,7 @@ export function EditSkillModal(props: EditSkillModalProps) {
                     maxValue={100}
                     step={1}
                     value={data.level}
-                    onChange={(val) => updateData('level', val)}
+                    onChange={(val: number) => updateData('level', val)}
                   />
                   {errorMessages.level && (
                     <p className="text-danger text-small">{errorMessages.level}</p>

@@ -1,12 +1,13 @@
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, User } from '@heroui/react'
 
 import DefaultAvatar from '@/assets/default_profile_picture_thumbnail.png'
-import { OverlayPlacement } from '@heroui/aria-utils'
 import { ReactNode, use } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AuthorizationContext } from '@/context/AuthorizationContext.tsx'
 import { getRoutePath, RouteId, SITE_CONFIG } from '@/config/RouteTree.tsx'
+
+type OverlayPlacement = 'top' | 'bottom' | 'right' | 'left' | 'top-start' | 'top-end' | 'bottom-start' | 'bottom-end' | 'left-start' | 'left-end' | 'right-start' | 'right-end'
 
 interface AccountMenuProps {
   dropdownPlacement?: OverlayPlacement

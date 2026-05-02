@@ -44,7 +44,7 @@ export function ApplicationDocumentsEditor(props: ApplicationDocumentsEditorProp
               className="col-span-10"
               label={t('fields.documentName')}
               value={doc.name}
-              onValueChange={(val) => handleDocumentChange(doc.id, val)}
+              onValueChange={(val: string) => handleDocumentChange(doc.id, val)}
             />
             <Button
               className="col-span-2"

@@ -122,7 +122,7 @@ export function ApplicationTransitionModal(props: ApplicationTransitionModalProp
                     <CheckboxInput
                       label={t('application.hiredAutomation')}
                       isSelected={hiredAutomationEnabled}
-                      onValueChange={(val) => setHiredAutomationEnabled(val)}
+                      onValueChange={(val: boolean) => setHiredAutomationEnabled(val)}
                     />
 
                     {hiredAutomationEnabled && (
@@ -131,7 +131,7 @@ export function ApplicationTransitionModal(props: ApplicationTransitionModalProp
                           label={t('fields.location')}
                           isRequired
                           value={scheduledWorkExperience.location}
-                          onValueChange={(val) =>
+                          onValueChange={(val: string) =>
                             handleScheduledWorkExperienceChange('location', val)
                           }
                           isInvalid={errorMessages.location != null}
@@ -153,7 +153,7 @@ export function ApplicationTransitionModal(props: ApplicationTransitionModalProp
                           label={t('fields.description')}
                           isRequired
                           value={scheduledWorkExperience.description}
-                          onValueChange={(val) =>
+                          onValueChange={(val: string) =>
                             handleScheduledWorkExperienceChange('description', val)
                           }
                           isInvalid={errorMessages.description != null}

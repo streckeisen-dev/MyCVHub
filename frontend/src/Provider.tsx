@@ -1,7 +1,6 @@
 import { useHref, useNavigate } from 'react-router-dom'
 
-import { HeroUIProvider } from '@heroui/system'
-import { ToastProvider } from '@heroui/react'
+import { HeroUIProvider, ToastProvider } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import { AuthorizationProvider } from '@/context/AuthorizationContext.tsx'
 import { PropsWithChildren } from 'react'

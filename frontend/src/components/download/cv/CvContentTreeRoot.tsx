@@ -101,7 +101,7 @@ export function CvContentTreeRoot(props: CvContentTreeRootProps) {
                 isDisabled={!leaf.selected || disabled}
                 className="max-w-30"
                 isSelected={leaf.includeDescription}
-                onValueChange={(val) => handleDescriptionChange(leaf.id, val)}
+                onValueChange={(val: boolean) => handleDescriptionChange(leaf.id, val)}
               >
                 <p className="text-sm">{t('cv.showDescription')}</p>
               </Switch>

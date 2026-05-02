@@ -261,7 +261,7 @@ export function EditProjectModal(props: EditProjectModalProps) {
                         className="col-span-12 sm:col-span-4 lg:col-span-5"
                         label={t('fields.displayName')}
                         value={link.displayName}
-                        onChange={(e) => handleLinkChange(link.uiId, e)}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => handleLinkChange(link.uiId, e)}
                         isRequired
                         isInvalid={errorMessages[`links[${linkIndex}].displayName`] != null}
                         errorMessage={errorMessages[`links[${linkIndex}].displayName`]}
@@ -272,7 +272,7 @@ export function EditProjectModal(props: EditProjectModalProps) {
                         className="col-span-12 sm:col-span-4 lg:col-span-3"
                         label={t('fields.url')}
                         value={link.url}
-                        onChange={(e) => handleLinkChange(link.uiId, e)}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => handleLinkChange(link.uiId, e)}
                         isRequired
                         isInvalid={errorMessages[`links[${linkIndex}].url`] != null}
                         errorMessage={errorMessages[`links[${linkIndex}].url`]}

@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@heroui/react": "^3.0.1",
+    "@heroui/styles": "3.0.1",
     "@heroui/use-theme": "2.1.10",
     "@react-aria/visually-hidden": "3.8.30",
     "@react-stately/data": "^3.15.1",

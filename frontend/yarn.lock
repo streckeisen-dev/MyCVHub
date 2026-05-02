@@ -8422,6 +8422,7 @@ __metadata:
     "@eslint-react/eslint-plugin": "npm:^2.13.0"
     "@eslint/js": "npm:^10.0.1"
     "@heroui/react": "npm:^3.0.1"
+    "@heroui/styles": "npm:3.0.1"
     "@heroui/use-theme": "npm:2.1.10"
     "@react-aria/visually-hidden": "npm:3.8.30"
     "@react-stately/data": "npm:^3.15.1"

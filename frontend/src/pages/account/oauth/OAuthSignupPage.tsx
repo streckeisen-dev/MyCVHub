@@ -119,7 +119,7 @@ export function OAuthSignupPage(): ReactNode {
               </p>
             }
             isSelected={acceptedTos}
-            onValueChange={(val) => setAcceptedTos(val)}
+            onValueChange={(val: boolean) => setAcceptedTos(val)}
             isInvalid={errorMessages.acceptsTos != null}
             errorMessage={errorMessages.acceptsTos}
           />

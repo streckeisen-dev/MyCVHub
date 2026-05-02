@@ -4,6 +4,7 @@ import { ColorPicker } from '@/components/input/ColorPicker.tsx'
 import { Input } from '@heroui/react'
 import { CVStyleOptionType } from '@/types/cv/CVStyleOptionType.ts'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
+import { ChangeEvent } from 'react'
 
 export type CvStyleCustomizationViewProps = Readonly<{
   options: CVStyleOptionDto[]
@@ -39,7 +40,7 @@ export function CvStyleCustomizationView(props: CvStyleCustomizationViewProps) {
             key={option.key}
             label={option.name}
             value={value[option.key]}
-            onChange={(e) => handleChange(option.key, e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(option.key, e.target.value)}
             isInvalid={errorMessages?.[option.key] != null}
             errorMessage={errorMessages?.[option.key]}
           />

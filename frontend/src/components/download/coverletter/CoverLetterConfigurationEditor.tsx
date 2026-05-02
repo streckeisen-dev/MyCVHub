@@ -214,7 +214,7 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
                     name="firstName"
                     label={t('fields.firstName')}
                     value={config.contactPerson.firstName}
-                    onChange={(e) =>
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
                       handleContactPersonChange(e.currentTarget.name, e.currentTarget.value)
                     }
                     isInvalid={errors['application.contactPerson.firstName'] != null}
@@ -225,7 +225,7 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
                     name="lastName"
                     label={t('fields.lastName')}
                     value={config.contactPerson.lastName}
-                    onChange={(e) =>
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
                       handleContactPersonChange(e.currentTarget.name, e.currentTarget.value)
                     }
                     isInvalid={errors['application.contactPerson.lastName'] != null}
@@ -239,7 +239,7 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
                   label={t('fields.addressee')}
                   description={t('coverLetter.addresseeHint')}
                   value={config.addressee}
-                  onChange={(e) => handleAddresseeChange(e.currentTarget.value)}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => handleAddresseeChange(e.currentTarget.value)}
                   isInvalid={errors['application.addressee'] != null}
                   errorMessage={errors['application.addressee']}
                 />
