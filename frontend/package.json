@@ -15,7 +15,7 @@
     "cypress:results:merge": "jrm ./cypress/component-results.xml \"./cypress/results/*.xml\""
   },
   "dependencies": {
-    "@heroui/react": "^2.8.9",
+    "@heroui/react": "^3.1.0",
     "@heroui/use-theme": "2.1.10",
     "@react-aria/visually-hidden": "3.9.0",
     "@react-stately/data": "^3.16.0",
