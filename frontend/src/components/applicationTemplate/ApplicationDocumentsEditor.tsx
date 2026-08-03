@@ -1,7 +1,9 @@
-import { Fragment, ReactNode } from 'react'
+import { Button } from '@/components/ui/Button.tsx'
+import { Input } from '@/components/ui/Fields.tsx'
+import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
-import { Button, Input } from '@heroui/react'
+
 import { FaPlus, FaTrash } from 'react-icons/fa6'
 import { v7 as uuid } from 'uuid'
 
@@ -25,7 +27,7 @@ export function ApplicationDocumentsEditor(props: ApplicationDocumentsEditorProp
   }
 
   function handleDocumentChange(id: string, value: string) {
-    onChange([...documents.filter((doc) => doc.id !== id), { id, name: value }])
+    onChange(documents.map((doc) => (doc.id === id ? { ...doc, name: value } : doc)))
   }
 
   function handleRemoveDocument(id: string) {
@@ -33,39 +35,48 @@ export function ApplicationDocumentsEditor(props: ApplicationDocumentsEditorProp
   }
 
   return (
-    <div>
+    <div className="w-full max-w-3xl">
       <label className="text-default-500">{t('applicationTemplate.applicationDocuments')}</label>
       <p className="text-default-400">{t('applicationTemplate.applicationDocumentsHint')}</p>
-      <div className="grid grid-cols-12 gap-2 items-center mt-4">
-        {documents.map((doc) => (
-          <Fragment key={doc.id}>
+      <div className="mt-4 flex flex-col gap-3">
+        {documents.map((doc, index) => (
+          <div
+            key={doc.id}
+            className="grid grid-cols-[minmax(0,1fr)_2.5rem_2.5rem] items-end gap-3"
+          >
             <Input
               isRequired
-              className="col-span-10"
               label={t('fields.documentName')}
               value={doc.name}
               onValueChange={(val: string) => handleDocumentChange(doc.id, val)}
             />
             <Button
-              className="col-span-2"
               isIconOnly
-              color="danger"
+              variant="danger"
               onPress={() => handleRemoveDocument(doc.id)}
-              radius="full"
             >
               <FaTrash />
             </Button>
-          </Fragment>
+            {index === documents.length - 1 ? (
+              <Button isIconOnly variant="primary" onPress={handleAddDocument}>
+                <FaPlus />
+              </Button>
+            ) : (
+              <span aria-hidden="true" className="h-10 w-10" />
+            )}
+          </div>
         ))}
-        <Button
-          className="col-span-12"
-          isIconOnly
-          color="primary"
-          onPress={handleAddDocument}
-          radius="full"
-        >
-          <FaPlus />
-        </Button>
+        {documents.length === 0 && (
+          <Button
+            className="self-start"
+            isIconOnly
+            variant="primary"
+            aria-label={t('applicationTemplate.applicationDocuments')}
+            onPress={handleAddDocument}
+          >
+            <FaPlus />
+          </Button>
+        )}
       </div>
       {errorMessages.documents && (
         <p className="text-danger text-sm mt-1">{errorMessages.documents}</p>

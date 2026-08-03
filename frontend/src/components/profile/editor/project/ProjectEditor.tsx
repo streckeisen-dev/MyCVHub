@@ -1,11 +1,11 @@
+import { Button } from '@/components/ui/Button.tsx'
 import { ReactNode, useState } from 'react'
 import { ProjectDto } from '@/types/profile/project/ProjectDto.ts'
 import {
-  EditProjectModal,
-  ProjectFormData
+  EditProjectModal, ProjectFormData
 } from '@/components/profile/editor/project/EditProjectModal.tsx'
 import { stringToCalendarDate } from '@/helpers/DateHelper.ts'
-import { Button } from '@heroui/react'
+
 import { useTranslation } from 'react-i18next'
 import {
   ProjectList,
@@ -72,7 +72,7 @@ export function ProjectEditor(props: ProjectEditorProps): ReactNode {
   return (
     <section className="flex flex-col gap-4">
       <div className="flex flex-col items-end">
-        <Button color="primary" onPress={handleAdd}>
+        <Button variant="primary" onPress={handleAdd}>
           {t('project.editor.add')}
         </Button>
       </div>

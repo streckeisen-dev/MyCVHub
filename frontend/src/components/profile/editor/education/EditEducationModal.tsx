@@ -1,14 +1,7 @@
+import { Modal, ModalBody, ModalContent, ModalHeader, ModalProps } from '@/components/ui/Modal.tsx'
+import { Input, Textarea } from '@/components/ui/Fields.tsx'
 import { ChangeEvent, FormEvent, ReactNode, useState } from 'react'
-import {
-  Form,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalProps,
-  Textarea
-} from '@heroui/react'
+import { Form } from '@heroui/react'
 import { EducationDto } from '@/types/profile/education/EducationDto.ts'
 import { useTranslation } from 'react-i18next'
 import { FormButtons } from '@/components/btn/FormButtons.tsx'
@@ -175,6 +168,7 @@ export function EditEducationModal(props: EditEducationModalProps): ReactNode {
                   onChange={handleChange}
                   isInvalid={errorMessages.description != null}
                   errorMessage={errorMessages.description}
+                  rows={6}
                 />
 
                 <FormButtons onCancel={onClose} isSaving={isSaving} />

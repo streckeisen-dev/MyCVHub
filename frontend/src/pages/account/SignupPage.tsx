@@ -1,5 +1,4 @@
 import { FormEvent, ReactNode, use, useEffect, useState } from 'react'
-import { centerSection, h1, twoColumnForm } from '@/styles/primitives.ts'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { AuthorizationContext } from '@/context/AuthorizationContext.tsx'
@@ -17,6 +16,7 @@ import { SignupRequestDto } from '@/types/account/SignUpRequestDto.ts'
 import { RestError } from '@/types/RestError.ts'
 import { extractFormErrors } from '@/helpers/FormHelper.ts'
 import { CheckboxInput } from '@/components/input/CheckboxInput.tsx'
+import { Page, PageHeader, PageTitle } from '@/components/ui/Layout.tsx'
 
 export function SignupPage(): ReactNode {
   const { t, i18n } = useTranslation()
@@ -110,17 +110,23 @@ export function SignupPage(): ReactNode {
   }
 
   return (
-    <section className={centerSection()}>
-      <h1 className={h1()}>{t('account.create.title')}</h1>
+    <Page size="wide">
+      <PageHeader align="center">
+        <PageTitle>{t('account.create.title')}</PageTitle>
+      </PageHeader>
 
-      <Form className={twoColumnForm()} onSubmit={handleSave}>
+      <Form
+        className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-5 lg:grid-cols-2"
+        onSubmit={handleSave}
+      >
         <AccountForm
           state={accountFormState}
           onChange={handleAccountChange}
           errorMessages={errorMessages}
         />
 
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-5 rounded-lg border border-default-200 bg-surface p-5">
+          <h2 className="text-base font-semibold text-foreground">{t('fields.password')}</h2>
           <PasswordForm
             state={passwordFormState}
             onChange={handlePasswordChange}
@@ -129,17 +135,27 @@ export function SignupPage(): ReactNode {
         </div>
         <PasswordRequirements state={passwordFormState} />
 
-        <div className="col-span-1 sm:col-span-2">
+        <div className="lg:col-span-2 rounded-lg border border-default-200 bg-surface p-5">
           <CheckboxInput
             name="acceptsTos"
             label={
-              <p>
+              <p className="leading-6">
                 {t('fields.acceptTos')}
-                <Link className="text-primary" to={getRoutePath(RouteId.TermsOfService)} target="_blank">
+                <Link
+                  className="text-primary"
+                  to={getRoutePath(RouteId.TermsOfService)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {t('tos.title')}
                 </Link>
                 {', '}
-                <Link className="text-primary" to={getRoutePath(RouteId.PrivacyPolicy)} target="_blank">
+                <Link
+                  className="text-primary"
+                  to={getRoutePath(RouteId.PrivacyPolicy)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {t('privacy.title')}
                 </Link>
               </p>
@@ -150,8 +166,10 @@ export function SignupPage(): ReactNode {
             errorMessage={errorMessages.acceptsTos}
           />
         </div>
-        <FormButtons onCancel={handleCancel} isSaving={isSaving} />
+        <div className="lg:col-span-2 flex justify-end">
+          <FormButtons onCancel={handleCancel} isSaving={isSaving} />
+        </div>
       </Form>
-    </section>
+    </Page>
   )
 }

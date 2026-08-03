@@ -1,6 +1,9 @@
 import { SkillDto } from '@/types/profile/skill/SkillDto.ts'
 import { useTranslation } from 'react-i18next'
-import { CvContentTreeRoot, SelectedCvContent } from '@/components/download/cv/CvContentTreeRoot.tsx'
+import {
+  CvContentTreeRoot,
+  SelectedCvContent
+} from '@/components/download/cv/CvContentTreeRoot.tsx'
 import { SkillTreeRoot } from '@/components/download/cv/SkillTreeRoot.tsx'
 import { KeyValueObject } from '@/types/KeyValueObject.ts'
 import { ProfileDto } from '@/types/profile/ProfileDto.ts'
@@ -66,7 +69,7 @@ export function CvContentCustomizationView(props: CvCustomizationViewProps) {
   }
 
   return (
-    <div className="w-full rounded-lg p-2 sm:min-w-xs md:min-w-md lg:min-w-lg">
+    <div className="flex w-full flex-col gap-1">
       {profile.workExperiences.length > 0 && (
         <CvContentTreeRoot
           title={t('workExperience.title')}

@@ -6,7 +6,6 @@
     "module": "esnext",
     "skipLibCheck": true,
     "paths": {
-      "@heroui/react": ["./src/lib/heroui-react-compat.tsx"],
       "@/*": ["./src/*"]
     },
 

@@ -1,6 +1,7 @@
+import { Checkbox, Switch } from '@/components/ui/Fields.tsx'
 import { useState } from 'react'
 import { FaCaretDown, FaCaretRight } from 'react-icons/fa6'
-import { Checkbox, Switch } from '@heroui/react'
+
 import { useTranslation } from 'react-i18next'
 
 export interface SelectedCvContent {
@@ -75,31 +76,34 @@ export function CvContentTreeRoot(props: CvContentTreeRootProps) {
 
   return (
     <div>
-      <div className="flex gap-x-2 p-2">
-        <Icon onClick={toggleExpand} className="cursor-pointer self-center" />
+      <div className="flex items-center gap-3 rounded-md px-2 py-2 text-sm hover:bg-default/5">
+        <Icon onClick={toggleExpand} className="shrink-0 cursor-pointer text-default-500" />
         <Checkbox
           isDisabled={disabled}
           isSelected={isRootSelected}
           onValueChange={handleRootChange}
           isIndeterminate={!isRootSelected && content.some((leaf) => leaf.selected)}
         />
-        <p>{title}</p>
+        <p className="min-w-0 font-medium text-foreground">{title}</p>
       </div>
-      {errorMessage && <p className="text-danger text-sm">{errorMessage}</p> }
+      {errorMessage && <p className="px-2 text-sm text-danger">{errorMessage}</p>}
       {isExpanded && (
-        <div>
+        <div className="flex flex-col gap-1">
           {content.map((leaf) => (
-            <div key={leaf.id} className="flex gap-x-2 p-2 pl-12 items-center">
+            <div
+              key={leaf.id}
+              className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-md px-2 py-2 pl-10 text-sm hover:bg-default/5"
+            >
               <Checkbox
                 isDisabled={disabled}
                 isSelected={leaf.selected}
                 onValueChange={(isSelected) => handleLeafChange(leaf.id, isSelected)}
               />
-              <p className="grow text-wrap max-w-45">{leaf.title}</p>
+              <p className="min-w-0 text-wrap leading-5 text-foreground">{leaf.title}</p>
               <Switch
                 size="sm"
                 isDisabled={!leaf.selected || disabled}
-                className="max-w-30"
+                className="shrink-0"
                 isSelected={leaf.includeDescription}
                 onValueChange={(val: boolean) => handleDescriptionChange(leaf.id, val)}
               >

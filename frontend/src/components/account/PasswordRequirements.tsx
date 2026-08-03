@@ -1,27 +1,28 @@
 import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { h4 } from '@/styles/primitives.ts'
 import { PasswordFormState } from '@/components/account/PasswordForm.tsx'
+import { FaCheck, FaXmark } from 'react-icons/fa6'
 
 export type PasswordRequirementsProps = Readonly<{
-  state: PasswordFormState;
+  state: PasswordFormState
 }>
 
-export function PasswordRequirements(
-  props: PasswordRequirementsProps
-): ReactNode {
+export function PasswordRequirements(props: PasswordRequirementsProps): ReactNode {
   const { t } = useTranslation()
   const { state } = props
+  const minPasswordLength = '8'
 
   const passwordRequirements = [
     {
       key: 'length',
-      name: t('passwordRequirements.length', { length: '8' }),
+      name: t('passwordRequirements.length')
+        .replace('{length}', minPasswordLength)
+        .replace('{{}}', minPasswordLength),
       predicate: () => {
         if (state.password == null) {
           return false
         }
-        return state.password.length >= 8
+        return state.password.length >= Number(minPasswordLength)
       }
     },
     {
@@ -90,12 +91,29 @@ export function PasswordRequirements(
   ]
 
   return (
-    <div className="bg-default p-5 rounded-xl">
-      <h4 className={h4()}>{t('account.passwordRequirements')}</h4>
-      <div className="flex flex-col gap-2">
-        {passwordRequirements.map((requirement) => (
-          <span key={requirement.key} className={requirement.predicate() ? 'text-success' : 'text-danger' }>{requirement.name}</span>
-        ))}
+    <div className="rounded-lg border border-default-200 bg-surface p-5">
+      <h4 className="text-base font-semibold text-foreground">
+        {t('account.passwordRequirements')}
+      </h4>
+      <div className="mt-4 grid gap-2 sm:grid-cols-2">
+        {passwordRequirements.map((requirement) => {
+          const fulfilled = requirement.predicate()
+          const Icon = fulfilled ? FaCheck : FaXmark
+          return (
+            <span
+              key={requirement.key}
+              className="inline-flex items-start gap-2 text-sm leading-5 text-default-700"
+            >
+              <Icon
+                className={
+                  fulfilled ? 'mt-0.5 shrink-0 text-success' : 'mt-0.5 shrink-0 text-default-400'
+                }
+                size={14}
+              />
+              <span>{requirement.name}</span>
+            </span>
+          )
+        })}
       </div>
     </div>
   )

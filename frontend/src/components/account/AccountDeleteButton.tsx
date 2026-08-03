@@ -1,13 +1,7 @@
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@/components/ui/Modal.tsx'
+import { Button } from '@/components/ui/Button.tsx'
 import React, { useState } from 'react'
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure
-} from '@heroui/react'
+
 import { useTranslation } from 'react-i18next'
 import AccountApi from '@/api/AccountApi.ts'
 import { RestError } from '@/types/RestError.ts'
@@ -40,7 +34,8 @@ export function AccountDeleteButton(): React.ReactNode {
 
   return (
     <>
-      <Button color="danger" startContent={<FaTrash />} onPress={onOpen}>
+      <Button variant="danger" onPress={onOpen}>
+        <FaTrash />
         {t('account.accountMgmt.delete.action')}
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -54,10 +49,10 @@ export function AccountDeleteButton(): React.ReactNode {
                 <p>{t('account.accountMgmt.delete.confirmationText')}</p>
               </ModalBody>
               <ModalFooter>
-                <Button color="default" variant="light" onPress={onClose}>
+                <Button variant="tertiary" onPress={onClose}>
                   {t('forms.cancel')}
                 </Button>
-                <Button color="danger" onPress={handleDelete} isLoading={isDeleting}>
+                <Button variant="danger" onPress={handleDelete} isPending={isDeleting}>
                   {t('account.accountMgmt.delete.action')}
                 </Button>
               </ModalFooter>

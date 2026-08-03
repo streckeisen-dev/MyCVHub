@@ -1,6 +1,7 @@
+import { Button } from '@/components/ui/Button.tsx'
 import { ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@heroui/react'
+
 import { WorkExperienceDto } from '@/types/profile/workExperience/WorkExperienceDto.ts'
 import {
   WorkExperienceList,
@@ -76,7 +77,7 @@ export function WorkExperienceEditor(props: WorkExperienceEditorProps): ReactNod
   return (
     <section className="flex flex-col gap-4">
       <div className="flex flex-col items-end">
-        <Button className="w-min" color="primary" onPress={handleAdd}>
+        <Button className="w-min" variant="primary" onPress={handleAdd}>
           {t('workExperience.editor.add')}
         </Button>
       </div>

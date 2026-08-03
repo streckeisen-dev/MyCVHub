@@ -1,13 +1,6 @@
-import {
-  Form,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalProps,
-  Textarea
-} from '@heroui/react'
+import { Modal, ModalBody, ModalContent, ModalHeader, ModalProps } from '@/components/ui/Modal.tsx'
+import { Input, Textarea } from '@/components/ui/Fields.tsx'
+import { Form } from '@heroui/react'
 import { ApplicationTransitionDto } from '@/types/application/ApplicationTransitionDto.ts'
 import { FormEvent, useRef, useState } from 'react'
 import { FormButtons } from '@/components/btn/FormButtons.tsx'

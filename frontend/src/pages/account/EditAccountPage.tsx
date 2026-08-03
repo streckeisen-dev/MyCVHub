@@ -1,5 +1,5 @@
 import React, { FormEvent, use, useEffect, useState } from 'react'
-import { centerSection, title, twoColumnForm } from '@/styles/primitives.ts'
+import { centerSection, twoColumnForm } from '@/styles/primitives.ts'
 import { useTranslation } from 'react-i18next'
 import AccountApi from '@/api/AccountApi.ts'
 import { Form, Spinner } from '@heroui/react'
@@ -15,6 +15,7 @@ import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { AuthorizationContext } from '@/context/AuthorizationContext.tsx'
 import { FormButtons } from '@/components/btn/FormButtons.tsx'
 import { extractFormErrors } from '@/helpers/FormHelper.ts'
+import { PageTitle } from '@/components/ui/Layout.tsx'
 
 export function EditAccountPage(): React.ReactNode {
   const { t, i18n } = useTranslation()
@@ -78,7 +79,7 @@ export function EditAccountPage(): React.ReactNode {
 
   const content = accountEditorData ? (
     <>
-      <h1 className={title()}>{t('account.edit.title')}</h1>
+      <PageTitle>{t('account.edit.title')}</PageTitle>
       <Form className={twoColumnForm()} onSubmit={handleSave}>
         <AccountForm
           state={accountEditorData}

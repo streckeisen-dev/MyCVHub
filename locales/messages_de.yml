@@ -59,7 +59,7 @@ shared:
     dateIsBeforeValidator: "{laterDate} muss nach {earlierDate} sein"
 
   passwordRequirements:
-    length: "Muss mindestens {length} Zeichen haben"
+    length: "Muss mindestens 8 Zeichen haben"
     whitespaces: "Darf keine Leerzeichen enthalten"
     digits: "Muss mindestens eine Zahl enthalten"
     specialChars: "Muss mindestens ein Sonderzeichen enthalten"
@@ -99,6 +99,13 @@ frontend:
     welcome:
       title: "Deine Karriere, organisiert"
       message: "MyCVHub vereint alles, was du für deine Jobsuche brauchst, an einem Ort. Erstelle professionelle Lebensläufe, generiere hochwertige PDFs und behalte den Überblick über jede Bewerbung, die du versendest."
+      positioning: "Gemacht für Menschen, die einen verlässlichen Ort für Lebenslauf, Bewerbungen und wiederverwendbare Bewerbungsdokumente möchten."
+    workflow:
+      title: "So funktioniert es"
+      profile: "Profil erstellen"
+      include: "Inhalte auswählen"
+      generate: "Dokumente generieren"
+      track: "Bewerbungen verfolgen"
     features:
       title: "Was du tun kannst"
       create:
@@ -124,6 +131,7 @@ frontend:
     callToAction:
       title: "Bereit loszulegen?"
       description: "Erstelle dein Profil und nimm deine Karriere selbst in die Hand."
+      reassurance: "Starte heute mit deinem Profil. Vorlagen, Anschreiben und Bewerbungen kannst du später verfeinern."
       btn: "Jetzt registrieren"
 
   dashboard:
@@ -192,7 +200,7 @@ frontend:
       authType: "Anmeldemethode"
       userPw: "Benutzername und Passwort"
       oauthMethod: "Drittanbieter-Anmeldung"
-      oauth: 'Verlinkte Accounts'
+      oauth: "Verlinkte Accounts"
     accountMgmt:
       title: "Account Verwaltung"
       delete:
@@ -210,7 +218,7 @@ frontend:
       title: "Wir konnten das von dir gesuchte Profil nicht finden."
     loadingError: "Das Profil konnte nicht geladen werden"
     editor:
-      back: "Zurück zum Account"
+      back: "Zurück zum Dashboard"
       general: "Allgemein"
       pictureHint: "Dein Profilbild darf nicht grösser als 2MB sein."
       publicProfile: "Öffentlicher Profilzugriff"
@@ -268,7 +276,7 @@ frontend:
       deleteError: "Projekt konnte nicht gelöscht werden"
 
   cv:
-    name: 'Lebenslauf'
+    name: "Lebenslauf"
     title: "Erstelle dienen Lebenslauf"
     description: "Dein Lebenslauf-Design ist gespeichert und bereit. Wähle dein lieblings Design unten aus, bestimme welche Lebenslauf-Einträge enthalten sein sollen und passe die Design-Vorlage nach deinen Bedürfnissen an. Mit einer gespeicherten Bewerbungsvorlage kannst du deine Präferenzen schnell und einfach anwenden."
     stylesHeading: "Wähle dein Lebenslauf-Design"
@@ -466,7 +474,7 @@ frontend:
       title: "Änderungen dieser Erklärung"
       content: "Wir können diese Datenschutzerklärung von Zeit zu Zeit aktualisieren. Wir werden Nutzer über wesentliche Änderungen informieren. Deine fortgesetzte Nutzung von MyCVHub nach Änderungen stellt die Annahme der aktualisierten Erklärung dar."
     contact: "Für Fragen, Anliegen oder zur Ausübung deiner Datenschutzrechte kontaktiere uns bitte unter:"
-    note: "MyCVHub wird als persönliches Projekt betrieben. Obwohl wir Datenschutz ernst nehmen und angemessene Sicherheitsmaßnahmen implementieren, wird der Dienst auf \"as-is\"-Basis bereitgestellt, wie in unseren Nutzungsbedingungen beschrieben."
+    note: 'MyCVHub wird als persönliches Projekt betrieben. Obwohl wir Datenschutz ernst nehmen und angemessene Sicherheitsmaßnahmen implementieren, wird der Dienst auf "as-is"-Basis bereitgestellt, wie in unseren Nutzungsbedingungen beschrieben.'
 
   tos:
     title: "Nutzungsbedingungen"
@@ -518,8 +526,8 @@ frontend:
     disclaimer:
       title: "Haftungsausschlüsse und Haftungsbeschränkungen"
       asIs:
-        title: "\"Wie Besehen\" Dienst"
-        content: "MyCVHub wird \"wie besehen\" und \"wie verfügbar\" ohne jegliche Gewährleistungen, ausdrücklich oder stillschweigend, bereitgestellt. Wir garantieren nicht, dass der Dienst unterbrechungsfrei, fehlerfrei, sicher oder frei von Viren oder anderen schädlichen Komponenten sein wird."
+        title: '"Wie Besehen" Dienst'
+        content: 'MyCVHub wird "wie besehen" und "wie verfügbar" ohne jegliche Gewährleistungen, ausdrücklich oder stillschweigend, bereitgestellt. Wir garantieren nicht, dass der Dienst unterbrechungsfrei, fehlerfrei, sicher oder frei von Viren oder anderen schädlichen Komponenten sein wird.'
       noGuarantees:
         title: "Keine Garantien"
         content: "Wir geben keine Garantien bezüglich:"
@@ -598,6 +606,8 @@ frontend:
     pagination:
       pageSize: "Resultate pro Seite"
       numberInformation: "Resultate {start}-{end} von {total}"
+      previous: "Zurück"
+      next: "Weiter"
     search: "Suche"
     actions: "Aktionen"
     resetFilter: "Filter zurücksetzen"
@@ -690,10 +700,10 @@ backend:
     style:
       modern:
         name: "Modern CV"
-        description: "Eine leicht modifizierte Version der <a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV Vorlage</a>, welche eine Variante der <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX-Vorlage ist."
+        description: 'Eine leicht modifizierte Version der <a href="https://typst.app/universe/package/modern-cv/">Modern CV Vorlage</a>, welche eine Variante der <a href="https://github.com/posquit0/Awesome-CV">Awesome-CV</a> LaTeX-Vorlage ist.'
       talendo:
         name: "Talendo"
-        description: "Eine leicht modifizierte Version der CV Vorlage aus dem <a href=\"https://talendo.ch\">Talendo</a> Career Starter Magazin."
+        description: 'Eine leicht modifizierte Version der CV Vorlage aus dem <a href="https://talendo.ch">Talendo</a> Career Starter Magazin.'
         bannerBackground: "Banner Hintergrundfarbe"
     validation:
       noCvEntries: "Es gibt keine Lebenslaufeinträge um ein PDF zu generieren"
@@ -714,7 +724,7 @@ backend:
     style:
       modern:
         name: "Modern CV"
-        description: "Das Modern CV Design ist ein modernes und professionell wirkendes Design für Lebensläufe und Bewerungsschreiben. Diese Version basiert auf der <a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV Vorlage</a>, welche eine Variante der beliebten <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX-Vorlage ist."
+        description: 'Das Modern CV Design ist ein modernes und professionell wirkendes Design für Lebensläufe und Bewerungsschreiben. Diese Version basiert auf der <a href="https://typst.app/universe/package/modern-cv/">Modern CV Vorlage</a>, welche eine Variante der beliebten <a href="https://github.com/posquit0/Awesome-CV">Awesome-CV</a> LaTeX-Vorlage ist.'
     validation:
       invalidLanguage: "Sprache is ungültig"
       invalidStyle: "Bewerbungsschreiben-Design ist ungültig"

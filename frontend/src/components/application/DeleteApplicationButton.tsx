@@ -1,14 +1,9 @@
+import { Tooltip } from '@/components/ui/Tooltip.tsx'
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@/components/ui/Modal.tsx'
+import { Button } from '@/components/ui/Button.tsx'
 import { MouseEvent, ReactNode, useState } from 'react'
 import { FaTrash } from 'react-icons/fa6'
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  Tooltip
-} from '@heroui/react'
+
 import { useTranslation } from 'react-i18next'
 import { h3 } from '@/styles/primitives.ts'
 import ApplicationApi from '@/api/ApplicationApi.ts'
@@ -69,10 +64,10 @@ export function DeleteApplicationButton(props: DeleteApplicationButtonProps): Re
                 <p>{t('application.editor.delete.confirmationText')}</p>
               </ModalBody>
               <ModalFooter>
-                <Button variant="light" onPress={onClose}>
+                <Button variant="tertiary" onPress={onClose}>
                   {t('forms.cancel')}
                 </Button>
-                <Button color="danger" onPress={handleDelete}>
+                <Button variant="danger" onPress={handleDelete}>
                   {t('application.editor.delete.title')}
                 </Button>
               </ModalFooter>

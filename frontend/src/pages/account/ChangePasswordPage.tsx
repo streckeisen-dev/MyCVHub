@@ -1,6 +1,10 @@
 import { FormEvent, ReactNode, useState } from 'react'
-import { centerSection, title, twoColumnForm } from '@/styles/primitives.ts'
-import { PasswordForm, PasswordFormState, PasswordInput } from '@/components/account/PasswordForm.tsx'
+import { centerSection, twoColumnForm } from '@/styles/primitives.ts'
+import {
+  PasswordForm,
+  PasswordFormState,
+  PasswordInput
+} from '@/components/account/PasswordForm.tsx'
 import { useTranslation } from 'react-i18next'
 import { Form } from '@heroui/react'
 import { PasswordRequirements } from '@/components/account/PasswordRequirements.tsx'
@@ -12,6 +16,7 @@ import { RestError } from '@/types/RestError.ts'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { addSuccessToast } from '@/helpers/ToastHelper.ts'
 import { extractFormErrors } from '@/helpers/FormHelper.ts'
+import { PageTitle } from '@/components/ui/Layout.tsx'
 
 export function ChangePasswordPage(): ReactNode {
   const { t, i18n } = useTranslation()
@@ -62,7 +67,7 @@ export function ChangePasswordPage(): ReactNode {
 
   return (
     <section className={centerSection()}>
-      <h1 className={title()}>{t('account.edit.changePassword')}</h1>
+      <PageTitle>{t('account.edit.changePassword')}</PageTitle>
       <Form className={twoColumnForm()} onSubmit={handleSave}>
         <div className="flex flex-col gap-6">
           <PasswordInput

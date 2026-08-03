@@ -51,15 +51,15 @@ shared:
     closing: "Closing"
     cvStyle: "CV Style"
     documents: "Documents"
-  
-  validations: 
+
+  validations:
     required: "{label} must not be blank"
     email: "E-Mail is not valid"
     passwordValidator: "Password must fulfill requirements"
     dateIsBeforeValidator: "{laterDate} must be after {earlierDate}"
-  
+
   passwordRequirements:
-    length: "Must have at least {length} characters"
+    length: "Must have at least 8 characters"
     whitespaces: "Must not contain whitespaces"
     digits: "Must contain at least one digit"
     specialChars: "Must contain at least one special character"
@@ -68,11 +68,11 @@ shared:
     match: "Passwords must match"
 
 frontend:
-  error: 
+  error:
     genericMessageTitle: "Oops, something went wrong"
     genericMessage: "An unexpected error occurred"
-  
-  forms: 
+
+  forms:
     save: "Save"
     cancel: "Cancel"
 
@@ -86,22 +86,29 @@ frontend:
 
   gallery:
     select: "Select"
-  
+
   validations:
     fileSizeValidator: "File must be less than {maxSize} MB"
     numberWithinRange: "{name} must be between {min} and {max}"
-  
+
   app:
     home: "Home"
     publicProfile: "Public Profile"
-  
-  home: 
-    welcome: 
+
+  home:
+    welcome:
       title: "Your Career Journey, Organized"
       message: "MyCVHub brings together everything you need to manage your job search in one place. Create polished CVs, generate professional PDFs, and keep track of every application you send out."
-    features: 
+      positioning: "Built for people who want one reliable place for their CV, applications, and reusable job-search documents."
+    workflow:
+      title: "How it works"
+      profile: "Create your profile"
+      include: "Choose what to include"
+      generate: "Generate polished documents"
+      track: "Track each application"
+    features:
       title: "What You Can Do"
-      create: 
+      create:
         title: "Build Your Professional Profile"
         description: "Create and maintain your online CV with all your experience, skills, and achievements. Update it anytime, and have your information ready whenever opportunity knocks."
       generate:
@@ -122,9 +129,10 @@ frontend:
         title: "Stay Organized"
         description: "From CV creation to application tracking, manage your entire job search workflow efficiently and effectively."
 
-    callToAction: 
+    callToAction:
       title: "Ready to get started?"
       description: "Create your profile and take control of your career journey."
+      reassurance: "Start with your profile today. You can refine templates, cover letters, and applications later."
       btn: "Sign up now"
 
   dashboard:
@@ -134,7 +142,7 @@ frontend:
     applications: "Job Application Tracking"
     viewApplications: "View Applications"
     loadingError: "Couldn't load dashboard"
-  
+
   account:
     title: "Account"
     personalData: "Personal Data"
@@ -193,7 +201,7 @@ frontend:
       authType: "Authentication Method"
       userPw: "Username and Password"
       oauthMethod: "3rd-Party Login"
-      oauth: 'Linked Accounts'
+      oauth: "Linked Accounts"
     accountMgmt:
       title: "Account Management"
       delete:
@@ -201,7 +209,7 @@ frontend:
         confirmationText: "If you go ahead and delete your account, all your account and CV data will be deleted permanently. You will not be able to recover your data."
         success: "Your account was successfully deleted"
         error: "Failed to delete your account"
-  
+
   profile:
     title: "Profile"
     aboutMe: "About Me"
@@ -211,7 +219,7 @@ frontend:
       title: "We could not find the profile you are looking for."
     loadingError: "Failed to load profile"
     editor:
-      back: "Back to account"
+      back: "Back to dashboard"
       general: "General"
       pictureHint: "Your profile picture must not exceed 2MB."
       publicProfile: "Public Profile Access"
@@ -226,7 +234,7 @@ frontend:
       hideDescriptionsHint: "If enabled, detailed descriptions of your CV entries won't be shown in your profile"
       saveSuccessTitle: "Successfully saved profile"
       saveErrorTitle: "Failed to save profile"
-  
+
   workExperience:
     title: "Work Experience"
     noEntries: "No work experiences yet."
@@ -236,7 +244,7 @@ frontend:
       addError: "Failed to add work experience"
       editError: "Failed to update work experience"
       deleteError: "Failed to delete work experience"
-  
+
   skills:
     title: "Skills"
     noEntries: "No skills yet."
@@ -247,7 +255,7 @@ frontend:
       addError: "Failed to add skill"
       editError: "Failed to update skill"
       deleteError: "Failed to delete skill"
-  
+
   education:
     title: "Education"
     noEntries: "No education entries yet."
@@ -257,7 +265,7 @@ frontend:
       addError: "Failed to add education entry"
       editError: "Failed to update education entry"
       deleteError: "Failed to delete education"
-  
+
   project:
     title: "Projects"
     noEntries: "No projects yet."
@@ -301,7 +309,7 @@ frontend:
     download:
       title: "Create your Cover Letter"
       description: "Focus on your content while we handle the formatting. Enter your letter details, select your preferred style, and download a professionally designed PDF in seconds. Use a personal template to get there even quicker."
-  
+
   theme:
     title: "Theme"
     description: "By default, your public CV profile is displayed in MyCVHub's light theme. Below, you can personalize the used theme colors to your taste.\nAim for colors that keep your text easy to read and professional.\n\nTips:\n- Background Color: A soft, neutral color can keep your profile looking clean.\n- Header Color: Try a slightly darker or contrasting color to highlight the header."
@@ -309,7 +317,7 @@ frontend:
     preview: "Preview"
     saveSuccess: "Your theme settings have been saved"
     saveError: "Your theme settings couldn't be saved"
-  
+
   country:
     loadingError:
       title: "Failed to load countries"
@@ -378,7 +386,7 @@ frontend:
   downloads:
     title: "Downloads"
     action: "Download"
-  
+
   notFound:
     headline: "Where are you going?"
     title: "404, Page not found"
@@ -389,7 +397,7 @@ frontend:
     what: "MyCVHub is a free web application that helps you manage your job search from start to finish. Create professional CVs, generate polished PDFs, and keep track of your applications—all in one place."
     about: "MyCVHub is a personal project created and maintained by Lukas Streckeisen. The application combines a clean, intuitive interface with practical features that make job hunting less overwhelming. Whether you're actively searching or just keeping your professional profile up to date, MyCVHub provides the tools you need without the complexity."
     openSource: "The application is open source. The code is available on GitHub under the MIT license, allowing anyone to learn from, modify, or self-host the application. Feel free to contribute to the project or to open issues with feature requests or bug reports."
-  
+
   privacy:
     title: "Privacy Policy"
     intro:
@@ -467,7 +475,7 @@ frontend:
       title: "Changes to this Policy"
       content: "We may update this Privacy Policy from time to time. We will notify users of any material changes. Your continued use of MyCVHub after changes constitutes acceptance of the updated policy."
     contact: "For questions, concerns, or to exercise your data protection rights, please contact us at:"
-    note: "MyCVHub is operated as a personal project. While we take data protection seriously and implement appropriate security measures, the service is provided on an \"as-is\" basis as described in our Terms of Service."
+    note: 'MyCVHub is operated as a personal project. While we take data protection seriously and implement appropriate security measures, the service is provided on an "as-is" basis as described in our Terms of Service.'
 
   tos:
     title: "Terms of Service"
@@ -519,8 +527,8 @@ frontend:
     disclaimer:
       title: "Disclaimers and Limitations of Liability"
       asIs:
-        title: "\"As Is\" Service"
-        content: "MyCVHub is provided \"as-is\" and \"as available\" without any warranties, express or implied. We do not guarantee that the Service will be uninterrupted, error-free, secure, or free from viruses or other harmful components."
+        title: '"As Is" Service'
+        content: 'MyCVHub is provided "as-is" and "as available" without any warranties, express or implied. We do not guarantee that the Service will be uninterrupted, error-free, secure, or free from viruses or other harmful components.'
       noGuarantees:
         title: "No Guarantees"
         content: "We make no guarantees about:"
@@ -598,6 +606,8 @@ frontend:
     pagination:
       pageSize: "Entries Per Page"
       numberInformation: "Showing entries {start}-{end} of {total}"
+      previous: "Previous"
+      next: "Next"
     search: "Search"
     actions: "Actions"
     resetFilter: "Reset Filters"
@@ -610,7 +620,7 @@ backend:
     numberTooBig: "{0} must be less than {1}"
     invalidUrl: "URL is invalid"
     eitherNullOrValue: "{0} must either be 'null' or have a valid value"
-  
+
   workExperience:
     notFound: "Work Experience not found"
     accessDenied: "You don't have access to this work experience"
@@ -690,10 +700,10 @@ backend:
     style:
       modern:
         name: "Modern CV"
-        description: "The Modern CV design is a traditional single-column design with personal details in the header and section dividers throughout. It is a classic and straightforward design with a clean, minimalist layout. This version is based on the <a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV template</a>, which is a variation of the popular <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX template."
+        description: 'The Modern CV design is a traditional single-column design with personal details in the header and section dividers throughout. It is a classic and straightforward design with a clean, minimalist layout. This version is based on the <a href="https://typst.app/universe/package/modern-cv/">Modern CV template</a>, which is a variation of the popular <a href="https://github.com/posquit0/Awesome-CV">Awesome-CV</a> LaTeX template.'
       talendo:
         name: "Talendo"
-        description: "The Talendo design is a modern two-column design with a sidebar for personal details and a timeline layout for your professional history. It is clean, professional, and well-structured with clear visual hierarchy. This version is a variation of the CV template from the <a href=\"https://talendo.ch\">Talendo</a> Career Starter magazine."
+        description: 'The Talendo design is a modern two-column design with a sidebar for personal details and a timeline layout for your professional history. It is clean, professional, and well-structured with clear visual hierarchy. This version is a variation of the CV template from the <a href="https://talendo.ch">Talendo</a> Career Starter magazine.'
         bannerBackground: "Banner Background Color"
     validation:
       noCvEntries: "There are no CV entries to generate a PDF"
@@ -714,7 +724,7 @@ backend:
     style:
       modern:
         name: "Modern CV"
-        description: "The Modern CV design is a classic cover letter format with sender and recipient details at the top, followed by a formal letter body. The design is traditional and professional with clean spacing and standard business letter structure. This version is based on the <a href=\"https://typst.app/universe/package/modern-cv/\">Modern CV template</a>, which is a variation of the popular <a href=\"https://github.com/posquit0/Awesome-CV\">Awesome-CV</a> LaTeX template."
+        description: 'The Modern CV design is a classic cover letter format with sender and recipient details at the top, followed by a formal letter body. The design is traditional and professional with clean spacing and standard business letter structure. This version is based on the <a href="https://typst.app/universe/package/modern-cv/">Modern CV template</a>, which is a variation of the popular <a href="https://github.com/posquit0/Awesome-CV">Awesome-CV</a> LaTeX template.'
 
     validation:
       invalidLanguage: "Language is invalid"

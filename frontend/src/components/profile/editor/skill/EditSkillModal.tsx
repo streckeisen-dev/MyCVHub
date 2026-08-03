@@ -1,15 +1,6 @@
-import {
-  Autocomplete,
-  AutocompleteItem,
-  Form,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalProps,
-  Slider
-} from '@heroui/react'
+import { Modal, ModalBody, ModalContent, ModalHeader, ModalProps } from '@/components/ui/Modal.tsx'
+import { Autocomplete, AutocompleteItem, Input, Slider } from '@/components/ui/Fields.tsx'
+import { Form } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import { h3 } from '@/styles/primitives.ts'
 import { FormButtons } from '@/components/btn/FormButtons.tsx'
@@ -84,7 +75,7 @@ export function EditSkillModal(props: EditSkillModalProps) {
   }
 
   return (
-    <Modal className="w-full p-5" {...modalProps} backdrop="blur" size="5xl">
+    <Modal className="w-full p-5" onClose={onClose} {...modalProps} backdrop="blur" size="5xl">
       <ModalContent>
         {(onClose) => (
           <>
@@ -116,7 +107,9 @@ export function EditSkillModal(props: EditSkillModalProps) {
                   errorMessage={errorMessages.type}
                 >
                   {existingTypes.map((type) => (
-                    <AutocompleteItem key={type}>{type}</AutocompleteItem>
+                    <AutocompleteItem key={type} id={type}>
+                      {type}
+                    </AutocompleteItem>
                   ))}
                 </Autocomplete>
 
@@ -128,7 +121,9 @@ export function EditSkillModal(props: EditSkillModalProps) {
                     maxValue={100}
                     step={1}
                     value={data.level}
-                    onChange={(val: number) => updateData('level', val)}
+                    onChange={(val: number | number[]) =>
+                      updateData('level', Array.isArray(val) ? val[0] : val)
+                    }
                   />
                   {errorMessages.level && (
                     <p className="text-danger text-small">{errorMessages.level}</p>
