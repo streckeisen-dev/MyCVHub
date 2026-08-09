@@ -251,6 +251,30 @@ class OAuthIntegrationServiceTest {
     }
 
     @Test
+    fun testGetOAuthAccountWithMissingAuthorizedClient() {
+        val oauthId = "unassociatedOAuthUser"
+
+        val authentication = mockk<OAuth2AuthenticationToken> {
+            every { authorizedClientRegistrationId } returns "githubRegistrationId"
+            every { name } returns oauthId
+        }
+        every {
+            authorizedClientService.loadAuthorizedClient<OAuth2AuthorizedClient>(
+                "githubRegistrationId",
+                oauthId
+            )
+        } returns null
+
+        val result =
+            oAuthIntegrationService.getOrCreateOAuthAccount(authentication, oauthId, OAuthType.GITHUB)
+
+        assertTrue(result.isFailure)
+        verify(exactly = 0) { githubService.getUserEmail(any(), any()) }
+        verify(exactly = 0) { oauthIntegrationRepository.save(any()) }
+        verify(exactly = 0) { applicantAccountRepository.save(any()) }
+    }
+
+    @Test
     fun testCompleteSignupWithoutTermsAccepted() {
         val request = OAuthSignupRequestDto(
             username = "u",

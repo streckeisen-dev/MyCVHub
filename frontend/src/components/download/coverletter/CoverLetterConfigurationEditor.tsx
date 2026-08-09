@@ -1,6 +1,7 @@
+import { AutocompleteItem, Input, Textarea, Autocomplete } from '@/components/ui/Fields.tsx'
 import { ChangeEvent, ReactNode, useMemo } from 'react'
 import { CoverLetterStyleDto } from '@/types/coverletter/CoverLetterStyleDto.ts'
-import { Autocomplete, AutocompleteItem, Form, Input, Textarea } from '@heroui/react'
+import { Form } from '@heroui/react'
 import { LanguageInput } from '@/components/input/LanguageInput.tsx'
 import { Key } from '@react-types/shared'
 import { SwitchInput } from '@/components/input/SwitchInput.tsx'
@@ -10,7 +11,6 @@ import {
   ApplicationDocumentsEditor
 } from '@/components/applicationTemplate/ApplicationDocumentsEditor.tsx'
 import { ApplicationDetailsDto } from '@/types/application/ApplicationDetailsDto.ts'
-import { h4, h5 } from '@/styles/primitives.ts'
 import { CheckboxInput } from '@/components/input/CheckboxInput.tsx'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { CoverLetterGallery } from '@/components/download/coverletter/CoverLetterGallery.tsx'
@@ -50,7 +50,7 @@ export type CoverLetterEditorProps = Readonly<{
 }>
 
 export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): ReactNode {
-  const { styles, config, onChange, errorMessages, application, templates, confined } = props
+  const { styles, config, onChange, errorMessages, application, templates } = props
   const { t } = useTranslation()
 
   const selectedStyle = styles.find((s) => s.key === config.style)
@@ -142,202 +142,238 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
         template.coverLetterConfiguration.documents?.map((doc) => ({ id: uuid(), name: doc })) ?? []
     })
   }
-  const containerMaxWidth = confined ? '' : '2xl:max-w-3/4'
-  const formMaxWidth = confined ? 'max-w-9/10' : '2xl:max-w-1/2'
+  const maxWidth = 'max-w-5xl'
 
   return (
-    <div className={`flex flex-col gap-10 w-full ${containerMaxWidth}`}>
+    <div className={`mx-auto flex w-full flex-col gap-7 ${maxWidth}`}>
       {templates && (
-        <Autocomplete
-          className="w-fit self-center"
-          name="applicationTemplate"
-          label={t('applicationTemplate.singular')}
-          onSelectionChange={handleTemplateChange}
-        >
-          {templates.map((template) => (
-            <AutocompleteItem key={template.id}>{template.name}</AutocompleteItem>
-          ))}
-        </Autocomplete>
+        <div className="w-fit 2xl:pl-5">
+          <Autocomplete
+            name="applicationTemplate"
+            label={t('applicationTemplate.singular')}
+            onSelectionChange={handleTemplateChange}
+            description={t('applicationTemplate.usageHint')}
+          >
+            {templates.map((template) => (
+              <AutocompleteItem key={template.id} id={template.id}>
+                {template.name}
+              </AutocompleteItem>
+            ))}
+          </Autocomplete>
+        </div>
       )}
 
-      <CoverLetterGallery
-        styles={styles}
-        onSelect={handleStyleSelected}
-        selectedStyle={selectedStyle?.key}
-      />
+      <div className="w-full">
+        <CoverLetterGallery
+          styles={styles}
+          onSelect={handleStyleSelected}
+          selectedStyle={selectedStyle?.key}
+        />
+      </div>
 
       {selectedStyle && (
         <Form
           onSubmit={(e) => e.preventDefault()}
-          className={`flex flex-col gap-6 self-center w-full ${formMaxWidth}`}
+          className={`flex w-full flex-col gap-6 self-center ${maxWidth}`}
         >
-          <LanguageInput
-            isRequired
-            selectedKey={config.language ?? null}
-            onSelectionChange={handleLanguageChange}
-          />
+          <div className="grid w-full gap-5 rounded-lg border border-default-200 bg-surface p-5 md:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] md:items-start">
+            <LanguageInput
+              isRequired
+              selectedKey={config.language ?? null}
+              onSelectionChange={handleLanguageChange}
+            />
 
-          <SwitchInput
-            name="mirrorProfileImage"
-            isSelected={config.mirrorProfileImage}
-            onChange={updateConfig}
-          >
-            {t('coverLetter.mirrorProfileImage')}
-          </SwitchInput>
+            <div className="md:pt-7">
+              <SwitchInput
+                name="mirrorProfileImage"
+                isSelected={config.mirrorProfileImage}
+                onChange={updateConfig}
+              >
+                {t('coverLetter.mirrorProfileImage')}
+              </SwitchInput>
+            </div>
+          </div>
 
           {errorMessages && (
             <>
-              <h4 className={h4()}>{t('coverLetter.applicationInfo')}</h4>
-              {application == null && (
-                <Input
-                  isRequired
-                  name="jobTitle"
-                  label={t('fields.jobTitle')}
-                  value={config.jobTitle}
-                  onChange={handleChange}
-                  isInvalid={errors['application.jobTitle'] != null}
-                  errorMessage={errors['application.jobTitle']}
+              <div className="flex w-full flex-col gap-5 rounded-lg border border-default-200 bg-surface p-5">
+                <p className="text-base font-semibold text-foreground">
+                  {t('coverLetter.applicationInfo')}
+                </p>
+
+                {application == null && (
+                  <div className="max-w-3xl">
+                    <Input
+                      isRequired
+                      name="jobTitle"
+                      label={t('fields.jobTitle')}
+                      value={config.jobTitle}
+                      onChange={handleChange}
+                      isInvalid={errors['application.jobTitle'] != null}
+                      errorMessage={errors['application.jobTitle']}
+                    />
+                  </div>
+                )}
+
+                <CheckboxInput
+                  label={t('coverLetter.knownContactPerson')}
+                  isSelected={config.contactPerson != null}
+                  onValueChange={handleKnownContactPersonChange}
                 />
-              )}
 
-              <CheckboxInput
-                label={t('coverLetter.knownContactPerson')}
-                isSelected={config.contactPerson != null}
-                onValueChange={handleKnownContactPersonChange}
-              />
+                {config.contactPerson ? (
+                  <div className="grid w-full max-w-3xl gap-4 md:grid-cols-2">
+                    <p className="text-sm font-semibold text-default-600 md:col-span-2">
+                      {t('coverLetter.contactPerson')}
+                    </p>
+                    <Input
+                      isRequired
+                      name="firstName"
+                      label={t('fields.firstName')}
+                      value={config.contactPerson.firstName}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        handleContactPersonChange(e.currentTarget.name, e.currentTarget.value)
+                      }
+                      isInvalid={errors['application.contactPerson.firstName'] != null}
+                      errorMessage={errors['application.contactPerson.firstName']}
+                    />
+                    <Input
+                      isRequired
+                      name="lastName"
+                      label={t('fields.lastName')}
+                      value={config.contactPerson.lastName}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        handleContactPersonChange(e.currentTarget.name, e.currentTarget.value)
+                      }
+                      isInvalid={errors['application.contactPerson.lastName'] != null}
+                      errorMessage={errors['application.contactPerson.lastName']}
+                    />
+                  </div>
+                ) : (
+                  <div className="max-w-3xl">
+                    <Input
+                      isRequired
+                      name="addressee"
+                      label={t('fields.addressee')}
+                      description={t('coverLetter.addresseeHint')}
+                      value={config.addressee}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        handleAddresseeChange(e.currentTarget.value)
+                      }
+                      isInvalid={errors['application.addressee'] != null}
+                      errorMessage={errors['application.addressee']}
+                    />
+                  </div>
+                )}
 
-              {config.contactPerson ? (
-                <>
-                  <h5 className={h5()}>{t('coverLetter.contactPerson')}</h5>
+                <div className="max-w-3xl">
                   <Input
                     isRequired
-                    name="firstName"
-                    label={t('fields.firstName')}
-                    value={config.contactPerson.firstName}
-                    onChange={(e) =>
-                      handleContactPersonChange(e.currentTarget.name, e.currentTarget.value)
+                    name="salutation"
+                    label={t('fields.salutation')}
+                    description={
+                      config.contactPerson
+                        ? t('coverLetter.salutationContactPersonHint')
+                        : t('coverLetter.salutationAddresseeHint')
                     }
-                    isInvalid={errors['application.contactPerson.firstName'] != null}
-                    errorMessage={errors['application.contactPerson.firstName']}
+                    value={config.salutation}
+                    onChange={handleChange}
+                    isInvalid={errors['application.salutation'] != null}
+                    errorMessage={errors['application.salutation']}
                   />
+                </div>
+
+                <div className="grid w-full gap-4 md:grid-cols-2">
+                  <p className="text-sm font-semibold text-default-600 md:col-span-2">
+                    {t('coverLetter.companyInfo')}
+                  </p>
+
+                  {application == null && (
+                    <Input
+                      isRequired
+                      name="company"
+                      label={t('fields.company')}
+                      value={config.company}
+                      onChange={handleChange}
+                      isInvalid={errors['application.company'] != null}
+                      errorMessage={errors['application.company']}
+                    />
+                  )}
+
                   <Input
                     isRequired
-                    name="lastName"
-                    label={t('fields.lastName')}
-                    value={config.contactPerson.lastName}
-                    onChange={(e) =>
-                      handleContactPersonChange(e.currentTarget.name, e.currentTarget.value)
-                    }
-                    isInvalid={errors['application.contactPerson.lastName'] != null}
-                    errorMessage={errors['application.contactPerson.lastName']}
+                    name="companyStreet"
+                    label={t('fields.street')}
+                    value={config.companyStreet}
+                    onChange={handleChange}
+                    isInvalid={errors['application.companyAddress.street'] != null}
+                    errorMessage={errors['application.companyAddress.street']}
                   />
-                </>
-              ) : (
-                <Input
+
+                  <Input
+                    isRequired
+                    name="companyPostcode"
+                    label={t('fields.postcode')}
+                    value={config.companyPostcode}
+                    onChange={handleChange}
+                    isInvalid={errors['application.companyAddress.postcode'] != null}
+                    errorMessage={errors['application.companyAddress.postcode']}
+                  />
+
+                  <Input
+                    isRequired
+                    name="companyCity"
+                    label={t('fields.city')}
+                    value={config.companyCity}
+                    onChange={handleChange}
+                    isInvalid={errors['application.companyAddress.city'] != null}
+                    errorMessage={errors['application.companyAddress.city']}
+                  />
+                </div>
+              </div>
+
+              <div className="flex w-full flex-col gap-5 rounded-lg border border-default-200 bg-surface p-5">
+                <p className="text-base font-semibold text-foreground">
+                  {t('coverLetter.content')}
+                </p>
+                <Textarea
                   isRequired
-                  name="addressee"
-                  label={t('fields.addressee')}
-                  description={t('coverLetter.addresseeHint')}
-                  value={config.addressee}
-                  onChange={(e) => handleAddresseeChange(e.currentTarget.value)}
-                  isInvalid={errors['application.addressee'] != null}
-                  errorMessage={errors['application.addressee']}
-                />
-              )}
-
-              <Input
-                isRequired
-                name="salutation"
-                label={t('fields.salutation')}
-                description={
-                  config.contactPerson
-                    ? t('coverLetter.salutationContactPersonHint')
-                    : t('coverLetter.salutationAddresseeHint')
-                }
-                value={config.salutation}
-                onChange={handleChange}
-                isInvalid={errors['application.salutation'] != null}
-                errorMessage={errors['application.salutation']}
-              />
-
-              <h5 className={h5()}>{t('coverLetter.companyInfo')}</h5>
-
-              {application == null && (
-                <Input
-                  isRequired
-                  name="company"
-                  label={t('fields.company')}
-                  value={config.company}
+                  minRows={20}
+                  maxRows={50}
+                  name="coverLetterContent"
+                  label={t('fields.content')}
+                  description={
+                    <p className="whitespace-break-spaces">{t('coverLetter.coverLetterHint')}</p>
+                  }
+                  value={config.coverLetterContent}
                   onChange={handleChange}
-                  isInvalid={errors['application.company'] != null}
-                  errorMessage={errors['application.company']}
+                  isInvalid={errors['application.coverLetterContent'] != null}
+                  errorMessage={errors['application.coverLetterContent']}
                 />
-              )}
 
-              <Input
-                isRequired
-                name="companyStreet"
-                label={t('fields.street')}
-                value={config.companyStreet}
-                onChange={handleChange}
-                isInvalid={errors['application.companyAddress.street'] != null}
-                errorMessage={errors['application.companyAddress.street']}
-              />
-
-              <Input
-                isRequired
-                name="companyPostcode"
-                label={t('fields.postcode')}
-                value={config.companyPostcode}
-                onChange={handleChange}
-                isInvalid={errors['application.companyAddress.postcode'] != null}
-                errorMessage={errors['application.companyAddress.postcode']}
-              />
-
-              <Input
-                isRequired
-                name="companyCity"
-                label={t('fields.city')}
-                value={config.companyCity}
-                onChange={handleChange}
-                isInvalid={errors['application.companyAddress.city'] != null}
-                errorMessage={errors['application.companyAddress.city']}
-              />
-
-              <h4 className={h4()}>{t('coverLetter.content')}</h4>
-              <Textarea
-                isRequired
-                minRows={20}
-                maxRows={50}
-                name="coverLetterContent"
-                label={t('fields.content')}
-                description={
-                  <p className="whitespace-break-spaces">{t('coverLetter.coverLetterHint')}</p>
-                }
-                value={config.coverLetterContent}
-                onChange={handleChange}
-                isInvalid={errors['application.coverLetterContent'] != null}
-                errorMessage={errors['application.coverLetterContent']}
-              />
-
-              <Input
-                isRequired
-                name="closing"
-                label={t('fields.closing')}
-                description={t('coverLetter.closingHint')}
-                value={config.closing}
-                onChange={handleChange}
-                isInvalid={errors['application.closing'] != null}
-                errorMessage={errors['application.closing']}
-              />
+                <div className="max-w-3xl">
+                  <Input
+                    isRequired
+                    name="closing"
+                    label={t('fields.closing')}
+                    description={t('coverLetter.closingHint')}
+                    value={config.closing}
+                    onChange={handleChange}
+                    isInvalid={errors['application.closing'] != null}
+                    errorMessage={errors['application.closing']}
+                  />
+                </div>
+              </div>
             </>
           )}
 
-          <ApplicationDocumentsEditor
-            documents={config.documents}
-            onChange={(docs) => updateConfig('documents', docs)}
-            errorMessages={errorMessages ?? {}}
-          />
+          <div className="w-full rounded-lg border border-default-200 bg-surface p-5">
+            <ApplicationDocumentsEditor
+              documents={config.documents}
+              onChange={(docs) => updateConfig('documents', docs)}
+              errorMessages={errorMessages ?? {}}
+            />
+          </div>
         </Form>
       )}
     </div>

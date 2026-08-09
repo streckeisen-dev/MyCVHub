@@ -1,5 +1,7 @@
+import { Modal, ModalBody, ModalContent, ModalHeader } from '@/components/ui/Modal.tsx'
+import { Input, Textarea } from '@/components/ui/Fields.tsx'
 import { ChangeEvent, FormEvent, ReactNode, useState } from 'react'
-import { Form, Input, Modal, ModalBody, ModalContent, ModalHeader, Textarea } from '@heroui/react'
+import { Form } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import { h3 } from '@/styles/primitives.ts'
 import { FormButtons } from '@/components/btn/FormButtons.tsx'

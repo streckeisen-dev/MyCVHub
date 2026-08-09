@@ -11,8 +11,8 @@ class ProfileThemeService(
     private val profileThemeValidationService: ProfileThemeValidationService
 ) {
     @Transactional
-    fun save(accountId: Long, themeUpdate: ProfileThemeUpdateDto): Result<ProfileThemeEntity> {
-        val profile = profileService.findByAccountId(accountId)
+    fun save(accountId: Long, themeUpdate: ProfileThemeUpdateDto): Result<ProfileThemeDto> {
+        val profile = profileService.findEntityByAccountId(accountId)
             .getOrElse { return Result.failure(it) }
 
         profileThemeValidationService.validateThemeUpdate(themeUpdate)
@@ -25,6 +25,6 @@ class ProfileThemeService(
             profile.profileTheme?.id
         )
 
-        return Result.success(profileThemeRepository.save(theme))
+        return Result.success(profileThemeRepository.save(theme).toDto())
     }
 }

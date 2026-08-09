@@ -1,6 +1,5 @@
 package ch.streckeisen.mycv.backend.cv.profile
 
-import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -17,7 +16,6 @@ import tools.jackson.databind.ObjectMapper
 @RequestMapping("/api/profile")
 class ProfileResource(
     private val profileService: ProfileService,
-    private val profilePictureService: ProfilePictureService,
     private val objectMapper: ObjectMapper
 ) {
     @GetMapping
@@ -26,11 +24,7 @@ class ProfileResource(
 
         return profileService.findByAccountId(principal.id)
             .fold(
-                onSuccess = { profile ->
-                    val profilePicture = profilePictureService.get(principal.id, profile)
-                        .getOrThrow()
-                    ResponseEntity.ok(profile.toDto(profilePicture.uri.toString()))
-                },
+                onSuccess = { profile -> ResponseEntity.ok(profile) },
                 onFailure = {
                     throw it
                 }
@@ -41,13 +35,9 @@ class ProfileResource(
     fun getProfilePictureThumbnail(): ResponseEntity<ThumbnailDto> {
         val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
-        return profileService.findByAccountId(principal.id)
+        return profileService.getProfilePictureThumbnail(principal.id)
             .fold(
-                onSuccess = { profile ->
-                    val thumbnail = profilePictureService.getThumbnail(principal.id, profile)
-                        .getOrThrow()
-                    ResponseEntity.ok(ThumbnailDto(thumbnail.uri.toString()))
-                },
+                onSuccess = { thumbnail -> ResponseEntity.ok(thumbnail) },
                 onFailure = {
                     throw it
                 }
@@ -64,11 +54,7 @@ class ProfileResource(
         val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
         return profileService.save(principal.id, profileInformationUpdate, profilePictureFile)
             .fold(
-                onSuccess = { profile ->
-                    val profilePicture = profilePictureService.get(profile.account.id, profile)
-                        .getOrThrow()
-                    ResponseEntity.ok(profile.toDto(profilePicture.uri.toString()))
-                },
+                onSuccess = { profile -> ResponseEntity.ok(profile) },
                 onFailure = {
                     throw it
                 }

@@ -14,7 +14,7 @@ class ProjectService(
     private val profileService: ProfileService
 ) {
     @Transactional
-    fun save(accountId: Long, projectUpdate: ProjectUpdateDto): Result<ProjectEntity> {
+    fun save(accountId: Long, projectUpdate: ProjectUpdateDto): Result<ProjectDto> {
         projectValidationService.validateProject(projectUpdate)
             .onFailure { return Result.failure(it) }
 
@@ -22,7 +22,7 @@ class ProjectService(
             projectRepository.findById(it)
                 .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.project.notFound")) }
         }
-        val profile = existingProject?.profile ?: profileService.findByAccountId(accountId)
+        val profile = existingProject?.profile ?: profileService.findEntityByAccountId(accountId)
             .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.profile.notFound")) }
 
         if (accountId != profile.account.id) {
@@ -39,7 +39,7 @@ class ProjectService(
             links = projectUpdate.links?.map { ProjectLink(url = it.url!!, displayName = it.displayName!!, type = it.type!!) } ?: emptyList(),
             profile = profile
         )
-        return Result.success(projectRepository.save(project))
+        return Result.success(projectRepository.save(project).toDto())
     }
 
     @Transactional

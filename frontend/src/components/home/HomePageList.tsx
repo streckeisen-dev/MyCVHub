@@ -12,11 +12,14 @@ export type HomePageListProps = Readonly<{
 export function HomePageList(props: HomePageListProps): ReactNode {
   const { entries } = props
   return (
-    <div className="flex flex-col gap-2">
-      {entries.map((entry) => (
-        <div key={entry.title} className="">
-          <p className="font-bold text-large">{entry.title}</p>
-          <p className="pl-5">{entry.description}</p>
+    <div className="grid gap-4 md:grid-cols-3">
+      {entries.map((entry, index) => (
+        <div key={entry.title} className="rounded-lg border border-default-200 bg-surface p-5">
+          <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-default text-sm font-semibold text-default-foreground">
+            {index + 1}
+          </div>
+          <p className="font-semibold text-foreground">{entry.title}</p>
+          <p className="mt-2 text-sm leading-6 text-default-600">{entry.description}</p>
         </div>
       ))}
     </div>

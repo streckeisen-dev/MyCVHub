@@ -14,7 +14,7 @@ class EducationService(
     private val profileService: ProfileService
 ) {
     @Transactional
-    fun save(accountId: Long, educationUpdate: EducationUpdateDto): Result<EducationEntity> {
+    fun save(accountId: Long, educationUpdate: EducationUpdateDto): Result<EducationDto> {
         val existingEducation = if (educationUpdate.id != null) {
             educationRepository.findById(educationUpdate.id)
                 .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.education.notFound")) }
@@ -27,27 +27,26 @@ class EducationService(
         val profile = if (existingEducation != null) {
             existingEducation.profile
         } else {
-            profileService.findByAccountId(accountId)
+            profileService.findEntityByAccountId(accountId)
                 .onFailure { return Result.failure(it) }
                 .getOrNull()!!
         }
         educationValidationService.validateEducation(educationUpdate)
             .onFailure { return Result.failure(it) }
 
-        return Result.success(
-            educationRepository.save(
-                EducationEntity(
-                    id = existingEducation?.id,
-                    institution = educationUpdate.institution!!,
-                    location = educationUpdate.location!!,
-                    educationStart = educationUpdate.educationStart!!,
-                    educationEnd = educationUpdate.educationEnd,
-                    degreeName = educationUpdate.degreeName!!,
-                    description = if (educationUpdate.description == "") null else educationUpdate.description,
-                    profile = profile
-                )
+        val saved = educationRepository.save(
+            EducationEntity(
+                id = existingEducation?.id,
+                institution = educationUpdate.institution!!,
+                location = educationUpdate.location!!,
+                educationStart = educationUpdate.educationStart!!,
+                educationEnd = educationUpdate.educationEnd,
+                degreeName = educationUpdate.degreeName!!,
+                description = if (educationUpdate.description == "") null else educationUpdate.description,
+                profile = profile
             )
         )
+        return Result.success(saved.toDto())
     }
 
     @Transactional

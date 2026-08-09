@@ -33,13 +33,15 @@ class WorkExperienceServiceTest {
                 every { id } returns 1
                 every { profile } returns mockProfile
             })
-            every { save(any()) } returns mockk()
+            every { save(any()) } answers {
+                firstArg<WorkExperienceEntity>().also { it.id = it.id ?: 100 }
+            }
             every { delete(any()) } returns Unit
         }
         workExperienceValidationService = mockk()
         profileService = mockk {
-            every { findByAccountId(any()) } returns Result.failure(IllegalArgumentException(""))
-            every { findByAccountId(eq(1)) } returns Result.success(mockProfile)
+            every { findEntityByAccountId(any()) } returns Result.failure(IllegalArgumentException(""))
+            every { findEntityByAccountId(eq(1)) } returns Result.success(mockProfile)
         }
         workExperienceService =
             WorkExperienceService(workExperienceRepository, workExperienceValidationService, profileService)
@@ -70,7 +72,7 @@ class WorkExperienceServiceTest {
         assertNotNull(ex)
 
         verify(exactly = 1) { workExperienceRepository.findById(eq(1)) }
-        verify(exactly = 0) { profileService.findByAccountId(any()) }
+        verify(exactly = 0) { profileService.findEntityByAccountId(any()) }
         verify(exactly = 0) { workExperienceRepository.save(any()) }
     }
 

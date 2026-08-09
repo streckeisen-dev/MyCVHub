@@ -1,3 +1,4 @@
+import { Input, Textarea } from '@/components/ui/Fields.tsx'
 import { ChangeEvent, FormEvent, ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
@@ -7,7 +8,7 @@ import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import { ProfileUpdateRequestDto } from '@/types/profile/ProfileUpdateRequestDto.ts'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { RestError } from '@/types/RestError.ts'
-import { Form, Input, Textarea } from '@heroui/react'
+import { Form } from '@heroui/react'
 import { twoColumnForm } from '@/styles/primitives.ts'
 import { SwitchInput } from '@/components/input/SwitchInput.tsx'
 import { FaCamera } from 'react-icons/fa6'
@@ -107,6 +108,7 @@ export function GeneralEditor(props: GeneralEditorProps): ReactNode {
           label={t('fields.bio')}
           value={info.bio ?? ''}
           onChange={handleChange}
+          rows={7}
           isInvalid={errorMessages.bio != null}
           errorMessage={errorMessages.bio}
         />

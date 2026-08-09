@@ -1,16 +1,7 @@
-import {
-  Autocomplete,
-  AutocompleteItem,
-  Button,
-  Form,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalProps,
-  Textarea
-} from '@heroui/react'
+import { Modal, ModalBody, ModalContent, ModalHeader, ModalProps } from '@/components/ui/Modal.tsx'
+import { Autocomplete, AutocompleteItem, Input, Textarea } from '@/components/ui/Fields.tsx'
+import { Button } from '@/components/ui/Button.tsx'
+import { Form } from '@heroui/react'
 import { ProjectDto } from '@/types/profile/project/ProjectDto.ts'
 import { useTranslation } from 'react-i18next'
 import { h3, h4 } from '@/styles/primitives.ts'
@@ -250,18 +241,23 @@ export function EditProjectModal(props: EditProjectModalProps) {
                   isInvalid={errorMessages.description != null}
                   errorMessage={errorMessages.description}
                   isRequired
+                  rows={6}
                 />
 
                 <div className="flex flex-col gap-6">
                   <h4 className={h4()}>{t('fields.links')}</h4>
                   {data.links.map((link, linkIndex) => (
-                    <div className="grid grid-cols-12 gap-2" key={link.uiId}>
+                    <div
+                      className="grid grid-cols-1 items-start gap-x-3 gap-y-3 md:grid-cols-[minmax(0,2fr)_minmax(0,1.35fr)_minmax(0,1.25fr)_2.5rem]"
+                      key={link.uiId}
+                    >
                       <Input
                         name="displayName"
-                        className="col-span-12 sm:col-span-4 lg:col-span-5"
                         label={t('fields.displayName')}
                         value={link.displayName}
-                        onChange={(e) => handleLinkChange(link.uiId, e)}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                          handleLinkChange(link.uiId, e)
+                        }
                         isRequired
                         isInvalid={errorMessages[`links[${linkIndex}].displayName`] != null}
                         errorMessage={errorMessages[`links[${linkIndex}].displayName`]}
@@ -269,10 +265,11 @@ export function EditProjectModal(props: EditProjectModalProps) {
 
                       <Input
                         name="url"
-                        className="col-span-12 sm:col-span-4 lg:col-span-3"
                         label={t('fields.url')}
                         value={link.url}
-                        onChange={(e) => handleLinkChange(link.uiId, e)}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                          handleLinkChange(link.uiId, e)
+                        }
                         isRequired
                         isInvalid={errorMessages[`links[${linkIndex}].url`] != null}
                         errorMessage={errorMessages[`links[${linkIndex}].url`]}
@@ -280,7 +277,6 @@ export function EditProjectModal(props: EditProjectModalProps) {
 
                       <Autocomplete
                         name="type"
-                        className="col-span-12 sm:col-span-4 lg:col-span-3"
                         label={t('fields.type')}
                         selectedKey={link.type}
                         onSelectionChange={(key) => handleLinkTypeChange(link.uiId, key as string)}
@@ -289,26 +285,30 @@ export function EditProjectModal(props: EditProjectModalProps) {
                         errorMessage={errorMessages[`links[${linkIndex}].type`]}
                       >
                         {Object.values(ProjectLinkType).map((val) => (
-                          <AutocompleteItem key={val}>{val}</AutocompleteItem>
+                          <AutocompleteItem key={val} id={val}>
+                            {val}
+                          </AutocompleteItem>
                         ))}
                       </Autocomplete>
 
                       <Button
-                        color="danger"
-                        className="w-min rounded-full col-span-2 md:col-span-1 mt-2"
+                        variant="danger"
+                        type="button"
+                        className="h-10 min-w-10 justify-self-start rounded-full px-0 md:mt-[1.625rem] md:justify-self-center"
                         onPress={() => removeLink(link.uiId)}
                       >
-                        <FaMinus size={25} />
+                        <FaMinus size={18} />
                       </Button>
                     </div>
                   ))}
-                  <div className="grid grid-cols-12 gap-2">
+                  <div className="grid grid-cols-1 md:grid-cols-[minmax(0,2fr)_minmax(0,1.35fr)_minmax(0,1.25fr)_2.5rem]">
                     <Button
-                      className="w-min rounded-full col-span-2 md:col-span-1"
-                      color="primary"
+                      className="h-10 min-w-10 justify-self-start rounded-full px-0 md:col-start-4 md:justify-self-center"
+                      variant="primary"
+                      type="button"
                       onPress={addLink}
                     >
-                      <FaPlus size={25} />
+                      <FaPlus size={18} />
                     </Button>
                   </div>
                 </div>

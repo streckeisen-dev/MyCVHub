@@ -9,11 +9,11 @@ import jakarta.persistence.OneToOne
 
 @Entity
 class ProfileThemeEntity(
-    val backgroundColor: String,
-    val surfaceColor: String,
+    var backgroundColor: String,
+    var surfaceColor: String,
     @OneToOne
-    val profile: ProfileEntity,
+    var profile: ProfileEntity,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    var id: Long? = null
 )

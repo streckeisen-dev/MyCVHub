@@ -1,13 +1,6 @@
-import {
-  Form,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalProps,
-  Textarea
-} from '@heroui/react'
+import { Modal, ModalBody, ModalContent, ModalHeader, ModalProps } from '@/components/ui/Modal.tsx'
+import { Input, Textarea } from '@/components/ui/Fields.tsx'
+import { Form } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import { h3 } from '@/styles/primitives.ts'
 import { ChangeEvent, FormEvent, ReactNode, useState } from 'react'
@@ -178,6 +171,7 @@ export function EditWorkExperienceModal(props: EditWorkExperienceModalProps): Re
                   isInvalid={errorMessages.description != null}
                   errorMessage={errorMessages.description}
                   isRequired
+                  rows={6}
                 />
 
                 <FormButtons onCancel={onClose} isSaving={isSaving} />

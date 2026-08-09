@@ -16,15 +16,15 @@ import java.time.LocalDate
 class ProjectEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
-    val name: String,
-    val role: String,
-    val description: String,
-    val projectStart: LocalDate,
-    val projectEnd: LocalDate?,
+    var id: Long? = null,
+    var name: String,
+    var role: String,
+    var description: String,
+    var projectStart: LocalDate,
+    var projectEnd: LocalDate?,
     @ElementCollection
     @CollectionTable(name = "project_links", joinColumns = [JoinColumn(name = "project_id")])
-    val links: List<ProjectLink> = listOf(),
+    var links: List<ProjectLink> = listOf(),
     @ManyToOne(fetch = FetchType.LAZY)
-    val profile: ProfileEntity
+    var profile: ProfileEntity
 )

@@ -6,9 +6,9 @@ import jakarta.persistence.Enumerated
 
 @Embeddable
 class OAuthEntityId(
-    val id: String,
+    var id: String,
     @Enumerated(EnumType.STRING)
-    val type: OAuthType
+    var type: OAuthType
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

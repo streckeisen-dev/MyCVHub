@@ -1,10 +1,12 @@
+import { Progress } from '@/components/ui/Display.tsx'
+import { Button } from '@/components/ui/Button.tsx'
 import { Fragment, ReactNode } from 'react'
 import { SkillDto } from '@/types/profile/skill/SkillDto.ts'
 import { useTranslation } from 'react-i18next'
 import { KeyValueObject } from '@/types/KeyValueObject.ts'
 import { PublicSkillDto } from '@/types/profile/skill/PublicSkillDto.ts'
 import { h5 } from '@/styles/primitives.ts'
-import { Button, Progress } from '@heroui/react'
+
 import { FaPen, FaTrash } from 'react-icons/fa6'
 import { ListModificationEvent } from '@/components/profile/editor/CvListEntry.tsx'
 
@@ -120,10 +122,10 @@ function SkillEntry(props: SkillEntryProps): ReactNode {
       <Progress className={levelClasses} aria-label="Skill Level" value={skill.level} />
       {hasActions && (
         <div className="col-span-12 lg:col-span-2 flex gap-3 justify-end">
-          <Button isIconOnly radius="full" color="primary" onPress={handleEdit}>
+          <Button isIconOnly variant="primary" onPress={handleEdit}>
             <FaPen />
           </Button>
-          <Button isIconOnly radius="full" color="danger" onPress={handleDelete}>
+          <Button isIconOnly variant="danger" onPress={handleDelete}>
             <FaTrash />
           </Button>
         </div>

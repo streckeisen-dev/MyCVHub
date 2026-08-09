@@ -1,26 +1,29 @@
+import { DatePickerProps, DatePicker } from '@/components/ui/Fields.tsx'
 import { ReactNode } from 'react'
-import { DatePicker, DatePickerProps } from '@heroui/react'
+
 import { FaXmark } from 'react-icons/fa6'
+import { Button } from '@/components/ui/Button.tsx'
+import clsx from 'clsx'
 
 type DateInputProps = DatePickerProps & {
-  isClearable?: boolean;
-  onClear?: () => void;
-};
+  isClearable?: boolean
+  onClear?: () => void
+}
 
 export function DateInput(props: DateInputProps): ReactNode {
-  const { isClearable, onClear, ...datePickerProps } = props
+  const { className, isClearable, onClear, ...datePickerProps } = props
   return (
-    <div className="flex w-full gap-2">
-      <DatePicker
-        {...datePickerProps}
-      />
+    <div className={clsx('flex w-full items-start gap-2', className)}>
+      <DatePicker {...datePickerProps} className="min-w-0 flex-1" />
       {isClearable && (
-        <FaXmark
-          className="mt-5.5 cursor-pointer hover:bg-default rounded-full p-1 w-min"
-          size={30}
-          color={'gray'}
-          onClick={onClear}
-        />
+        <Button
+          type="button"
+          variant="tertiary"
+          className="mt-6.5 h-10 min-w-10 shrink-0 rounded-full px-0 text-default-500"
+          onPress={onClear}
+        >
+          <FaXmark size={18} />
+        </Button>
       )}
     </div>
   )

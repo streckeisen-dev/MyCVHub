@@ -1,14 +1,16 @@
 import React from 'react'
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
+
 import { useTranslation } from 'react-i18next'
 import { SUPPOERTED_LANGUAGES } from '@/config/Languages.ts'
+import { Dropdown, Label } from '@heroui/react'
+import { DropdownButton } from '@/components/ui/DropdownButton.tsx'
 
 export type LanguageSwitcherProps = Readonly<{
   className?: string
 }>
 
 export function LanguageSwitcher(props: LanguageSwitcherProps): React.ReactNode {
-  const {i18n} = useTranslation()
+  const { i18n } = useTranslation()
   const { className } = props
 
   function changeLanguage(lang: string) {
@@ -17,16 +19,25 @@ export function LanguageSwitcher(props: LanguageSwitcherProps): React.ReactNode 
 
   return (
     <Dropdown>
-      <DropdownTrigger>
-        <Button variant="bordered" className={className}>
-          {SUPPOERTED_LANGUAGES.find(lang => lang.key === i18n.language)?.name ?? i18n.language}
-        </Button>
-      </DropdownTrigger>
-      <DropdownMenu>
-        {SUPPOERTED_LANGUAGES.map(lang =>
-          <DropdownItem key={lang.key} onClick={() => changeLanguage(lang.key)}>{lang.name}</DropdownItem>
-        )}
-      </DropdownMenu>
+      <DropdownButton className={className}>
+        <span>
+          {SUPPOERTED_LANGUAGES.find((lang) => lang.key === i18n.language)?.name ?? i18n.language}
+        </span>
+      </DropdownButton>
+      <Dropdown.Popover>
+        <Dropdown.Menu aria-label="Language selection">
+          {SUPPOERTED_LANGUAGES.map((lang) => (
+            <Dropdown.Item
+              key={lang.key}
+              id={lang.key}
+              textValue={lang.name}
+              onAction={() => changeLanguage(lang.key)}
+            >
+              <Label>{lang.name}</Label>
+            </Dropdown.Item>
+          ))}
+        </Dropdown.Menu>
+      </Dropdown.Popover>
     </Dropdown>
   )
 }

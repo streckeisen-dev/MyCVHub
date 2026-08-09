@@ -1,12 +1,7 @@
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  Tooltip
-} from '@heroui/react'
+import { Tooltip } from '@/components/ui/Tooltip.tsx'
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@/components/ui/Modal.tsx'
+import { Button } from '@/components/ui/Button.tsx'
+
 import { FaBoxArchive } from 'react-icons/fa6'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
@@ -71,10 +66,10 @@ export function ArchiveApplicationButton(props: ArchiveApplicationButtonProps) {
                 <p>{t('application.editor.archive.confirmationText')}</p>
               </ModalBody>
               <ModalFooter>
-                <Button variant="light" onPress={onClose} disabled={isLoading}>
+                <Button variant="tertiary" onPress={onClose} isDisabled={isLoading}>
                   {t('forms.cancel')}
                 </Button>
-                <Button color="warning" onPress={handleArchive} isLoading={isLoading}>
+                <Button variant="secondary" onPress={handleArchive} isPending={isLoading}>
                   {t('application.editor.archive.title')}
                 </Button>
               </ModalFooter>

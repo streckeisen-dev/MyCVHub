@@ -96,10 +96,11 @@ class OAuthIntegrationService(
         oauthId: String,
         oAuthType: OAuthType
     ): Result<ApplicantAccountEntity> {
-        val accessToken = authorizedClientService.loadAuthorizedClient<OAuth2AuthorizedClient>(
+        val authorizedClient = authorizedClientService.loadAuthorizedClient<OAuth2AuthorizedClient>(
             registrationId,
             authentication.name
-        ).accessToken.tokenValue
+        ) ?: return Result.failure(OAuth2AuthenticationException("No authorized OAuth client found"))
+        val accessToken = authorizedClient.accessToken.tokenValue
         val userEmail = getOAuthUserEmail(oauthId, oAuthType, accessToken)
             .getOrElse { return Result.failure(it) }
         val account = applicantAccountRepository.findByEmail(userEmail)

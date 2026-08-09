@@ -45,12 +45,12 @@ class ProfilePictureService(
         return Result.success(profilePicture)
     }
 
-    fun getCVPicture(accountId: Long?, profile: ProfileEntity): Result<ProfilePicture> {
-        if (profile.account.id != accountId) {
+    fun getCVPicture(accountId: Long?, profileAccountId: Long?, profilePictureName: String): Result<ProfilePicture> {
+        if (profileAccountId != accountId) {
             return Result.failure(LocalizedException(ACCESS_DENIED_MESSAGE))
         }
 
-        val profilePicture = profilePictureStorageService.getCVPicture(profile.profilePicture)
+        val profilePicture = profilePictureStorageService.getCVPicture(profilePictureName)
             .getOrElse { return Result.failure(it) }
 
         return Result.success(profilePicture)

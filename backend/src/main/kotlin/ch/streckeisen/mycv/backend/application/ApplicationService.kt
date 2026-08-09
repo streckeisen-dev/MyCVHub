@@ -1,10 +1,17 @@
 package ch.streckeisen.mycv.backend.application
 
 import ch.streckeisen.mycv.backend.account.ApplicantAccountService
+import ch.streckeisen.mycv.backend.application.dto.ApplicationDetailsDto
+import ch.streckeisen.mycv.backend.application.dto.ApplicationSearchDto
+import ch.streckeisen.mycv.backend.application.dto.ApplicationStatusDto
 import ch.streckeisen.mycv.backend.application.dto.ApplicationTransitionRequestDto
 import ch.streckeisen.mycv.backend.application.dto.ApplicationUpdateDto
+import ch.streckeisen.mycv.backend.application.dto.toDetailsDto
+import ch.streckeisen.mycv.backend.application.dto.toDto
+import ch.streckeisen.mycv.backend.application.dto.toSearchDto
 import ch.streckeisen.mycv.backend.exceptions.LocalizedException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
+import ch.streckeisen.mycv.backend.locale.MessagesService
 import ch.streckeisen.mycv.backend.scheduled.SchedulerService
 import ch.streckeisen.mycv.backend.scheduled.data.AddWorkExperienceEntryTaskData
 import org.springframework.data.domain.Page
@@ -43,10 +50,11 @@ class ApplicationService(
     private val applicationHistoryRepository: ApplicationHistoryRepository,
     private val applicationValidationService: ApplicationValidationService,
     private val applicationAccountService: ApplicantAccountService,
-    private val schedulerService: SchedulerService
+    private val schedulerService: SchedulerService,
+    private val messagesService: MessagesService
 ) {
     @Transactional
-    fun findById(accountId: Long, applicationId: Long): Result<ApplicationEntity> {
+    fun findById(accountId: Long, applicationId: Long): Result<ApplicationDetailsDto> {
         val application = applicationRepository.findById(applicationId)
             .getOrElse { return Result.failure(LocalizedException(APPLICATION_NOT_FOUND_MESSAGE_KEY)) }
 
@@ -54,14 +62,14 @@ class ApplicationService(
             return Result.failure(LocalizedException(ACCESS_DENIED_MESSAGE_KEY))
         }
 
-        return Result.success(application)
+        return Result.success(application.toDetailsDto(getAvailableTransitionsForStatus(application.status), messagesService))
     }
 
     @Transactional(readOnly = true)
     fun searchApplications(
         accountId: Long,
         searchRequest: ApplicationSearchRequest
-    ): Result<Page<ApplicationEntity>> {
+    ): Result<Page<ApplicationSearchDto>> {
         val pageable = if (!searchRequest.sort.isNullOrBlank()) {
             val sortBy = if (searchRequest.sortDirection == DESCENDING_KEY) {
                 Sort.by(Sort.Direction.DESC, searchRequest.sort)
@@ -84,11 +92,15 @@ class ApplicationService(
             searchRequest.includeArchived,
             pageable
         )
-        return Result.success(result)
+        return Result.success(result.map { application -> application.toSearchDto(messagesService) })
     }
 
     fun getAvailableTransitions(applicationStatus: ApplicationStatus): Result<List<ApplicationTransition>> {
-        return Result.success(availableTransitions[applicationStatus] ?: emptyList())
+        return Result.success(getAvailableTransitionsForStatus(applicationStatus))
+    }
+
+    fun getApplicationStatuses(): List<ApplicationStatusDto> {
+        return ApplicationStatus.entries.map { it.toDto(messagesService) }
     }
 
     @Transactional(readOnly = true)
@@ -98,7 +110,7 @@ class ApplicationService(
     }
 
     @Transactional
-    fun save(accountId: Long, update: ApplicationUpdateDto): Result<ApplicationEntity> {
+    fun save(accountId: Long, update: ApplicationUpdateDto): Result<ApplicationDetailsDto> {
         applicationValidationService.validateUpdate(update)
             .onFailure { return Result.failure(it) }
 
@@ -120,7 +132,7 @@ class ApplicationService(
         val account = if (application != null) {
             application.account
         } else {
-            applicationAccountService.findById(accountId)
+            applicationAccountService.findEntityById(accountId)
                 .onFailure { return Result.failure(it) }
                 .getOrNull()!!
         }
@@ -139,7 +151,7 @@ class ApplicationService(
         )
 
         val saved = applicationRepository.save(updatedApplication)
-        return Result.success(saved)
+        return Result.success(saved.toDetailsDto(getAvailableTransitionsForStatus(saved.status), messagesService))
     }
 
     @Transactional
@@ -147,7 +159,7 @@ class ApplicationService(
         accountId: Long,
         transitionId: Int,
         transitionRequest: ApplicationTransitionRequestDto
-    ): Result<ApplicationEntity> {
+    ): Result<ApplicationDetailsDto> {
         val transition = transitions[transitionId]
             ?: return Result.failure(LocalizedException(TRANSITION_NOT_FOUND_MESSAGE_KEY))
 
@@ -203,7 +215,7 @@ class ApplicationService(
             schedulerService.scheduleWorkExperienceAddition(scheduledWorkExperience)
         }
 
-        return Result.success(saved)
+        return Result.success(saved.toDetailsDto(getAvailableTransitionsForStatus(saved.status), messagesService))
     }
 
     @Transactional
@@ -253,5 +265,9 @@ class ApplicationService(
 
         applicationRepository.delete(application)
         return Result.success(Unit)
+    }
+
+    private fun getAvailableTransitionsForStatus(applicationStatus: ApplicationStatus): List<ApplicationTransition> {
+        return availableTransitions[applicationStatus] ?: emptyList()
     }
 }

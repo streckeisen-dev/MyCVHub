@@ -1,8 +1,9 @@
+import { Button } from '@/components/ui/Button.tsx'
 import {
   CvConfigurationData,
   CvConfigurationEditor
 } from '@/components/download/cv/CvConfigurationEditor.tsx'
-import { Button } from '@heroui/react'
+
 import { useEffect, useState } from 'react'
 import { CVStyleDto } from '@/types/cv/CVStyleDto.ts'
 import { ProfileDto } from '@/types/profile/ProfileDto.ts'
@@ -106,26 +107,28 @@ export function CvDownload() {
   }
 
   return (
-    <LoadingWrapper isLoading={isLoading}>
+    <LoadingWrapper isLoading={isLoading} className="flex w-full flex-col items-center">
       {profile && cvStyles && templates ? (
-        <>
-          <CvConfigurationEditor
-            config={cvConfig}
-            profile={profile}
-            cvStyles={cvStyles}
-            templates={templates}
-            onChange={handleCvConfigChange}
-          />
+        <div className="flex w-full flex-col items-center gap-7">
+          <div className="w-full">
+            <CvConfigurationEditor
+              config={cvConfig}
+              profile={profile}
+              cvStyles={cvStyles}
+              templates={templates}
+              onChange={handleCvConfigChange}
+            />
+          </div>
 
           <Button
-            color="primary"
+            variant="primary"
             onPress={handleDownload}
-            isLoading={isGenerating}
+            isPending={isGenerating}
             isDisabled={cvConfig.cvStyle == null}
           >
             {t('downloads.action')}
           </Button>
-        </>
+        </div>
       ) : (
         <Empty headline={t('cv.stylesError')} />
       )}

@@ -1,5 +1,6 @@
+import { InputProps, Input } from '@/components/ui/Fields.tsx'
 import { ReactNode, useState } from 'react'
-import { Input, InputProps } from '@heroui/react'
+
 import { useTranslation } from 'react-i18next'
 import { FaEye, FaEyeSlash } from 'react-icons/fa6'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'

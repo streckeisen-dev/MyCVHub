@@ -1,13 +1,9 @@
 package ch.streckeisen.mycv.backend.cv.generator
 
-import ch.streckeisen.mycv.backend.account.AccountDetailsEntity
-import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
-import ch.streckeisen.mycv.backend.cv.experience.WorkExperienceEntity
 import ch.streckeisen.mycv.backend.cv.generator.data.CVData
 import ch.streckeisen.mycv.backend.cv.generator.data.CVDataService
 import ch.streckeisen.mycv.backend.cv.generator.data.CVEntry
 import ch.streckeisen.mycv.backend.cv.generator.typst.TypstService
-import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePicture
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
@@ -21,59 +17,53 @@ import org.junit.jupiter.api.Test
 import tools.jackson.databind.ObjectMapper
 import java.time.LocalDate
 
-private val invalidProfile = ProfileEntity(
+private val invalidProfile = CVGenerationSnapshot(
+    accountId = 5,
+    isVerified = false,
+    firstName = null,
+    lastName = null,
+    email = null,
+    phone = null,
+    street = null,
+    houseNumber = null,
+    postcode = null,
+    city = null,
+    birthday = null,
+    language = null,
+    profilePicture = "picture.png",
     jobTitle = "Invalid Job",
     bio = null,
-    isProfilePublic = false,
-    isEmailPublic = false,
-    isPhonePublic = false,
-    isAddressPublic = false,
-    hideDescriptions = false,
-    profilePicture = "picture.png",
-    id = 1,
-    account = mockk(),
+    workExperiences = emptyList(),
+    education = emptyList(),
+    projects = emptyList(),
+    skills = emptyList()
 )
 
-private val completeProfile = ProfileEntity(
+private val completeProfile = CVGenerationSnapshot(
+    accountId = 1,
+    isVerified = true,
+    firstName = "Test",
+    lastName = "User",
+    email = "em@ail.com",
+    phone = "+41 79 123 45 67",
+    street = "My Home Street",
+    houseNumber = "4",
+    postcode = "12345",
+    city = "City",
+    birthday = LocalDate.of(1985, 6, 25),
+    language = "en",
+    profilePicture = "myPicture.png",
     jobTitle = "Test Job",
     bio = null,
-    isProfilePublic = false,
-    isEmailPublic = true,
-    isPhonePublic = true,
-    isAddressPublic = true,
-    hideDescriptions = false,
-    profilePicture = "myPicture.png",
-    id = 1,
-    account = ApplicantAccountEntity(
-        username = "testuser",
-        password = null,
-        isOAuthUser = true,
-        isVerified = true,
-        id = 1,
-        accountDetails = AccountDetailsEntity(
-            firstName = "Test",
-            lastName = "User",
-            email = "em@ail.com",
-            phone = "+41 79 123 45 67",
-            birthday = LocalDate.of(1985, 6, 25),
-            street = "My Home Street",
-            houseNumber = "4",
-            postcode = "12345",
-            city = "City",
-            country = "CH",
-            language = "en"
-        )
-    ),
     workExperiences = listOf(
-        WorkExperienceEntity(
+        CVWorkExperienceSnapshot(
             id = 1,
             jobTitle = "Current Job",
             company = "Tech Inc.",
             positionStart = LocalDate.of(2020, 5, 1),
             positionEnd = null,
             location = "Here",
-            description = "Tech Stuff",
-            profile = mockk()
+            description = "Tech Stuff"
         )
     ),
     education = emptyList(),
@@ -97,13 +87,13 @@ class CVGeneratorServiceTest {
         }
 
         profileService = mockk {
-            every { findByAccountId(any()) } returns Result.failure(IllegalArgumentException())
-            every { findByAccountId(eq(1)) } returns Result.success(completeProfile)
-            every { findByAccountId(eq(5)) } returns Result.success(invalidProfile)
+            every { findByAccountIdForCVGeneration(any()) } returns Result.failure(IllegalArgumentException())
+            every { findByAccountIdForCVGeneration(eq(1)) } returns Result.success(completeProfile)
+            every { findByAccountIdForCVGeneration(eq(5)) } returns Result.success(invalidProfile)
         }
 
         profilePictureService = mockk {
-            every { getCVPicture(eq(1), any()) } returns Result.success(
+            every { getCVPicture(eq(1), eq(1), any()) } returns Result.success(
                 ProfilePicture(
                     "profile.jpg",
                     this.javaClass.classLoader.getResource("profile.png")!!.toURI()
@@ -178,7 +168,7 @@ class CVGeneratorServiceTest {
     @Test
     suspend fun testCvGenerationWithInvalidConfiguration() {
         val invalidConfig = mockk<CvConfigurationRequestDto>()
-        every { cvGeneratorValidationService.validateConfiguration(invalidConfig, any()) } returns Result.failure(
+        every { cvGeneratorValidationService.validateConfiguration(invalidConfig, any<CVGenerationSnapshot>()) } returns Result.failure(
             IllegalArgumentException()
         )
 
@@ -195,8 +185,8 @@ class CVGeneratorServiceTest {
             includedCvContent = null,
             cvStyleOptions = null
         )
-        every { cvGeneratorValidationService.validateConfiguration(config, any()) } returns Result.success(Unit)
-        every { profilePictureService.getCVPicture(1, any()) } returns Result.failure(IllegalArgumentException())
+        every { cvGeneratorValidationService.validateConfiguration(config, any<CVGenerationSnapshot>()) } returns Result.success(Unit)
+        every { profilePictureService.getCVPicture(1, 1, any()) } returns Result.failure(IllegalArgumentException())
 
         val result = cvGeneratorService.generateCV(1, config)
 
@@ -211,7 +201,7 @@ class CVGeneratorServiceTest {
             includedCvContent = null,
             cvStyleOptions = null
         )
-        every { cvGeneratorValidationService.validateConfiguration(config, any()) } returns Result.success(Unit)
+        every { cvGeneratorValidationService.validateConfiguration(config, any<CVGenerationSnapshot>()) } returns Result.success(Unit)
         coEvery { typstService.compile(any(), any(), any()) } returns Result.failure(IllegalArgumentException())
 
         val result = cvGeneratorService.generateCV(1, config)
@@ -227,7 +217,7 @@ class CVGeneratorServiceTest {
             includedCvContent = null,
             cvStyleOptions = null
         )
-        every { cvGeneratorValidationService.validateConfiguration(config, any()) } returns Result.success(Unit)
+        every { cvGeneratorValidationService.validateConfiguration(config, any<CVGenerationSnapshot>()) } returns Result.success(Unit)
         coEvery { typstService.compile(any(), any(), any()) } returns Result.success(ByteArray(10))
 
         val result = cvGeneratorService.generateCV(1, config)

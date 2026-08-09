@@ -1,14 +1,8 @@
+import { TooltipProps } from '@/components/ui/Tooltip.tsx'
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@/components/ui/Modal.tsx'
+import { ButtonProps, Button } from '@/components/ui/Button.tsx'
 import { cloneElement, ReactElement, ReactNode, useState } from 'react'
-import {
-  Button,
-  ButtonProps,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  TooltipProps
-} from '@heroui/react'
+
 import { h3 } from '@/styles/primitives.ts'
 import { useTranslation } from 'react-i18next'
 import ApplicationTemplateApi from '@/api/ApplicationTemplateApi.ts'
@@ -89,13 +83,13 @@ export function DeleteApplicationTemplateModal(
                 <p>{t('applicationTemplate.delete.confirmationText')}</p>
               </ModalBody>
               <ModalFooter>
-                <Button color="default" variant="light" onPress={onClose} isDisabled={isDeleting}>
+                <Button variant="tertiary" onPress={onClose} isDisabled={isDeleting}>
                   {t('forms.cancel')}
                 </Button>
                 <Button
-                  color="danger"
+                  variant="danger"
                   onPress={handleDelete}
-                  isLoading={isDeleting}
+                  isPending={isDeleting}
                   isDisabled={isDeleting}
                 >
                   {t('applicationTemplate.delete.title')}

@@ -1,9 +1,9 @@
+import { Button } from '@/components/ui/Button.tsx'
 import { ReactNode } from 'react'
-import { Button, Tab, Tabs } from '@heroui/react'
+
 import { ProfileDto } from '@/types/profile/ProfileDto.ts'
 import { useTranslation } from 'react-i18next'
 import { FaArrowLeftLong } from 'react-icons/fa6'
-import { h2 } from '@/styles/primitives.ts'
 import { GeneralEditor } from '@/components/profile/editor/GeneralEditor.tsx'
 import { WorkExperienceEditor } from '@/components/profile/editor/workExperience/WorkExperienceEditor.tsx'
 import { Key } from '@react-types/shared'
@@ -13,6 +13,8 @@ import { ProjectEditor } from '@/components/profile/editor/project/ProjectEditor
 import { ThemeEditor } from '@/components/profile/editor/theme/ThemeEditor.tsx'
 import { SkillEditor } from '@/components/profile/editor/skill/SkillEditor.tsx'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
+import { Tabs } from '@heroui/react'
+import { PageTitle } from '@/components/ui/Layout.tsx'
 
 interface TabConfiguration {
   key: Key
@@ -112,18 +114,31 @@ export function ProfileEditor(props: ProfileEditorProps): ReactNode {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <Button as={Link} to={getRoutePath(RouteId.Account)} startContent={<FaArrowLeftLong />}>
+        <Button as={Link} to={getRoutePath(RouteId.Dashboard)}>
+          <FaArrowLeftLong />
           {t('profile.editor.back')}
         </Button>
       </div>
-      <h2 className={h2()}>{t('profile.title')}</h2>
+      <PageTitle>{t('profile.title')}</PageTitle>
       <Tabs onSelectionChange={handleTabChange} selectedKey={selectedTab}>
+        <Tabs.ListContainer>
+          <Tabs.List aria-label={t('profile.title')}>
+            {tabConfig
+              .filter((config) => config.show)
+              .map((config) => (
+                <Tabs.Tab key={config.key} id={config.key}>
+                  {config.title}
+                  <Tabs.Indicator />
+                </Tabs.Tab>
+              ))}
+          </Tabs.List>
+        </Tabs.ListContainer>
         {tabConfig
           .filter((config) => config.show)
           .map((config) => (
-            <Tab key={config.key} title={config.title}>
+            <Tabs.Panel key={config.key} id={config.key}>
               {config.content}
-            </Tab>
+            </Tabs.Panel>
           ))}
       </Tabs>
     </div>

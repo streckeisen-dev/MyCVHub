@@ -5,10 +5,6 @@ import ch.streckeisen.mycv.backend.application.dto.ApplicationSearchDto
 import ch.streckeisen.mycv.backend.application.dto.ApplicationStatusDto
 import ch.streckeisen.mycv.backend.application.dto.ApplicationTransitionRequestDto
 import ch.streckeisen.mycv.backend.application.dto.ApplicationUpdateDto
-import ch.streckeisen.mycv.backend.application.dto.toDetailsDto
-import ch.streckeisen.mycv.backend.application.dto.toDto
-import ch.streckeisen.mycv.backend.application.dto.toSearchDto
-import ch.streckeisen.mycv.backend.locale.MessagesService
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
 import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
@@ -28,24 +24,15 @@ const val DEFAULT_PAGE_SIZE = 10
 @RestController
 @RequestMapping("/api/application")
 class ApplicationResource(
-    private val applicationService: ApplicationService,
-    private val messagesService: MessagesService
+    private val applicationService: ApplicationService
 ) {
     @GetMapping("/{id}")
     fun getApplication(@PathVariable id: Long): ResponseEntity<ApplicationDetailsDto> {
         val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
-        val application = applicationService.findById(principal.id, id)
+        return applicationService.findById(principal.id, id)
             .fold(
-                onSuccess = { it },
-                onFailure = { throw it }
-            )
-
-        return applicationService.getAvailableTransitions(application.status)
-            .fold(
-                onSuccess = { transitions ->
-                    ResponseEntity.ok(application.toDetailsDto(transitions, messagesService))
-                },
+                onSuccess = { application -> ResponseEntity.ok(application) },
                 onFailure = { throw it }
             )
     }
@@ -77,9 +64,7 @@ class ApplicationResource(
             searchRequest = searchRequest
         )
             .fold(
-                onSuccess = { page ->
-                    ResponseEntity.ok(page.map { it.toSearchDto(messagesService) })
-                },
+                onSuccess = { page -> ResponseEntity.ok(page) },
                 onFailure = { throw it }
             )
     }
@@ -88,29 +73,16 @@ class ApplicationResource(
     fun saveApplication(@RequestBody update: ApplicationUpdateDto): ResponseEntity<ApplicationDetailsDto> {
         val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
-        val application = applicationService.save(principal.id, update)
+        return applicationService.save(principal.id, update)
             .fold(
-                onSuccess = { it },
-                onFailure = { throw it }
-            )
-
-        return applicationService.getAvailableTransitions(application.status)
-            .fold(
-                onSuccess = { transitions ->
-                    ResponseEntity.ok(
-                        application.toDetailsDto(
-                            transitions,
-                            messagesService
-                        )
-                    )
-                },
+                onSuccess = { application -> ResponseEntity.ok(application) },
                 onFailure = { throw it }
             )
     }
 
     @GetMapping("/statuses")
     fun getApplicationStatuses(): ResponseEntity<List<ApplicationStatusDto>> {
-        return ResponseEntity.ok(ApplicationStatus.entries.map { it.toDto(messagesService) })
+        return ResponseEntity.ok(applicationService.getApplicationStatuses())
     }
 
     @PutMapping("/transition/{id}")
@@ -120,17 +92,9 @@ class ApplicationResource(
     ): ResponseEntity<ApplicationDetailsDto> {
         val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
-        val application = applicationService.transition(principal.id, transitionId, transitionRequest)
+        return applicationService.transition(principal.id, transitionId, transitionRequest)
             .fold(
-                onSuccess = { it },
-                onFailure = { throw it }
-            )
-
-        return applicationService.getAvailableTransitions(application.status)
-            .fold(
-                onSuccess = { transitions ->
-                    ResponseEntity.ok(application.toDetailsDto(transitions, messagesService))
-                },
+                onSuccess = { application -> ResponseEntity.ok(application) },
                 onFailure = { throw it }
             )
     }

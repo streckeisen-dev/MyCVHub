@@ -5,13 +5,14 @@ spring:
     username: ${MYCV_DB_USERNAME}
     password: ${MYCV_DB_PASSWORD}
     hikari:
-      maximum-pool-size: 9
-      minimum-idle: 2
+      maximum-pool-size: 5
+      minimum-idle: 1
       connection-timeout: 30000
       leak-detection-threshold: 5000
 
   jpa:
     generate-ddl: false
+    open-in-view: false
 
   liquibase:
     enabled: true
@@ -50,6 +51,22 @@ spring:
           auth: true
           starttls:
             enable: true
+
+  lifecycle:
+    timeout-per-shutdown-phase: 90s
+
+server:
+  shutdown: graceful
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
 
 logging:
   file.name: /app/logs/mycv.log

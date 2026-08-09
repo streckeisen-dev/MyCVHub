@@ -33,13 +33,15 @@ class EducationServiceTest {
                 every { id } returns 1
                 every { profile } returns mockProfile
             })
-            every { save(any()) } returns mockk()
+            every { save(any()) } answers {
+                firstArg<EducationEntity>().also { it.id = it.id ?: 100 }
+            }
             every { delete(any()) } returns Unit
         }
         educationValidationService = mockk()
         profileService = mockk {
-            every { findByAccountId(any()) } returns Result.failure(IllegalArgumentException())
-            every { findByAccountId(eq(1)) } returns Result.success(mockProfile)
+            every { findEntityByAccountId(any()) } returns Result.failure(IllegalArgumentException())
+            every { findEntityByAccountId(eq(1)) } returns Result.success(mockProfile)
         }
         educationService = EducationService(educationRepository, educationValidationService, profileService)
     }
@@ -69,7 +71,7 @@ class EducationServiceTest {
         assertNotNull(ex)
 
         verify(exactly = 1) { educationRepository.findById(eq(1)) }
-        verify(exactly = 0) { profileService.findByAccountId(any()) }
+        verify(exactly = 0) { profileService.findEntityByAccountId(any()) }
         verify(exactly = 0) { educationRepository.save(any()) }
     }
 

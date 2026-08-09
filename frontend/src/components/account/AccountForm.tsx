@@ -1,4 +1,3 @@
-import React, { ChangeEvent, ReactNode, useEffect, useState } from 'react'
 import {
   Autocomplete,
   AutocompleteItem,
@@ -6,9 +5,10 @@ import {
   DatePicker,
   DateValue,
   Input
-} from '@heroui/react'
+} from '@/components/ui/Fields.tsx'
+import React, { ChangeEvent, ReactNode, useEffect, useState } from 'react'
+
 import { useTranslation } from 'react-i18next'
-import { h2 } from '@/styles/primitives.ts'
 import { CountryDto } from '@/types/country/CountryDto.ts'
 import CountryApi from '@/api/CountryApi.ts'
 import { AccountEditorData } from '@/types/account/AccountEditorData.ts'
@@ -56,7 +56,9 @@ function CountrySelect(props: Readonly<Omit<AutocompleteProps, 'children'>>): Re
   return (
     <Autocomplete label={t('fields.country')} {...props}>
       {countries.map((country) => (
-        <AutocompleteItem key={country.countryCode}>{country.name}</AutocompleteItem>
+        <AutocompleteItem key={country.countryCode} id={country.countryCode}>
+          {country.name}
+        </AutocompleteItem>
       ))}
     </Autocomplete>
   )
@@ -90,8 +92,8 @@ export function AccountForm(props: AccountFormProps): React.ReactNode {
 
   return (
     <>
-      <div className="flex flex-col gap-6">
-        <h2 className={h2()}>{t('account.personalData')}</h2>
+      <div className="flex flex-col gap-5 rounded-lg border border-default-200 bg-surface p-5">
+        <h2 className="text-base font-semibold text-foreground">{t('account.personalData')}</h2>
 
         <Input
           type="text"
@@ -164,8 +166,8 @@ export function AccountForm(props: AccountFormProps): React.ReactNode {
         />
       </div>
 
-      <div className="flex flex-col gap-6">
-        <h2 className={h2()}>{t('account.address')}</h2>
+      <div className="flex flex-col gap-5 rounded-lg border border-default-200 bg-surface p-5">
+        <h2 className="text-base font-semibold text-foreground">{t('account.address')}</h2>
 
         <Input
           type="text"

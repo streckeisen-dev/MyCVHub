@@ -36,9 +36,9 @@ class ProfileThemeServiceTest {
             )
         }
         profileService = mockk {
-            every { findByAccountId(any()) } returns Result.failure(IllegalArgumentException("Not found"))
-            every { findByAccountId(eq(1)) } returns Result.success(profile)
-            every { findByAccountId(eq(2)) } returns Result.success(
+            every { findEntityByAccountId(any()) } returns Result.failure(IllegalArgumentException("Not found"))
+            every { findEntityByAccountId(eq(1)) } returns Result.success(profile)
+            every { findEntityByAccountId(eq(2)) } returns Result.success(
                 profile(
                     ProfileThemeEntity(
                         "#123456",
@@ -65,7 +65,7 @@ class ProfileThemeServiceTest {
         assertTrue { result.isSuccess }
         assertNotNull(result.getOrNull())
 
-        verify(exactly = 1) { profileService.findByAccountId(eq(1)) }
+        verify(exactly = 1) { profileService.findEntityByAccountId(eq(1)) }
         verify(exactly = 1) { profileThemeValidationService.validateThemeUpdate(any()) }
         verify(exactly = 1) { profileThemeRepository.save(any()) }
 
@@ -82,7 +82,7 @@ class ProfileThemeServiceTest {
         assertTrue { result.isSuccess }
         assertNotNull(result.getOrNull())
 
-        verify(exactly = 1) { profileService.findByAccountId(eq(2)) }
+        verify(exactly = 1) { profileService.findEntityByAccountId(eq(2)) }
         verify(exactly = 1) { profileThemeValidationService.validateThemeUpdate(any()) }
         verify(exactly = 1) { profileThemeRepository.save(any()) }
 
@@ -97,7 +97,7 @@ class ProfileThemeServiceTest {
         val result = profileThemeService.save(5, mockk())
 
         assertTrue { result.isFailure }
-        verify(exactly = 1) { profileService.findByAccountId(eq(5)) }
+        verify(exactly = 1) { profileService.findEntityByAccountId(eq(5)) }
         verify(exactly = 0) { profileThemeValidationService.validateThemeUpdate(any()) }
         verify(exactly = 0) { profileThemeRepository.save(any()) }
     }
@@ -107,7 +107,7 @@ class ProfileThemeServiceTest {
         val result = profileThemeService.save(1, ProfileThemeUpdateDto(null, null))
 
         assertTrue { result.isFailure }
-        verify(exactly = 1) { profileService.findByAccountId(eq(1)) }
+        verify(exactly = 1) { profileService.findEntityByAccountId(eq(1)) }
         verify(exactly = 1) { profileThemeValidationService.validateThemeUpdate(any()) }
         verify(exactly = 0) { profileThemeRepository.save(any()) }
     }
