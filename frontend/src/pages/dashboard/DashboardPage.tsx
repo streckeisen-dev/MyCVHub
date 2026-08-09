@@ -1,19 +1,19 @@
+import { Button } from '@/components/ui/Button.tsx'
 import { ReactNode, useEffect, useState } from 'react'
-import { title } from '@/styles/primitives.ts'
 import { ApplicationInfoDto, DashboardInfoDto } from '@/types/dashboard/DashboardInfoDto.ts'
 import DashboardApi from '@/api/DashboardApi.ts'
 import { useTranslation } from 'react-i18next'
-import { Button, Divider } from '@heroui/react'
+
 import { Empty } from '@/components/Empty.tsx'
 import { Link } from 'react-router-dom'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 
-import classes from './DashboardPage.module.css'
 import { UnverifiedView } from '@/components/dashboard/UnverifiedView.tsx'
 import { DashboardCard } from '@/components/dashboard/DashboardCard.tsx'
 import { ProfileStat } from '@/components/dashboard/ProfileStat.tsx'
 import { ApplicationStat } from '@/components/dashboard/ApplicationStat.tsx'
 import { LoadingWrapper } from '@/layouts/LoadingWrapper.tsx'
+import { Page, PageHeader, PageTitle } from '@/components/ui/Layout.tsx'
 
 type DashboardContentProps = Readonly<{
   info: DashboardInfoDto
@@ -30,32 +30,34 @@ function DashboardContent(props: DashboardContentProps): ReactNode {
   info.applications.sort(sortApplicationStats)
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
+    <div className="grid w-full max-w-5xl grid-cols-1 gap-5 md:grid-cols-2 md:gap-6">
       {info.profile ? (
         <DashboardCard title={t('dashboard.profile')}>
-          <div className="flex flex-col gap-4">
-            <div className={`grid grid-cols-[75%_auto_auto] ${classes.profileCard}`}>
-              <Divider className="col-span-3" />
-
+          <div className="flex h-full flex-col gap-5">
+            <div className="flex flex-col">
               <ProfileStat
+                ariaLabel={`${t('account.profile.edit')}: ${t('workExperience.title')}`}
                 title={t('workExperience.title')}
                 count={info.profile.experienceCount}
                 type="experience"
               />
 
               <ProfileStat
+                ariaLabel={`${t('account.profile.edit')}: ${t('education.title')}`}
                 title={t('education.title')}
                 count={info.profile.educationCount}
                 type="education"
               />
 
               <ProfileStat
+                ariaLabel={`${t('account.profile.edit')}: ${t('project.title')}`}
                 title={t('project.title')}
-                count={info.profile.educationCount}
+                count={info.profile.projectCount}
                 type="projects"
               />
 
               <ProfileStat
+                ariaLabel={`${t('account.profile.edit')}: ${t('skills.title')}`}
                 title={t('skills.title')}
                 count={info.profile.skillCount}
                 type="skills"
@@ -63,8 +65,8 @@ function DashboardContent(props: DashboardContentProps): ReactNode {
             </div>
 
             <Button
-              className="w-min"
-              color="primary"
+              className="mt-auto w-fit"
+              variant="primary"
               as={Link}
               to={getRoutePath(RouteId.EditProfile)}
             >
@@ -74,11 +76,11 @@ function DashboardContent(props: DashboardContentProps): ReactNode {
         </DashboardCard>
       ) : (
         <DashboardCard title={t('dashboard.profile')}>
-          <div className="flex flex-col gap-2">
-            <p>{t('dashboard.noProfile')}</p>
+          <div className="flex h-full flex-col gap-4">
+            <p className="text-default-600">{t('dashboard.noProfile')}</p>
             <Button
-              color="primary"
-              className="w-min"
+              variant="primary"
+              className="mt-auto w-fit"
               as={Link}
               to={getRoutePath(RouteId.CreateProfile)}
             >
@@ -89,16 +91,15 @@ function DashboardContent(props: DashboardContentProps): ReactNode {
       )}
       <DashboardCard title={t('dashboard.applications')}>
         {info.applications.length > 0 ? (
-          <div className="flex flex-col gap-4">
-            <div className="grid grid-cols-2 gap-1.5">
-              <Divider className="col-span-2" />
+          <div className="flex h-full flex-col gap-5">
+            <div className="flex flex-col">
               {info.applications.map((stat) => (
                 <ApplicationStat key={stat.status.key} stat={stat} />
               ))}
             </div>
             <Button
-              className="w-min"
-              color="primary"
+              className="mt-auto w-fit"
+              variant="primary"
               as={Link}
               to={getRoutePath(RouteId.ApplicationsOverview)}
             >
@@ -106,7 +107,7 @@ function DashboardContent(props: DashboardContentProps): ReactNode {
             </Button>
           </div>
         ) : (
-          <p>{t('application.noEntries')}</p>
+          <p className="text-default-600">{t('application.noEntries')}</p>
         )}
       </DashboardCard>
     </div>
@@ -131,13 +132,17 @@ export function DashboardPage(): ReactNode {
   }, [])
 
   return (
-    <LoadingWrapper isLoading={isLoading}>
+    <LoadingWrapper isLoading={isLoading} className="w-full">
       {info ? (
-        <>
-          <h1 className={title()}>{t('dashboard.title')}</h1>
+        <Page size="wide">
+          <PageHeader align="center">
+            <PageTitle>{t('dashboard.title')}</PageTitle>
+          </PageHeader>
 
-          {info.isVerified ? <DashboardContent info={info} /> : <UnverifiedView />}
-        </>
+          <div className="flex w-full justify-center">
+            {info.isVerified ? <DashboardContent info={info} /> : <UnverifiedView />}
+          </div>
+        </Page>
       ) : (
         <Empty headline={t('dashboard.loadingError')} />
       )}

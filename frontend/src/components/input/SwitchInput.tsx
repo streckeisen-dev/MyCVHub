@@ -1,5 +1,6 @@
+import { Switch, SwitchProps } from '@/components/ui/Fields.tsx'
 import { ReactNode } from 'react'
-import { Switch, SwitchProps } from '@heroui/react'
+
 
 export type SwitchInputProps = Readonly<Omit<Omit<SwitchProps, 'onChange'>, 'name'> & {
     name: string

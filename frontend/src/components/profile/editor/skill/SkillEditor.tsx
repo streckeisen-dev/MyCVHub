@@ -1,7 +1,8 @@
+import { Button } from '@/components/ui/Button.tsx'
 import { ReactNode, useState } from 'react'
 import { SkillDto } from '@/types/profile/skill/SkillDto.ts'
 import { SkillList, SkillModificationEvent } from '@/components/profile/editor/skill/SkillList.tsx'
-import { Button } from '@heroui/react'
+
 import { useTranslation } from 'react-i18next'
 import { EditSkillModal, SkillFormData } from '@/components/profile/editor/skill/EditSkillModal.tsx'
 import ProfileApi from '@/api/ProfileApi.ts'
@@ -51,7 +52,7 @@ export function SkillEditor(props: SkillEditorProps): ReactNode {
   return (
     <section className="flex flex-col gap-4">
       <div className="flex justify-end">
-        <Button color="primary" onPress={handleAdd}>
+        <Button variant="primary" onPress={handleAdd}>
           {t('skills.editor.add')}
         </Button>
       </div>

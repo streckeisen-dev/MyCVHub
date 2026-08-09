@@ -1,8 +1,9 @@
+import { Chip, ChipColor } from '@/components/ui/Display.tsx'
 import { ReactNode } from 'react'
-import { Chip, ChipVariantProps } from '@heroui/react'
+
 import { ApplicationStatusDto } from '@/types/application/ApplicationStatusDto.ts'
 
-const STATUS_COLOR_MAP: Record<string, ChipVariantProps['color']> = {
+const STATUS_COLOR_MAP: Record<string, ChipColor> = {
   UNSENT: 'primary',
   WAITING_FOR_FIRST_RESPONSE: 'primary',
   REJECTED: 'danger',

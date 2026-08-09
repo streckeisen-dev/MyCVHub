@@ -1,5 +1,4 @@
-import { SortDescriptor } from '@heroui/react'
-
+import { SortDescriptor } from '@react-types/shared'
 export interface ApplicationSearchRequest {
   page: number
   searchTerm: string | undefined

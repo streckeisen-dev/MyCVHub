@@ -1,9 +1,9 @@
-import { Checkbox, CheckboxProps } from '@heroui/react'
+import { Checkbox, CheckboxProps } from '@/components/ui/Fields.tsx'
 import { ReactNode } from 'react'
 
 export type CheckboxInputProps = Readonly<
   Omit<CheckboxProps, 'children'> & {
-    label?: string | ReactNode,
+    label?: string | ReactNode
     errorMessage?: string
   }
 >
@@ -13,11 +13,14 @@ export function CheckboxInput(props: CheckboxInputProps) {
   const labelClasses = checkboxProps.isInvalid ? 'text-danger' : ''
   return (
     <div>
-      <div className="flex">
-        <Checkbox {...checkboxProps} />
-        {label && (typeof label === 'string' ? <p className={labelClasses}>{label}</p> : label)}
-      </div>
-      {errorMessage && <p className="text-danger text-small ml-7">{errorMessage}</p>}
+      <Checkbox
+        {...checkboxProps}
+        label={
+          label &&
+          (typeof label === 'string' ? <span className={labelClasses}>{label}</span> : label)
+        }
+      />
+      {errorMessage && <p className="text-danger text-small ml-8 mt-1">{errorMessage}</p>}
     </div>
   )
 }

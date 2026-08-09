@@ -1,16 +1,18 @@
 import { useTranslation } from 'react-i18next'
-import { centerSection, title } from '@/styles/primitives.ts'
 import { CvDownload } from '@/components/download/cv/CvDownload.tsx'
+import { Page, PageHeader, PageIntro, PageTitle } from '@/components/ui/Layout.tsx'
 
 export function CvDownloadPage() {
   const { t } = useTranslation()
 
   return (
-    <section className={centerSection()}>
-      <h1 className={title()}>{t('cv.title')}</h1>
-      <p className="md:max-w-1/4 text-center">{t('cv.description')}</p>
+    <Page size="wide">
+      <PageHeader align="center">
+        <PageTitle>{t('cv.title')}</PageTitle>
+        <PageIntro>{t('cv.description')}</PageIntro>
+      </PageHeader>
 
       <CvDownload />
-    </section>
+    </Page>
   )
 }

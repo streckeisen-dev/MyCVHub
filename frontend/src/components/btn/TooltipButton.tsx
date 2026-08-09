@@ -1,5 +1,6 @@
+import { Tooltip, TooltipProps } from '@/components/ui/Tooltip.tsx'
 import { PropsWithChildren, ReactNode } from 'react'
-import { Tooltip, TooltipProps } from '@heroui/react'
+
 import { TableButton, TableButtonProps } from '@/components/btn/TableButton.tsx'
 
 export type TooltipButtonProps = Readonly<

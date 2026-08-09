@@ -1,4 +1,5 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { Button } from '@/components/ui/Button.tsx'
+import { PropsWithChildren, ReactNode, useEffect, useState } from 'react'
 import { LoadingWrapper } from '@/layouts/LoadingWrapper.tsx'
 import { ApplicationTemplateDto } from '@/types/applicationTemplate/ApplicationTemplateDto.ts'
 import ApplicationTemplateApi from '@/api/ApplicationTemplateApi.ts'
@@ -7,10 +8,9 @@ import { addErrorToast } from '@/helpers/ToastHelper.ts'
 import { useTranslation } from 'react-i18next'
 import { RestError } from '@/types/RestError.ts'
 import { Empty } from '@/components/Empty.tsx'
-import { Button } from '@heroui/react'
+
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import { FaArrowLeft, FaPen, FaTrash } from 'react-icons/fa6'
-import { h1, h3 } from '@/styles/primitives.ts'
 import { DeleteApplicationTemplateModal } from '@/components/applicationTemplate/DeleteApplicationTemplateModal.tsx'
 import { ProfileDto } from '@/types/profile/ProfileDto.ts'
 import ProfileApi from '@/api/ProfileApi.ts'
@@ -32,6 +32,24 @@ import { Attribute, AttributeList } from '@/components/AttributeList.tsx'
 import { TFunction } from 'i18next'
 import { CheckboxInput } from '@/components/input/CheckboxInput.tsx'
 import { CoverLetterGallery } from '@/components/download/coverletter/CoverLetterGallery.tsx'
+import { Page, PageHeader, PageTitle, SectionTitle } from '@/components/ui/Layout.tsx'
+
+type TemplateSectionProps = Readonly<
+  PropsWithChildren & {
+    title: string
+  }
+>
+
+function TemplateSection(props: TemplateSectionProps): ReactNode {
+  const { title, children } = props
+
+  return (
+    <section className="flex w-full flex-col gap-5 border-t border-default-200 pt-6">
+      <SectionTitle>{title}</SectionTitle>
+      {children}
+    </section>
+  )
+}
 
 function toSelectedContent(selection: CvEntrySelectionDto): SelectedCvContent {
   return {
@@ -157,67 +175,73 @@ export function ApplicationTemplateDetailsPage(): ReactNode {
 
   return (
     <LoadingWrapper isLoading={isLoading}>
-      <div className="lg:max-w-3/4 2xl:max-w-350 w-full">
+      <Page size="wide">
         <Button
           as={Link}
           to={getRoutePath(RouteId.ApplicationTemplateOverview)}
-          color="default"
-          variant="light"
+          variant="tertiary"
           className="self-start"
-          startContent={<FaArrowLeft />}
         >
+          <FaArrowLeft />
           {t('applicationTemplate.backToOverview')}
         </Button>
         {template && profile && cvStyles && coverLetterStyles ? (
-          <div className="flex flex-col gap-10 items-center">
-            <h1 className={`${h1()} self-center`}>{template.name}</h1>
-            <div className="flex flex-wrap self-end gap-5 justify-end">
-              <Button
-                color="primary"
-                startContent={<FaPen />}
-                as={Link}
-                to={getRoutePath(
-                  RouteId.EditApplicationTemplate,
-                  undefined,
-                  template.id.toString()
-                )}
-              >
-                {t('crud.edit')}
-              </Button>
-              <DeleteApplicationTemplateModal
-                id={template.id}
-                trigger={
-                  <Button startContent={<FaTrash />} color="danger">
-                    {t('crud.delete')}
-                  </Button>
-                }
-                onDelete={handleDelete}
+          <div className="flex w-full flex-col gap-7">
+            <PageHeader className="gap-4 md:flex-row md:items-start md:justify-between">
+              <PageTitle>{template.name}</PageTitle>
+              <div className="flex shrink-0 flex-wrap gap-3">
+                <Button
+                  variant="primary"
+                  as={Link}
+                  to={getRoutePath(
+                    RouteId.EditApplicationTemplate,
+                    undefined,
+                    template.id.toString()
+                  )}
+                >
+                  <FaPen />
+                  {t('crud.edit')}
+                </Button>
+                <DeleteApplicationTemplateModal
+                  id={template.id}
+                  trigger={
+                    <Button variant="danger">
+                      <FaTrash />
+                      {t('crud.delete')}
+                    </Button>
+                  }
+                  onDelete={handleDelete}
+                />
+              </div>
+            </PageHeader>
+
+            <TemplateSection title={t('cv.name')}>
+              <CvConfigurationEditor
+                profile={profile}
+                cvStyles={cvStyles}
+                config={toConfigData(template.cvConfiguration)}
+                disabled
               />
-            </div>
+            </TemplateSection>
 
-            <h3 className={h3()}>{t('cv.name')}</h3>
-            <CvConfigurationEditor
-              profile={profile}
-              cvStyles={cvStyles}
-              config={toConfigData(template.cvConfiguration)}
-              disabled
-            />
-
-            <h3 className={h3()}>{t('coverLetter.name')}</h3>
-            <CoverLetterGallery
-              styles={coverLetterStyles}
-              selectedStyle={template.coverLetterConfiguration.style}
-              disabled
-            />
-            <AttributeList
-              className="xl:max-w-3/4 gap-x-5"
-              attributes={getCoverLetterAttributes(template.coverLetterConfiguration, t)}
-            />
+            <TemplateSection title={t('coverLetter.name')}>
+              <div className="grid w-full max-w-5xl gap-6 xl:grid-cols-[minmax(18rem,24rem)_minmax(20rem,28rem)] xl:items-start">
+                <CoverLetterGallery
+                  styles={coverLetterStyles}
+                  selectedStyle={template.coverLetterConfiguration.style}
+                  disabled
+                />
+                <AttributeList
+                  className="rounded-lg border border-default-200 bg-surface p-5"
+                  attributes={getCoverLetterAttributes(template.coverLetterConfiguration, t)}
+                />
+              </div>
+            </TemplateSection>
           </div>
         ) : (
           <Empty headline={t('applicationTemplate.notFound')} />
         )}
-      </div>
+      </Page>
     </LoadingWrapper>
   )
 }

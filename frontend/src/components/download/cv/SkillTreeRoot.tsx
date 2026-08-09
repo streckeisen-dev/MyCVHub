@@ -1,5 +1,6 @@
+import { Checkbox } from '@/components/ui/Fields.tsx'
 import { ReactNode, useState } from 'react'
-import { Checkbox } from '@heroui/react'
+
 import { FaCaretDown, FaCaretRight } from 'react-icons/fa6'
 import { useTranslation } from 'react-i18next'
 
@@ -57,8 +58,8 @@ export function SkillTreeRoot(props: SkillTreeRootProps): ReactNode {
 
   return (
     <div>
-      <div className="flex gap-2 p-2">
-        <Icon onClick={toggleExpand} className="cursor-pointer self-center" />
+      <div className="flex items-center gap-3 rounded-md px-2 py-2 text-sm hover:bg-default/5">
+        <Icon onClick={toggleExpand} className="shrink-0 cursor-pointer text-default-500" />
         <Checkbox
           isDisabled={disabled}
           isSelected={isRootSelected}
@@ -67,11 +68,11 @@ export function SkillTreeRoot(props: SkillTreeRootProps): ReactNode {
             !isRootSelected && content.some((c) => c.children.some((leaf) => leaf.selected))
           }
         />
-        <p>{t('skills.title')}</p>
+        <p className="min-w-0 font-medium text-foreground">{t('skills.title')}</p>
       </div>
-      {errorMessage && <p className="text-danger text-sm">{errorMessage}</p>}
+      {errorMessage && <p className="px-2 text-sm text-danger">{errorMessage}</p>}
       {isExpanded && (
-        <div>
+        <div className="flex flex-col gap-1">
           {content.map((category) => (
             <SkillCategoryLeaf
               key={category.title}
@@ -126,26 +127,29 @@ function SkillCategoryLeaf(props: SkillCategoryLeafProps): ReactNode {
 
   return (
     <>
-      <div className="flex gap-2 p-2 pl-8">
-        <Icon onClick={toggleExpand} className="cursor-pointer self-center" />
+      <div className="flex items-center gap-3 rounded-md px-2 py-2 pl-8 text-sm hover:bg-default/5">
+        <Icon onClick={toggleExpand} className="shrink-0 cursor-pointer text-default-500" />
         <Checkbox
           isDisabled={disabled}
           isSelected={isCategorySelected}
           onValueChange={handleCategoryChange}
           isIndeterminate={!isCategorySelected && content.some((leaf) => leaf.selected)}
         />
-        <p>{title}</p>
+        <p className="min-w-0 font-medium text-foreground">{title}</p>
       </div>
       {isExpanded && (
-        <div>
+        <div className="flex flex-col gap-1">
           {content.map((leaf) => (
-            <div key={leaf.id} className="flex gap-2 p-2 pl-20 items-center">
+            <div
+              key={leaf.id}
+              className="flex items-center gap-3 rounded-md px-2 py-2 pl-16 text-sm hover:bg-default/5"
+            >
               <Checkbox
                 isDisabled={disabled}
                 isSelected={leaf.selected}
                 onValueChange={(isSelected) => handleLeafChange(leaf.id, isSelected)}
               />
-              <p>{leaf.title}</p>
+              <p className="min-w-0 text-foreground">{leaf.title}</p>
             </div>
           ))}
         </div>

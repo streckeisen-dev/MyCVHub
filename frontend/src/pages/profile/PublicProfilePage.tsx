@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Navbar, NavbarBrand } from '@heroui/react'
+
 import { PublicProfileDto } from '@/types/profile/PublicProfileDto.ts'
 import { useTranslation } from 'react-i18next'
 import ProfileApi from '@/api/ProfileApi.ts'
@@ -51,27 +51,34 @@ export function PublicProfilePage(): ReactNode {
   const surfaceColor = profile?.theme?.surfaceColor ?? ProfileTheme.header
   const backgroundColor = profile?.theme?.backgroundColor ?? ProfileTheme.background
   const contentTextColor = getMatchingTextColor(backgroundColor)
+  const surfaceTextColor = getMatchingTextColor(surfaceColor)
   const name = `${profile?.firstName} ${profile?.lastName}`
 
   return (
-    <div className="flex flex-col h-screen">
-      <LoadingWrapper isLoading={isLoading} className="w-full mx-auto grow">
+    <div
+      className="flex min-h-screen flex-col"
+      style={{
+        backgroundColor: profile ? backgroundColor : undefined,
+        color: profile ? contentTextColor : undefined
+      }}
+    >
+      <LoadingWrapper isLoading={isLoading} className="mx-auto flex min-h-screen w-full flex-col">
         {profile ? (
-          <div className="flex flex-col items-center justify-center gap-5 pt-0 pb-10">
-            <Navbar
-              maxWidth="full"
-              position="sticky"
+          <div className="flex min-h-screen flex-col">
+            <header
+              className="sticky top-0 z-40 flex min-h-14 w-full items-center border-b px-6 shadow-sm lg:px-15"
               style={{
                 backgroundColor: surfaceColor,
-                color: getMatchingTextColor(surfaceColor)
+                borderColor: surfaceColor,
+                color: surfaceTextColor
               }}
             >
-              <NavbarBrand>
+              <div className="flex w-full items-center">
                 <p className="text-xl font-bold">{name}</p>
-              </NavbarBrand>
-            </Navbar>
+              </div>
+            </header>
             <main
-              className="w-full mx-auto pt-16 px-6 lg:px-15 lg:pb-10"
+              className="mx-auto w-full grow px-6 pb-10 pt-10 lg:px-15"
               style={{
                 backgroundColor: backgroundColor,
                 color: contentTextColor

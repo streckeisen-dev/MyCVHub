@@ -10,13 +10,14 @@ const coverLetterImages: KeyValueObject<string> = {
 
 export type CoverLetterGalleryProps = Readonly<{
   styles: CoverLetterStyleDto[]
+  compact?: boolean
   selectedStyle: string | undefined
   onSelect?: (style: string) => void
   disabled?: boolean
 }>
 
 export function CoverLetterGallery(props: CoverLetterGalleryProps): ReactNode {
-  const { styles, selectedStyle, onSelect, disabled } = props
+  const { styles, compact = false, selectedStyle, onSelect, disabled } = props
 
   function handleStyleSelected(key: string) {
     if (disabled || !onSelect) return
@@ -32,6 +33,7 @@ export function CoverLetterGallery(props: CoverLetterGalleryProps): ReactNode {
         description: style.description
       }))}
       selected={selectedStyle}
+      compact={compact}
       onSelect={handleStyleSelected}
       disabled={disabled}
     />

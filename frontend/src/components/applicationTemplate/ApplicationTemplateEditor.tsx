@@ -1,6 +1,6 @@
-import { FormEvent, ReactNode, useState } from 'react'
-import { Form, Input } from '@heroui/react'
-import { centerSection, h1, h3 } from '@/styles/primitives.ts'
+import { Input } from '@/components/ui/Fields.tsx'
+import { FormEvent, PropsWithChildren, ReactNode, useState } from 'react'
+import { Form } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import { FormButtons } from '@/components/btn/FormButtons.tsx'
 import { ApplicationTemplateDto } from '@/types/applicationTemplate/ApplicationTemplateDto.ts'
@@ -21,6 +21,24 @@ import {
   ApplicationTemplateCoverLetterConfigurationEditor,
   ApplicationTemplateCoverLetterData
 } from '@/components/applicationTemplate/ApplicationTemplateCoverLetterConfigurationEditor.tsx'
+import { Page, PageHeader, PageTitle, SectionTitle } from '@/components/ui/Layout.tsx'
+
+type EditorSectionProps = Readonly<
+  PropsWithChildren & {
+    title: string
+  }
+>
+
+function EditorSection(props: EditorSectionProps): ReactNode {
+  const { title, children } = props
+
+  return (
+    <section className="flex w-full flex-col gap-5 border-t border-default-200 pt-6">
+      <SectionTitle>{title}</SectionTitle>
+      {children}
+    </section>
+  )
+}
 
 export type EditApplicationTemplateModalProps = Readonly<{
   onSave: (template: ApplicationTemplateDto) => void
@@ -145,42 +163,51 @@ export function ApplicationTemplateEditor(props: EditApplicationTemplateModalPro
   }
 
   return (
-    <section className={centerSection()}>
-      <h1 className={h1()}>
-        {initialValue ? t('applicationTemplate.editor.edit') : t('applicationTemplate.editor.add')}
-      </h1>
-      <Form className="flex flex-col gap-6 mt-5" onSubmit={handleSubmit}>
-        <Input
-          isRequired
-          label={t('fields.name')}
-          value={data.name}
-          onValueChange={handleNameChange}
-          isInvalid={errorMessages.name != null}
-          errorMessage={errorMessages.name}
-        />
+    <Page size="wide">
+      <PageHeader align="center">
+        <PageTitle>
+          {initialValue
+            ? t('applicationTemplate.editor.edit')
+            : t('applicationTemplate.editor.add')}
+        </PageTitle>
+      </PageHeader>
+      <Form className="flex w-full flex-col gap-7" onSubmit={handleSubmit}>
+        <div className="w-full max-w-3xl">
+          <Input
+            isRequired
+            label={t('fields.name')}
+            value={data.name}
+            onValueChange={handleNameChange}
+            isInvalid={errorMessages.name != null}
+            errorMessage={errorMessages.name}
+          />
+        </div>
 
-        <h3 className={h3()}>{t('cv.name')}</h3>
-        <CvConfigurationEditor
-          profile={profile}
-          cvStyles={cvStyles}
-          config={data.cvConfig}
-          onChange={handleCvConfigChange}
-          errorMessages={cvErrorMessages}
-        />
+        <EditorSection title={t('cv.name')}>
+          <CvConfigurationEditor
+            profile={profile}
+            cvStyles={cvStyles}
+            config={data.cvConfig}
+            compactGallery
+            onChange={handleCvConfigChange}
+            errorMessages={cvErrorMessages}
+          />
+        </EditorSection>
         {errorMessages.cvConfiguration && (
           <p className="text-danger text-sm mt-1">{errorMessages.cvConfiguration}</p>
         )}
 
-        <h3 className={h3()}>{t('coverLetter.name')}</h3>
-        <ApplicationTemplateCoverLetterConfigurationEditor
-          styles={coverLetterStyles}
-          config={data.coverLetterConfig}
-          onChange={handleCoverLetterConfigChange}
-          errorMessages={coverLetterErrorMessages}
-        />
+        <EditorSection title={t('coverLetter.name')}>
+          <ApplicationTemplateCoverLetterConfigurationEditor
+            styles={coverLetterStyles}
+            config={data.coverLetterConfig}
+            onChange={handleCoverLetterConfigChange}
+            errorMessages={coverLetterErrorMessages}
+          />
+        </EditorSection>
 
         <FormButtons onCancel={onCancel} isSaving={isSaving} />
       </Form>
-    </section>
+    </Page>
   )
 }
