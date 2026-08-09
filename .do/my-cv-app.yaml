@@ -66,11 +66,11 @@ region: fra
 services:
 - http_port: 8080
   health_check:
-    initial_delay_seconds: 30
+    initial_delay_seconds: 120
     period_seconds: 10
     timeout_seconds: 5
     success_threshold: 1
-    failure_threshold: 5
+    failure_threshold: 12
     http_path: /actuator/health/readiness
     port: 8080
   image:
@@ -82,11 +82,11 @@ services:
   instance_count: 2
   instance_size_slug: apps-s-1vcpu-1gb
   liveness_health_check:
-    initial_delay_seconds: 60
+    initial_delay_seconds: 180
     period_seconds: 10
     timeout_seconds: 5
     success_threshold: 1
-    failure_threshold: 5
+    failure_threshold: 12
     http_path: /actuator/health/liveness
     port: 8080
   log_destinations:
