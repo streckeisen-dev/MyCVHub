@@ -67,7 +67,9 @@ export function MobileNavMenu(props: MobileNavMenuProps): ReactNode {
           .map((item) => {
             if (Object.hasOwn(item, 'children')) {
               const node = item as NavItemNode
+              const visibleChildren = node.children.filter((subItem) => subItem.predicate(user))
               const Icon = expandedNavItem === node.id ? FaChevronUp : FaChevronDown
+
               return (
                 <Fragment key={node.id}>
                   <NavbarMenuItem>
@@ -76,7 +78,9 @@ export function MobileNavMenu(props: MobileNavMenuProps): ReactNode {
                       <Icon size={15} />
                     </button>
                   </NavbarMenuItem>
-                  {expandedNavItem === node.id && node.children.map(subItem => renderLink(subItem, user, t, onLinkClick, true))}
+                  {expandedNavItem === node.id
+                    ? visibleChildren.map((subItem) => renderLink(subItem, user, t, onLinkClick, true))
+                    : null}
                 </Fragment>
               )
             } else {
