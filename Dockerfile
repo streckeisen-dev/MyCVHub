@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk-alpine
+FROM eclipse-temurin:26-jdk-alpine
 
 RUN apk update \
     && apk add typst \
@@ -11,7 +11,8 @@ COPY ./backend/target/mycv.jar ./app.jar
 COPY ./frontend/dist ./static
 
 RUN addgroup -S nonroot \
-    && adduser -S nonroot -G nonroot
+    && adduser -S nonroot -G nonroot \
+    && install -d -o nonroot -g nonroot /app/logs
 USER nonroot
 
 EXPOSE 8080
