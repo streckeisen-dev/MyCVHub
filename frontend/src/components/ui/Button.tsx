@@ -27,7 +27,11 @@ export function Button(props: ButtonProps) {
 
   const content = (
     <>
-      {isPending && <Spinner color="current" size="sm" />}
+      {isPending && (
+        <span data-testid="button-pending-indicator">
+          <Spinner color="current" size="sm" />
+        </span>
+      )}
       {children}
     </>
   )

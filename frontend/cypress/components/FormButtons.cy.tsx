@@ -16,7 +16,7 @@ describe('<FormButtons />', () => {
     cy.mount(<FormButtons onCancel={dummyHandleCancel} isSaving={true} />)
     cy.get('[data-testid="save-button"]').should('be.disabled')
     cy.get('[data-testid="cancel-button"]').should('be.disabled')
-    cy.get('[data-testid="save-button"] div[aria-label="Loading"]').should('exist')
+    cy.get('[data-testid="save-button"] [data-testid="button-pending-indicator"]').should('exist')
   })
 
   it('submits form on save-click', () => {
