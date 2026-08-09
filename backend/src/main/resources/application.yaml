@@ -12,6 +12,7 @@ spring:
 
   jpa:
     generate-ddl: false
+    open-in-view: false
 
   liquibase:
     enabled: true

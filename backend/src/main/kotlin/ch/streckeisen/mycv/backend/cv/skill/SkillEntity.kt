@@ -12,11 +12,11 @@ import jakarta.persistence.ManyToOne
 class SkillEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
-    val name: String,
-    val type: String,
-    val level: Short,
+    var id: Long? = null,
+    var name: String,
+    var type: String,
+    var level: Short,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    val profile: ProfileEntity
+    var profile: ProfileEntity
 )

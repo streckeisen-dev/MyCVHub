@@ -12,13 +12,13 @@ import java.time.LocalDateTime
 class ApplicationHistoryEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    var id: Long? = null,
 
-    val source: ApplicationStatus,
-    val target: ApplicationStatus,
-    val comment: String? = null,
-    val timestamp: LocalDateTime,
+    var source: ApplicationStatus,
+    var target: ApplicationStatus,
+    var comment: String? = null,
+    var timestamp: LocalDateTime,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    val application: ApplicationEntity
+    var application: ApplicationEntity
 )

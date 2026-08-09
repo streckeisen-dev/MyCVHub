@@ -10,11 +10,11 @@ import java.time.LocalDateTime
 
 @Entity
 class AccountVerificationEntity(
-    val token: String,
-    val expirationDate: LocalDateTime,
+    var token: String,
+    var expirationDate: LocalDateTime,
     @OneToOne
-    val account: ApplicantAccountEntity,
+    var account: ApplicantAccountEntity,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    var id: Long? = null
 )

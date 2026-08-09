@@ -11,7 +11,7 @@ import jakarta.persistence.Table
 @Table(name = "oauth_integration_entity")
 class OAuthIntegrationEntity(
     @EmbeddedId
-    val id: OAuthEntityId,
+    var id: OAuthEntityId,
     @ManyToOne(fetch = FetchType.EAGER)
-    val account: ApplicantAccountEntity
+    var account: ApplicantAccountEntity
 )

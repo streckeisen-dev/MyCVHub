@@ -13,14 +13,14 @@ import java.time.LocalDate
 class EducationEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
-    val institution: String,
-    val location: String,
-    val educationStart: LocalDate,
-    val educationEnd: LocalDate?,
-    val degreeName: String,
-    val description: String?,
+    var id: Long? = null,
+    var institution: String,
+    var location: String,
+    var educationStart: LocalDate,
+    var educationEnd: LocalDate?,
+    var degreeName: String,
+    var description: String?,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    val profile: ProfileEntity
+    var profile: ProfileEntity
 )

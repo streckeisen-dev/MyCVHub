@@ -12,13 +12,13 @@ import jakarta.persistence.ManyToOne
 class ApplicationTemplateEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    var id: Long? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    val account: ApplicantAccountEntity,
+    var account: ApplicantAccountEntity,
 
-    val name: String,
-    val cvConfiguration: String,
-    val coverLetterConfiguration: String
+    var name: String,
+    var cvConfiguration: String,
+    var coverLetterConfiguration: String
 ) {
 }

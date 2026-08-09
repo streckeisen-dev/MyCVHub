@@ -18,30 +18,30 @@ import jakarta.persistence.OneToOne
 @Entity
 @EntityListeners(ProfileEntityDeletionListener::class)
 class ProfileEntity(
-    val jobTitle: String,
-    val bio: String?,
-    val isProfilePublic: Boolean,
-    val isEmailPublic: Boolean,
-    val isPhonePublic: Boolean,
-    val isAddressPublic: Boolean,
-    val hideDescriptions: Boolean,
-    val profilePicture: String,
+    var jobTitle: String,
+    var bio: String?,
+    var isProfilePublic: Boolean,
+    var isEmailPublic: Boolean,
+    var isPhonePublic: Boolean,
+    var isAddressPublic: Boolean,
+    var hideDescriptions: Boolean,
+    var profilePicture: String,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    var id: Long? = null,
 
     @OneToOne(fetch = FetchType.EAGER)
-    val account: ApplicantAccountEntity,
+    var account: ApplicantAccountEntity,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "profile")
-    val workExperiences: List<WorkExperienceEntity> = listOf(),
+    var workExperiences: List<WorkExperienceEntity> = listOf(),
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "profile")
-    val skills: List<SkillEntity> = listOf(),
+    var skills: List<SkillEntity> = listOf(),
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "profile")
-    val education: List<EducationEntity> = listOf(),
+    var education: List<EducationEntity> = listOf(),
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "profile")
-    val projects: List<ProjectEntity> = listOf(),
+    var projects: List<ProjectEntity> = listOf(),
     @OneToOne(mappedBy = "profile")
-    val profileTheme: ProfileThemeEntity? = null
+    var profileTheme: ProfileThemeEntity? = null
 )
