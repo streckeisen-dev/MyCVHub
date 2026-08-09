@@ -17,20 +17,20 @@ import java.time.LocalDateTime
 class ApplicationEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
-    val jobTitle: String,
-    val company: String,
+    var id: Long? = null,
+    var jobTitle: String,
+    var company: String,
     @Enumerated(EnumType.STRING)
-    val status: ApplicationStatus,
-    val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime? = null,
-    val source: String? = null,
-    val description: String? = null,
-    val isArchived: Boolean = false,
+    var status: ApplicationStatus,
+    var createdAt: LocalDateTime,
+    var updatedAt: LocalDateTime? = null,
+    var source: String? = null,
+    var description: String? = null,
+    var isArchived: Boolean = false,
 
     @OneToMany(mappedBy = "application", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
-    val history: List<ApplicationHistoryEntity> = listOf(),
+    var history: List<ApplicationHistoryEntity> = listOf(),
 
     @ManyToOne(fetch = FetchType.LAZY)
-    val account: ApplicantAccountEntity
+    var account: ApplicantAccountEntity
 )

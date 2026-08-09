@@ -18,9 +18,7 @@ class ProfileThemeResource(
         val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         return profileThemeService.save(principal.id, profileThemeUpdate).fold(
-            onSuccess = { profileTheme ->
-                ResponseEntity.ok(profileTheme.toDto())
-            },
+            onSuccess = { profileTheme -> ResponseEntity.ok(profileTheme) },
             onFailure = {
                 throw it
             }

@@ -4,11 +4,15 @@ import ch.streckeisen.mycv.backend.applicationTemplate.dto.ApplicationTemplateUp
 import ch.streckeisen.mycv.backend.applicationTemplate.dto.CoverLetterConfigurationUpdateDto
 import ch.streckeisen.mycv.backend.coverletter.CoverLetterGenerationValidationService
 import ch.streckeisen.mycv.backend.coverletter.CoverLetterStyle
+import ch.streckeisen.mycv.backend.cv.generator.CVEducationSnapshot
+import ch.streckeisen.mycv.backend.cv.generator.CVGenerationSnapshot
+import ch.streckeisen.mycv.backend.cv.generator.CVProjectSnapshot
+import ch.streckeisen.mycv.backend.cv.generator.CVSkillSnapshot
+import ch.streckeisen.mycv.backend.cv.generator.CVWorkExperienceSnapshot
 import ch.streckeisen.mycv.backend.cv.generator.CvConfigurationRequestDto
 import ch.streckeisen.mycv.backend.cv.generator.CvGeneratorValidationService
 import ch.streckeisen.mycv.backend.cv.generator.IncludedCVItem
 import ch.streckeisen.mycv.backend.cv.generator.IncludedCvContentDto
-import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MessagesService
 import ch.streckeisen.mycv.backend.util.StringValidator
@@ -22,42 +26,62 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 import java.util.Optional
 
-private val profile = ProfileEntity(
-    id = 1L,
+private val profile = CVGenerationSnapshot(
+    accountId = 1,
+    isVerified = true,
+    firstName = "Test",
+    lastName = "User",
+    email = "test@example.test",
+    phone = "+41 79 123 45 67",
+    street = "Street",
+    houseNumber = null,
+    postcode = "1234",
+    city = "City",
+    birthday = LocalDate.of(1990, 1, 1),
+    language = "en",
+    profilePicture = "picture.png",
     jobTitle = "Job",
     bio = null,
-    isProfilePublic = false,
-    isEmailPublic = false,
-    isPhonePublic = false,
-    isAddressPublic = false,
-    hideDescriptions = false,
-    profilePicture = "picture.png",
     workExperiences = listOf(
-        mockk {
-            every { id } returns 1L
-        }
+        CVWorkExperienceSnapshot(
+            id = 1,
+            jobTitle = "Job",
+            company = "Company",
+            positionStart = LocalDate.of(2020, 1, 1),
+            positionEnd = null,
+            location = "Location",
+            description = "Description"
+        )
     ),
     education = listOf(
-        mockk {
-            every { id } returns 2L
-        }
+        CVEducationSnapshot(
+            id = 2,
+            institution = "Institution",
+            location = "Location",
+            educationStart = LocalDate.of(2015, 1, 1),
+            educationEnd = null,
+            degreeName = "Degree",
+            description = "Description"
+        )
     ),
     projects = listOf(
-        mockk {
-            every { id } returns 3L
-        }
+        CVProjectSnapshot(
+            id = 3,
+            name = "Project",
+            role = "Role",
+            description = "Description",
+            projectStart = LocalDate.of(2022, 1, 1),
+            projectEnd = null,
+            links = emptyList()
+        )
     ),
-    skills = listOf(
-        mockk {
-            every { id } returns 4L
-        }
-    ),
-    account = mockk()
+    skills = listOf(CVSkillSnapshot(id = 4, name = "Skill", type = "type", level = 5))
 )
 
-private val invalidProfile: ProfileEntity = mockk()
+private val invalidProfile = profile.copy(isVerified = false)
 
 class ApplicationTemplateValidationServiceTest {
     private lateinit var cvGeneratorValidationService: CvGeneratorValidationService
@@ -68,8 +92,8 @@ class ApplicationTemplateValidationServiceTest {
     @BeforeEach
     fun setup() {
         cvGeneratorValidationService = mockk {
-            every { validateProfileCompleteness(match { it == profile }) } returns Result.success(Unit)
-            every { validateProfileCompleteness(match { it == invalidProfile }) } returns Result.failure(
+            every { validateProfileCompleteness(eq(profile)) } returns Result.success(Unit)
+            every { validateProfileCompleteness(eq(invalidProfile)) } returns Result.failure(
                 IllegalArgumentException("")
             )
         }

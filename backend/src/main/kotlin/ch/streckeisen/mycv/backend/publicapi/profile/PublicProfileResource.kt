@@ -1,7 +1,6 @@
 package ch.streckeisen.mycv.backend.publicapi.profile
 
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
-import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
 import ch.streckeisen.mycv.backend.publicapi.profile.dto.PublicProfileDto
 import ch.streckeisen.mycv.backend.security.annotations.PublicApi
 import ch.streckeisen.mycv.backend.security.getMyCvPrincipalOrNull
@@ -16,8 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/public/profile")
 class PublicProfileResource(
-    private val profileService: ProfileService,
-    private val profilePictureService: ProfilePictureService
+    private val profileService: ProfileService
 ) {
     @GetMapping("/{username}")
     fun getApplicant(@PathVariable username: String): ResponseEntity<PublicProfileDto> {
@@ -25,11 +23,7 @@ class PublicProfileResource(
 
         return profileService.findByUsername(principal?.id, username)
             .fold(
-                onSuccess = { profile ->
-                    val profilePicture = profilePictureService.get(profile.account.id, profile)
-                        .getOrThrow()
-                    ResponseEntity.ok(profile.toPublicDto(profilePicture.uri.toString()))
-                },
+                onSuccess = { profile -> ResponseEntity.ok(profile) },
                 onFailure = {
                     throw it
                 }

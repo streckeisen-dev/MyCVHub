@@ -13,14 +13,14 @@ import java.time.LocalDate
 class WorkExperienceEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
-    val jobTitle: String,
-    val company: String,
-    val positionStart: LocalDate,
-    val positionEnd: LocalDate?,
-    val location: String,
-    val description: String,
+    var id: Long? = null,
+    var jobTitle: String,
+    var company: String,
+    var positionStart: LocalDate,
+    var positionEnd: LocalDate?,
+    var location: String,
+    var description: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    val profile: ProfileEntity
+    var profile: ProfileEntity
 )

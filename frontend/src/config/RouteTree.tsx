@@ -364,13 +364,29 @@ export interface NavItemLeaf {
 }
 
 export interface NavItemNode {
-  id: string,
-  label: string,
-  predicate: (user: AuthorizedUser | undefined) => boolean,
+  id: string
+  label: string
+  predicate: (user: AuthorizedUser | undefined) => boolean
   children: NavItemLeaf[]
 }
 
 export type NavItemConfig = NavItemNode | NavItemLeaf
+
+function hasVerifiedAccount(user: AuthorizedUser | undefined): boolean {
+  return user?.authLevel === AuthLevel.VERIFIED
+}
+
+function canCreateProfile(user: AuthorizedUser | undefined): boolean {
+  return hasVerifiedAccount(user) && !(user?.hasProfile ?? false)
+}
+
+function canEditProfile(user: AuthorizedUser | undefined): boolean {
+  return hasVerifiedAccount(user) && (user?.hasProfile ?? false)
+}
+
+function canViewOwnPublicProfile(user: AuthorizedUser | undefined): boolean {
+  return user?.hasProfile ?? false
+}
 
 const NAV_ITEMS: NavItemConfig[] = [
   {
@@ -386,11 +402,31 @@ const NAV_ITEMS: NavItemConfig[] = [
     predicate: (user: AuthorizedUser | undefined) => user != null
   },
   {
-    id: 'publicProfile',
-    label: 'app.publicProfile',
-    href: (user) => getRoutePath(RouteId.PublicProfile, undefined, user?.username ?? ''),
-    predicate: (user: AuthorizedUser | undefined) => user?.hasProfile ?? false,
-    newTab: true
+    id: 'profile',
+    label: 'profile.title',
+    predicate: (user: AuthorizedUser | undefined) =>
+      canCreateProfile(user) || canEditProfile(user) || canViewOwnPublicProfile(user),
+    children: [
+      {
+        id: 'createProfile',
+        label: 'account.profile.create',
+        href: getRoutePath(RouteId.CreateProfile),
+        predicate: canCreateProfile
+      },
+      {
+        id: 'editProfile',
+        label: 'account.profile.edit',
+        href: getRoutePath(RouteId.EditProfile),
+        predicate: canEditProfile
+      },
+      {
+        id: 'publicProfile',
+        label: 'app.publicProfile',
+        href: (user) => getRoutePath(RouteId.PublicProfile, undefined, user?.username ?? ''),
+        predicate: canViewOwnPublicProfile,
+        newTab: true
+      }
+    ]
   },
   {
     id: 'applications',

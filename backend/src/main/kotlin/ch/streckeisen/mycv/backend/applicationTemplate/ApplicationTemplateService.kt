@@ -1,5 +1,6 @@
 package ch.streckeisen.mycv.backend.applicationTemplate
 
+import ch.streckeisen.mycv.backend.applicationTemplate.dto.ApplicationTemplateDto
 import ch.streckeisen.mycv.backend.applicationTemplate.dto.ApplicationTemplateUpdateDto
 import ch.streckeisen.mycv.backend.cv.profile.ProfileService
 import ch.streckeisen.mycv.backend.exceptions.LocalizedException
@@ -20,13 +21,14 @@ class ApplicationTemplateService(
     private val objectMapper: ObjectMapper
 ) {
     @Transactional(readOnly = true)
-    fun findApplicationTemplates(accountId: Long): List<ApplicationTemplate> {
+    fun findApplicationTemplates(accountId: Long): List<ApplicationTemplateDto> {
         return applicationTemplateRepository.findByAccountId(accountId)
             .map { entity -> entity.toFullObject(objectMapper) }
+            .map { template -> template.toDto() }
     }
 
     @Transactional(readOnly = true)
-    fun findById(accountId: Long, applicationTemplateId: Long): Result<ApplicationTemplate> {
+    fun findById(accountId: Long, applicationTemplateId: Long): Result<ApplicationTemplateDto> {
         val template = applicationTemplateRepository.findById(applicationTemplateId)
             .getOrElse { return Result.failure(LocalizedException(NOT_FOUND_MESSAGE_KEY)) }
 
@@ -34,11 +36,11 @@ class ApplicationTemplateService(
             return Result.failure(LocalizedException(ACCESS_DENIED_MESSAGE_KEY))
         }
 
-        return Result.success(template.toFullObject(objectMapper))
+        return Result.success(template.toFullObject(objectMapper).toDto())
     }
 
     @Transactional
-    fun save(accountId: Long, applicationTemplate: ApplicationTemplateUpdateDto): Result<ApplicationTemplate> {
+    fun save(accountId: Long, applicationTemplate: ApplicationTemplateUpdateDto): Result<ApplicationTemplateDto> {
         val existingTemplate =
             if (applicationTemplate.id != null) applicationTemplateRepository.findById(applicationTemplate.id)
                 .getOrElse {
@@ -51,22 +53,26 @@ class ApplicationTemplateService(
             return Result.failure(LocalizedException(ACCESS_DENIED_MESSAGE_KEY))
         }
 
-        val profile = existingTemplate?.account?.profile ?: profileService.findByAccountId(accountId)
+        val profile = profileService.findByAccountIdForCVGeneration(accountId)
             .getOrElse { return Result.failure(it) }
 
         applicationTemplateValidationService.validateUpdate(accountId, applicationTemplate, profile)
             .onFailure { return Result.failure(it) }
+
+        val account = existingTemplate?.account ?: profileService.findEntityByAccountId(accountId)
+            .map { it.account }
+            .getOrElse { return Result.failure(it) }
 
         val template = ApplicationTemplateEntity(
             id = existingTemplate?.id,
             name = applicationTemplate.name!!,
             cvConfiguration = objectMapper.writeValueAsString(applicationTemplate.cvConfiguration!!.toCvConfiguration()),
             coverLetterConfiguration = objectMapper.writeValueAsString(applicationTemplate.coverLetterConfiguration!!.toCvConfiguration()),
-            account = profile.account
+            account = account
         )
 
         val updated = applicationTemplateRepository.save(template)
-        return Result.success(updated.toFullObject(objectMapper))
+        return Result.success(updated.toFullObject(objectMapper).toDto())
     }
 
     fun delete(accountId: Long, applicationTemplateId: Long): Result<Unit> {

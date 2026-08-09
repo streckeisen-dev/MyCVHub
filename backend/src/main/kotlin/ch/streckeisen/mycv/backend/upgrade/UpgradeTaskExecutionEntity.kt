@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 @Entity
 class UpgradeTaskExecutionEntity(
     @Id
-    val id: Int,
-    val taskName: String,
-    val executionDate: LocalDateTime
+    var id: Int,
+    var taskName: String,
+    var executionDate: LocalDateTime
 )

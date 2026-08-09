@@ -2,6 +2,11 @@ package ch.streckeisen.mycv.backend.applicationTemplate
 
 import ch.streckeisen.mycv.backend.applicationTemplate.dto.ApplicationTemplateUpdateDto
 import ch.streckeisen.mycv.backend.applicationTemplate.dto.CoverLetterConfigurationUpdateDto
+import ch.streckeisen.mycv.backend.applicationTemplate.dto.CoverLetterConfigurationDto
+import ch.streckeisen.mycv.backend.applicationTemplate.dto.CvConfigurationDto
+import ch.streckeisen.mycv.backend.applicationTemplate.dto.CvEntrySelectionDto
+import ch.streckeisen.mycv.backend.applicationTemplate.dto.IncludedCvContentDto as TemplateIncludedCvContentDto
+import ch.streckeisen.mycv.backend.cv.generator.CVGenerationSnapshot
 import ch.streckeisen.mycv.backend.cv.generator.CvConfigurationRequestDto
 import ch.streckeisen.mycv.backend.cv.generator.IncludedCVItem
 import ch.streckeisen.mycv.backend.cv.generator.IncludedCvContentDto
@@ -21,6 +26,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.api.assertNull
 import tools.jackson.databind.ObjectMapper
+import java.time.LocalDate
 import java.util.Optional
 
 private val existingProfile = ProfileEntity(
@@ -36,6 +42,28 @@ private val existingProfile = ProfileEntity(
     account = mockk {
         every { id } returns 1L
     }
+)
+
+private val existingProfileSnapshot = CVGenerationSnapshot(
+    accountId = 1,
+    isVerified = true,
+    firstName = "Test",
+    lastName = "User",
+    email = "test@example.test",
+    phone = "+41 79 123 45 67",
+    street = "Street",
+    houseNumber = null,
+    postcode = "1234",
+    city = "City",
+    birthday = LocalDate.of(1990, 1, 1),
+    language = "en",
+    profilePicture = "picture.png",
+    jobTitle = "job",
+    bio = null,
+    workExperiences = emptyList(),
+    education = emptyList(),
+    projects = emptyList(),
+    skills = emptyList()
 )
 
 private val existingTemplate = ApplicationTemplateEntity(
@@ -127,8 +155,10 @@ class ApplicationTemplateServiceTest {
         }
 
         profileService = mockk {
-            every { findByAccountId(any()) } returns Result.failure(IllegalArgumentException())
-            every { findByAccountId(eq(1L)) } returns Result.success(existingProfile)
+            every { findByAccountIdForCVGeneration(any()) } returns Result.failure(IllegalArgumentException())
+            every { findByAccountIdForCVGeneration(eq(1L)) } returns Result.success(existingProfileSnapshot)
+            every { findEntityByAccountId(any()) } returns Result.failure(IllegalArgumentException())
+            every { findEntityByAccountId(eq(1L)) } returns Result.success(existingProfile)
         }
 
         applicationTemplateValidationService = mockk {
@@ -154,9 +184,9 @@ class ApplicationTemplateServiceTest {
         assertEquals(existingTemplate.id, template.id)
         assertEquals(existingTemplate.name, template.name)
         assertEquals(
-            CvConfiguration(
-                includedCvContent = IncludedCvContent(
-                    includedWorkExperience = listOf(CvEntrySelection(1, false)),
+            CvConfigurationDto(
+                includedCvContent = TemplateIncludedCvContentDto(
+                    includedWorkExperience = listOf(CvEntrySelectionDto(1, false)),
                     includedEducation = emptyList(),
                     includedProjects = emptyList(),
                     includedSkills = listOf(5)
@@ -166,7 +196,7 @@ class ApplicationTemplateServiceTest {
             ), template.cvConfiguration
         )
         assertEquals(
-            CoverLetterConfiguration(
+            CoverLetterConfigurationDto(
                 style = "modern",
                 language = "en",
                 mirrorProfileImage = true,

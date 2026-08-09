@@ -121,8 +121,8 @@ export function ProfileEditor(props: ProfileEditorProps): ReactNode {
       </div>
       <PageTitle>{t('profile.title')}</PageTitle>
       <Tabs onSelectionChange={handleTabChange} selectedKey={selectedTab}>
-        <Tabs.ListContainer className="max-w-full overflow-x-auto">
-          <Tabs.List aria-label={t('profile.title')} className="min-w-max">
+        <Tabs.ListContainer>
+          <Tabs.List aria-label={t('profile.title')}>
             {tabConfig
               .filter((config) => config.show)
               .map((config) => (

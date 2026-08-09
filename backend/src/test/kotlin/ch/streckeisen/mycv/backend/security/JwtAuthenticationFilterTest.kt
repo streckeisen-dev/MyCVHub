@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.servlet.http.HttpSession
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -172,8 +173,17 @@ class JwtAuthenticationFilterTest {
         verify(exactly = 1) { handlerExceptionResolver.resolveException(any(), any(), any(), any()) }
     }
 
+    @Test
+    fun testAsyncDispatchIsFiltered() {
+        val testFilter = TestJwtAuthenticationFilter(jwtService, userDetailsService, handlerExceptionResolver)
+
+        assertFalse(testFilter.shouldNotFilterAsyncDispatchForTest())
+    }
+
     private fun mockRequest(): HttpServletRequest = mockk<HttpServletRequest> {
         every { dispatcherType } returns DispatcherType.REQUEST
+        every { method } returns "GET"
+        every { requestURI } returns "/api/profile"
         every { getAttribute(any()) } returns null
         every { setAttribute(any(), any()) } returns Unit
         every { removeAttribute(any()) } returns Unit
@@ -184,9 +194,18 @@ class JwtAuthenticationFilterTest {
     }
 
     private fun mockResponse(): HttpServletResponse = mockk {
+        every { status } returns HttpServletResponse.SC_OK
     }
 
     private fun mockFilterChain(): FilterChain = mockk {
         every { doFilter(any(), any()) } returns Unit
+    }
+
+    private class TestJwtAuthenticationFilter(
+        jwtService: JwtService,
+        userDetailsService: UserDetailsServiceImpl,
+        handlerExceptionResolver: HandlerExceptionResolver
+    ) : JwtAuthenticationFilter(jwtService, userDetailsService, handlerExceptionResolver) {
+        fun shouldNotFilterAsyncDispatchForTest(): Boolean = shouldNotFilterAsyncDispatch()
     }
 }

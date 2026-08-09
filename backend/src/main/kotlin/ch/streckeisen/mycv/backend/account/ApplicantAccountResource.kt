@@ -22,9 +22,7 @@ class ApplicantAccountResource(private val applicantAccountService: ApplicantAcc
         val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
         return applicantAccountService.findById(principal.id)
             .fold(
-                onSuccess = { account ->
-                    ResponseEntity.ok(account.toAccountDto())
-                },
+                onSuccess = { account -> ResponseEntity.ok(account) },
                 onFailure = {
                     ResponseEntity.internalServerError().build()
                 }
@@ -36,9 +34,7 @@ class ApplicantAccountResource(private val applicantAccountService: ApplicantAcc
         val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
         return applicantAccountService.update(principal.id, accountUpdate)
             .fold(
-                onSuccess = { updatedAccount ->
-                    ResponseEntity.ok(updatedAccount.toAccountDto())
-                },
+                onSuccess = { updatedAccount -> ResponseEntity.ok(updatedAccount) },
                 onFailure = {
                     throw it
                 }

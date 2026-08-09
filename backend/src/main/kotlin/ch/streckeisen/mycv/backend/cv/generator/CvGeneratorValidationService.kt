@@ -1,6 +1,5 @@
 package ch.streckeisen.mycv.backend.cv.generator
 
-import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import ch.streckeisen.mycv.backend.exceptions.LocalizedException
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
@@ -35,7 +34,7 @@ class CvGeneratorValidationService(
     private val messagesService: MessagesService,
     private val stringValidator: StringValidator
 ) {
-    fun validateConfiguration(cvConfiguration: CvConfigurationRequestDto, profile: ProfileEntity): Result<Unit> {
+    fun validateConfiguration(cvConfiguration: CvConfigurationRequestDto, profile: CVGenerationSnapshot): Result<Unit> {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
         stringValidator.validateRequiredString(CV_STYLE_FIELD, cvConfiguration.cvStyle, validationErrorBuilder)
@@ -88,8 +87,18 @@ class CvGeneratorValidationService(
         }
     }
 
-    fun validateProfileCompleteness(profile: ProfileEntity): Result<Unit> {
-        if (!profile.account.isVerified || profile.account.accountDetails == null) {
+    fun validateProfileCompleteness(profile: CVGenerationSnapshot): Result<Unit> {
+        if (
+            !profile.isVerified
+            || profile.firstName == null
+            || profile.lastName == null
+            || profile.email == null
+            || profile.phone == null
+            || profile.street == null
+            || profile.postcode == null
+            || profile.city == null
+            || profile.birthday == null
+        ) {
             return Result.failure(LocalizedException(INCOMPLETE_PROFILE_MESSAGE))
         }
 
@@ -124,7 +133,7 @@ class CvGeneratorValidationService(
 
     private fun validateCvContent(
         cvContent: IncludedCvContentDto,
-        profile: ProfileEntity,
+        profile: CVGenerationSnapshot,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
         if (
@@ -156,7 +165,7 @@ class CvGeneratorValidationService(
 
     private fun validateCvContentItems(
         cvContent: IncludedCvContentDto,
-        profile: ProfileEntity,
+        profile: CVGenerationSnapshot,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
         val unknownWorkExperience =

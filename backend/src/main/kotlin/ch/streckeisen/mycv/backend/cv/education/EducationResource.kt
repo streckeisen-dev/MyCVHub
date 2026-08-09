@@ -21,9 +21,7 @@ class EducationResource(
 
         return educationService.save(principal.id, educationUpdate)
             .fold(
-                onSuccess = { education ->
-                    ResponseEntity.ok(education.toDto())
-                },
+                onSuccess = { education -> ResponseEntity.ok(education) },
                 onFailure = {
                     throw it
                 }

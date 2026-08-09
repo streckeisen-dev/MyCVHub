@@ -10,20 +10,20 @@ import java.time.LocalDate
 @Entity
 class AccountDetailsEntity(
     @Column(name = "firstname")
-    val firstName: String,
+    var firstName: String,
     @Column(name = "lastname")
-    val lastName: String,
-    val email: String,
-    val phone: String,
-    val birthday: LocalDate,
-    val street: String,
-    val houseNumber: String?,
-    val postcode: String,
-    val city: String,
-    val country: String,
-    val language: String,
+    var lastName: String,
+    var email: String,
+    var phone: String,
+    var birthday: LocalDate,
+    var street: String,
+    var houseNumber: String?,
+    var postcode: String,
+    var city: String,
+    var country: String,
+    var language: String,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    var id: Long? = null
 )

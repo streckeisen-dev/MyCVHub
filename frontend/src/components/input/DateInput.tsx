@@ -19,7 +19,7 @@ export function DateInput(props: DateInputProps): ReactNode {
         <Button
           type="button"
           variant="tertiary"
-          className="mt-[1.625rem] h-10 min-w-10 shrink-0 rounded-full px-0 text-default-500"
+          className="mt-6.5 h-10 min-w-10 shrink-0 rounded-full px-0 text-default-500"
           onPress={onClear}
         >
           <FaXmark size={18} />

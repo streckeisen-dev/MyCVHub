@@ -17,27 +17,27 @@ import jakarta.persistence.OneToOne
 
 @Entity
 class ApplicantAccountEntity(
-    val username: String,
-    val password: String?,
+    var username: String,
+    var password: String?,
     @Column(name = "is_oauth_user")
-    val isOAuthUser: Boolean,
-    val isVerified: Boolean,
+    var isOAuthUser: Boolean,
+    var isVerified: Boolean,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    var id: Long? = null,
 
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-    val accountDetails: AccountDetailsEntity? = null,
+    var accountDetails: AccountDetailsEntity? = null,
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "account")
-    val oauthIntegrations: List<OAuthIntegrationEntity> = emptyList(),
+    var oauthIntegrations: List<OAuthIntegrationEntity> = emptyList(),
 
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "account")
-    val profile: ProfileEntity? = null,
+    var profile: ProfileEntity? = null,
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "account")
-    val accountVerification: AccountVerificationEntity? = null,
+    var accountVerification: AccountVerificationEntity? = null,
 
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "account")
-    val applications: List<ApplicationEntity> = emptyList(),
+    var applications: List<ApplicationEntity> = emptyList(),
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "account")
-    val applicationTemplates: List<ApplicationTemplateEntity> = emptyList()
+    var applicationTemplates: List<ApplicationTemplateEntity> = emptyList()
 )

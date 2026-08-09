@@ -6,8 +6,6 @@ import ch.streckeisen.mycv.backend.account.dto.AuthResponseDto
 import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
 import ch.streckeisen.mycv.backend.account.dto.LoginRequestDto
 import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
-import ch.streckeisen.mycv.backend.cv.profile.ThumbnailDto
-import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.security.annotations.PublicApi
 import ch.streckeisen.mycv.backend.security.annotations.RequiresAccountStatus
@@ -31,8 +29,7 @@ import org.springframework.web.bind.annotation.RestController
 class AuthenticationResource(
     private val authenticationService: AuthenticationService,
     private val authTokenService: AuthTokenService,
-    private val applicantAccountService: ApplicantAccountService,
-    private val profilePictureService: ProfilePictureService
+    private val applicantAccountService: ApplicantAccountService
 ) {
     @PublicApi
     @PostMapping("/login")
@@ -49,31 +46,9 @@ class AuthenticationResource(
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
         }
 
-        return applicantAccountService.findById(principal.id)
+        return applicantAccountService.getAuthResponse(principal)
             .fold(
-                onSuccess = { account ->
-                    val accountDetails = account.accountDetails
-                    val profile = account.profile
-                    val displayName = if (accountDetails != null) {
-                        accountDetails.firstName + " " + accountDetails.lastName
-                    } else null
-                    val hasProfile = profile != null
-                    val thumbnail = if (hasProfile) {
-                        profilePictureService.getThumbnail(account.id, profile).getOrNull()
-                    } else null
-                    ResponseEntity.ok(
-                        AuthResponseDto(
-                            username = principal.username,
-                            authLevel = principal.status,
-                            displayName = displayName,
-                            language = accountDetails?.language,
-                            hasProfile = hasProfile,
-                            thumbnail = if (thumbnail != null) {
-                                ThumbnailDto(thumbnail.uri.toString())
-                            } else null
-                        )
-                    )
-                },
+                onSuccess = { authResponse -> ResponseEntity.ok(authResponse) },
                 onFailure = {
                     ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
                 }

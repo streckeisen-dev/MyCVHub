@@ -9,6 +9,7 @@ import kotlinx.coroutines.withTimeout
 import org.springframework.stereotype.Service
 import java.nio.file.Path
 import kotlin.io.path.pathString
+import kotlin.time.Duration.Companion.milliseconds
 
 private val logger = KotlinLogging.logger { }
 
@@ -32,7 +33,7 @@ class TypstService(
                 outputPath
             ).start()
 
-            withTimeout(30_000) {
+            withTimeout(30_000.milliseconds) {
                 process.onExit().await()
             }
 

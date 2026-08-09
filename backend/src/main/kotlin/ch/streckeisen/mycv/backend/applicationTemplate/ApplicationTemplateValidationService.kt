@@ -3,11 +3,11 @@ package ch.streckeisen.mycv.backend.applicationTemplate
 import ch.streckeisen.mycv.backend.applicationTemplate.dto.ApplicationTemplateUpdateDto
 import ch.streckeisen.mycv.backend.applicationTemplate.dto.CoverLetterConfigurationUpdateDto
 import ch.streckeisen.mycv.backend.coverletter.CoverLetterGenerationValidationService
+import ch.streckeisen.mycv.backend.cv.generator.CVGenerationSnapshot
 import ch.streckeisen.mycv.backend.cv.generator.CVStyle
 import ch.streckeisen.mycv.backend.cv.generator.CvConfigurationRequestDto
 import ch.streckeisen.mycv.backend.cv.generator.CvGeneratorValidationService
 import ch.streckeisen.mycv.backend.cv.generator.IncludedCvContentDto
-import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
@@ -45,7 +45,7 @@ class ApplicationTemplateValidationService(
     fun validateUpdate(
         accountId: Long,
         applicationTemplateUpdate: ApplicationTemplateUpdateDto,
-        profile: ProfileEntity
+        profile: CVGenerationSnapshot
     ): Result<Unit> {
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()
 
@@ -89,7 +89,7 @@ class ApplicationTemplateValidationService(
 
     fun validateCvConfiguration(
         cvConfiguration: CvConfigurationRequestDto,
-        profile: ProfileEntity,
+        profile: CVGenerationSnapshot,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
         val internalErrorBuilder = ValidationException.ValidationErrorBuilder()
@@ -129,7 +129,7 @@ class ApplicationTemplateValidationService(
 
     private fun validateCvContentConfig(
         cvContent: IncludedCvContentDto,
-        profile: ProfileEntity,
+        profile: CVGenerationSnapshot,
         validationErrorBuilder: ValidationException.ValidationErrorBuilder
     ) {
         val unknownWorkExperience =

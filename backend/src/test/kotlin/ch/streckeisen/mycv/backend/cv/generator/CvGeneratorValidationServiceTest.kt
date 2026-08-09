@@ -1,8 +1,5 @@
 package ch.streckeisen.mycv.backend.cv.generator
 
-import ch.streckeisen.mycv.backend.account.AccountDetailsEntity
-import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
-import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MessagesService
 import ch.streckeisen.mycv.backend.util.StringValidator
@@ -16,97 +13,61 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNotNull
 import java.time.LocalDate
 
-private val completeProfile = ProfileEntity(
+private val completeProfile = CVGenerationSnapshot(
+    accountId = 1,
+    isVerified = true,
+    firstName = "Test",
+    lastName = "User",
+    email = "em@ail.com",
+    phone = "+41 79 123 45 67",
+    street = "My Home Street",
+    houseNumber = "4",
+    postcode = "12345",
+    city = "City",
+    birthday = LocalDate.of(1985, 6, 25),
+    language = "en",
+    profilePicture = "myPicture.png",
     jobTitle = "Test Job",
     bio = null,
-    isProfilePublic = false,
-    isEmailPublic = true,
-    isPhonePublic = true,
-    isAddressPublic = true,
-    hideDescriptions = false,
-    profilePicture = "myPicture.png",
-    id = 1,
-    account = ApplicantAccountEntity(
-        username = "testuser",
-        password = null,
-        isOAuthUser = true,
-        isVerified = true,
-        id = 1,
-        accountDetails = AccountDetailsEntity(
-            firstName = "Test",
-            lastName = "User",
-            email = "em@ail.com",
-            phone = "+41 79 123 45 67",
-            birthday = LocalDate.of(1985, 6, 25),
-            street = "My Home Street",
-            houseNumber = "4",
-            postcode = "12345",
-            city = "City",
-            country = "CH",
-            language = "en"
+    workExperiences = listOf(
+        CVWorkExperienceSnapshot(
+            id = 1,
+            jobTitle = "Job",
+            company = "Company",
+            positionStart = LocalDate.of(2020, 1, 1),
+            positionEnd = null,
+            location = "Location",
+            description = "Description"
         )
     ),
-    workExperiences = listOf(
-        mockk {
-            every { id } returns 1L
-        }
-    ),
     education = listOf(
-        mockk {
-            every { id } returns 2L
-        }
+        CVEducationSnapshot(
+            id = 2,
+            institution = "Institution",
+            location = "Location",
+            educationStart = LocalDate.of(2015, 1, 1),
+            educationEnd = null,
+            degreeName = "Degree",
+            description = "Description"
+        )
     ),
     projects = listOf(
-        mockk {
-            every { id } returns 3L
-        }
+        CVProjectSnapshot(
+            id = 3,
+            name = "Project",
+            role = "Role",
+            description = "Description",
+            projectStart = LocalDate.of(2022, 1, 1),
+            projectEnd = null,
+            links = emptyList()
+        )
     ),
-    skills = listOf(
-        mockk {
-            every { id } returns 4L
-        }
-    ),
+    skills = listOf(CVSkillSnapshot(id = 4, name = "Skill", type = "type", level = 5)),
 )
 
-private val unverifiedProfile = ProfileEntity(
-    jobTitle = "Invalid Job",
-    bio = null,
-    isProfilePublic = false,
-    isEmailPublic = false,
-    isPhonePublic = false,
-    isAddressPublic = false,
-    hideDescriptions = false,
-    profilePicture = "picture.png",
-    id = 1,
-    account = ApplicantAccountEntity(
-        username = "unverified",
-        password = null,
-        isOAuthUser = true,
-        isVerified = false,
-        id = 5,
-        accountDetails = mockk()
-    ),
-)
+private val unverifiedProfile = completeProfile.copy(isVerified = false)
 
-private val incompleteProfile = ProfileEntity(
-    jobTitle = "Invalid Job",
-    bio = null,
-    isProfilePublic = false,
-    isEmailPublic = false,
-    isPhonePublic = false,
-    isAddressPublic = false,
-    hideDescriptions = false,
-    profilePicture = "picture.png",
-    id = 1,
-    account = ApplicantAccountEntity(
-        username = "unverified",
-        password = null,
-        isOAuthUser = true,
-        isVerified = true,
-        id = 5,
-        accountDetails = null
-    ),
-)
+private val incompleteProfile = completeProfile.copy(firstName = null)
 
 class CvGeneratorValidationServiceTest {
     private lateinit var cvGeneratorValidationService: CvGeneratorValidationService

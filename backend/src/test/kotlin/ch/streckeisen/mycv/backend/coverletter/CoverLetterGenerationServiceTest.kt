@@ -64,30 +64,39 @@ class CoverLetterGenerationServiceTest {
         }
 
         applicantAccountService = mockk {
-            every { findById(eq(1)) } returns Result.success(mockk {
-                every { id } returns 1
-                every { isVerified } returns true
-                every { profile } returns mockk {
-                    every { jobTitle } returns "Developer"
-                }
-                every { accountDetails } returns mockk {
-                    every { firstName } returns "First"
-                    every { lastName } returns "Last"
-                    every { phone } returns "123456789"
-                    every { email } returns "a@b.c"
-                    every { street } returns "street"
-                    every { houseNumber } returns "5"
-                    every { postcode } returns "123"
-                    every { city } returns "city"
-                }
-            })
-            every { findById(eq(4)) } returns Result.success(mockk {
-                every { id } returns 4
-                every { profile } returns null
-                every { accountDetails } returns null
-                every { isVerified } returns false
-            })
-            every { findById(eq(5)) } returns Result.failure(IllegalArgumentException())
+            every { findByIdForCoverLetterGeneration(eq(1)) } returns Result.success(
+                CoverLetterGenerationSnapshot(
+                    accountId = 1,
+                    isVerified = true,
+                    firstName = "First",
+                    lastName = "Last",
+                    email = "a@b.c",
+                    phone = "123456789",
+                    street = "street",
+                    houseNumber = "5",
+                    postcode = "123",
+                    city = "city",
+                    profilePicture = "picture.jpg",
+                    jobTitle = "Developer"
+                )
+            )
+            every { findByIdForCoverLetterGeneration(eq(4)) } returns Result.success(
+                CoverLetterGenerationSnapshot(
+                    accountId = 4,
+                    isVerified = false,
+                    firstName = null,
+                    lastName = null,
+                    email = null,
+                    phone = null,
+                    street = null,
+                    houseNumber = null,
+                    postcode = null,
+                    city = null,
+                    profilePicture = null,
+                    jobTitle = null
+                )
+            )
+            every { findByIdForCoverLetterGeneration(eq(5)) } returns Result.failure(IllegalArgumentException())
         }
 
         profilePictureService = mockk {
@@ -137,7 +146,7 @@ class CoverLetterGenerationServiceTest {
 
     @Test
     suspend fun testGenerateCoverLetterWithMissingProfilePicture() {
-        every { profilePictureService.getCVPicture(eq(1), any()) } returns Result.failure(IllegalArgumentException())
+        every { profilePictureService.getCVPicture(eq(1), eq(1), any()) } returns Result.failure(IllegalArgumentException())
 
         val result = coverLetterGenerationService.generateCoverLetter(1, validRequest)
 
@@ -149,7 +158,7 @@ class CoverLetterGenerationServiceTest {
     suspend fun testGenerateCoverLetterConfigJsonOutput() {
         val slot = slot<Any>()
         every { objectMapper.writeValue(any<File>(), capture(slot)) } throws IllegalArgumentException()
-        every { profilePictureService.getCVPicture(eq(1), any()) } returns Result.success(
+        every { profilePictureService.getCVPicture(eq(1), eq(1), any()) } returns Result.success(
             ProfilePicture(
                 PROFILE_PICTURE_NAME,
                 profilePictureUri
@@ -193,7 +202,7 @@ class CoverLetterGenerationServiceTest {
 
     @Test
     suspend fun testGenerateCoverLetterWithFailingCompilation() {
-        every { profilePictureService.getCVPicture(eq(1), any()) } returns Result.success(
+        every { profilePictureService.getCVPicture(eq(1), eq(1), any()) } returns Result.success(
             ProfilePicture(
                 PROFILE_PICTURE_NAME,
                 profilePictureUri
@@ -210,7 +219,7 @@ class CoverLetterGenerationServiceTest {
 
     @Test
     suspend fun testGenerateCoverLetterSuccess() {
-        every { profilePictureService.getCVPicture(eq(1), any()) } returns Result.success(
+        every { profilePictureService.getCVPicture(eq(1), eq(1), any()) } returns Result.success(
             ProfilePicture(
                 PROFILE_PICTURE_NAME,
                 profilePictureUri

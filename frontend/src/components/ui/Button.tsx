@@ -22,6 +22,7 @@ export function Button(props: ButtonProps) {
     to,
     variant = 'secondary',
     onPress,
+    isIconOnly,
     ...rest
   } = props
 
@@ -72,11 +73,12 @@ export function Button(props: ButtonProps) {
   return (
     <HeroButton
       {...rest}
-      className={buttonClassName || undefined}
-      isDisabled={isDisabled || isPending}
+      className={!isIconOnly ? (buttonClassName || undefined) : undefined}
+      isDisabled={isDisabled ?? isPending}
       isPending={isPending}
       onPress={(event) => onPress?.(event)}
       variant={normalizedVariant}
+      isIconOnly={isIconOnly}
     >
       {() => content}
     </HeroButton>

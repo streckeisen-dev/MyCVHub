@@ -1,10 +1,10 @@
 package ch.streckeisen.mycv.backend.cv.generator
 
 import ch.streckeisen.mycv.backend.locale.MessagesService
-import ch.streckeisen.mycv.backend.security.getMyCvPrincipal
+import ch.streckeisen.mycv.backend.security.MyCvPrincipal
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -17,7 +17,6 @@ class CVGeneratorResource(
     private val cvGeneratorService: CVGeneratorService,
     private val messagesService: MessagesService
 ) {
-
     @GetMapping("styles")
     fun getCVStyles(): ResponseEntity<List<CVStyleDto>> {
         val styles = CVStyle
@@ -41,8 +40,10 @@ class CVGeneratorResource(
     }
 
     @PostMapping("generate", produces = [MediaType.APPLICATION_PDF_VALUE])
-    suspend fun generate(@RequestBody generationRequest: CvConfigurationRequestDto): ResponseEntity<ByteArray> {
-        val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
+    suspend fun generate(
+        @AuthenticationPrincipal principal: MyCvPrincipal,
+        @RequestBody generationRequest: CvConfigurationRequestDto
+    ): ResponseEntity<ByteArray> {
         val file = cvGeneratorService.generateCV(principal.id, generationRequest)
             .onFailure { throw it }
             .getOrThrow()
