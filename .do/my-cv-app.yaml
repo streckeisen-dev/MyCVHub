@@ -65,6 +65,14 @@ name: my-cv-app
 region: fra
 services:
 - http_port: 8080
+  health_check:
+    initial_delay_seconds: 30
+    period_seconds: 10
+    timeout_seconds: 5
+    success_threshold: 1
+    failure_threshold: 5
+    http_path: /actuator/health/readiness
+    port: 8080
   image:
     registry: lstreckeisen
     registry_credentials: EV[1:SZtHlCRh25xCY3lgXqdDKGg+1Uf2qOT5:xUH8j/qTcMTJHA8bxhgPo7mUCZvxZKIUasaVApbs2qcRz/miKM2eKET3FlwDagScTgdj4HgC]
@@ -73,8 +81,19 @@ services:
     tag: latest
   instance_count: 2
   instance_size_slug: apps-s-1vcpu-1gb
+  liveness_health_check:
+    initial_delay_seconds: 60
+    period_seconds: 10
+    timeout_seconds: 5
+    success_threshold: 1
+    failure_threshold: 5
+    http_path: /actuator/health/liveness
+    port: 8080
   log_destinations:
   - logtail:
       token: neBiX2R5DZP2FVKiA5BDAUat
     name: Better Stack
   name: my-cv
+  termination:
+    drain_seconds: 30
+    grace_period_seconds: 90
