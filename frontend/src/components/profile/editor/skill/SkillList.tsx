@@ -63,9 +63,10 @@ function getSkillSum(skills: SkillDto[] | PublicSkillDto[]): number {
 export function SkillList(props: SkillListProps): ReactNode {
   const { t } = useTranslation()
 
-  const groupedSkills: KeyValueObject<SkillDto[] | PublicSkillDto[]> = props.skills.reduce(
-    groupSkills,
-    {}
+  const groupedSkills: KeyValueObject<SkillDto[] | PublicSkillDto[]> = props.skills.reduce((
+    skills: KeyValueObject<(SkillDto | PublicSkillDto)[]>,
+    skill: SkillDto | PublicSkillDto
+    ) => groupSkills(skills, skill), {}
   )
 
   return props.skills.length === 0 ? (
