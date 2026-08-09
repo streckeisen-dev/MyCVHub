@@ -29,6 +29,11 @@ function sanitize(html: string): string {
   })
 }
 
+function getGalleryColumnsClass(itemCount: number, compact: boolean): string {
+  if (itemCount > 1) return 'sm:grid-cols-2'
+  return compact ? 'max-w-sm' : 'max-w-lg'
+}
+
 export function SelectableGallery(props: SelectableGalleryProps): ReactNode {
   const { items, compact = false, selected, disabled, onSelect } = props
   const { t } = useTranslation()
@@ -44,7 +49,7 @@ export function SelectableGallery(props: SelectableGalleryProps): ReactNode {
         'grid w-full grid-cols-1 gap-5',
         compact ? 'max-w-5xl justify-items-start' : 'justify-items-center',
         !compact && items.length === 1 && 'mx-auto',
-        items.length > 1 ? 'sm:grid-cols-2' : compact ? 'max-w-sm' : 'max-w-lg'
+        getGalleryColumnsClass(items.length, compact)
       )}
     >
       {items.map((item) => {

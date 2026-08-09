@@ -6,17 +6,7 @@ import { PageInfo } from '@/types/Page.ts'
 import { ApplicationSearchDto } from '@/types/application/ApplicationSearchDto.ts'
 import { Label, ListBox, Pagination, Select, Spinner, Table } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
-import {
-  KeyboardEvent,
-  MouseEvent,
-  PointerEvent,
-  ReactNode,
-  RefObject,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useState
-} from 'react'
+import { MouseEvent, PointerEvent, ReactNode, RefObject, useCallback, useEffect, useImperativeHandle, useState } from 'react'
 import { Key, SortDescriptor } from '@react-types/shared'
 import { formatDateTime } from '@/helpers/DateHelper.ts'
 import { ApplicationStatusDto } from '@/types/application/ApplicationStatusDto.ts'
@@ -77,6 +67,11 @@ export type ApplicationTableProps = Readonly<{
 
 interface ApplicationAsyncListValue {
   items: ApplicationSearchDto[]
+}
+
+function stopStatusFilterClearPress(event: MouseEvent | PointerEvent) {
+  event.preventDefault()
+  event.stopPropagation()
 }
 
 export function ApplicationTable(props: ApplicationTableProps) {
@@ -164,12 +159,7 @@ export function ApplicationTable(props: ApplicationTableProps) {
     ApplicationFilterService.setApplicationStatusFilter(value)
   }
 
-  function stopStatusFilterClearPress(event: MouseEvent | PointerEvent) {
-    event.preventDefault()
-    event.stopPropagation()
-  }
-
-  function handleStatusFilterClear(event: MouseEvent | KeyboardEvent) {
+  function handleStatusFilterClear(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault()
     event.stopPropagation()
     handleStatusFilterChange(null)
@@ -284,22 +274,16 @@ export function ApplicationTable(props: ApplicationTableProps) {
               <Select.Trigger>
                 <Select.Value />
                 {statusFilter && (
-                  <span
+                  <button
                     aria-label={t('table.resetFilter')}
                     className="inline-flex h-6 w-6 items-center justify-center rounded-full text-default-500 transition-colors hover:bg-default/10 hover:text-foreground"
-                    role="button"
-                    tabIndex={0}
+                    type="button"
                     onMouseDown={stopStatusFilterClearPress}
                     onPointerDown={stopStatusFilterClearPress}
                     onClick={handleStatusFilterClear}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' || event.key === ' ') {
-                        handleStatusFilterClear(event)
-                      }
-                    }}
                   >
                     <FaXmark size={14} />
-                  </span>
+                  </button>
                 )}
                 <Select.Indicator />
               </Select.Trigger>

@@ -19,7 +19,7 @@ import { Key } from '@react-types/shared'
 import { DateValue } from 'react-aria-components'
 import clsx from 'clsx'
 
-export type InputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> & {
+export type InputProps = Readonly<Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> & {
   description?: ReactNode
   endContent?: ReactNode
   errorMessage?: ReactNode
@@ -31,9 +31,9 @@ export type InputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'>
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void
   onValueChange?: (value: string) => void
   startContent?: ReactNode
-}
+}>
 
-export type TextareaProps = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange'> & {
+export type TextareaProps = Readonly<Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange'> & {
   description?: ReactNode
   errorMessage?: ReactNode
   isInvalid?: boolean
@@ -45,7 +45,7 @@ export type TextareaProps = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'o
   ref?: any
   onChange?: (event: any) => void
   onValueChange?: (value: string) => void
-}
+}>
 
 export function Input(props: InputProps) {
   const {
@@ -145,7 +145,7 @@ export function Textarea(props: TextareaProps) {
   )
 }
 
-export type DatePickerProps = {
+export type DatePickerProps = Readonly<{
   className?: string
   errorMessage?: ReactNode
   isInvalid?: boolean
@@ -156,9 +156,9 @@ export type DatePickerProps = {
   onChange?: (value: DateValue | null) => void
   showMonthAndYearPickers?: boolean
   value?: DateValue | null
-}
+}>
 
-export type CheckboxProps = {
+export type CheckboxProps = Readonly<{
   children?: ReactNode
   className?: string
   isDisabled?: boolean
@@ -169,7 +169,7 @@ export type CheckboxProps = {
   name?: string
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void
   onValueChange?: (value: boolean) => void
-}
+}>
 
 export function Checkbox(props: CheckboxProps) {
   const {
@@ -206,11 +206,11 @@ export function Checkbox(props: CheckboxProps) {
   )
 }
 
-export type SwitchProps = CheckboxProps & {
+export type SwitchProps = Readonly<CheckboxProps & {
   size?: 'sm' | 'md' | 'lg'
-}
+}>
 
-export function Slider(props: {
+export type SliderProps = Readonly<{
   label?: ReactNode
   maxValue?: number
   minValue?: number
@@ -218,7 +218,9 @@ export function Slider(props: {
   onChange?: (value: number | number[]) => void
   step?: number
   value?: number
-}) {
+}>
+
+export function Slider(props: SliderProps) {
   const { label, maxValue, minValue, name: _name, ...rest } = props
   return (
     <HeroSlider maxValue={maxValue} minValue={minValue} {...rest}>
@@ -321,7 +323,7 @@ export function DatePicker(props: DatePickerProps) {
   )
 }
 
-export type AutocompleteProps<T = any> = {
+export type AutocompleteProps<T = any> = Readonly<{
   children?: ReactNode | ((item: T) => ReactNode)
   className?: string
   errorMessage?: ReactNode
@@ -336,7 +338,7 @@ export type AutocompleteProps<T = any> = {
   onInputChange?: (value: string) => void
   onSelectionChange?: (value: Key | null) => void
   selectedKey?: Key | null
-}
+}>
 
 export function Autocomplete<T = any>(props: AutocompleteProps<T>) {
   const {
@@ -374,7 +376,7 @@ export function Autocomplete<T = any>(props: AutocompleteProps<T>) {
   )
 }
 
-export const AutocompleteItem = ({ children, ...props }: { children: ReactNode; id: Key }) => (
+export const AutocompleteItem = ({ children, ...props }: Readonly<{ children: ReactNode; id: Key }>) => (
   <ListBox.Item id={props.id} textValue={String(children)}>
     {children}
     <ListBox.ItemIndicator />

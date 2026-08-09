@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useContext, useState } from 'react'
+import { CSSProperties, ReactNode, createContext, useContext, useMemo, useState } from 'react'
 import { FaBars } from 'react-icons/fa6'
 
 const MENU_ID = 'main-navigation-menu'
@@ -11,22 +11,35 @@ const MenuContext = createContext<{ isOpen: boolean; setOpen: (open: boolean) =>
 export const link = (_options?: unknown) =>
   'whitespace-nowrap text-foreground transition-colors hover:text-primary'
 
-export function Navbar(props: any) {
+export type NavbarProps = Readonly<{
+  children?: ReactNode
+  className?: string
+  isMenuOpen?: boolean
+  maxWidth?: string
+  onMenuOpenChange?: (open: boolean) => void
+  position?: string
+  style?: CSSProperties
+}>
+
+export function Navbar(props: NavbarProps) {
+  const { children, className, isMenuOpen, maxWidth: _maxWidth, onMenuOpenChange, position: _position, style } = props
   const [fallbackOpen, setFallbackOpen] = useState(false)
-  const isOpen = props.isMenuOpen ?? fallbackOpen
-  const setOpen = props.onMenuOpenChange ?? setFallbackOpen
+  const isOpen = isMenuOpen ?? fallbackOpen
+  const setOpen = onMenuOpenChange ?? setFallbackOpen
+  const contextValue = useMemo(() => ({ isOpen, setOpen }), [isOpen, setOpen])
+
   return (
-    <MenuContext.Provider value={{ isOpen, setOpen }}>
+    <MenuContext.Provider value={contextValue}>
       <nav
         className={[
           'sticky top-0 z-40 flex min-h-[4.5rem] w-full items-center gap-4 border-b border-default-100 bg-background py-3 pl-6 pr-2 sm:px-6 relative',
-          props.className
+          className
         ]
           .filter(Boolean)
           .join(' ')}
-        style={props.style}
+        style={style}
       >
-        {props.children}
+        {children}
       </nav>
     </MenuContext.Provider>
   )

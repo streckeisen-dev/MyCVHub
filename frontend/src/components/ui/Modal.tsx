@@ -23,7 +23,7 @@ const MODAL_SIZE_CLASSES = {
 type ModalSize = keyof typeof MODAL_SIZE_CLASSES
 type ModalBackdrop = 'blur' | 'opaque' | 'transparent'
 
-export type ModalProps = {
+export type ModalProps = Readonly<{
   backdrop?: ModalBackdrop
   children?: ReactNode
   className?: string
@@ -33,7 +33,7 @@ export type ModalProps = {
   onOpenChange?: (isOpen: boolean) => void
   size?: ModalSize
   state?: ReturnType<typeof useOverlayState>
-}
+}>
 
 export function useDisclosure(defaultOpen = false) {
   const state = useOverlayState({ defaultOpen })
@@ -46,8 +46,9 @@ export function useDisclosure(defaultOpen = false) {
 }
 
 export function Modal(props: ModalProps) {
-  const { backdrop, children, className, isOpen, onClose, onOpenChange, size = 'md', state } = props
+  const { backdrop, children, className, defaultOpen, isOpen, onClose, onOpenChange, size = 'md', state } = props
   const internalState = useOverlayState({
+    defaultOpen,
     isOpen,
     onOpenChange: (open) => {
       onOpenChange?.(open)
@@ -79,10 +80,12 @@ export function Modal(props: ModalProps) {
   )
 }
 
-export function ModalContent(props: {
+export type ModalContentProps = Readonly<{
   children?: ReactNode | ((onClose: CloseFn) => ReactNode)
   className?: string
-}) {
+}>
+
+export function ModalContent(props: ModalContentProps) {
   const close = useContext(ModalCloseContext)
   return (
     <div className={props.className}>
@@ -91,18 +94,20 @@ export function ModalContent(props: {
   )
 }
 
-export const ModalHeader = (props: { children?: ReactNode; className?: string }) => (
+export type ModalSlotProps = Readonly<{ children?: ReactNode; className?: string }>
+
+export const ModalHeader = (props: ModalSlotProps) => (
   <HeroModal.Header className={props.className}>
     <HeroModal.Heading>{props.children}</HeroModal.Heading>
   </HeroModal.Header>
 )
 
-export const ModalBody = (props: { children?: ReactNode; className?: string }) => (
+export const ModalBody = (props: ModalSlotProps) => (
   <HeroModal.Body className={clsx('overflow-visible px-1 pb-1', props.className)}>
     {props.children}
   </HeroModal.Body>
 )
 
-export const ModalFooter = (props: { children?: ReactNode; className?: string }) => (
+export const ModalFooter = (props: ModalSlotProps) => (
   <HeroModal.Footer className={props.className}>{props.children}</HeroModal.Footer>
 )

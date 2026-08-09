@@ -50,7 +50,7 @@ export type CoverLetterEditorProps = Readonly<{
 }>
 
 export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): ReactNode {
-  const { styles, config, onChange, errorMessages, application, templates, confined } = props
+  const { styles, config, onChange, errorMessages, application, templates } = props
   const { t } = useTranslation()
 
   const selectedStyle = styles.find((s) => s.key === config.style)
@@ -142,11 +142,10 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
         template.coverLetterConfiguration.documents?.map((doc) => ({ id: uuid(), name: doc })) ?? []
     })
   }
-  const containerMaxWidth = confined ? 'max-w-5xl' : 'max-w-5xl'
-  const formMaxWidth = confined ? 'max-w-5xl' : 'max-w-5xl'
+  const maxWidth = 'max-w-5xl'
 
   return (
-    <div className={`mx-auto flex w-full flex-col gap-7 ${containerMaxWidth}`}>
+    <div className={`mx-auto flex w-full flex-col gap-7 ${maxWidth}`}>
       {templates && (
         <div className="w-fit 2xl:pl-5">
           <Autocomplete
@@ -175,7 +174,7 @@ export function CoverLetterConfigurationEditor(props: CoverLetterEditorProps): R
       {selectedStyle && (
         <Form
           onSubmit={(e) => e.preventDefault()}
-          className={`flex w-full flex-col gap-6 self-center ${formMaxWidth}`}
+          className={`flex w-full flex-col gap-6 self-center ${maxWidth}`}
         >
           <div className="grid w-full gap-5 rounded-lg border border-default-200 bg-surface p-5 md:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] md:items-start">
             <LanguageInput

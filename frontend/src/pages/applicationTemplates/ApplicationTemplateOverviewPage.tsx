@@ -1,8 +1,7 @@
 import { Button } from '@/components/ui/Button.tsx'
-import { ReactNode, useEffect, useState } from 'react'
+import { ComponentProps, ReactNode, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Spinner, Table } from '@heroui/react'
-import { ColumnSize } from '@react-types/table'
 import { Key } from '@react-types/shared'
 import { FaEye, FaTrash } from 'react-icons/fa6'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
@@ -20,7 +19,7 @@ import { Page, PageHeader, PageTitle } from '@/components/ui/Layout.tsx'
 interface ColumnDefinition {
   key: string
   labelKey: string
-  width: ColumnSize
+  width: ComponentProps<typeof Table.Column>['width']
 }
 
 const COLUMNS: ColumnDefinition[] = [

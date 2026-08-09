@@ -1,19 +1,33 @@
 import { Tooltip as HeroTooltip } from '@heroui/react'
 import { ReactNode } from 'react'
+import clsx from 'clsx'
 
-export type TooltipProps = {
-  children?: ReactNode
-  closeDelay?: number
-  color?: string
-  content?: ReactNode
+type TooltipColor = 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'
+
+const TOOLTIP_COLOR_CLASSES: Record<TooltipColor, string> = {
+  default: '',
+  primary: 'text-primary',
+  secondary: 'text-secondary',
+  success: 'text-success',
+  warning: 'text-warning',
+  danger: 'text-danger'
 }
 
+export type TooltipProps = Readonly<{
+  children?: ReactNode
+  closeDelay?: number
+  color?: TooltipColor
+  content?: ReactNode
+}>
+
 export function Tooltip(props: TooltipProps) {
-  const { children, content } = props
+  const { children, closeDelay, color = 'default', content } = props
   return (
-    <HeroTooltip>
+    <HeroTooltip closeDelay={closeDelay}>
       {children}
-      <HeroTooltip.Content>{content}</HeroTooltip.Content>
+      <HeroTooltip.Content className={clsx(TOOLTIP_COLOR_CLASSES[color])}>
+        {content}
+      </HeroTooltip.Content>
     </HeroTooltip>
   )
 }
