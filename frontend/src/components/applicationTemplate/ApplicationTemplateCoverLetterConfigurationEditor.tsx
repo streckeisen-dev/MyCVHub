@@ -1,3 +1,4 @@
+import { Textarea, Input } from '@/components/ui/Fields.tsx'
 import { ChangeEvent, ReactNode, useMemo } from 'react'
 import { CoverLetterStyleDto } from '@/types/coverletter/CoverLetterStyleDto.ts'
 import { CoverLetterGallery } from '@/components/download/coverletter/CoverLetterGallery.tsx'
@@ -7,7 +8,7 @@ import {
   ApplicationDocument,
   ApplicationDocumentsEditor
 } from '@/components/applicationTemplate/ApplicationDocumentsEditor.tsx'
-import { Input, Textarea } from '@heroui/react'
+
 import { useTranslation } from 'react-i18next'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
 import { SwitchInput } from '@/components/input/SwitchInput.tsx'
@@ -86,58 +87,69 @@ export function ApplicationTemplateCoverLetterConfigurationEditor(
   }
 
   return (
-    <>
-      <CoverLetterGallery
-        styles={styles}
-        selectedStyle={config.style}
-        onSelect={handleStyleSelected}
-      />
-      {errors.style && <p className="text-danger text-sm">{errors.style}</p>}
+    <div className="flex w-full max-w-5xl flex-col gap-6">
+      <div className="flex flex-col gap-2">
+        <CoverLetterGallery
+          styles={styles}
+          compact
+          selectedStyle={config.style}
+          onSelect={handleStyleSelected}
+        />
+        {errors.style && <p className="text-danger text-sm">{errors.style}</p>}
+      </div>
 
-      <LanguageInput
-        isRequired
-        selectedKey={config.language ?? null}
-        onSelectionChange={handleLanguageChange}
-        errorMessage={errors.language}
-      />
+      <div className="flex w-full flex-col gap-5 rounded-lg border border-default-200 bg-surface p-5">
+        <div className="max-w-md">
+          <LanguageInput
+            isRequired
+            selectedKey={config.language ?? null}
+            onSelectionChange={handleLanguageChange}
+            errorMessage={errors.language}
+          />
+        </div>
 
-      <SwitchInput
-        name="mirrorProfileImage"
-        onChange={handleMirrorProfileImageChange}
-        isSelected={config.mirrorProfileImage}
-      >
-        {t('coverLetter.mirrorProfileImage')}
-      </SwitchInput>
+        <SwitchInput
+          name="mirrorProfileImage"
+          onChange={handleMirrorProfileImageChange}
+          isSelected={config.mirrorProfileImage}
+        >
+          {t('coverLetter.mirrorProfileImage')}
+        </SwitchInput>
 
-      <Textarea
-        isRequired
-        minRows={20}
-        maxRows={50}
-        name="content"
-        label={t('coverLetter.content')}
-        description={<p className="whitespace-break-spaces">{t('coverLetter.coverLetterHint')}</p>}
-        value={config.content}
-        onChange={handleChange}
-        isInvalid={errors.content != null}
-        errorMessage={errors.content}
-      />
+        <Textarea
+          isRequired
+          minRows={18}
+          maxRows={50}
+          name="content"
+          label={t('coverLetter.content')}
+          description={
+            <p className="whitespace-break-spaces">{t('coverLetter.coverLetterHint')}</p>
+          }
+          value={config.content}
+          onChange={handleChange}
+          isInvalid={errors.content != null}
+          errorMessage={errors.content}
+        />
 
-      <Input
-        isRequired
-        name="closing"
-        label={t('fields.closing')}
-        description={t('coverLetter.closingHint')}
-        value={config.closing}
-        onChange={handleChange}
-        isInvalid={errors.closing != null}
-        errorMessage={errors.closing}
-      />
+        <div className="max-w-3xl">
+          <Input
+            isRequired
+            name="closing"
+            label={t('fields.closing')}
+            description={t('coverLetter.closingHint')}
+            value={config.closing}
+            onChange={handleChange}
+            isInvalid={errors.closing != null}
+            errorMessage={errors.closing}
+          />
+        </div>
+      </div>
 
       <ApplicationDocumentsEditor
         documents={config.documents}
         onChange={handleDocumentChange}
         errorMessages={errorMessages}
       />
-    </>
+    </div>
   )
 }

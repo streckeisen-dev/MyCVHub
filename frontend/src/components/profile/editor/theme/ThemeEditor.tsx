@@ -1,7 +1,9 @@
+import { Navbar, NavbarBrand, NavbarContent } from '@/components/ui/Navigation.tsx'
+import { Button } from '@/components/ui/Button.tsx'
 import { FormEvent, ReactNode, useState } from 'react'
 import { ProfileThemeDto } from '@/types/profile/theme/ProfileThemeDto.ts'
 import { useTranslation } from 'react-i18next'
-import { Button, Form, Navbar, NavbarBrand, NavbarContent } from '@heroui/react'
+import { Form } from '@heroui/react'
 import { h4 } from '@/styles/primitives.ts'
 import { ColorPicker } from '@/components/input/ColorPicker.tsx'
 import { ProfileThemeUpdateDto } from '@/types/profile/theme/ProfileThemeUpdateDto.ts'
@@ -106,8 +108,8 @@ export function ThemeEditor(props: ThemeEditorProps): ReactNode {
             <Button
               className="w-min"
               type="submit"
-              color="primary"
-              isLoading={isSaving}
+              variant="primary"
+              isPending={isSaving}
               isDisabled={isSaving || isResetting}
             >
               {t('forms.save')}
@@ -116,7 +118,7 @@ export function ThemeEditor(props: ThemeEditorProps): ReactNode {
               className="w-min min-w-50"
               type="reset"
               onPress={handleReset}
-              isLoading={isResetting}
+              isPending={isResetting}
               isDisabled={isResetting || isSaving}
             >
               {t('theme.reset')}

@@ -1,8 +1,7 @@
 import { AnchorHTMLAttributes } from 'react'
-import { LinkProps } from '@heroui/react'
 
 export type ExternalLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
-  color?: LinkProps['color']
+  color?: string
 }
 
 export function ExternalLink(props: ExternalLinkProps) {

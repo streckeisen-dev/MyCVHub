@@ -1,7 +1,8 @@
+import { Button } from '@/components/ui/Button.tsx'
 import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
-import { Button } from '@heroui/react'
+
 import { FaPen, FaTrash } from 'react-icons/fa6'
 
 export interface CvEntry {
@@ -57,10 +58,10 @@ export function CvListEntry(props: CvListEntryProps): ReactNode {
       <p className={adaptableClasses}>{duration}</p>
       {hasActions && (
         <div className="col-span-12 lg:col-span-2 flex gap-3 justify-end">
-          <Button isIconOnly radius="full" color="primary" onPress={handleEdit}>
+          <Button isIconOnly variant="primary" onPress={handleEdit}>
             <FaPen size={15} />
           </Button>
-          <Button isIconOnly radius="full" color="danger" onPress={handleDelete}>
+          <Button isIconOnly variant="danger" onPress={handleDelete}>
             <FaTrash size={15} />
           </Button>
         </div>

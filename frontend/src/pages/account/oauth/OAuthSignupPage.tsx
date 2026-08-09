@@ -1,5 +1,5 @@
 import { FormEvent, ReactNode, use, useState } from 'react'
-import { centerSection, title, twoColumnForm } from '@/styles/primitives.ts'
+import { centerSection, twoColumnForm } from '@/styles/primitives.ts'
 import { useTranslation } from 'react-i18next'
 import { Form } from '@heroui/react'
 import { AccountForm } from '@/components/account/AccountForm.tsx'
@@ -16,6 +16,7 @@ import { AuthorizationContext } from '@/context/AuthorizationContext.tsx'
 import { addErrorToast } from '@/helpers/ToastHelper.ts'
 import { extractFormErrors } from '@/helpers/FormHelper.ts'
 import { CheckboxInput } from '@/components/input/CheckboxInput.tsx'
+import { PageTitle } from '@/components/ui/Layout.tsx'
 
 export function OAuthSignupPage(): ReactNode {
   const { t, i18n } = useTranslation()
@@ -87,7 +88,7 @@ export function OAuthSignupPage(): ReactNode {
 
   return (
     <section className={centerSection()}>
-      <h1 className={title()}>{t('account.create.title')}</h1>
+      <PageTitle>{t('account.create.title')}</PageTitle>
       <Form className={twoColumnForm()} onSubmit={handleSubmit}>
         <AccountForm
           state={accountData}
@@ -105,6 +106,7 @@ export function OAuthSignupPage(): ReactNode {
                   className="text-primary"
                   to={getRoutePath(RouteId.TermsOfService)}
                   target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {t('tos.title')}
                 </Link>
@@ -113,13 +115,14 @@ export function OAuthSignupPage(): ReactNode {
                   className="text-primary"
                   to={getRoutePath(RouteId.PrivacyPolicy)}
                   target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {t('privacy.title')}
                 </Link>
               </p>
             }
             isSelected={acceptedTos}
-            onValueChange={(val) => setAcceptedTos(val)}
+            onValueChange={(val: boolean) => setAcceptedTos(val)}
             isInvalid={errorMessages.acceptsTos != null}
             errorMessage={errorMessages.acceptsTos}
           />

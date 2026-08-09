@@ -1,17 +1,26 @@
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  CircularProgress
+} from '@/components/ui/Display.tsx'
+import { Button } from '@/components/ui/Button.tsx'
 import React, { PropsWithChildren, useEffect, useState } from 'react'
-import { centerSection, h2, h3 } from '@/styles/primitives.ts'
+import { centerSection } from '@/styles/primitives.ts'
 import { useTranslation } from 'react-i18next'
 import { AccountDto } from '@/types/account/AccountDto.ts'
-import { Button, Card, CardBody, CardFooter, CardHeader, CircularProgress } from '@heroui/react'
+
 import AccountApi from '@/api/AccountApi.ts'
 import { Empty } from '@/components/Empty.tsx'
 import { Attribute, AttributeList } from '@/components/AttributeList.tsx'
 import { TFunction } from 'i18next'
-import { FaEdit } from 'react-icons/fa'
+import { FaEdit, FaKey } from 'react-icons/fa'
 import { AccountDeleteButton } from '@/components/account/AccountDeleteButton.tsx'
 import { Link } from 'react-router-dom'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import { formatDate } from '@/helpers/DateHelper.ts'
+import { PageTitle, SectionTitle } from '@/components/ui/Layout.tsx'
 
 function getPersonalDataAttributes(t: TFunction, account: AccountDto): Attribute[] {
   return [
@@ -99,7 +108,7 @@ function AccountTile(props: AccountTileProps): React.ReactNode {
   return (
     <Card className="w-full p-3 md:p-5 lg:p-10">
       <CardHeader>
-        <h3 className={h3()}>{title}</h3>
+        <SectionTitle>{title}</SectionTitle>
       </CardHeader>
       <CardBody>{children}</CardBody>
       {action && <CardFooter>{action}</CardFooter>}
@@ -126,14 +135,14 @@ export function AccountPage(): React.ReactNode {
 
   const content = account ? (
     <>
-      <h2 className={h2()}>{t('account.title')}</h2>
+      <PageTitle>{t('account.title')}</PageTitle>
       <Button
         className="self-end"
-        color="primary"
-        startContent={<FaEdit />}
+        variant="primary"
         as={Link}
         to={getRoutePath(RouteId.EditAccount)}
       >
+        <FaEdit />
         {t('account.edit.title')}
       </Button>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
@@ -148,11 +157,12 @@ export function AccountPage(): React.ReactNode {
           action={
             account.hasPassword && (
               <Button
-                className="w-min self-end"
-                color="primary"
+                className="self-start whitespace-nowrap"
+                variant="primary"
                 as={Link}
                 to={getRoutePath(RouteId.ChangePassword)}
               >
+                <FaKey />
                 {t('account.edit.changePassword')}
               </Button>
             )

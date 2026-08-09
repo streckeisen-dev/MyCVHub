@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/Button.tsx'
 import { ReactNode, useEffect, useState } from 'react'
 import { CoverLetterStyleDto } from '@/types/coverletter/CoverLetterStyleDto.ts'
 import { LoadingWrapper } from '@/layouts/LoadingWrapper.tsx'
@@ -12,9 +13,8 @@ import {
 } from '@/components/download/coverletter/CoverLetterConfigurationEditor.tsx'
 import ProfileApi from '@/api/ProfileApi.ts'
 import { ProfileDto } from '@/types/profile/ProfileDto.ts'
-import { centerSection } from '@/styles/primitives.ts'
 import { ErrorMessages } from '@/types/ErrorMessages.ts'
-import { Button } from '@heroui/react'
+
 import { CoverLetterGenerationRequestDto } from '@/types/coverletter/CoverLetterGenerationRequestDto.ts'
 import { openPdfInNewTab } from '@/helpers/DocumentHelper.ts'
 import { extractFormErrors } from '@/helpers/FormHelper.ts'
@@ -72,7 +72,10 @@ export function CoverLetterDownload(props: CoverLetterDownloadProps): ReactNode 
         setTemplates(result)
       } catch (e) {
         const error = (e as RestError).errorDto
-        addErrorToast(t('applicationTemplate.loadingError'), error?.message ?? t('error.genericMessage'))
+        addErrorToast(
+          t('applicationTemplate.loadingError'),
+          error?.message ?? t('error.genericMessage')
+        )
       }
 
       try {
@@ -135,9 +138,9 @@ export function CoverLetterDownload(props: CoverLetterDownloadProps): ReactNode 
   }
 
   return (
-    <LoadingWrapper isLoading={isLoading} className={`${centerSection()} w-full`}>
+    <LoadingWrapper isLoading={isLoading} className="flex w-full flex-col items-center">
       {profile && coverLetterStyles ? (
-        <div className="flex flex-col w-full gap-6 items-center justify-center">
+        <div className="flex w-full flex-col items-center gap-7">
           <CoverLetterConfigurationEditor
             styles={coverLetterStyles}
             config={coverLetterConfig}
@@ -149,10 +152,10 @@ export function CoverLetterDownload(props: CoverLetterDownloadProps): ReactNode 
           />
 
           <Button
-            color="primary"
+            variant="primary"
             onPress={handleDownload}
             isDisabled={coverLetterConfig.style == null || isDownloading}
-            isLoading={isDownloading}
+            isPending={isDownloading}
           >
             {t('downloads.action')}
           </Button>

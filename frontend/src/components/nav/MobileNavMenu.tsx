@@ -1,6 +1,8 @@
+import { NavbarMenu, NavbarMenuItem, link as linkStyles } from '@/components/ui/Navigation.tsx'
+import { Divider } from '@/components/ui/Display.tsx'
 import { Fragment, ReactNode, use, useState } from 'react'
 import { LanguageSwitcher } from '@/components/nav/LanguageSwitcher.tsx'
-import { Divider, NavbarMenu, NavbarMenuItem, link as linkStyles } from '@heroui/react'
+
 import { AccountMenu } from '@/components/nav/AccountMenu.tsx'
 import { AuthorizationContext, AuthorizedUser } from '@/context/AuthorizationContext.tsx'
 import { NavItemLeaf, NavItemNode, SITE_CONFIG } from '@/config/RouteTree.tsx'

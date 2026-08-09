@@ -1,15 +1,16 @@
-import { centerSection, title } from '@/styles/primitives.ts'
+import { Button } from '@/components/ui/Button.tsx'
 import { useTranslation } from 'react-i18next'
 import {
   ApplicationTable,
   ApplicationTableControls
 } from '@/components/application/ApplicationTable.tsx'
 import { useEffect, useRef, useState } from 'react'
-import { Button } from '@heroui/react'
+
 import ApplicationApi from '@/api/ApplicationApi.ts'
 import { addErrorToast } from '@/helpers/ToastHelper.ts'
 import { EditApplicationModal } from '@/components/application/EditApplicationModal.tsx'
 import { ApplicationStatusDto } from '@/types/application/ApplicationStatusDto.ts'
+import { Page, PageHeader, PageTitle } from '@/components/ui/Layout.tsx'
 
 export function ApplicationsPage() {
   const { t, i18n } = useTranslation()
@@ -44,18 +45,17 @@ export function ApplicationsPage() {
   }
 
   return (
-    <section className={centerSection()}>
-      <h1 className={title()}>{t('application.title')}</h1>
-
-      <div className="w-full flex flex-col items-end">
-        <Button color="primary" onPress={handleAdd}>
+    <Page size="wide">
+      <PageHeader className="sm:flex-row sm:items-end sm:justify-between">
+        <PageTitle>{t('application.title')}</PageTitle>
+        <Button variant="primary" onPress={handleAdd}>
           {t('application.editor.add')}
         </Button>
-      </div>
+      </PageHeader>
 
       <ApplicationTable ref={applicationsTable} statuses={applicationStatuses} />
 
       {showModal && <EditApplicationModal onClose={handleModalClose} onSave={handleSave} />}
-    </section>
+    </Page>
   )
 }

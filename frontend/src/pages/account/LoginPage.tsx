@@ -1,6 +1,7 @@
+import { Button } from '@/components/ui/Button.tsx'
+import { Input } from '@/components/ui/Fields.tsx'
 import { FormEvent, JSX, use, useEffect, useState } from 'react'
-import { title } from '@/styles/primitives.ts'
-import { Button, Form, Input } from '@heroui/react'
+import { Form } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import AccountApi from '@/api/AccountApi.ts'
 import { RestError } from '@/types/RestError.ts'
@@ -9,6 +10,7 @@ import { AuthorizationContext } from '@/context/AuthorizationContext.tsx'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getRoutePath, RouteId } from '@/config/RouteTree.tsx'
 import { addErrorToast } from '@/helpers/ToastHelper.ts'
+import { PageTitle } from '@/components/ui/Layout.tsx'
 
 export default function LoginPage(): JSX.Element {
   const { t, i18n } = useTranslation()
@@ -47,45 +49,32 @@ export default function LoginPage(): JSX.Element {
   }
 
   return (
-    <section className="flex flex-col items-center justify-center gap-5 py-8 md:py-10">
-      <div className="inline-block max-w-lg text-center justify-center">
-        <span className={title()}>Login</span>
+    <section className="mx-auto flex min-h-[calc(100vh-15rem)] w-full max-w-sm flex-col items-center justify-center gap-7 px-4 py-10">
+      <div className="text-center">
+        <PageTitle>Login</PageTitle>
       </div>
 
-      <Form className="gap-5 w-full md:w-1/2 xl:w-1/3" onSubmit={handleSubmit}>
-        <Input
-          isRequired
-          label={t('fields.username')}
-          labelPlacement="inside"
-          name="username"
-          type="text"
-        />
-        <Input
-          isRequired
-          label={t('fields.password')}
-          labelPlacement="inside"
-          name="password"
-          type="password"
-        />
+      <Form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
+        <Input isRequired label={t('fields.username')} name="username" type="text" />
+        <Input isRequired label={t('fields.password')} name="password" type="password" />
 
-        <Button type="submit" color="primary" className="w-full" isLoading={isLoggingIn}>
+        <Button type="submit" variant="primary" className="mt-1 w-full" isPending={isLoggingIn}>
           {t('account.login.action')}
         </Button>
 
         <Button
           className="w-full"
-          startContent={<FaGithub size={25} />}
           onPress={() => loginWith('github')}
         >
+          <FaGithub size={25} />
           {t('account.login.oauth.github')}
         </Button>
       </Form>
-      <p>
-        {t('account.login.noAccount')}{' '}
+      <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm text-default-600">
+        <span>{t('account.login.noAccount')}</span>
         <Button
-          className="text-medium"
-          variant="light"
-          color="primary"
+          className="min-h-0 px-1 py-0 text-sm"
+          variant="tertiary"
           as={Link}
           to={getRoutePath(RouteId.Signup)}
         >
