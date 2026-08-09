@@ -3,6 +3,7 @@ package ch.streckeisen.mycv.backend.cv.profile
 import ch.streckeisen.mycv.backend.account.AccountDetailsEntity
 import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
 import ch.streckeisen.mycv.backend.account.ApplicantAccountService
+import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePicture
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
 import io.mockk.every
 import io.mockk.mockk
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.IOException
+import java.net.URI
 import java.time.LocalDate
 
 private val existingAccount =
@@ -99,11 +101,13 @@ class ProfileServiceTest {
         }
         profileValidationService = mockk()
         applicantAccountService = mockk {
-            every { findById(eq(1)) } returns Result.success(existingAccount)
-            every { findById(eq(2)) } returns Result.failure(IllegalArgumentException("Not found"))
-            every { findById(eq(3)) } returns Result.success(existingAccountWithoutProfile)
+            every { findEntityById(eq(1)) } returns Result.success(existingAccount)
+            every { findEntityById(eq(2)) } returns Result.failure(IllegalArgumentException("Not found"))
+            every { findEntityById(eq(3)) } returns Result.success(existingAccountWithoutProfile)
         }
-        profilePictureService = mockk()
+        profilePictureService = mockk {
+            every { get(any(), any()) } returns Result.success(ProfilePicture("picture.jpg", URI.create("https://example.test/picture.jpg")))
+        }
         profileService =
             ProfileService(
                 profileRepository,
@@ -139,7 +143,7 @@ class ProfileServiceTest {
         assertTrue { saveResult.isSuccess }
         val entity = saveResult.getOrNull()
         assertNotNull(entity)
-        verify(exactly = 1) { applicantAccountService.findById(any()) }
+        verify(exactly = 1) { applicantAccountService.findEntityById(any()) }
         verify(exactly = 1) { profileValidationService.validateProfileInformation(any(), any(), any()) }
         verify(exactly = 1) { profilePictureService.store(any(), any(), any()) }
         verify(exactly = 1) { profileRepository.save(any()) }
@@ -170,7 +174,7 @@ class ProfileServiceTest {
         assertTrue { saveResult.isSuccess }
         val entity = saveResult.getOrNull()
         assertNotNull(entity)
-        verify(exactly = 1) { applicantAccountService.findById(any()) }
+        verify(exactly = 1) { applicantAccountService.findEntityById(any()) }
         verify(exactly = 1) { profileValidationService.validateProfileInformation(any(), any(), any()) }
         verify(exactly = 0) { profilePictureService.store(any(), any(), any()) }
         verify(exactly = 1) { profileRepository.save(any()) }
@@ -183,7 +187,7 @@ class ProfileServiceTest {
         assertTrue { saveResult.isFailure }
         val ex = saveResult.exceptionOrNull()
         assertNotNull(ex)
-        verify(exactly = 1) { applicantAccountService.findById(any()) }
+        verify(exactly = 1) { applicantAccountService.findEntityById(any()) }
         verify(exactly = 0) { profileValidationService.validateProfileInformation(any(), any(), any()) }
         verify(exactly = 0) { profilePictureService.store(any(), any(), any()) }
         verify(exactly = 0) { profileRepository.save(any()) }
@@ -206,7 +210,7 @@ class ProfileServiceTest {
         assertNotNull(ex)
         assertTrue { ex is IllegalArgumentException }
 
-        verify(exactly = 1) { applicantAccountService.findById(any()) }
+        verify(exactly = 1) { applicantAccountService.findEntityById(any()) }
         verify(exactly = 1) { profileValidationService.validateProfileInformation(any(), any(), any()) }
         verify(exactly = 0) { profilePictureService.store(any(), any(), any()) }
         verify(exactly = 0) { profileRepository.save(any()) }
@@ -229,7 +233,7 @@ class ProfileServiceTest {
         val ex = saveResult.exceptionOrNull()
         assertNotNull(ex)
         assertTrue { ex is IOException }
-        verify(exactly = 1) { applicantAccountService.findById(any()) }
+        verify(exactly = 1) { applicantAccountService.findEntityById(any()) }
         verify(exactly = 1) { profileValidationService.validateProfileInformation(any(), any(), any()) }
         verify(exactly = 1) { profilePictureService.store(any(), any(), any()) }
         verify(exactly = 0) { profileRepository.save(any()) }

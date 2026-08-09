@@ -1,7 +1,11 @@
 package ch.streckeisen.mycv.backend.account
 
 import ch.streckeisen.mycv.backend.account.dto.AccountUpdateDto
+import ch.streckeisen.mycv.backend.account.auth.oauth.OAuthEntityId
+import ch.streckeisen.mycv.backend.account.auth.oauth.OAuthIntegrationEntity
+import ch.streckeisen.mycv.backend.account.auth.oauth.OAuthType
 import ch.streckeisen.mycv.backend.account.verification.AccountVerificationService
+import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
@@ -56,6 +60,7 @@ class ApplicantAccountServiceTest {
     private lateinit var applicantAccountRepository: ApplicantAccountRepository
     private lateinit var applicantAccountValidationService: ApplicantAccountValidationService
     private lateinit var accountVerificationService: AccountVerificationService
+    private lateinit var profilePictureService: ProfilePictureService
     private lateinit var applicantAccountService: ApplicantAccountService
 
     private lateinit var accountSaveSlot: CapturingSlot<ApplicantAccountEntity>
@@ -64,9 +69,7 @@ class ApplicantAccountServiceTest {
     fun setup() {
         accountSaveSlot = slot<ApplicantAccountEntity>()
         applicantAccountRepository = mockk {
-            every { findById(any()) } returns Optional.empty()
-            every { findById(eq(1)) } returns Optional.of(EXISTING_ACCOUNT)
-            every { save(capture(accountSaveSlot)) } returns ApplicantAccountEntity(
+            val savedAccount = ApplicantAccountEntity(
                 "newusername",
                 "12345678",
                 false,
@@ -85,6 +88,13 @@ class ApplicantAccountServiceTest {
                     "de"
                 )
             )
+            savedAccount.oauthIntegrations = mutableListOf(
+                OAuthIntegrationEntity(OAuthEntityId("github-id", OAuthType.GITHUB), savedAccount)
+            )
+
+            every { findById(any()) } returns Optional.empty()
+            every { findById(eq(1)) } returns Optional.of(EXISTING_ACCOUNT)
+            every { save(capture(accountSaveSlot)) } returns savedAccount
         }
         applicantAccountValidationService = mockk {
             every { validateAccountUpdate(any(), eq(INVALID_ACCOUNT_UPDATE)) } returns Result.failure(
@@ -96,11 +106,13 @@ class ApplicantAccountServiceTest {
         accountVerificationService = mockk {
             every { generateVerificationToken(any()) } returns Result.success(Unit)
         }
+        profilePictureService = mockk()
 
         applicantAccountService = ApplicantAccountService(
             applicantAccountRepository,
             applicantAccountValidationService,
-            accountVerificationService
+            accountVerificationService,
+            profilePictureService
         )
     }
 
@@ -126,6 +138,10 @@ class ApplicantAccountServiceTest {
         assertEquals(VALID_ACCOUNT_UPDATE.city, accountSaveSlot.captured.accountDetails!!.city)
         assertEquals(VALID_ACCOUNT_UPDATE.country, accountSaveSlot.captured.accountDetails!!.country)
         assertEquals(EXISTING_ACCOUNT.password, accountSaveSlot.captured.password)
+
+        val accountDto = updateResult.getOrThrow()
+        assertEquals(1, accountDto.oauthIntegrations.size)
+        assertEquals(OAuthType.GITHUB.name, accountDto.oauthIntegrations.first().provider)
     }
 
     @Test

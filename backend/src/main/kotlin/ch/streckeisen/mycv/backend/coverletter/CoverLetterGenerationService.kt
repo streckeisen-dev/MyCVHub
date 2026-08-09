@@ -41,12 +41,11 @@ class CoverLetterGenerationService(
 
         val style = CoverLetterStyle.fromStyleKey(request.style)!!
 
-        val account = applicantAccountService.findById(accountId)
+        val account = applicantAccountService.findByIdForCoverLetterGeneration(accountId)
             .getOrElse { return Result.failure(it) }
 
-        val accountDetails = account.accountDetails
-        val profile = account.profile
-        if (!account.isVerified || accountDetails == null || profile == null) {
+        if (account.isIncomplete()
+        ) {
             return Result.failure(LocalizedException(INCOMPLETE_ACCOUNT_MESSAGE))
         }
 
@@ -62,7 +61,7 @@ class CoverLetterGenerationService(
                 @OptIn(ExperimentalPathApi::class)
                 Path.of(coverLetterTemplate).copyToRecursively(tempWorkingDir, overwrite = true, followLinks = false)
 
-                profilePictureService.getCVPicture(accountId, profile)
+                profilePictureService.getCVPicture(accountId, account.accountId, account.profilePicture!!)
                     .onFailure { return@withContext Result.failure(it) }
                     .onSuccess { profilePictureDto ->
                         profilePictureDto.uri.toURL().openStream().use {
@@ -73,23 +72,23 @@ class CoverLetterGenerationService(
                         }
                     }
 
-                val authorAddressPart1 = "${accountDetails.street}${
-                    if (accountDetails.houseNumber == null) {
+                val authorAddressPart1 = "${account.street}${
+                    if (account.houseNumber == null) {
                         ""
                     } else {
-                        " " + accountDetails.houseNumber
+                        " " + account.houseNumber
                     }
                 }"
-                val authorAddressPart2 = "${accountDetails.postcode} ${accountDetails.city}"
+                val authorAddressPart2 = "${account.postcode} ${account.city}"
                 val data = CoverLetterData(
                     language = request.language!!,
                     mirrorProfileImage = request.mirrorProfileImage ?: false,
                     author = CoverLetterAuthor(
-                        firstName = accountDetails.firstName,
-                        lastName = accountDetails.lastName,
-                        jobTitle = profile.jobTitle,
-                        email = accountDetails.email,
-                        phone = accountDetails.phone,
+                        firstName = account.firstName!!,
+                        lastName = account.lastName!!,
+                        jobTitle = account.jobTitle!!,
+                        email = account.email!!,
+                        phone = account.phone!!,
                         address = "$authorAddressPart1, $authorAddressPart2"
                     ),
                     application = CoverLetterApplication(

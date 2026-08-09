@@ -21,9 +21,7 @@ class ProjectResource(
 
         return projectService.save(principal.id, updateRequest)
             .fold(
-                onSuccess = { project ->
-                    ResponseEntity.ok(project.toDto())
-                },
+                onSuccess = { project -> ResponseEntity.ok(project) },
                 onFailure = {
                     throw it
                 }

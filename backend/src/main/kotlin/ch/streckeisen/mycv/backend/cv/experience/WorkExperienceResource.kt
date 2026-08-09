@@ -21,9 +21,7 @@ class WorkExperienceResource(
 
         return workExperienceService.save(principal.id, updateRequest)
             .fold(
-                onSuccess = { workExperience ->
-                    ResponseEntity.ok(workExperience.toDto())
-                },
+                onSuccess = { workExperience -> ResponseEntity.ok(workExperience) },
                 onFailure = {
                     throw it
                 }

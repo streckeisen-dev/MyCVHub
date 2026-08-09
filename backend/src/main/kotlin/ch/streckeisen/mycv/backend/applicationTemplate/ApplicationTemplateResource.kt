@@ -24,7 +24,7 @@ class ApplicationTemplateResource(
         val principal = SecurityContextHolder.getContext().getMyCvPrincipal()
 
         val result = applicationTemplateService.findApplicationTemplates(principal.id)
-        return ResponseEntity.ok(result.map { it.toDto() })
+        return ResponseEntity.ok(result)
     }
 
     @GetMapping("{id}")
@@ -33,7 +33,7 @@ class ApplicationTemplateResource(
 
         return applicationTemplateService.findById(principal.id, id)
             .fold(
-                onSuccess = { template -> ResponseEntity.ok(template.toDto()) },
+                onSuccess = { template -> ResponseEntity.ok(template) },
                 onFailure = { throw it }
             )
     }
@@ -44,7 +44,7 @@ class ApplicationTemplateResource(
 
         return applicationTemplateService.save(principal.id, updateRequest)
             .fold(
-                onSuccess = { template -> ResponseEntity.ok(template.toDto()) },
+                onSuccess = { template -> ResponseEntity.ok(template) },
                 onFailure = { throw it }
             )
     }

@@ -31,15 +31,17 @@ class ProjectServiceTest {
                     }
                 }
             })
-            every { save(any()) } returns mockk()
+            every { save(any()) } answers {
+                firstArg<ProjectEntity>().also { it.id = it.id ?: 100 }
+            }
             every { delete(any()) } returns Unit
         }
         projectValidationService = mockk {
             every { validateProject(any()) } returns Result.success(Unit)
         }
         profileService = mockk {
-            every { findByAccountId(any()) } returns Result.failure(mockk())
-            every { findByAccountId(eq(1)) } returns Result.success(mockk {
+            every { findEntityByAccountId(any()) } returns Result.failure(mockk())
+            every { findEntityByAccountId(eq(1)) } returns Result.success(mockk {
                 every { id } returns 30
                 every { account } returns mockk {
                     every { id } returns 1
@@ -99,7 +101,9 @@ class ProjectServiceTest {
             links = emptyList()
         )
         val saveSlot = slot<ProjectEntity>()
-        every { projectRepository.save(capture(saveSlot)) } returns mockk()
+        every { projectRepository.save(capture(saveSlot)) } answers {
+            firstArg<ProjectEntity>().also { it.id = it.id ?: 100 }
+        }
 
         val result = projectService.save(2, updateDto)
 
@@ -143,7 +147,9 @@ class ProjectServiceTest {
             links = listOf(ProjectLinkUpdateDto(url = "gh", displayName = "GitHub Link", type = ProjectLinkType.GITHUB))
         )
         val saveSlot = slot<ProjectEntity>()
-        every { projectRepository.save(capture(saveSlot)) } returns mockk()
+        every { projectRepository.save(capture(saveSlot)) } answers {
+            firstArg<ProjectEntity>().also { it.id = it.id ?: 100 }
+        }
 
         val result = projectService.save(1, updateDto)
 
@@ -152,7 +158,7 @@ class ProjectServiceTest {
         assertNotNull(result.getOrNull())
 
         assertNotNull(saveSlot.captured)
-        assertEquals(null, saveSlot.captured.id)
+        assertEquals(100, saveSlot.captured.id)
         assertEquals("nn", saveSlot.captured.name)
         assertEquals("nr", saveSlot.captured.role)
         assertEquals("nd", saveSlot.captured.description)

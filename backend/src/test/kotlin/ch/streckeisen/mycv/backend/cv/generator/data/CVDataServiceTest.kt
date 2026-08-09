@@ -1,15 +1,13 @@
 package ch.streckeisen.mycv.backend.cv.generator.data
 
-import ch.streckeisen.mycv.backend.account.AccountDetailsEntity
-import ch.streckeisen.mycv.backend.account.ApplicantAccountEntity
-import ch.streckeisen.mycv.backend.cv.education.EducationEntity
-import ch.streckeisen.mycv.backend.cv.experience.WorkExperienceEntity
+import ch.streckeisen.mycv.backend.cv.generator.CVEducationSnapshot
+import ch.streckeisen.mycv.backend.cv.generator.CVGenerationSnapshot
 import ch.streckeisen.mycv.backend.cv.generator.IncludedCVItem
-import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
-import ch.streckeisen.mycv.backend.cv.project.ProjectEntity
-import ch.streckeisen.mycv.backend.cv.project.ProjectLink
+import ch.streckeisen.mycv.backend.cv.generator.CVProjectLinkSnapshot
+import ch.streckeisen.mycv.backend.cv.generator.CVProjectSnapshot
+import ch.streckeisen.mycv.backend.cv.generator.CVSkillSnapshot
+import ch.streckeisen.mycv.backend.cv.generator.CVWorkExperienceSnapshot
 import ch.streckeisen.mycv.backend.cv.project.ProjectLinkType
-import ch.streckeisen.mycv.backend.cv.skill.SkillEntity
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
 import io.mockk.every
@@ -91,7 +89,6 @@ class CVDataServiceTest {
                 assertEquals(experience.id, preparedExperience.id)
                 assertEquals("", preparedExperience.description)
                 assertEquals(experience.location, preparedExperience.location)
-                assertEquals(experience.profile, preparedExperience.profile)
                 assertEquals(experience.company, preparedExperience.company)
                 assertEquals(experience.positionStart, preparedExperience.positionStart)
                 assertEquals(experience.positionEnd, preparedExperience.positionEnd)
@@ -209,7 +206,6 @@ class CVDataServiceTest {
                 assertEquals("", preparedProject.description)
                 assertEquals(project.projectStart, preparedProject.projectStart)
                 assertEquals(project.projectEnd, preparedProject.projectEnd)
-                assertEquals(project.profile, preparedProject.profile)
                 assertEquals(project.name, preparedProject.name)
                 assertEquals(project.role, preparedProject.role)
                 assertEquals(project.links, preparedProject.links)
@@ -307,38 +303,35 @@ class CVDataServiceTest {
         previousJob()
     )
 
-    private fun currentJob() = WorkExperienceEntity(
+    private fun currentJob() = CVWorkExperienceSnapshot(
         1,
         CURRENT_JOB_TITLE,
         TECH_COMPANY,
         LocalDate.of(2020, 5, 1),
         null,
         "Here",
-        "Tech Stuff",
-        mockk()
+        "Tech Stuff"
     )
 
-    private fun previousJob() = WorkExperienceEntity(
+    private fun previousJob() = CVWorkExperienceSnapshot(
         2,
         "Previous Job",
         "Other Inc.",
         LocalDate.of(2010, 1, 1),
         LocalDate.of(2015, 12, 31),
         "There",
-        "Other Stuff",
-        mockk()
+        "Other Stuff"
     )
 
     private fun education() = listOf(
-        EducationEntity(
+        CVEducationSnapshot(
             1,
             "School",
             "City",
             LocalDate.of(2010, 1, 1),
             LocalDate.of(2015, 12, 31),
             "Degree",
-            "Major",
-            mockk()
+            "Major"
         )
     )
 
@@ -347,18 +340,17 @@ class CVDataServiceTest {
         previousProject()
     )
 
-    private fun currentProject() = ProjectEntity(
+    private fun currentProject() = CVProjectSnapshot(
         1,
         "Current Project",
         "role",
         "description",
         LocalDate.of(2020, 6, 1),
         null,
-        emptyList(),
-        mockk()
+        emptyList()
     )
 
-    private fun previousProject() = ProjectEntity(
+    private fun previousProject() = CVProjectSnapshot(
         2,
         "Previous Project",
         "role",
@@ -366,62 +358,43 @@ class CVDataServiceTest {
         LocalDate.of(2015, 4, 6),
         LocalDate.of(2017, 7, 15),
         listOf(
-            ProjectLink("url", "name", ProjectLinkType.DOCUMENT)
-        ),
-        mockk()
+            CVProjectLinkSnapshot("url", "name", ProjectLinkType.DOCUMENT)
+        )
     )
 
     private fun skills() = listOf(
-        SkillEntity(1, "Spring Boot", FRAMEWORK_SKILLS, 60, mockk()),
-        SkillEntity(2, "Spring Data", FRAMEWORK_SKILLS, 50, mockk()),
-        SkillEntity(3, "Docker", TECHNOLOGY_SKILLS, 50, mockk()),
-        SkillEntity(4, "Java", LANGUAGE_SKILLS, 70, mockk()),
-        SkillEntity(5, "Kotlin", LANGUAGE_SKILLS, 80, mockk()),
-        SkillEntity(6, "AWS", CLOUD_PLATFORM_SKILLS, 50, mockk()),
-        SkillEntity(7, "GCP", CLOUD_PLATFORM_SKILLS, 60, mockk()),
-        SkillEntity(8, "JavaScript", LANGUAGE_SKILLS, 80, mockk()),
-        SkillEntity(9, "TypeScript", LANGUAGE_SKILLS, 54, mockk()),
-        SkillEntity(10, "HTML", LANGUAGE_SKILLS, 50, mockk()),
+        CVSkillSnapshot(1, "Spring Boot", FRAMEWORK_SKILLS, 60),
+        CVSkillSnapshot(2, "Spring Data", FRAMEWORK_SKILLS, 50),
+        CVSkillSnapshot(3, "Docker", TECHNOLOGY_SKILLS, 50),
+        CVSkillSnapshot(4, "Java", LANGUAGE_SKILLS, 70),
+        CVSkillSnapshot(5, "Kotlin", LANGUAGE_SKILLS, 80),
+        CVSkillSnapshot(6, "AWS", CLOUD_PLATFORM_SKILLS, 50),
+        CVSkillSnapshot(7, "GCP", CLOUD_PLATFORM_SKILLS, 60),
+        CVSkillSnapshot(8, "JavaScript", LANGUAGE_SKILLS, 80),
+        CVSkillSnapshot(9, "TypeScript", LANGUAGE_SKILLS, 54),
+        CVSkillSnapshot(10, "HTML", LANGUAGE_SKILLS, 50),
     )
 
-    private fun profile() = ProfileEntity(
-        "Job Title",
-        "bio",
-        true,
-        false,
-        false,
-        false,
-        false,
-        "picture",
-        1,
-        account(),
-        emptyList(),
-        emptyList(),
-        emptyList(),
-        emptyList(),
-        null
-    )
-
-    private fun account() = ApplicantAccountEntity(
-        "username",
-        "password",
-        false,
-        true,
-        1,
-        AccountDetailsEntity(
-            "first",
-            "last",
-            "em@il.com",
-            "+41 79 123 45 67",
-            LocalDate.of(1985, 6, 25),
-            "street",
-            "4",
-            "12345",
-            "city",
-            "CH",
-            "en",
-            1
-        )
+    private fun profile() = CVGenerationSnapshot(
+        accountId = 1,
+        isVerified = true,
+        firstName = "first",
+        lastName = "last",
+        email = "em@il.com",
+        phone = "+41 79 123 45 67",
+        street = "street",
+        houseNumber = "4",
+        postcode = "12345",
+        city = "city",
+        birthday = LocalDate.of(1985, 6, 25),
+        language = "en",
+        profilePicture = "picture",
+        jobTitle = "Job Title",
+        bio = "bio",
+        workExperiences = emptyList(),
+        education = emptyList(),
+        projects = emptyList(),
+        skills = emptyList()
     )
 
     private fun fullCVData() = CVData(

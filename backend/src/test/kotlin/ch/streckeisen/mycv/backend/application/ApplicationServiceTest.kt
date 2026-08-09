@@ -5,6 +5,7 @@ import ch.streckeisen.mycv.backend.account.ApplicantAccountService
 import ch.streckeisen.mycv.backend.application.dto.ApplicationTransitionRequestDto
 import ch.streckeisen.mycv.backend.application.dto.ApplicationUpdateDto
 import ch.streckeisen.mycv.backend.application.dto.ScheduledWorkExperienceDto
+import ch.streckeisen.mycv.backend.locale.MessagesService
 import ch.streckeisen.mycv.backend.scheduled.SchedulerService
 import io.mockk.CapturingSlot
 import io.mockk.Runs
@@ -133,6 +134,7 @@ class ApplicationServiceTest {
     private lateinit var applicationValidationService: ApplicationValidationService
     private lateinit var applicationAccountService: ApplicantAccountService
     private lateinit var schedulerService: SchedulerService
+    private lateinit var messagesService: MessagesService
     private lateinit var applicationService: ApplicationService
 
     @BeforeEach
@@ -146,12 +148,16 @@ class ApplicationServiceTest {
             every { findById(eq(2)) } returns Optional.of(existingApplicationTwo)
             every { findById(eq(3)) } returns Optional.of(existingApplicationThree)
 
-            every { save(capture(capturedApplication)) } returns mockk {}
+            every { save(capture(capturedApplication)) } answers {
+                capturedApplication.captured.also { it.id = it.id ?: 100 }
+            }
 
             every { delete(any()) } just Runs
         }
         applicationHistoryRepository = mockk {
-            every { save(capture(capturedHistory)) } returns mockk {}
+            every { save(capture(capturedHistory)) } answers {
+                capturedHistory.captured.also { it.id = it.id ?: 100 }
+            }
         }
         applicationValidationService = mockk {
             every { validateUpdate(any()) } returns Result.failure(IllegalArgumentException())
@@ -165,17 +171,21 @@ class ApplicationServiceTest {
             every { validateTransition(validHiredWithScheduledWorkExperience) } returns Result.success(Unit)
         }
         applicationAccountService = mockk {
-            every { findById(any()) } returns Result.failure(IllegalArgumentException())
-            every { findById(eq(1)) } returns Result.success(validAccount)
-            every { findById(eq(2)) } returns Result.success(secondAccount)
+            every { findEntityById(any()) } returns Result.failure(IllegalArgumentException())
+            every { findEntityById(eq(1)) } returns Result.success(validAccount)
+            every { findEntityById(eq(2)) } returns Result.success(secondAccount)
         }
         schedulerService = mockk(relaxed = true)
+        messagesService = mockk {
+            every { getMessage(any()) } answers { firstArg() }
+        }
         applicationService = ApplicationService(
             applicationRepository,
             applicationHistoryRepository,
             applicationValidationService,
             applicationAccountService,
-            schedulerService
+            schedulerService,
+            messagesService
         )
     }
 

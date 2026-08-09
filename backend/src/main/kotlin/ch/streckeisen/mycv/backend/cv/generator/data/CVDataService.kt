@@ -1,12 +1,11 @@
 package ch.streckeisen.mycv.backend.cv.generator.data
 
-import ch.streckeisen.mycv.backend.account.AccountDetailsEntity
-import ch.streckeisen.mycv.backend.cv.education.EducationEntity
-import ch.streckeisen.mycv.backend.cv.experience.WorkExperienceEntity
+import ch.streckeisen.mycv.backend.cv.generator.CVEducationSnapshot
+import ch.streckeisen.mycv.backend.cv.generator.CVGenerationSnapshot
 import ch.streckeisen.mycv.backend.cv.generator.IncludedCVItem
-import ch.streckeisen.mycv.backend.cv.profile.ProfileEntity
-import ch.streckeisen.mycv.backend.cv.project.ProjectEntity
-import ch.streckeisen.mycv.backend.cv.skill.SkillEntity
+import ch.streckeisen.mycv.backend.cv.generator.CVProjectSnapshot
+import ch.streckeisen.mycv.backend.cv.generator.CVSkillSnapshot
+import ch.streckeisen.mycv.backend.cv.generator.CVWorkExperienceSnapshot
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
 import ch.streckeisen.mycv.backend.locale.MessagesService
 import org.springframework.context.i18n.LocaleContextHolder
@@ -24,97 +23,69 @@ class CVDataService(
     val messagesService: MessagesService
 ) {
     fun filterWorkExperiences(
-        workExperiences: List<WorkExperienceEntity>,
+        workExperiences: List<CVWorkExperienceSnapshot>,
         includedItems: List<IncludedCVItem>? = null
-    ): List<WorkExperienceEntity> = workExperiences.filter { w ->
+    ): List<CVWorkExperienceSnapshot> = workExperiences.filter { w ->
         includedItems == null || includedItems.any { incl -> incl.id == w.id }
     }.map { w ->
         val includedExperience = includedItems?.find { incl -> incl.id == w.id }
         if (includedItems != null && includedExperience != null && !(includedExperience.includeDescription ?: true)) {
-            WorkExperienceEntity(
-                w.id,
-                w.jobTitle,
-                w.company,
-                w.positionStart,
-                w.positionEnd,
-                w.location,
-                "",
-                w.profile
-            )
+            w.copy(description = "")
         } else w
     }
 
     fun filterEducation(
-        education: List<EducationEntity>,
+        education: List<CVEducationSnapshot>,
         includedItems: List<IncludedCVItem>?
-    ): List<EducationEntity> = education.filter { e ->
+    ): List<CVEducationSnapshot> = education.filter { e ->
         includedItems == null || includedItems.any { incl -> incl.id == e.id }
     }.map { e ->
         val includedEducation = includedItems?.find { incl -> incl.id == e.id }
         if (includedItems != null && includedEducation != null && !(includedEducation.includeDescription ?: true)) {
-            EducationEntity(
-                e.id,
-                e.institution,
-                e.location,
-                e.educationStart,
-                e.educationEnd,
-                e.degreeName,
-                null,
-                e.profile
-            )
+            e.copy(description = null)
         } else e
     }
 
 
     fun filterProjects(
-        projects: List<ProjectEntity>,
+        projects: List<CVProjectSnapshot>,
         includedItems: List<IncludedCVItem>?
-    ): List<ProjectEntity> = projects.filter { p ->
+    ): List<CVProjectSnapshot> = projects.filter { p ->
         includedItems == null || includedItems.any { incl -> incl.id == p.id }
     }.map { p ->
         val includedProject = includedItems?.find { incl -> incl.id == p.id }
         if (includedItems != null && includedProject != null && !(includedProject.includeDescription ?: true)) {
-            ProjectEntity(
-                p.id,
-                p.name,
-                p.role,
-                "",
-                p.projectStart,
-                p.projectEnd,
-                p.links,
-                p.profile
-            )
+            p.copy(description = "")
         } else p
     }
 
     fun filterSkills(
-        skills: List<SkillEntity>,
+        skills: List<CVSkillSnapshot>,
         includedItems: List<Long>?
-    ): List<SkillEntity> = skills.filter { s ->
+    ): List<CVSkillSnapshot> = skills.filter { s ->
         includedItems == null || includedItems.any { skillId -> skillId == s.id }
     }
 
     fun createCVData(
-        profile: ProfileEntity,
-        workExperience: List<WorkExperienceEntity>,
-        education: List<EducationEntity>,
-        projects: List<ProjectEntity>,
-        skills: List<SkillEntity>,
+        profile: CVGenerationSnapshot,
+        workExperience: List<CVWorkExperienceSnapshot>,
+        education: List<CVEducationSnapshot>,
+        projects: List<CVProjectSnapshot>,
+        skills: List<CVSkillSnapshot>,
         cvStyleOptions: Map<String, String>
     ): CVData {
         val locale = LocaleContextHolder.getLocale()
         val cvDateFormatter = DateTimeFormatter.ofPattern(CV_DATE_FORMAT, locale)
-        val accountDetails = profile.account.accountDetails!!
         return CVData(
             language = locale.language,
-            firstName = accountDetails.firstName,
-            lastName = accountDetails.lastName,
+            firstName = profile.firstName!!,
+            lastName = profile.lastName!!,
             jobTitle = profile.jobTitle,
             bio = profile.bio,
-            email = accountDetails.email,
-            phone = accountDetails.phone,
-            address = getAddressString(accountDetails),
-            birthday = getBirthday(accountDetails.birthday),
+            email = profile.email!!,
+            phone = profile.phone!!,
+            address = getAddressString(profile),
+            birthday = getBirthday(profile.birthday!!),
             workExperiences = workExperience.map {
                 CVEntry(
                     title = it.jobTitle,
@@ -170,13 +141,13 @@ class CVDataService(
         )
     }
 
-    private fun getAddressString(account: AccountDetailsEntity): String {
+    private fun getAddressString(profile: CVGenerationSnapshot): String {
         val addressBuilder = StringBuilder()
-        addressBuilder.append(account.street)
-        if (account.houseNumber != null) {
-            addressBuilder.append(" ${account.houseNumber}")
+        addressBuilder.append(profile.street)
+        if (profile.houseNumber != null) {
+            addressBuilder.append(" ${profile.houseNumber}")
         }
-        addressBuilder.append(", ${account.postcode} ${account.city}")
+        addressBuilder.append(", ${profile.postcode} ${profile.city}")
         return addressBuilder.toString()
     }
 

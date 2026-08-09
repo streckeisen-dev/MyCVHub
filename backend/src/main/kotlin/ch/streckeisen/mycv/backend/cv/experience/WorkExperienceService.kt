@@ -21,7 +21,7 @@ class WorkExperienceService(
         applicantId: Long,
         workExperience: WorkExperienceUpdateDto,
         allowFutureStartDate: Boolean = false
-    ): Result<WorkExperienceEntity> {
+    ): Result<WorkExperienceDto> {
         val existingWorkExperience = if (workExperience.id != null) {
             workExperienceRepository.findById(workExperience.id)
                 .getOrElse { return Result.failure(LocalizedException(NOT_FOUND_MESSAGE_KEY)) }
@@ -34,7 +34,7 @@ class WorkExperienceService(
         val profile = if (existingWorkExperience != null) {
             existingWorkExperience.profile
         } else {
-            profileService.findByAccountId(applicantId)
+            profileService.findEntityByAccountId(applicantId)
                 .onFailure { return Result.failure(it) }
                 .getOrNull()!!
         }
@@ -42,20 +42,19 @@ class WorkExperienceService(
         workExperienceValidationService.validateWorkExperience(workExperience, allowFutureStartDate)
             .onFailure { return Result.failure(it) }
 
-        return Result.success(
-            workExperienceRepository.save(
-                WorkExperienceEntity(
-                    id = existingWorkExperience?.id,
-                    jobTitle = workExperience.jobTitle!!,
-                    company = workExperience.company!!,
-                    positionStart = workExperience.positionStart!!,
-                    positionEnd = workExperience.positionEnd,
-                    location = workExperience.location!!,
-                    description = workExperience.description!!,
-                    profile = profile
-                )
+        val saved = workExperienceRepository.save(
+            WorkExperienceEntity(
+                id = existingWorkExperience?.id,
+                jobTitle = workExperience.jobTitle!!,
+                company = workExperience.company!!,
+                positionStart = workExperience.positionStart!!,
+                positionEnd = workExperience.positionEnd,
+                location = workExperience.location!!,
+                description = workExperience.description!!,
+                profile = profile
             )
         )
+        return Result.success(saved.toDto())
     }
 
     @Transactional

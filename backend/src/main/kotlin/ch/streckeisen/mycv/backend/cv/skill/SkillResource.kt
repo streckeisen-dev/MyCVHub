@@ -21,9 +21,7 @@ class SkillResource(
 
         return skillService.save(principal.id, skillUpdate)
             .fold(
-                onSuccess = { skill ->
-                    ResponseEntity.ok(skill.toDto())
-                },
+                onSuccess = { skill -> ResponseEntity.ok(skill) },
                 onFailure = {
                     throw it
                 }

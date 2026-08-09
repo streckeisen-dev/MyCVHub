@@ -14,7 +14,7 @@ class SkillService(
     private val profileService: ProfileService
 ) {
     @Transactional
-    fun save(accountId: Long, skillUpdate: SkillUpdateDto): Result<SkillEntity> {
+    fun save(accountId: Long, skillUpdate: SkillUpdateDto): Result<SkillDto> {
         val existingSkill = if (skillUpdate.id != null) {
             skillRepository.findById(skillUpdate.id)
                 .getOrElse { return Result.failure(LocalizedException("${MYCV_KEY_PREFIX}.skill.notFound")) }
@@ -23,7 +23,7 @@ class SkillService(
         val profile = if (existingSkill != null) {
             existingSkill.profile
         } else {
-            profileService.findByAccountId(accountId)
+            profileService.findEntityByAccountId(accountId)
                 .getOrElse { return Result.failure(it) }
         }
 
@@ -34,17 +34,16 @@ class SkillService(
         skillValidationService.validateSkill(skillUpdate)
             .onFailure { return Result.failure(it) }
 
-        return Result.success(
-            skillRepository.save(
-                SkillEntity(
-                    existingSkill?.id,
-                    skillUpdate.name!!,
-                    skillUpdate.type!!,
-                    skillUpdate.level!!,
-                    profile
-                )
+        val saved = skillRepository.save(
+            SkillEntity(
+                existingSkill?.id,
+                skillUpdate.name!!,
+                skillUpdate.type!!,
+                skillUpdate.level!!,
+                profile
             )
         )
+        return Result.success(saved.toDto())
     }
 
     @Transactional

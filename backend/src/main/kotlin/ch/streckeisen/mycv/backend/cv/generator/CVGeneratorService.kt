@@ -6,6 +6,7 @@ import ch.streckeisen.mycv.backend.cv.profile.ProfileService
 import ch.streckeisen.mycv.backend.cv.profile.picture.ProfilePictureService
 import ch.streckeisen.mycv.backend.exceptions.LocalizedException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -26,6 +27,8 @@ private const val PROFILE_JSON_FILE_NAME = "profile.json"
 
 private const val CV_TEMPLATES_LOCATION = "ch/streckeisen/mycv/backend/templates/cv/"
 
+private val logger = KotlinLogging.logger {  }
+
 @Service
 class CVGeneratorService(
     private val cvGeneratorValidationService: CvGeneratorValidationService,
@@ -37,7 +40,7 @@ class CVGeneratorService(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
     suspend fun generateCV(accountId: Long, cvConfiguration: CvConfigurationRequestDto): Result<ByteArray> {
-        val profile = profileService.findByAccountId(accountId)
+        val profile = profileService.findByAccountIdForCVGeneration(accountId)
             .getOrElse { return Result.failure(it) }
 
         cvGeneratorValidationService.validateProfileCompleteness(profile)
@@ -81,7 +84,7 @@ class CVGeneratorService(
                 @OptIn(ExperimentalPathApi::class)
                 Path.of(cvTemplate).copyToRecursively(tempDir, overwrite = true, followLinks = false)
 
-                profilePictureService.getCVPicture(accountId, profile)
+                profilePictureService.getCVPicture(accountId, profile.accountId, profile.profilePicture)
                     .onFailure { return@withContext Result.failure(it) }
                     .onSuccess { profilePictureDto ->
                         profilePictureDto.uri.toURL().openStream().use {
@@ -103,7 +106,9 @@ class CVGeneratorService(
                 return@withContext typstService.compile(tempDir, "${cvStyle.styleKey}.typ", "cv_$accountId.pdf")
                     .fold(
                         onSuccess = { Result.success(it) },
-                        onFailure = { Result.failure(LocalizedException(GENERATION_FAILED_MESSAGE)) }
+                        onFailure = {
+                            logger.error(it) { "Failed to compile CV template ${cvStyle.nameKey}" }
+                            return@fold Result.failure(LocalizedException(GENERATION_FAILED_MESSAGE)) }
                     )
             }
         } finally {
