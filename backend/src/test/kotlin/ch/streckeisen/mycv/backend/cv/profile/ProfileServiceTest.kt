@@ -18,6 +18,8 @@ import java.io.IOException
 import java.net.URI
 import java.time.LocalDate
 
+private const val TEST_PICTURE = "picture.jpg"
+
 private val existingAccount =
     ApplicantAccountEntity(
         username = "username",
@@ -46,7 +48,7 @@ private val existingAccount =
             isPhonePublic = true,
             isAddressPublic = true,
             hideDescriptions = false,
-            profilePicture = "picture.jpg",
+            profilePicture = TEST_PICTURE,
             id = 1,
             account = mockk()
         )
@@ -82,7 +84,7 @@ private val existingProfile =
         isPhonePublic = false,
         isAddressPublic = false,
         hideDescriptions = true,
-        profilePicture = "picture.jpg",
+        profilePicture = TEST_PICTURE,
         id = 1,
         account = existingAccount
     )
@@ -106,7 +108,7 @@ class ProfileServiceTest {
             every { findEntityById(eq(3)) } returns Result.success(existingAccountWithoutProfile)
         }
         profilePictureService = mockk {
-            every { get(any(), any()) } returns Result.success(ProfilePicture("picture.jpg", URI.create("https://example.test/picture.jpg")))
+            every { get(any(), any()) } returns Result.success(ProfilePicture(TEST_PICTURE, URI.create("https://example.test/picture.jpg")))
         }
         profileService =
             ProfileService(
