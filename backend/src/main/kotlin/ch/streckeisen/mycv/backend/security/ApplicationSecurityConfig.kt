@@ -1,6 +1,7 @@
 package ch.streckeisen.mycv.backend.security
 
 import ch.streckeisen.mycv.backend.account.auth.oauth.MyCvOAuth2AuthorizationRequestResolver
+import ch.streckeisen.mycv.backend.account.auth.oauth.OAuth2AuthorizationRequestCookieRepository
 import ch.streckeisen.mycv.backend.account.auth.oauth.OAuth2FailureHandler
 import ch.streckeisen.mycv.backend.account.auth.oauth.OAuth2SuccessHandler
 import ch.streckeisen.mycv.backend.locale.MessagesService
@@ -28,6 +29,7 @@ class ApplicationSecurityConfig(
     private val messagesService: MessagesService,
     private val oAuth2SuccessHandler: OAuth2SuccessHandler,
     private val oAuth2FailureHandler: OAuth2FailureHandler,
+    private val oAuth2AuthorizationRequestCookieRepository: OAuth2AuthorizationRequestCookieRepository,
     private val clientRegistrationRepository: ClientRegistrationRepository,
     @param:Value($$"${my-cv.security.cors.allowed-origins:}")
     private val corsAllowedOrigins: String
@@ -74,6 +76,7 @@ class ApplicationSecurityConfig(
                             baseResolver
                         )
                     )
+                    authorizationEndpoint.authorizationRequestRepository(oAuth2AuthorizationRequestCookieRepository)
                 }
                 oauth2.redirectionEndpoint { redirectionEndpoint ->
                     redirectionEndpoint.baseUri("/api/auth/oauth2/callback/*")

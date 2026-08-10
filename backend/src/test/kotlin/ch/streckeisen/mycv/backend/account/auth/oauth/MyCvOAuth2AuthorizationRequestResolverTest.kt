@@ -12,6 +12,8 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequest
 import org.springframework.security.oauth2.core.AuthorizationGrantType
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationResponseType
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 import java.util.Base64
 
 class MyCvOAuth2AuthorizationRequestResolverTest {
@@ -45,7 +47,7 @@ class MyCvOAuth2AuthorizationRequestResolverTest {
     @Test
     fun testRedirectIsPassedOn() {
         every { baseResolver.resolve(any()) } returns mockk<OAuth2AuthorizationRequest> {
-            every { state } returns null
+            every { state } returns "spring-state"
             every { grantType } returns AuthorizationGrantType.AUTHORIZATION_CODE
             every { authorizationUri } returns "https://test.example.com"
             every { clientId } returns "test"
@@ -64,7 +66,35 @@ class MyCvOAuth2AuthorizationRequestResolverTest {
 
         assertNotNull(result)
         assertNotNull(result!!.state)
-        val decodedState = Base64.getUrlDecoder().decode(result.state).toString(Charsets.UTF_8)
-        assertEquals("redirect=/ui/test", decodedState)
+        val decodedState = String(Base64.getUrlDecoder().decode(result.state), StandardCharsets.UTF_8)
+        val params = decodedState.split("&").associate {
+            val (key, value) = it.split("=", limit = 2)
+            key to URLDecoder.decode(value, StandardCharsets.UTF_8)
+        }
+        assertEquals("spring-state", params["oauthState"])
+        assertEquals("/ui/test", params["redirect"])
+    }
+
+    @Test
+    fun testExtractRedirectFromState() {
+        val state = MyCvOAuth2AuthorizationRequestResolver.createState(
+            "spring-state",
+            "/ui/test?foo=bar&baz=qux"
+        )
+
+        assertEquals(
+            "/ui/test?foo=bar&baz=qux",
+            MyCvOAuth2AuthorizationRequestResolver.extractRedirectFromState(state)
+        )
+    }
+
+    @Test
+    fun testUnsafeRedirectIsIgnored() {
+        val state = MyCvOAuth2AuthorizationRequestResolver.createState(
+            "spring-state",
+            "https://evil.example.com"
+        )
+
+        assertNull(MyCvOAuth2AuthorizationRequestResolver.extractRedirectFromState(state))
     }
 }
