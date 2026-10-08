@@ -16,7 +16,7 @@ let container: HTMLDivElement | undefined
 const defaultContext: AdminAuthorizationContextValue = {
   admin: undefined,
   isLoadingAdmin: false,
-  handleAdminUpdate: () => { /* empty */ },
+  handleAdminUpdate: async () => { /* empty */ },
   handleAdminLogout: () => { /* empty */ }
 }
 

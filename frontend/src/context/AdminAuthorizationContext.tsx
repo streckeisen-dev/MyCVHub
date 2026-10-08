@@ -9,7 +9,7 @@ export interface AuthorizedAdmin {
   mustChangePassword: boolean
 }
 
-export type AdminUpdateFunction = () => void
+export type AdminUpdateFunction = () => Promise<void>
 
 export type AdminLogoutFunction = () => void
 
@@ -23,7 +23,7 @@ export interface AdminAuthorizationContextValue {
 export const AdminAuthorizationContext = createContext<AdminAuthorizationContextValue>({
   admin: undefined,
   isLoadingAdmin: true,
-  handleAdminUpdate: () => { /* empty */ },
+  handleAdminUpdate: async () => { /* empty */ },
   handleAdminLogout: () => { /* empty */ }
 })
 
@@ -34,27 +34,24 @@ export function AdminAuthorizationProvider(props: Readonly<PropsWithChildren>): 
   const [admin, setAdmin] = useState<AuthorizedAdmin>()
   const [isLoading, setIsLoading] = useState(true)
 
-  const handleAdminUpdate = useCallback<AdminUpdateFunction>(() => {
-    async function getAdminAuth() {
-      setIsLoading(true)
-      try {
-        const auth = await AdminAuthApi.verifyLogin(i18n.language)
-        setAdmin({
-          username: auth.username,
-          role: auth.role,
-          mustChangePassword: auth.mustChangePassword
-        })
-      } catch (_ignore) {
-        setAdmin(undefined)
-      } finally {
-        setIsLoading(false)
-      }
+  const handleAdminUpdate = useCallback<AdminUpdateFunction>(async () => {
+    setIsLoading(true)
+    try {
+      const auth = await AdminAuthApi.verifyLogin(i18n.language)
+      setAdmin({
+        username: auth.username,
+        role: auth.role,
+        mustChangePassword: auth.mustChangePassword
+      })
+    } catch (_ignore) {
+      setAdmin(undefined)
+    } finally {
+      setIsLoading(false)
     }
-    getAdminAuth()
   }, [i18n.language])
 
   useEffect(() => {
-    handleAdminUpdate()
+    void handleAdminUpdate()
   }, [handleAdminUpdate])
 
   const handleAdminLogout = useCallback<AdminLogoutFunction>(() => {

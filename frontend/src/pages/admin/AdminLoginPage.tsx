@@ -29,7 +29,7 @@ export function AdminLoginPage(): ReactNode {
     const data = Object.fromEntries(new FormData(e.currentTarget))
     try {
       await AdminAuthApi.login(data.username as string, data.password as string, i18n.language)
-      handleAdminUpdate()
+      await handleAdminUpdate()
     } catch (e) {
       const error = (e as RestError).errorDto
       addErrorToast(t('admin.login.error'), error?.message ?? t('error.genericMessage'))

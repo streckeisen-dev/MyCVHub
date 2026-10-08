@@ -43,7 +43,7 @@ export function AdminChangePasswordPage(): ReactNode {
         i18n.language
       )
       addSuccessToast(t('admin.changePassword.success'))
-      handleAdminUpdate()
+      await handleAdminUpdate()
       navigate('/admin', { replace: true })
     } catch (e) {
       const error = (e as RestError).errorDto

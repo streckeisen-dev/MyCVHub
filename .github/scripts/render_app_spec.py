@@ -7,6 +7,9 @@ from pathlib import Path
 
 PLACEHOLDER_PATTERN = re.compile(r"\$\{\{\s*(secrets|env)\.([A-Za-z_][A-Za-z0-9_]*)\s*}}")
 GITHUB_SHA_PATTERN = re.compile(r"\$\{\{\s*github\.sha\s*}}")
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+EXPECTED_SOURCE = REPOSITORY_ROOT / ".do" / "my-cv-app.yaml"
+EXPECTED_TARGET = REPOSITORY_ROOT / ".do" / "my-cv-app.generated.yaml"
 
 
 def render_app_spec(source: Path, target: Path) -> None:
@@ -47,12 +50,22 @@ def quote_yaml_scalar(value: str) -> str:
     return json.dumps(value)
 
 
+def require_expected_path(path: Path, expected_path: Path, label: str) -> Path:
+    resolved_path = (REPOSITORY_ROOT / path).resolve() if not path.is_absolute() else path.resolve()
+    if resolved_path != expected_path:
+        print(f"Invalid {label} path: expected {expected_path}", file=sys.stderr)
+        sys.exit(2)
+    return resolved_path
+
+
 def main() -> None:
     if len(sys.argv) != 3:
         print("Usage: render_app_spec.py <source-spec> <target-spec>", file=sys.stderr)
         sys.exit(2)
 
-    render_app_spec(Path(sys.argv[1]), Path(sys.argv[2]))
+    source = require_expected_path(Path(sys.argv[1]), EXPECTED_SOURCE, "source")
+    target = require_expected_path(Path(sys.argv[2]), EXPECTED_TARGET, "target")
+    render_app_spec(source, target)
 
 
 if __name__ == "__main__":

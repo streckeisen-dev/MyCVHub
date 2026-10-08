@@ -46,7 +46,7 @@ export function AdminDashboardPage(): ReactNode {
       }
     }
 
-    loadDashboard()
+    void loadDashboard()
     return () => {
       ignore = true
     }
