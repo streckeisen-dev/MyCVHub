@@ -1,6 +1,5 @@
 package ch.streckeisen.mycv.backend.admin.dashboard
 
-import com.github.kagkarlsson.scheduler.task.helper.RecurringTask
 import com.github.kagkarlsson.scheduler.task.helper.Tasks
 import com.github.kagkarlsson.scheduler.task.schedule.Daily
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -15,12 +14,11 @@ class PlatformActivityAggregationTaskConfiguration(
     private val platformActivityAggregationService: PlatformActivityAggregationService
 ) {
     @Bean
-    fun platformActivityAggregationTask(): RecurringTask<Void> {
-        return Tasks.recurring("platform-activity-aggregation", Daily(LocalTime.of(0, 10)))
+    fun platformActivityAggregationTask() =
+        Tasks.recurring("platform-activity-aggregation", Daily(LocalTime.of(0, 10)))
             .execute { _, _ ->
                 aggregationLogger.info { "Running platform activity aggregation task" }
                 platformActivityAggregationService.aggregateMissingCompletedDays()
                 platformActivityAggregationService.purgeRawEvents()
             }
-    }
 }

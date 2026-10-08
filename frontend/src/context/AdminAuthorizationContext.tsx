@@ -43,7 +43,8 @@ export function AdminAuthorizationProvider(props: Readonly<PropsWithChildren>): 
         role: auth.role,
         mustChangePassword: auth.mustChangePassword
       })
-    } catch (_ignore) {
+    } catch {
+      // Verification failure simply means there is no current admin session.
       setAdmin(undefined)
     } finally {
       setIsLoading(false)

@@ -237,7 +237,7 @@ function MiniChart(props: Readonly<{
   return (
     <div className="flex flex-col gap-3">
       <div className="h-48 w-full">
-        <svg className={clsx('h-full w-full', props.colorClass)} role="img" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <svg className={clsx('h-full w-full', props.colorClass)} aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none">
           <polyline
             fill="none"
             stroke="currentColor"

@@ -18,6 +18,7 @@ import kotlin.jvm.optionals.getOrElse
 private const val ADMIN_LOGIN_ACTION = "ADMIN_LOGIN"
 private const val ADMIN_CHANGE_PASSWORD_ACTION = "ADMIN_CHANGE_PASSWORD"
 private const val ADMIN_ACCOUNT_TARGET = "ADMIN_ACCOUNT"
+private const val INVALID_ADMIN_CREDENTIALS_MESSAGE = "Invalid admin credentials"
 
 @Service
 class AdminAuthenticationService(
@@ -33,7 +34,7 @@ class AdminAuthenticationService(
         val username = loginRequest.username?.trim()
         val password = loginRequest.password
         if (username.isNullOrBlank() || password.isNullOrBlank()) {
-            return Result.failure(BadCredentialsException("Invalid admin credentials"))
+            return Result.failure(BadCredentialsException(INVALID_ADMIN_CREDENTIALS_MESSAGE))
         }
         val rateLimitKey = username.lowercase()
 
@@ -46,7 +47,7 @@ class AdminAuthenticationService(
                 targetType = ADMIN_ACCOUNT_TARGET,
                 targetId = username
             )
-            return Result.failure(BadCredentialsException("Invalid admin credentials"))
+            return Result.failure(BadCredentialsException(INVALID_ADMIN_CREDENTIALS_MESSAGE))
         }
 
         val admin = adminAccountRepository.findByUsername(username)
@@ -60,7 +61,7 @@ class AdminAuthenticationService(
                         targetId = username
                     )
                     adminLoginRateLimiter.recordFailure(rateLimitKey)
-                    return Result.failure(BadCredentialsException("Invalid admin credentials"))
+                    return Result.failure(BadCredentialsException(INVALID_ADMIN_CREDENTIALS_MESSAGE))
                 }
 
         val temporaryPasswordExpired = admin.temporaryPasswordExpiresAt?.isBefore(LocalDateTime.now()) == true
@@ -74,7 +75,7 @@ class AdminAuthenticationService(
                 targetId = admin.id?.toString()
             )
             adminLoginRateLimiter.recordFailure(rateLimitKey)
-            return Result.failure(BadCredentialsException("Invalid admin credentials"))
+            return Result.failure(BadCredentialsException(INVALID_ADMIN_CREDENTIALS_MESSAGE))
         }
 
         adminLoginRateLimiter.recordSuccess(rateLimitKey)
