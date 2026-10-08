@@ -1,3 +1,23 @@
+x-app-environment: &app-environment
+  - MYCV_DATASOURCE=jdbc:postgresql://postgres:5432/mycv
+  - MYCV_DB_USERNAME=postgres
+  - MYCV_DB_PASSWORD=postgres
+  - JWT_ACCESS_SECRET=wHqRTjE8tXtgm/zhvn1qmmxLkcA+MvjnbX0aLkNhLm4=
+  - JWT_REFRESH_SECRET=AXElBHoFbc5nZ2QACGIsRHY/adM8f7WDRaoI5KsJBGA=
+  - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+  - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+  - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+  - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+  - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
+  - MAILGUN_SMTP_PASSWORD=${MAILGUN_SMTP_PASSWORD}
+  - MAILGUN_SMTP_USERNAME=${MAILGUN_SMTP_USERNAME}
+  - ADMIN_SEED_USERNAME=${ADMIN_SEED_USERNAME:-}
+  - ADMIN_LOGIN_RATE_LIMIT_MAX_FAILED_ATTEMPTS=${ADMIN_LOGIN_RATE_LIMIT_MAX_FAILED_ATTEMPTS:-5}
+  - ADMIN_LOGIN_RATE_LIMIT_LOCKOUT_MINUTES=${ADMIN_LOGIN_RATE_LIMIT_LOCKOUT_MINUTES:-15}
+  - ADMIN_BOOTSTRAP_TEMPORARY_PASSWORD_EXPIRATION_MINUTES=${ADMIN_BOOTSTRAP_TEMPORARY_PASSWORD_EXPIRATION_MINUTES:-30}
+  - spring.security.oauth2.client.registration.github.redirect-uri={baseUrl}/api/auth/oauth2/callback/github
+  - my-cv.frontend.base-url=http://localhost:8080/ui
+
 services:
   postgres:
     image: postgres:16.4-alpine
@@ -13,23 +33,21 @@ services:
   
   app:
     build: .
-    environment:
-      - MYCV_DATASOURCE=jdbc:postgresql://postgres:5432/mycv
-      - MYCV_DB_USERNAME=postgres
-      - MYCV_DB_PASSWORD=postgres
-      - JWT_ACCESS_SECRET=wHqRTjE8tXtgm/zhvn1qmmxLkcA+MvjnbX0aLkNhLm4=
-      - JWT_REFRESH_SECRET=AXElBHoFbc5nZ2QACGIsRHY/adM8f7WDRaoI5KsJBGA=
-      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
-      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
-      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
-      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
-      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
-      - MAILGUN_SMTP_PASSWORD=${MAILGUN_SMTP_PASSWORD}
-      - MAILGUN_SMTP_USERNAME=${MAILGUN_SMTP_USERNAME}
-      - spring.security.oauth2.client.registration.github.redirect-uri={baseUrl}/api/auth/oauth2/callback/github
-      - my-cv.frontend.base-url=http://localhost:8080/ui
+    environment: *app-environment
     ports:
       - "8080:8080"
     depends_on:
       - postgres
 
+  admin-bootstrap:
+    build: .
+    profiles:
+      - admin-bootstrap
+    environment: *app-environment
+    command:
+      - --spring.profiles.active=admin-bootstrap
+      - --spring.main.web-application-type=none
+      - --my-cv.admin.bootstrap.username=${ADMIN_BOOTSTRAP_USERNAME:-${ADMIN_SEED_USERNAME:-}}
+      - --my-cv.admin.bootstrap.reset-existing=${ADMIN_BOOTSTRAP_RESET_EXISTING:-false}
+    depends_on:
+      - postgres

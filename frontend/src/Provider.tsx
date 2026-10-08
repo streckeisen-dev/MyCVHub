@@ -1,5 +1,6 @@
 import { ToastProvider } from '@heroui/react'
 import { AuthorizationProvider } from '@/context/AuthorizationContext.tsx'
+import { AdminAuthorizationProvider } from '@/context/AdminAuthorizationContext.tsx'
 import { PropsWithChildren } from 'react'
 
 export function Provider(props: Readonly<PropsWithChildren>) {
@@ -10,7 +11,9 @@ export function Provider(props: Readonly<PropsWithChildren>) {
       <ToastProvider
         placement="top end"
       />
-      <AuthorizationProvider>{children}</AuthorizationProvider>
+      <AuthorizationProvider>
+        <AdminAuthorizationProvider>{children}</AdminAuthorizationProvider>
+      </AuthorizationProvider>
     </>
   )
 }

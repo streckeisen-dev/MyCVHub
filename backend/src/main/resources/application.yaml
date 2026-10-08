@@ -110,6 +110,16 @@ my-cv:
     verification:
       token-expiration-hours: 12
       token-generation-block-minutes: 30
+  admin:
+    auth:
+      rate-limit:
+        max-failed-attempts: ${ADMIN_LOGIN_RATE_LIMIT_MAX_FAILED_ATTEMPTS:5}
+        lockout-minutes: ${ADMIN_LOGIN_RATE_LIMIT_LOCKOUT_MINUTES:15}
+    bootstrap:
+      seed-username: ${ADMIN_SEED_USERNAME:}
+      username: ${ADMIN_BOOTSTRAP_USERNAME:}
+      reset-existing: ${ADMIN_BOOTSTRAP_RESET_EXISTING:false}
+      temporary-password-expiration-minutes: ${ADMIN_BOOTSTRAP_TEMPORARY_PASSWORD_EXPIRATION_MINUTES:30}
   frontend:
     base-url: https://mycvhub.ch/ui
   github:

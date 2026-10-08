@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+import os
+import re
+import sys
+import json
+from pathlib import Path
+
+PLACEHOLDER_PATTERN = re.compile(r"\$\{\{\s*(secrets|env)\.([A-Za-z_][A-Za-z0-9_]*)\s*}}")
+GITHUB_SHA_PATTERN = re.compile(r"\$\{\{\s*github\.sha\s*}}")
+
+
+def render_app_spec(source: Path, target: Path) -> None:
+    content = source.read_text()
+    missing = set()
+
+    def replace_secret_or_env(match: re.Match[str]) -> str:
+        variable_name = match.group(2)
+        value = os.environ.get(variable_name)
+        if value is None or value == "":
+            missing.add(variable_name)
+            return match.group(0)
+        return quote_yaml_scalar(value)
+
+    rendered = PLACEHOLDER_PATTERN.sub(replace_secret_or_env, content)
+    github_sha = os.environ.get("GITHUB_SHA")
+    if github_sha is None or github_sha == "":
+        missing.add("GITHUB_SHA")
+    else:
+        rendered = GITHUB_SHA_PATTERN.sub(quote_yaml_scalar(github_sha), rendered)
+
+    unresolved = sorted(set(re.findall(r"\$\{\{[^}]+}}", rendered)))
+    if missing or unresolved:
+        if missing:
+            print("Missing environment values for app spec placeholders:", file=sys.stderr)
+            for variable_name in sorted(missing):
+                print(f"- {variable_name}", file=sys.stderr)
+        if unresolved:
+            print("Unresolved app spec placeholders:", file=sys.stderr)
+            for placeholder in unresolved:
+                print(f"- {placeholder}", file=sys.stderr)
+        sys.exit(1)
+
+    target.write_text(rendered)
+
+
+def quote_yaml_scalar(value: str) -> str:
+    return json.dumps(value)
+
+
+def main() -> None:
+    if len(sys.argv) != 3:
+        print("Usage: render_app_spec.py <source-spec> <target-spec>", file=sys.stderr)
+        sys.exit(2)
+
+    render_app_spec(Path(sys.argv[1]), Path(sys.argv[2]))
+
+
+if __name__ == "__main__":
+    main()

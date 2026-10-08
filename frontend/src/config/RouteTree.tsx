@@ -33,6 +33,10 @@ import { ApplicationTemplateDetailsPage } from '@/pages/applicationTemplates/App
 import { AddApplicationTemplatePage } from '@/pages/applicationTemplates/AddApplicationTemplatePage.tsx'
 import { EditApplicationTemplatePage } from '@/pages/applicationTemplates/EditApplicationTemplatePage.tsx'
 import { CoverLetterDownloadPage } from '@/pages/download/CoverLetterDownloadPage.tsx'
+import { AdminLoginPage } from '@/pages/admin/AdminLoginPage.tsx'
+import { AdminDashboardPage } from '@/pages/admin/AdminDashboardPage.tsx'
+import { AdminChangePasswordPage } from '@/pages/admin/AdminChangePasswordPage.tsx'
+import { AdminSecurityCheck } from '@/components/security/AdminSecurityCheck.tsx'
 
 type MyCvRouteObject = Omit<RouteObject, 'children'> & {
   id: string
@@ -256,6 +260,44 @@ const ROUTE_DEFINITIONS = defineRoutes([
         path: '*',
         element: <NotFoundPage />,
         requiresAuth: false
+      }
+    ]
+  },
+  {
+    id: 'AdminRoot',
+    path: '/admin',
+    children: [
+      {
+        id: 'AdminDashboard',
+        index: true,
+        requiresAuth: false,
+        element: (
+          <AdminSecurityCheck>
+            <AdminDashboardPage />
+          </AdminSecurityCheck>
+        )
+      },
+      {
+        id: 'AdminLogin',
+        path: 'login',
+        requiresAuth: false,
+        element: <AdminLoginPage />
+      },
+      {
+        id: 'AdminChangePassword',
+        path: 'change-password',
+        requiresAuth: false,
+        element: (
+          <AdminSecurityCheck allowMustChangePassword>
+            <AdminChangePasswordPage />
+          </AdminSecurityCheck>
+        )
+      },
+      {
+        id: 'AdminNotFound',
+        path: '*',
+        requiresAuth: false,
+        element: <NotFoundPage />
       }
     ]
   }

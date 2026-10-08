@@ -9,14 +9,15 @@ private const val ACCESS_DENIED_ERROR_KEY = "${MYCV_KEY_PREFIX}.auth.accessDenie
 
 fun SecurityContext.getMyCvPrincipal(): MyCvPrincipal {
     if (authentication is UsernamePasswordAuthenticationToken) {
-        return (authentication?.principal ?: throw LocalizedException(ACCESS_DENIED_ERROR_KEY)) as MyCvPrincipal
+        return authentication?.principal as? MyCvPrincipal
+            ?: throw LocalizedException(ACCESS_DENIED_ERROR_KEY)
     }
     throw LocalizedException(ACCESS_DENIED_ERROR_KEY)
 }
 
 fun SecurityContext.getMyCvPrincipalOrNull(): MyCvPrincipal? {
     if (authentication is UsernamePasswordAuthenticationToken) {
-        return authentication?.principal as MyCvPrincipal
+        return authentication?.principal as? MyCvPrincipal
     }
     return null
 }

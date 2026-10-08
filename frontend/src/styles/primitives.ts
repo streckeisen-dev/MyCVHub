@@ -73,7 +73,7 @@ export const h5 = tv({
 })
 
 export const centerSection = tv({
-  base: 'flex flex-col items-center justify-center gap-5 py-8 md:py-10'
+  base: 'flex flex-col items-center justify-center gap-5 px-4 py-8 sm:px-6 md:py-10'
 })
 
 export const twoColumnForm = tv({
