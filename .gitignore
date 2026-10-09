@@ -5,6 +5,7 @@ target/
 logs/
 
 .env
+.do/*.generated.yaml
 
 ### IntelliJ IDEA ###
 .idea/**

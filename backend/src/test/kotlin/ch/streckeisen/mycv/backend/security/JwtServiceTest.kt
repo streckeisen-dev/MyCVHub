@@ -120,4 +120,20 @@ class JwtServiceTest {
 
         assertThrows<Exception> { jwtService.isAccessTokenValid(refreshToken, user) }
     }
+
+    @Test
+    fun testApplicantAccessTokenIsNotValidAsAdminToken() {
+        val user = User.withUsername("test_user").password("password").build()
+        val accessToken = jwtService.generateAccessToken(user, JwtTokenType.APPLICANT)
+
+        assertFalse(jwtService.isAccessTokenValid(accessToken, user, JwtTokenType.ADMIN))
+    }
+
+    @Test
+    fun testAdminAccessTokenIsNotValidAsApplicantToken() {
+        val user = User.withUsername("test_user").password("password").build()
+        val accessToken = jwtService.generateAccessToken(user, JwtTokenType.ADMIN)
+
+        assertFalse(jwtService.isAccessTokenValid(accessToken, user, JwtTokenType.APPLICANT))
+    }
 }

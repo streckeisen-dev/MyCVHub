@@ -289,6 +289,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
 
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+
       - name: Create git version tag
         run: |
           cd backend/
@@ -300,22 +305,31 @@ jobs:
           git tag -a "v$VERSION" -m "v$VERSION"
           git push origin "v$VERSION"
 
-      - name: Update DigitalOcean specs
+      - name: Generate DigitalOcean app spec
         env:
-          DB_PW: ${{ secrets.DO_DB_PASSWORD }} | sed 's/[&/\]/\\&/g'
-          JWT_SEC: ${{ secrets.DO_JWT_SECRET }} | sed 's/[&/\]/\\&/g'
-          DOCK_SEC: ${{ secrets.DO_DOCKER_CREDENTIALS }} | sed 's/[&/\]/\\&/g'
+          DO_DB_URL: ${{ secrets.DO_DB_URL }}
+          DO_DB_USERNAME: ${{ secrets.DO_DB_USERNAME }}
+          DO_DB_PASSWORD: ${{ secrets.DO_DB_PASSWORD }}
+          DO_JWT_SECRET: ${{ secrets.DO_JWT_SECRET }}
+          DO_JWT_REFRESH_SECRET: ${{ secrets.DO_JWT_REFRESH_SECRET }}
+          DO_CLOUDINARY_KEY: ${{ secrets.DO_CLOUDINARY_KEY }}
+          DO_CLOUDINARY_SECRET: ${{ secrets.DO_CLOUDINARY_SECRET }}
+          DO_CLOUDINARY_NAME: ${{ secrets.DO_CLOUDINARY_NAME }}
+          DO_MAIL_SMTP_USERNAME: ${{ secrets.DO_MAIL_SMTP_USERNAME }}
+          DO_MAIL_SMTP_PASSWORD: ${{ secrets.DO_MAIL_SMTP_PASSWORD }}
+          DO_GITHUB_CLIENT_ID: ${{ secrets.DO_GITHUB_CLIENT_ID }}
+          DO_GITHUB_CLIENT_SECRET: ${{ secrets.DO_GITHUB_CLIENT_SECRET }}
+          DO_ADMIN_SEED_USERNAME: ${{ secrets.DO_ADMIN_SEED_USERNAME }}
+          DO_DOCKER_REGISTRY_CREDENTIALS: ${{ secrets.DO_DOCKER_REGISTRY_CREDENTIALS }}
+          DO_LOGTAIL_TOKEN: ${{ secrets.DO_LOGTAIL_TOKEN }}
         run: |
-          cd .do/
-          sed -i 's|latest|${{ github.sha }}|' my-cv-app.yaml
-      #        sed -i 's|{{ DO_DB_PASSWORD }}|{{ secrets.DO_DB_PASSWORD }}|g' my-cv-app.yaml
-      #        sed -i 's|{{ DO_JWT_SECRET }}|{{ secrets.DO_JWT_SECRET }}|g' my-cv-app.yaml
+          python .github/scripts/render_app_spec.py .do/my-cv-app.yaml .do/my-cv-app.generated.yaml
 
       - name: DigitalOcean App Platform deployment
         uses: digitalocean/app_action/deploy@v2
         with:
           project_id: 36885f94-3294-46d5-abe9-48952ce7bbfd
           token: ${{ secrets.DO_ACCESS_TOKEN }}
-          app_spec_location: .do/my-cv-app.yaml
+          app_spec_location: .do/my-cv-app.generated.yaml
           print_build_logs: false
           print_deploy_logs: false

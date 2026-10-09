@@ -1,6 +1,8 @@
 package ch.streckeisen.mycv.backend.account.auth.oauth
 
 import ch.streckeisen.mycv.backend.account.auth.AuthTokenService
+import ch.streckeisen.mycv.backend.admin.activity.ActivityEventType
+import ch.streckeisen.mycv.backend.admin.activity.UserActivityEventPublisher
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -21,6 +23,7 @@ private const val OAUTH_SUCCESS_REDIRECT = "login/oauth-success"
 class OAuth2SuccessHandler(
     private val authTokenService: AuthTokenService,
     private val oAuthIntegrationService: OAuthIntegrationService,
+    private val userActivityEventPublisher: UserActivityEventPublisher,
     @param:Value(value = $$"${my-cv.frontend.base-url}")
     private val frontendBaseUrl: String,
 ) : AuthenticationSuccessHandler {
@@ -56,10 +59,11 @@ class OAuth2SuccessHandler(
 
         authTokenService.generateAuthData(account.username)
             .onSuccess { authTokens ->
+                userActivityEventPublisher.publish(account.id!!, ActivityEventType.LOGIN)
                 val accessCookie =
-                    authTokenService.createAccessCookie(authTokens.accessToken, authTokens.accessTokenExpirationTime)
+                    authTokenService.createAccessCookie(authTokens.accessToken, authTokens.accessTokenExpirationTime / 1000)
                 val refreshCookie =
-                    authTokenService.createRefreshCookie(authTokens.refreshToken, authTokens.refreshTokenExpirationTime)
+                    authTokenService.createRefreshCookie(authTokens.refreshToken, authTokens.refreshTokenExpirationTime / 1000)
                 response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString())
                 response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString())
 

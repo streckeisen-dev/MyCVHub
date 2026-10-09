@@ -5,5 +5,6 @@ data class AuthTokens(
     val accessTokenExpirationTime: Long,
     val refreshToken: String,
     val refreshTokenExpirationTime: Long,
-    val language: String?
+    val language: String?,
+    val accountId: Long
 )
