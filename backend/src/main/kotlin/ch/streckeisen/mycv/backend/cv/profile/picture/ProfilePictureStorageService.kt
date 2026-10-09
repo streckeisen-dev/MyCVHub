@@ -4,8 +4,10 @@ import com.cloudinary.Cloudinary
 import com.cloudinary.EagerTransformation
 import org.apache.commons.io.FileUtils
 import org.apache.tika.detect.DefaultDetector
+import org.apache.tika.io.TikaInputStream
 import org.apache.tika.metadata.Metadata
 import org.apache.tika.mime.MediaType
+import org.apache.tika.parser.ParseContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Service
@@ -35,11 +37,14 @@ class ProfilePictureStorageService(
     private val cloudinary = Cloudinary("cloudinary://${apiKey}:${apiSecret}@${cloudName}")
     private val isProd = environment.activeProfiles.contains("prod")
 
+    /** Detects the content type and closes the supplied detection stream. */
     fun detectContentType(stream: BufferedInputStream): MediaType {
         val detector = DefaultDetector()
         val metadata = Metadata()
 
-        return detector.detect(stream, metadata)
+        return TikaInputStream.get(stream).use { tikaStream ->
+            detector.detect(tikaStream, metadata, ParseContext())
+        }
     }
 
     fun get(filename: String): Result<ProfilePicture> {
