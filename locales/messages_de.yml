@@ -142,6 +142,37 @@ frontend:
     viewApplications: "Bewerbungen anzeigen"
     loadingError: "Das Dashboard konnte nicht geladen werden"
 
+  admin:
+    login:
+      title: "Admin Login"
+      action: "Anmelden"
+      error: "Admin-Anmeldung fehlgeschlagen"
+    logout: "Abmelden"
+    changePassword:
+      title: "Admin-Passwort ändern"
+      success: "Admin-Passwort geändert"
+      error: "Admin-Passwort konnte nicht geändert werden"
+    dashboard:
+      title: "Admin Dashboard"
+      error: "Admin Dashboard konnte nicht geladen werden"
+      asOf: "Zuletzt aktualisiert {value}"
+      range:
+        7d: "7 Tage"
+        30d: "30 Tage"
+        90d: "90 Tage"
+      totalUsers: "Registrierte Benutzer"
+      dailyActiveUsers: "Täglich aktive Benutzer"
+      weeklyActiveUsers: "Wöchentlich aktive Benutzer"
+      monthlyActiveUsers: "Monatlich aktive Benutzer"
+      activeUserSeries: "Aktive Benutzer"
+      signupSeries: "Registrierungen"
+      accountVerification: "Kontoverifikation"
+      verified: "Verifiziert"
+      unverified: "Unverifiziert"
+      signupSource: "Registrierungsquelle"
+      oauth: "OAuth"
+      password: "Passwort"
+
   account:
     title: "Account"
     personalData: "Persönliche Daten"

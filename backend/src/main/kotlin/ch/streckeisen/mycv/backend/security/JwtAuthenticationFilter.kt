@@ -6,6 +6,7 @@ import io.jsonwebtoken.JwtException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.context.annotation.Profile
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
@@ -15,12 +16,17 @@ import org.springframework.web.servlet.HandlerExceptionResolver
 import java.util.Locale
 
 @Component
+@Profile("!admin-bootstrap")
 class JwtAuthenticationFilter(
     private val jwtService: JwtService,
     private val userDetailsService: UserDetailsServiceImpl,
     private val handlerExceptionResolver: HandlerExceptionResolver
 ) : OncePerRequestFilter() {
     override fun shouldNotFilterAsyncDispatch(): Boolean = false
+
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean {
+        return request.requestURI.startsWith("/api/admin")
+    }
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -41,7 +47,10 @@ class JwtAuthenticationFilter(
             if (userEmail != null && authentication == null) {
                 authenticateUser(userEmail, accessToken, request)
             } else if (userEmail != null && authentication != null && authentication is UsernamePasswordAuthenticationToken) {
-                val principal = authentication.principal as MyCvPrincipal
+                val principal = authentication.principal as? MyCvPrincipal ?: run {
+                    filterChain.doFilter(request, response)
+                    return
+                }
                 if (principal.status != AccountStatus.VERIFIED) {
                     authenticateUser(userEmail, accessToken, request)
                 }

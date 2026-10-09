@@ -7,6 +7,7 @@ import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
 import ch.streckeisen.mycv.backend.account.dto.LoginRequestDto
 import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
 import ch.streckeisen.mycv.backend.account.verification.AccountVerificationService
+import ch.streckeisen.mycv.backend.admin.activity.UserActivityEventPublisher
 import io.jsonwebtoken.JwtException
 import io.mockk.CapturingSlot
 import io.mockk.every
@@ -94,6 +95,7 @@ class AuthenticationServiceTest {
     private lateinit var authTokenService: AuthTokenService
     private lateinit var passwordEncoder: PasswordEncoder
     private lateinit var accountVerificationService: AccountVerificationService
+    private lateinit var userActivityEventPublisher: UserActivityEventPublisher
     private lateinit var authenticationService: AuthenticationService
 
     private lateinit var accountSaveSlot: CapturingSlot<ApplicantAccountEntity>
@@ -140,7 +142,7 @@ class AuthenticationServiceTest {
         }
 
         authTokenService = mockk {
-            every { generateAuthData(any()) } returns Result.success(mockk())
+            every { generateAuthData(any()) } returns Result.success(AuthTokens("access", 1000, "refresh", 1000, "en", 1))
             every { generateAuthData(eq("error")) } returns Result.failure(mockk<AuthenticationException>())
         }
 
@@ -149,6 +151,7 @@ class AuthenticationServiceTest {
         }
 
         accountVerificationService = mockk()
+        userActivityEventPublisher = mockk(relaxed = true)
 
         authenticationService = AuthenticationService(
             applicantAccountRepository,
@@ -157,7 +160,8 @@ class AuthenticationServiceTest {
             authTokenService,
             mockk(relaxed = true),
             passwordEncoder,
-            accountVerificationService
+            accountVerificationService,
+            userActivityEventPublisher
         )
     }
 

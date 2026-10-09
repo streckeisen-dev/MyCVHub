@@ -143,6 +143,37 @@ frontend:
     viewApplications: "View Applications"
     loadingError: "Couldn't load dashboard"
 
+  admin:
+    login:
+      title: "Admin Login"
+      action: "Sign in"
+      error: "Admin login failed"
+    logout: "Logout"
+    changePassword:
+      title: "Change admin password"
+      success: "Admin password changed"
+      error: "Could not change admin password"
+    dashboard:
+      title: "Admin Dashboard"
+      error: "Could not load admin dashboard"
+      asOf: "Last refreshed {value}"
+      range:
+        7d: "7 days"
+        30d: "30 days"
+        90d: "90 days"
+      totalUsers: "Registered users"
+      dailyActiveUsers: "Daily active users"
+      weeklyActiveUsers: "Weekly active users"
+      monthlyActiveUsers: "Monthly active users"
+      activeUserSeries: "Active users"
+      signupSeries: "Signups"
+      accountVerification: "Account verification"
+      verified: "Verified"
+      unverified: "Unverified"
+      signupSource: "Signup source"
+      oauth: "OAuth"
+      password: "Password"
+
   account:
     title: "Account"
     personalData: "Personal Data"

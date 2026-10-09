@@ -8,6 +8,8 @@ import ch.streckeisen.mycv.backend.account.dto.ChangePasswordDto
 import ch.streckeisen.mycv.backend.account.dto.LoginRequestDto
 import ch.streckeisen.mycv.backend.account.dto.SignupRequestDto
 import ch.streckeisen.mycv.backend.account.verification.AccountVerificationService
+import ch.streckeisen.mycv.backend.admin.activity.ActivityEventType
+import ch.streckeisen.mycv.backend.admin.activity.UserActivityEventPublisher
 import ch.streckeisen.mycv.backend.exceptions.LocalizedException
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.locale.MYCV_KEY_PREFIX
@@ -38,12 +40,14 @@ class AuthenticationService(
     private val authTokenService: AuthTokenService,
     private val messagesService: MessagesService,
     private val passwordEncoder: PasswordEncoder,
-    private val accountVerificationService: AccountVerificationService
+    private val accountVerificationService: AccountVerificationService,
+    private val userActivityEventPublisher: UserActivityEventPublisher
 ) {
     fun signUp(signupRequest: SignupRequestDto): Result<AuthTokens> {
         return createAccount(signupRequest)
             .fold(
                 onSuccess = {
+                    userActivityEventPublisher.publish(it.id!!, ActivityEventType.SIGNUP)
                     authenticate(LoginRequestDto(signupRequest.username, signupRequest.password))
                 },
                 onFailure = {
@@ -64,6 +68,9 @@ class AuthenticationService(
                             )
                         )
                         authTokenService.generateAuthData(loginRequest.username!!)
+                            .onSuccess { authTokens ->
+                                userActivityEventPublisher.publish(authTokens.accountId, ActivityEventType.LOGIN)
+                            }
                     } catch (ex: AuthenticationException) {
                         Result.failure(ex)
                     }

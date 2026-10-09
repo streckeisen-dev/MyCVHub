@@ -17,6 +17,7 @@ private const val GENERATED_REFRESH_TOKEN = "refresh_token"
 private const val ACCESS_TOKEN_EXPIRY_TIME = 123456L
 private const val REFRESH_TOKEN_EXPIRY_TIME = 123456789L
 private const val LANGUAGE = "de"
+private const val ACCOUNT_ID = 42L
 
 private const val TEST_EMAIL = "first.last@example.com"
 
@@ -33,6 +34,7 @@ class AuthTokenServiceTest {
             every { loadUserByUsernameAsResult(eq(TEST_EMAIL)) } returns Result.success(
                 MyCvUserDetails(
                     mockk {
+                        every { id } returns ACCOUNT_ID
                         every { username } returns TEST_EMAIL
                         every { accountDetails } returns mockk {
                             every { language } returns LANGUAGE
@@ -130,5 +132,6 @@ class AuthTokenServiceTest {
         assertEquals(ACCESS_TOKEN_EXPIRY_TIME, authTokens.accessTokenExpirationTime)
         assertEquals(REFRESH_TOKEN_EXPIRY_TIME, authTokens.refreshTokenExpirationTime)
         assertEquals(LANGUAGE, authTokens.language)
+        assertEquals(ACCOUNT_ID, authTokens.accountId)
     }
 }
