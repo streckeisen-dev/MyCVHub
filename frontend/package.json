@@ -12,6 +12,8 @@
     "test-watch": "vitest --reporter=default",
     "test-coverage": "vitest run --coverage",
     "cy:open": "cypress open",
+    "cy:smoke": "cypress run --e2e",
+    "preview:smoke": "vite preview --host 127.0.0.1 --port 4173 --strictPort",
     "cypress:results:merge": "jrm ./cypress/component-results.xml \"./cypress/results/*.xml\""
   },
   "dependencies": {
