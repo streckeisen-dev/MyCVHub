@@ -12,9 +12,9 @@ Changes: same formatting for firstname & lastname, increased skill category colu
 #let default-accent-color = rgb("#262F99")
 #let default-location-color = rgb("#333333")
 
-#let phone-icon = box(fa-icon("square-phone", fill: color-darknight))
+#let phone-icon = box(fa-icon("phone", fill: color-darknight))
 #let email-icon = box(fa-icon("envelope", fill: color-darknight))
-#let birth-icon = box(fa-icon("cake", fill: color-darknight))
+#let birth-icon = box(fa-icon("birthday-cake", fill: color-darknight))
 #let homepage-icon = box(fa-icon("home", fill: color-darknight))
 #let website-icon = box(fa-icon("globe", fill: color-darknight))
 
