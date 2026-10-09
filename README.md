@@ -64,8 +64,68 @@ Before you can run the backend with docker, you need to create a `.env` containi
 docker compose up
 ```
 
+## Admin Setup
+
+The Admin UI is separate from regular applicant authentication. Admin users sign in at:
+
+```text
+/admin/login
+```
+
+There is no public admin signup. The first `SUPER_ADMIN` account is initialized in two steps:
+
+1. Configure the seed username before starting the backend:
+
+   ```bash
+   ADMIN_SEED_USERNAME=admin@example.com
+   ```
+
+   On startup, the backend ensures this admin row exists, but it does not create a usable password.
+
+2. Run the explicit bootstrap command in an environment that can access the target database:
+
+   ```bash
+   java -jar /app/app.jar \
+     --spring.profiles.active=prod,admin-bootstrap \
+     --spring.main.web-application-type=none \
+     --my-cv.admin.bootstrap.username=admin@example.com
+   ```
+
+   The command generates a temporary password, prints it once to the interactive operator session, stores only the password hash, marks the admin active, and forces a password change on first login.
+
+   With Docker Compose, set `ADMIN_SEED_USERNAME` and either set `ADMIN_BOOTSTRAP_USERNAME` or let it default to the seed username, then run:
+
+   ```bash
+   docker compose --profile admin-bootstrap run --rm admin-bootstrap
+   ```
+
+If the temporary password expires or is lost, rerun the same command to generate a new one. To reset an already-active admin, pass the explicit reset flag:
+
+```bash
+java -jar /app/app.jar \
+  --spring.profiles.active=prod,admin-bootstrap \
+  --spring.main.web-application-type=none \
+  --my-cv.admin.bootstrap.username=admin@example.com \
+  --my-cv.admin.bootstrap.reset-existing=true
+```
+
+With Docker Compose, set `ADMIN_BOOTSTRAP_RESET_EXISTING=true` and rerun:
+
+```bash
+docker compose --profile admin-bootstrap run --rm admin-bootstrap
+```
+
+Admin login has a database-backed per-username lockout shared by all app instances. Configure it with:
+
+```bash
+ADMIN_LOGIN_RATE_LIMIT_MAX_FAILED_ATTEMPTS=5
+ADMIN_LOGIN_RATE_LIMIT_LOCKOUT_MINUTES=15
+```
+
+The normal unlock path is waiting for the lockout window to expire. If the password itself must be reset, rerun the documented bootstrap reset command.
+
 ## Frontend Testing
-The frontend is tested with both unit tests and Cypress component tests.
+The frontend has unit tests, Cypress component tests, and a production-bundle smoke test.
 To run all frontend unit tests, execute:
 ```bash
 yarn test
@@ -75,6 +135,25 @@ To run the Cypress component tests, execute:
 ```bash
 yarn cypress
 ```
+
+### Production smoke test
+
+From the repository root, generate translations (requires Python with PyYAML), then build and serve the frontend:
+
+```bash
+(cd locales && python3 generate_messages.py --type frontend)
+cd frontend
+yarn install --immutable
+yarn build
+yarn preview:smoke
+```
+
+In another terminal, run `yarn cy:smoke` from `frontend/`. The test opens
+`http://127.0.0.1:4173/ui/dashboard`, navigates to the profile editor, reloads
+its nested route, and saves a skill through a modal. API responses are stubbed;
+JavaScript, CSS, and translations come from the production build. It checks
+frontend bundling and interaction, not backend authentication or persistence.
+CI runs the same test against the uploaded frontend build and requires it before deployment.
 
 # Contributing
 If you would like to contribute to the project, you are welcome to do so by:

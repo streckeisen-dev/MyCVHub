@@ -9,6 +9,8 @@ import ch.streckeisen.mycv.backend.account.auth.AuthTokens
 import ch.streckeisen.mycv.backend.account.auth.AuthenticationValidationService
 import ch.streckeisen.mycv.backend.account.dto.AccountUpdateDto
 import ch.streckeisen.mycv.backend.account.dto.OAuthSignupRequestDto
+import ch.streckeisen.mycv.backend.admin.activity.ActivityEventType
+import ch.streckeisen.mycv.backend.admin.activity.UserActivityEventPublisher
 import ch.streckeisen.mycv.backend.exceptions.LocalizedException
 import ch.streckeisen.mycv.backend.exceptions.ValidationException
 import ch.streckeisen.mycv.backend.github.GithubService
@@ -38,6 +40,7 @@ class OAuthIntegrationService(
     private val githubService: GithubService,
     private val accountService: ApplicantAccountService,
     private val authTokenService: AuthTokenService,
+    private val userActivityEventPublisher: UserActivityEventPublisher,
     private val messagesService: MessagesService
 ) {
     @Transactional(readOnly = true)
@@ -86,6 +89,7 @@ class OAuthIntegrationService(
         )
         val account = accountService.update(accountId, accountUpdate)
             .getOrElse { return Result.failure(it) }
+        userActivityEventPublisher.publish(accountId, ActivityEventType.SIGNUP)
         return authTokenService.generateAuthData(account.username)
     }
 

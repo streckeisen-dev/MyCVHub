@@ -8,50 +8,63 @@ domains:
 envs:
 - key: MYCV_DATASOURCE
   scope: RUN_AND_BUILD_TIME
-  value: jdbc:postgresql://db-postgresql-fra1-45654-do-user-17705918-0.e.db.ondigitalocean.com:25060/my-cv?sslmode=require
+  value: ${{ secrets.DO_DB_URL }}
 - key: MYCV_DB_USERNAME
   scope: RUN_AND_BUILD_TIME
-  value: mycv-db-user
+  value: ${{ secrets.DO_DB_USERNAME }}
 - key: SPRING_PROFILES_ACTIVE
   scope: RUN_AND_BUILD_TIME
   value: prod
 - key: MYCV_DB_PASSWORD
   scope: RUN_AND_BUILD_TIME
   type: SECRET
-  value: EV[1:UbY5XDYo6af2b+9ZIC9vbOJsfBtZZBwH:zGJDGQSEVu3wYQ0fYcGvShp7FlFgus11rNk67BPRGxjYlt3myMm74Q==]
+  value: ${{ secrets.DO_DB_PASSWORD }}
 - key: JWT_ACCESS_SECRET
   scope: RUN_AND_BUILD_TIME
   type: SECRET
-  value: EV[1:GICNzO2BWXD8w+Cv3jpG7r6qju1BLQIf:EGu8a01sRjcc4Y+iY2oM35X7iIb/ccRzGAe2v0ow1UxNjEtdsMUJS9GPTfUmNBboJKD6iAHVjwq/NQlRDN1FvySQZwOOfyap]
+  value: ${{ secrets.DO_JWT_SECRET }}
 - key: JWT_REFRESH_SECRET
   scope: RUN_AND_BUILD_TIME
   type: SECRET
-  value: EV[1:d5xmFomXzftP2JpRHetK32NPNewjolOl:Va+iT2DVqm8e9wN0Gp9ECoBWFE6uPWXnjZP5sOLH1d2rdINw2r/PDzYyMPcRGc7efQxXkaEHSTcyIlf1Kjvo6gG3wY3DP7OwnEXYv7Q8tSYOiGtYwxYhjrlk4uYjE5eUVyvfTdf5rs0/M7By43fJaVpx84v9YJG90MCXOQfs4B8C7kXl7au2BwYSLW4ICVsslfhjCaJTobQWQXNGebG5ocFrA4ii9pS3qWqz6yAuCBOITRpI/rXnpQKM548=]
+  value: ${{ secrets.DO_JWT_REFRESH_SECRET }}
 - key: CLOUDINARY_API_KEY
   scope: RUN_AND_BUILD_TIME
   type: SECRET
-  value: EV[1:a3nTAuqZucFrMYZb/piT/KtgcUCYw1Zd:wiExGQaOyv1tdhql7s9ZFn6DytMzgzqmZFpMSjrj8g==]
+  value: ${{ secrets.DO_CLOUDINARY_KEY }}
 - key: CLOUDINARY_API_SECRET
   scope: RUN_AND_BUILD_TIME
   type: SECRET
-  value: EV[1:qHyw/zL5wv+MkGb2sfkzND3OoDM5S1QR:4300euPfLFNM0TIbZ0SbqnwYyjT1lQxCjig+K1iTbAsuwaiTeCSkit9VDg==]
+  value: ${{ secrets.DO_CLOUDINARY_SECRET }}
 - key: CLOUDINARY_CLOUD_NAME
   scope: RUN_AND_BUILD_TIME
-  value: dd2kbqj6y
+  value: ${{ secrets.DO_CLOUDINARY_NAME }}
 - key: MAILGUN_SMTP_USERNAME
   scope: RUN_AND_BUILD_TIME
-  value: donotreply@mailgun.mycvhub.ch
+  value: ${{ secrets.DO_MAIL_SMTP_USERNAME }}
 - key: MAILGUN_SMTP_PASSWORD
   scope: RUN_AND_BUILD_TIME
   type: SECRET
-  value: EV[1:/oWWdUew6vZSUDfPwSJsZCKhjfkdBeS0:PDe3JbtGMM2QpPJDcnvh19QzapNJM3kCp0smO6R7zWd9T05WwbvML7iOqhU9RMcUK4pnRP8aB8jgNoS7qq1OAnsY]
+  value: ${{ secrets.DO_MAIL_SMTP_PASSWORD }}
 - key: GITHUB_CLIENT_ID
   scope: RUN_AND_BUILD_TIME
-  value: Ov23liBaGRjAUrgCzqES
+  value: ${{ secrets.DO_GITHUB_CLIENT_ID }}
 - key: GITHUB_CLIENT_SECRET
   scope: RUN_AND_BUILD_TIME
   type: SECRET
-  value: EV[1:SMXUhIBmyd5vGk2HDDxjblItPo2FSQbX:NpyiIbWho+LVglWRKwyGABzxa9qcSayCnhCVrGwTStylVZysXcT3uwd8Mf/cf3K16FsR5cIutlA=]
+  value: ${{ secrets.DO_GITHUB_CLIENT_SECRET }}
+- key: ADMIN_SEED_USERNAME
+  scope: RUN_AND_BUILD_TIME
+  type: SECRET
+  value: ${{ secrets.DO_ADMIN_SEED_USERNAME }}
+- key: ADMIN_BOOTSTRAP_TEMPORARY_PASSWORD_EXPIRATION_MINUTES
+  scope: RUN_AND_BUILD_TIME
+  value: "30"
+- key: ADMIN_LOGIN_RATE_LIMIT_MAX_FAILED_ATTEMPTS
+  scope: RUN_AND_BUILD_TIME
+  value: "5"
+- key: ADMIN_LOGIN_RATE_LIMIT_LOCKOUT_MINUTES
+  scope: RUN_AND_BUILD_TIME
+  value: "15"
 features:
 - buildpack-stack=ubuntu-22
 ingress:
@@ -75,10 +88,10 @@ services:
     port: 8080
   image:
     registry: lstreckeisen
-    registry_credentials: EV[1:SZtHlCRh25xCY3lgXqdDKGg+1Uf2qOT5:xUH8j/qTcMTJHA8bxhgPo7mUCZvxZKIUasaVApbs2qcRz/miKM2eKET3FlwDagScTgdj4HgC]
+    registry_credentials: ${{ secrets.DO_DOCKER_REGISTRY_CREDENTIALS }}
     registry_type: DOCKER_HUB
     repository: my-cv
-    tag: latest
+    tag: ${{ github.sha }}
   instance_count: 2
   instance_size_slug: apps-s-1vcpu-1gb
   liveness_health_check:
@@ -91,7 +104,7 @@ services:
     port: 8080
   log_destinations:
   - logtail:
-      token: neBiX2R5DZP2FVKiA5BDAUat
+      token: ${{ secrets.DO_LOGTAIL_TOKEN }}
     name: Better Stack
   name: my-cv
   termination:

@@ -8,6 +8,13 @@ import java.util.Optional
 interface ApplicantAccountRepository : CrudRepository<ApplicantAccountEntity, Long> {
     fun findByUsername(username: String): Optional<ApplicantAccountEntity>
 
+    fun countByIsVerified(isVerified: Boolean): Long
+
+    fun countByIsOAuthUser(isOAuthUser: Boolean): Long
+
+    @Query("SELECT COUNT(a) FROM ApplicantAccountEntity a WHERE a.accountDetails IS NOT NULL AND a.isVerified = false")
+    fun countUnverifiedCompleteAccounts(): Long
+
     @Query("SELECT a FROM ApplicantAccountEntity a LEFT JOIN FETCH a.accountDetails WHERE a.username = :username")
     fun findByUsernameWithDetails(username: String): Optional<ApplicantAccountEntity>
 

@@ -29,7 +29,8 @@ class AuthTokenService(
                 accessTokenExpirationTime,
                 refreshToken,
                 refreshTokenExpirationTime,
-                userDetails.account.accountDetails?.language
+                userDetails.account.accountDetails?.language,
+                userDetails.account.id!!
             )
         )
     }
