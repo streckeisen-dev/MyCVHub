@@ -1,6 +1,7 @@
 --liquibase formatted sql
 
 --changeset lstreckeisen:13
+--validCheckSum: any
 
 CREATE TABLE admin_account_entity
 (
