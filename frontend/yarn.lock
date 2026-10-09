@@ -706,16 +706,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@internationalized/date@npm:^3.12.1, @internationalized/date@npm:^3.12.3":
-  version: 3.12.3
-  resolution: "@internationalized/date@npm:3.12.3"
-  dependencies:
-    "@swc/helpers": "npm:^0.5.0"
-  checksum: 10c0/d99ef774b45326ecc3e96642b234de4e92440e4cc929f11141f91403515f1cdb321e66c40f4f71cc4140069776b78a8231c3a72966f3024018ee88da3c4a2726
-  languageName: node
-  linkType: hard
-
-"@internationalized/date@npm:^3.12.4":
+"@internationalized/date@npm:^3.12.1, @internationalized/date@npm:^3.12.3, @internationalized/date@npm:^3.12.4":
   version: 3.12.4
   resolution: "@internationalized/date@npm:3.12.4"
   dependencies:
@@ -6027,6 +6018,7 @@ __metadata:
     "@heroui/react": "npm:^3.2.6"
     "@heroui/styles": "npm:3.2.6"
     "@heroui/use-theme": "npm:2.1.10"
+    "@internationalized/date": "npm:^3.12.4"
     "@react-aria/i18n": "npm:^3.13.1"
     "@react-aria/ssr": "npm:^3.10.1"
     "@react-aria/utils": "npm:^3.34.1"

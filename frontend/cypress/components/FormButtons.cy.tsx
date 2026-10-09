@@ -22,7 +22,10 @@ describe('<FormButtons />', () => {
   it('submits form on save-click', () => {
     const handleSubmit = cy.spy().as('handleSubmit')
     cy.mount(
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(event) => {
+        event.preventDefault()
+        handleSubmit()
+      }}>
         <FormButtons onCancel={dummyHandleCancel} isSaving={false} />
       </form>
     )
