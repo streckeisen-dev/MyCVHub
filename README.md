@@ -125,7 +125,7 @@ ADMIN_LOGIN_RATE_LIMIT_LOCKOUT_MINUTES=15
 The normal unlock path is waiting for the lockout window to expire. If the password itself must be reset, rerun the documented bootstrap reset command.
 
 ## Frontend Testing
-The frontend is tested with both unit tests and Cypress component tests.
+The frontend has unit tests, Cypress component tests, and a production-bundle smoke test.
 To run all frontend unit tests, execute:
 ```bash
 yarn test
@@ -135,6 +135,25 @@ To run the Cypress component tests, execute:
 ```bash
 yarn cypress
 ```
+
+### Production smoke test
+
+From the repository root, generate translations (requires Python with PyYAML), then build and serve the frontend:
+
+```bash
+(cd locales && python3 generate_messages.py --type frontend)
+cd frontend
+yarn install --immutable
+yarn build
+yarn preview:smoke
+```
+
+In another terminal, run `yarn cy:smoke` from `frontend/`. The test opens
+`http://127.0.0.1:4173/ui/dashboard`, navigates to the profile editor, reloads
+its nested route, and saves a skill through a modal. API responses are stubbed;
+JavaScript, CSS, and translations come from the production build. It checks
+frontend bundling and interaction, not backend authentication or persistence.
+CI runs the same test against the uploaded frontend build and requires it before deployment.
 
 # Contributing
 If you would like to contribute to the project, you are welcome to do so by:

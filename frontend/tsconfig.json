@@ -25,6 +25,6 @@
 
     "types": ["node", "cypress"]
   },
-  "include": ["src", "cypress/**/*.cy.tsx", "cypress/support/*.ts", "test"],
+  "include": ["src", "cypress/**/*.cy.tsx", "cypress/**/*.cy.ts", "cypress/support/*.ts", "test"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
