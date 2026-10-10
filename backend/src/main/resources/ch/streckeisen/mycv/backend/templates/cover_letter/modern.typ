@@ -5,7 +5,7 @@
 #let color-darkgray = rgb("#333333")
 #let color-gray = rgb("#5d5d5d")
 
-#let phone-icon = box(fa-icon("square-phone", fill: color-darknight))
+#let phone-icon = box(fa-icon("phone", fill: color-darknight))
 #let email-icon = box(fa-icon("envelope", fill: color-darknight))
 #let github-icon = box(fa-icon("github", fill: color-darknight))
 #let linkedin-icon = box(fa-icon("linkedin", fill: color-darknight))

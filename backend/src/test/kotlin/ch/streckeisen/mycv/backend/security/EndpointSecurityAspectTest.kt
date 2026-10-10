@@ -1,8 +1,11 @@
 package ch.streckeisen.mycv.backend.security
 
 import ch.streckeisen.mycv.backend.account.AccountStatus
+import ch.streckeisen.mycv.backend.admin.account.AdminRole
+import ch.streckeisen.mycv.backend.admin.auth.AdminPrincipal
 import ch.streckeisen.mycv.backend.security.annotations.PublicApi
 import ch.streckeisen.mycv.backend.security.annotations.RequiresAccountStatus
+import ch.streckeisen.mycv.backend.security.annotations.RequiresAdminRole
 import io.mockk.every
 import io.mockk.mockk
 import org.aspectj.lang.JoinPoint
@@ -104,6 +107,30 @@ class EndpointSecurityAspectTest {
     @RequiresAccountStatus(AccountStatus.UNVERIFIED)
     private class ClassLevelRequiresAccountStatusTest {
         fun testClassLevelAccountStatus() {
+            // no body required for testing
+        }
+    }
+
+    private class RequiresAdminRoleTest {
+        @RequiresAdminRole
+        fun testRequiresAdmin() {
+            // no body required for testing
+        }
+
+        @RequiresAdminRole(AdminRole.SUPER_ADMIN)
+        fun testRequiresSuperAdmin() {
+            // no body required for testing
+        }
+
+        @RequiresAdminRole(allowMustChangePassword = true)
+        fun testAllowsMustChangePassword() {
+            // no body required for testing
+        }
+    }
+
+    private class RequiresExactAdminRoleTest {
+        @RequiresAdminRole(AdminRole.ADMIN, exact = true)
+        fun testRequiresExactAdmin() {
             // no body required for testing
         }
     }
@@ -324,6 +351,61 @@ class EndpointSecurityAspectTest {
                 true
             ),
             Arguments.of(
+                RequiresAdminRoleTest::class.java.getMethod("testRequiresAdmin"),
+                null,
+                false
+            ),
+            Arguments.of(
+                RequiresAdminRoleTest::class.java.getMethod("testRequiresAdmin"),
+                mockAnonymousUser(),
+                false
+            ),
+            Arguments.of(
+                RequiresAdminRoleTest::class.java.getMethod("testRequiresAdmin"),
+                mockPrincipal(AccountStatus.VERIFIED),
+                false
+            ),
+            Arguments.of(
+                RequiresAdminRoleTest::class.java.getMethod("testRequiresAdmin"),
+                mockAdminPrincipal(AdminRole.ADMIN),
+                true
+            ),
+            Arguments.of(
+                RequiresAdminRoleTest::class.java.getMethod("testRequiresAdmin"),
+                mockAdminPrincipal(AdminRole.SUPER_ADMIN),
+                true
+            ),
+            Arguments.of(
+                RequiresAdminRoleTest::class.java.getMethod("testRequiresAdmin"),
+                mockAdminPrincipal(AdminRole.ADMIN, mustChangePassword = true),
+                false
+            ),
+            Arguments.of(
+                RequiresAdminRoleTest::class.java.getMethod("testAllowsMustChangePassword"),
+                mockAdminPrincipal(AdminRole.ADMIN, mustChangePassword = true),
+                true
+            ),
+            Arguments.of(
+                RequiresAdminRoleTest::class.java.getMethod("testRequiresSuperAdmin"),
+                mockAdminPrincipal(AdminRole.ADMIN),
+                false
+            ),
+            Arguments.of(
+                RequiresAdminRoleTest::class.java.getMethod("testRequiresSuperAdmin"),
+                mockAdminPrincipal(AdminRole.SUPER_ADMIN),
+                true
+            ),
+            Arguments.of(
+                RequiresExactAdminRoleTest::class.java.getMethod("testRequiresExactAdmin"),
+                mockAdminPrincipal(AdminRole.ADMIN),
+                true
+            ),
+            Arguments.of(
+                RequiresExactAdminRoleTest::class.java.getMethod("testRequiresExactAdmin"),
+                mockAdminPrincipal(AdminRole.SUPER_ADMIN),
+                false
+            ),
+            Arguments.of(
                 DefaultAuthorizationLevelTest::class.java.getMethod("testDefault"),
                 null,
                 false
@@ -359,6 +441,16 @@ class EndpointSecurityAspectTest {
         private fun mockPrincipal(status: AccountStatus): UsernamePasswordAuthenticationToken {
             return mockk {
                 every { principal } returns MyCvPrincipal("user", 1, status, Locale.ENGLISH)
+                every { isAuthenticated } returns true
+            }
+        }
+
+        private fun mockAdminPrincipal(
+            role: AdminRole,
+            mustChangePassword: Boolean = false
+        ): UsernamePasswordAuthenticationToken {
+            return mockk {
+                every { principal } returns AdminPrincipal("admin", 1, role, mustChangePassword)
                 every { isAuthenticated } returns true
             }
         }

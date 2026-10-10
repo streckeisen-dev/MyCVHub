@@ -1,12 +1,15 @@
 package ch.streckeisen.mycv.backend.security
 
 import ch.streckeisen.mycv.backend.account.auth.oauth.MyCvOAuth2AuthorizationRequestResolver
+import ch.streckeisen.mycv.backend.account.auth.oauth.OAuth2AuthorizationRequestCookieRepository
 import ch.streckeisen.mycv.backend.account.auth.oauth.OAuth2FailureHandler
 import ch.streckeisen.mycv.backend.account.auth.oauth.OAuth2SuccessHandler
+import ch.streckeisen.mycv.backend.admin.auth.AdminJwtAuthenticationFilter
 import ch.streckeisen.mycv.backend.locale.MessagesService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -22,12 +25,15 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @EnableWebSecurity
 @Configuration
+@Profile("!admin-bootstrap")
 class ApplicationSecurityConfig(
+    private val adminJwtAuthenticationFilter: AdminJwtAuthenticationFilter,
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
     private val authenticationProvider: AuthenticationProvider,
     private val messagesService: MessagesService,
     private val oAuth2SuccessHandler: OAuth2SuccessHandler,
     private val oAuth2FailureHandler: OAuth2FailureHandler,
+    private val oAuth2AuthorizationRequestCookieRepository: OAuth2AuthorizationRequestCookieRepository,
     private val clientRegistrationRepository: ClientRegistrationRepository,
     @param:Value($$"${my-cv.security.cors.allowed-origins:}")
     private val corsAllowedOrigins: String
@@ -45,6 +51,9 @@ class ApplicationSecurityConfig(
                         "/api/auth/signup",
                         "/api/auth/refresh",
                         "/api/auth/logout",
+                        "/api/admin/auth/login",
+                        "/api/admin/auth/refresh",
+                        "/api/admin/auth/logout",
                         "/api/account/verification",
                         "/api/public/**",
                         "/api/auth/oauth2/**",
@@ -74,6 +83,7 @@ class ApplicationSecurityConfig(
                             baseResolver
                         )
                     )
+                    authorizationEndpoint.authorizationRequestRepository(oAuth2AuthorizationRequestCookieRepository)
                 }
                 oauth2.redirectionEndpoint { redirectionEndpoint ->
                     redirectionEndpoint.baseUri("/api/auth/oauth2/callback/*")
@@ -85,6 +95,7 @@ class ApplicationSecurityConfig(
                 sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
             .authenticationProvider(authenticationProvider)
+            .addFilterBefore(adminJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .exceptionHandling { authenticationException ->
                 authenticationException.authenticationEntryPoint(AuthenticationExceptionHandler(messagesService))

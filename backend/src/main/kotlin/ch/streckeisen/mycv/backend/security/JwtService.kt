@@ -10,6 +10,13 @@ import org.springframework.stereotype.Service
 import java.util.Date
 import javax.crypto.SecretKey
 
+private const val TOKEN_TYPE_CLAIM = "tokenType"
+
+enum class JwtTokenType {
+    APPLICANT,
+    ADMIN
+}
+
 @Service
 class JwtService(
     @param:Value($$"${my-cv.security.jwt.access.secret}")
@@ -33,26 +40,51 @@ class JwtService(
         return extractClaim(token, getAccessSignInKey(), Claims::getExpiration)
     }
 
-    fun generateAccessToken(userDetails: UserDetails): String {
-        return buildToken(mapOf(), userDetails, jwtAccessExpirationTime, getAccessSignInKey())
+    fun extractIssuedAtFromAccessToken(token: String): Date {
+        return extractClaim(token, getAccessSignInKey(), Claims::getIssuedAt)
+    }
+
+    fun extractIssuedAtFromRefreshToken(token: String): Date {
+        return extractClaim(token, getRefreshSignInKey(), Claims::getIssuedAt)
+    }
+
+    fun generateAccessToken(userDetails: UserDetails, tokenType: JwtTokenType = JwtTokenType.APPLICANT): String {
+        return buildToken(mapOf(TOKEN_TYPE_CLAIM to tokenType.name), userDetails, jwtAccessExpirationTime, getAccessSignInKey())
     }
 
     fun getAccessTokenExpirationTime() = jwtAccessExpirationTime
 
-    fun generateRefreshToken(userDetails: UserDetails): String {
-        return buildToken(mapOf(), userDetails, jwtRefreshExpirationTime, getRefreshSignInKey())
+    fun generateRefreshToken(userDetails: UserDetails, tokenType: JwtTokenType = JwtTokenType.APPLICANT): String {
+        return buildToken(mapOf(TOKEN_TYPE_CLAIM to tokenType.name), userDetails, jwtRefreshExpirationTime, getRefreshSignInKey())
     }
 
     fun getRefreshTokenExpirationTime() = jwtRefreshExpirationTime
 
-    fun isAccessTokenValid(token: String, userDetails: UserDetails): Boolean {
+    fun isAccessTokenValid(
+        token: String,
+        userDetails: UserDetails,
+        tokenType: JwtTokenType = JwtTokenType.APPLICANT
+    ): Boolean {
         val username = extractUsernameFromAccessToken(token)
-        return userDetails.username == username && !isTokenExpired(token, getAccessSignInKey())
+        return userDetails.username == username &&
+            isTokenTypeValid(token, getAccessSignInKey(), tokenType) &&
+            !isTokenExpired(token, getAccessSignInKey())
     }
 
-    fun isRefreshTokenValid(token: String, userDetails: UserDetails): Boolean {
+    fun isRefreshTokenValid(
+        token: String,
+        userDetails: UserDetails,
+        tokenType: JwtTokenType = JwtTokenType.APPLICANT
+    ): Boolean {
         val username = extractUsernameFromRefreshToken(token)
-        return userDetails.username == username && !isTokenExpired(token, getRefreshSignInKey())
+        return userDetails.username == username &&
+            isTokenTypeValid(token, getRefreshSignInKey(), tokenType) &&
+            !isTokenExpired(token, getRefreshSignInKey())
+    }
+
+    private fun isTokenTypeValid(token: String, key: SecretKey, tokenType: JwtTokenType): Boolean {
+        val actualTokenType = extractAllClaims(token, key)[TOKEN_TYPE_CLAIM] as String?
+        return actualTokenType == tokenType.name
     }
 
     private fun buildToken(

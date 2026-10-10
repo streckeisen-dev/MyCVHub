@@ -1,6 +1,8 @@
 package ch.streckeisen.mycv.backend.account.auth.oauth
 
 import ch.streckeisen.mycv.backend.account.auth.AuthTokenService
+import ch.streckeisen.mycv.backend.admin.activity.ActivityEventType
+import ch.streckeisen.mycv.backend.admin.activity.UserActivityEventPublisher
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -11,7 +13,8 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.stereotype.Component
-import java.util.Base64
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 private val logger = KotlinLogging.logger {}
 
@@ -21,6 +24,7 @@ private const val OAUTH_SUCCESS_REDIRECT = "login/oauth-success"
 class OAuth2SuccessHandler(
     private val authTokenService: AuthTokenService,
     private val oAuthIntegrationService: OAuthIntegrationService,
+    private val userActivityEventPublisher: UserActivityEventPublisher,
     @param:Value(value = $$"${my-cv.frontend.base-url}")
     private val frontendBaseUrl: String,
 ) : AuthenticationSuccessHandler {
@@ -49,35 +53,30 @@ class OAuth2SuccessHandler(
             }
 
             else -> throw InternalAuthenticationServiceException("Unsupported oauth integration")
-        }.getOrElse {
-            logger.error(it) { "OAuth2 authentication unsuccessful" }
-            throw InternalAuthenticationServiceException("Failed to authenticate", it)
-        }
+            }.getOrElse {
+                logger.error(it) { "OAuth2 authentication unsuccessful" }
+                throw InternalAuthenticationServiceException("Failed to authenticate", it)
+            }
 
         authTokenService.generateAuthData(account.username)
             .onSuccess { authTokens ->
+                userActivityEventPublisher.publish(account.id!!, ActivityEventType.LOGIN)
                 val accessCookie =
-                    authTokenService.createAccessCookie(authTokens.accessToken, authTokens.accessTokenExpirationTime)
+                    authTokenService.createAccessCookie(authTokens.accessToken, authTokens.accessTokenExpirationTime / 1000)
                 val refreshCookie =
-                    authTokenService.createRefreshCookie(authTokens.refreshToken, authTokens.refreshTokenExpirationTime)
+                    authTokenService.createRefreshCookie(authTokens.refreshToken, authTokens.refreshTokenExpirationTime / 1000)
                 response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString())
                 response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString())
 
                 val state = request.getParameter("state")
                 val redirect = if (state != null) {
-                    extractRedirectFromState(state)
+                    MyCvOAuth2AuthorizationRequestResolver.extractRedirectFromState(state)
                 } else null
 
-                response.sendRedirect("${frontendBaseUrl}/$OAUTH_SUCCESS_REDIRECT${redirect?.let { "?redirect=$it" } ?: ""}")
+                val redirectParameter = redirect?.let {
+                    "?redirect=${URLEncoder.encode(it, StandardCharsets.UTF_8)}"
+                } ?: ""
+                response.sendRedirect("${frontendBaseUrl}/$OAUTH_SUCCESS_REDIRECT$redirectParameter")
             }.onFailure { ex -> throw InternalAuthenticationServiceException("Failed to create auth tokens", ex) }
-    }
-
-    private fun extractRedirectFromState(state: String): String? {
-        val decodedState = String(Base64.getUrlDecoder().decode(state))
-        val params = decodedState.split("&").associate {
-            val (key, value) = it.split("=")
-            key to value
-        }
-        return params["redirect"]
     }
 }

@@ -5,7 +5,8 @@ export async function fetchFromApi(
    path: string,
    lang: string,
    options?: RequestInit,
-   retry = true
+   retry = true,
+   refreshTokenPath = '/api/auth/refresh'
  ): Promise<Response> {
    const uri = path.startsWith('/api') ? path : `/api${path}`
    const opt: RequestInit = {
@@ -30,8 +31,8 @@ export async function fetchFromApi(
    try {
      const response = await fetch(uri, opt)
      if (response.status === 401 && retry) {
-       await refreshToken()
-       return fetchFromApi(uri, lang, opt, false)
+       await refreshToken(refreshTokenPath)
+       return fetchFromApi(uri, lang, opt, false, refreshTokenPath)
      }
      return response
    } catch (error) {
@@ -39,8 +40,8 @@ export async function fetchFromApi(
    }
  }
 
- async function refreshToken(): Promise<void> {
-   const refreshResponse = await fetch('/api/auth/refresh', {
+ async function refreshToken(refreshTokenPath: string): Promise<void> {
+   const refreshResponse = await fetch(refreshTokenPath, {
      method: 'POST',
      credentials: 'same-origin'
    })
