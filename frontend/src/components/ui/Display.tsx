@@ -1,9 +1,8 @@
 import { Card as HeroCard, Chip as HeroChip, ProgressBar, ProgressCircle } from '@heroui/react'
 import { ReactNode } from 'react'
 
-export { ProgressBar, Separator as Divider } from '@heroui/react'
+export { Card, ProgressBar, Separator as Divider } from '@heroui/react'
 
-export const Card = HeroCard
 export const CardHeader = HeroCard.Header
 export const CardBody = HeroCard.Content
 export const CardFooter = HeroCard.Footer

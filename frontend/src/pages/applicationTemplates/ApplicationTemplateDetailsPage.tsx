@@ -166,7 +166,7 @@ export function ApplicationTemplateDetailsPage(): ReactNode {
         addErrorToast(t('applicationTemplate.loadingError'))
       }
     }
-    loadData()
+    void loadData()
   }, [])
 
   function handleDelete() {

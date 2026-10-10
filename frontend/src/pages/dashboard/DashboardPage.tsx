@@ -128,7 +128,7 @@ export function DashboardPage(): ReactNode {
         setIsLoading(false)
       }
     }
-    loadInfo()
+    void loadInfo()
   }, [])
 
   return (
