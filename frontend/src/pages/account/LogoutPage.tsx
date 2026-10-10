@@ -33,7 +33,7 @@ export function LogoutPage(): React.ReactNode {
         }, 2000)
       }
     }
-    logout()
+    void logout()
 
     return () => {
       if (navigateBackTimeout) {

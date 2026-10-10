@@ -78,7 +78,7 @@ export function ApplicationDetailsPage(): ReactNode {
       }
     }
 
-    loadData()
+    void loadData()
   }, [])
 
   function handleEdit() {

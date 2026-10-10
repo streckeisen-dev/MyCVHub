@@ -1,4 +1,4 @@
-#import "@preview/fontawesome:0.5.0": fa-icon
+#import "@preview/fontawesome:0.6.2": fa-icon
 #import "shared.typ": project_link, getTitle, getEntryDescription
 
 #let profile = json("profile.json")

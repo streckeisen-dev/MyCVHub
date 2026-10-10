@@ -148,7 +148,7 @@ export function ApplicationTable(props: ApplicationTableProps) {
     applications.reload()
   }, [statusFilter, searchTerm, page, pageSize, includeArchivedFilter])
 
-  async function onPageChange(pageNumber: number) {
+  function onPageChange(pageNumber: number) {
     setPage(pageNumber - 1)
   }
 

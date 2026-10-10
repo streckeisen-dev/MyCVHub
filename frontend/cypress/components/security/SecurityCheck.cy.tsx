@@ -139,6 +139,8 @@ describe('SecurityCheck tests', () => {
     const context = createContextValue(user)
 
     cy.mount(createComponent(context, undefined, AuthLevel.UNVERIFIED))
+
+    cy.get(CONTENT_SELECTOR).should('exist')
   })
 
   it('should render for verified user on unverified auth page', () => {

@@ -75,7 +75,7 @@ export function EditApplicationTemplatePage(): ReactNode {
         setIsLoading(false)
       }
     }
-    loadData()
+    void loadData()
   }, [])
 
   function handleSave(template: ApplicationTemplateDto) {

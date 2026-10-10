@@ -88,7 +88,7 @@ export function CoverLetterDownload(props: CoverLetterDownloadProps): ReactNode 
         setIsLoading(false)
       }
     }
-    loadData()
+    void loadData()
   }, [])
 
   function handleCoverLetterConfigChange(config: CoverLetterConfigurationData) {

@@ -29,7 +29,7 @@ export function ApplicationsPage() {
         addErrorToast(t('application.statusLoadingError'))
       }
     }
-    loadApplicationStatus()
+    void loadApplicationStatus()
   }, [])
 
   function handleAdd() {

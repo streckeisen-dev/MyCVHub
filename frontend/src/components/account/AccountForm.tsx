@@ -50,7 +50,7 @@ function CountrySelect(props: Readonly<Omit<AutocompleteProps, 'children'>>): Re
         addErrorToast(t('country.loadingError.title'), t('country.loadingError.message'))
       }
     }
-    loadCountries()
+    void loadCountries()
   }, [])
 
   return (

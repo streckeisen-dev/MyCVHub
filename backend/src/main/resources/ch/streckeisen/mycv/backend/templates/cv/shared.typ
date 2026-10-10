@@ -1,4 +1,4 @@
-#import "@preview/fontawesome:0.5.0": fa-icon
+#import "@preview/fontawesome:0.6.2": fa-icon
 
 #let color-darkgray = rgb("#333333")
 

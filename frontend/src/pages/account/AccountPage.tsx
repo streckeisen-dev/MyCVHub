@@ -130,7 +130,7 @@ export function AccountPage(): React.ReactNode {
         setIsLoading(false)
       }
     }
-    loadAccount()
+    void loadAccount()
   }, [])
 
   const content = account ? (
