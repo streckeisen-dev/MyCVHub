@@ -272,6 +272,42 @@ class CVDataServiceTest {
     }
 
     @Test
+    fun testCreateCVDataOrdersEntriesByEndDateThenStartDateDescending() {
+        val today = LocalDate.now()
+        val dates = listOf(
+            Triple("Older end", today.minusYears(1), today.minusMonths(2)),
+            Triple("Ongoing older start", today.minusYears(3), null),
+            Triple("Same end older start", today.minusYears(4), today.minusMonths(1)),
+            Triple("Future end", today.minusYears(5), today.plusMonths(1)),
+            Triple("Ends today", today.minusYears(2), today),
+            Triple("Ongoing newer start", today.minusYears(1), null),
+            Triple("Same end newer start", today.minusYears(2), today.minusMonths(1))
+        )
+        val cvData = cvDataService.createCVData(
+            profile(),
+            dates.map { (title, start, end) ->
+                currentJob().copy(jobTitle = title, positionStart = start, positionEnd = end)
+            },
+            dates.map { (title, start, end) ->
+                education().first().copy(degreeName = title, educationStart = start, educationEnd = end)
+            },
+            dates.map { (title, start, end) ->
+                currentProject().copy(name = title, projectStart = start, projectEnd = end)
+            },
+            emptyList(),
+            emptyMap()
+        )
+
+        val expectedOrder = listOf(
+            "Future end", "Ongoing newer start", "Ends today", "Ongoing older start",
+            "Same end newer start", "Same end older start", "Older end"
+        )
+        assertEquals(expectedOrder, cvData.workExperiences.map { it.title })
+        assertEquals(expectedOrder, cvData.education.map { it.title })
+        assertEquals(expectedOrder, cvData.projects.map { it.title })
+    }
+
+    @Test
     fun testCreateCVDataWithHiddenDescription() {
         val workExperiences = cvDataService.filterWorkExperiences(workExperiences(), listOf(IncludedCVItem(1, false)))
 
@@ -429,20 +465,20 @@ class CVDataServiceTest {
         ),
         listOf(
             CVSkills(
+                CLOUD_PLATFORM_SKILLS,
+                listOf("GCP", "AWS")
+            ),
+            CVSkills(
                 FRAMEWORK_SKILLS,
                 listOf("Spring Boot", "Spring Data"),
             ),
             CVSkills(
+                LANGUAGE_SKILLS,
+                listOf("JavaScript", "Kotlin", "Java", "TypeScript", "HTML")
+            ),
+            CVSkills(
                 TECHNOLOGY_SKILLS,
                 listOf("Docker")
-            ),
-            CVSkills(
-                LANGUAGE_SKILLS,
-                listOf("Kotlin", "JavaScript", "Java", "TypeScript", "HTML")
-            ),
-            CVSkills(
-                CLOUD_PLATFORM_SKILLS,
-                listOf("GCP", "AWS")
             )
         ),
         listOf(

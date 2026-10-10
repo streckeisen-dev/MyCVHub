@@ -74,6 +74,7 @@ class CVDataService(
         skills: List<CVSkillSnapshot>,
         cvStyleOptions: Map<String, String>
     ): CVData {
+        val today = LocalDate.now()
         val locale = LocaleContextHolder.getLocale()
         val cvDateFormatter = DateTimeFormatter.ofPattern(CV_DATE_FORMAT, locale)
         return CVData(
@@ -86,7 +87,10 @@ class CVDataService(
             phone = profile.phone!!,
             address = getAddressString(profile),
             birthday = getBirthday(profile.birthday!!),
-            workExperiences = workExperience.map {
+            workExperiences = workExperience.sortedWith(
+                compareByDescending<CVWorkExperienceSnapshot> { it.positionEnd ?: today }
+                    .thenByDescending { it.positionStart }
+            ).map {
                 CVEntry(
                     title = it.jobTitle,
                     location = it.location,
@@ -99,15 +103,19 @@ class CVDataService(
                 )
             },
             skills = skills.groupBy { it.type }.entries
+                .sortedBy { it.key }
                 .map { entry ->
                     CVSkills(
                         entry.key,
                         entry.value
-                            .sortedByDescending { s -> s.level }
+                            .sortedWith(compareByDescending<CVSkillSnapshot> { it.level }.thenBy { it.name })
                             .map { s -> s.name }
                     )
                 },
-            education = education.map {
+            education = education.sortedWith(
+                compareByDescending<CVEducationSnapshot> { it.educationEnd ?: today }
+                    .thenByDescending { it.educationStart }
+            ).map {
                 CVEntry(
                     title = it.degreeName,
                     location = it.location,
@@ -119,7 +127,10 @@ class CVDataService(
                     links = listOf()
                 )
             },
-            projects = projects.map {
+            projects = projects.sortedWith(
+                compareByDescending<CVProjectSnapshot> { it.projectEnd ?: today }
+                    .thenByDescending { it.projectStart }
+            ).map {
                 CVEntry(
                     title = it.name,
                     location = "",
