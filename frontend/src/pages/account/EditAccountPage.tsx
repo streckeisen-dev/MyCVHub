@@ -36,7 +36,7 @@ export function EditAccountPage(): React.ReactNode {
         setIsLoading(false)
       }
     }
-    loadAccount()
+    void loadAccount()
   }, [])
 
   async function handleSave(e: FormEvent<HTMLFormElement>) {

@@ -28,7 +28,7 @@ export function EditProfilePage(): ReactNode {
         setIsLoading(false)
       }
     }
-    loadProfile()
+    void loadProfile()
   }, [])
 
   const content = profile ? (

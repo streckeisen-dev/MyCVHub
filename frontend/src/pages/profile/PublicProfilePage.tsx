@@ -45,7 +45,7 @@ export function PublicProfilePage(): ReactNode {
         setIsLoading(false)
       }
     }
-    loadProfile()
+    void loadProfile()
   }, [])
 
   const surfaceColor = profile?.theme?.surfaceColor ?? ProfileTheme.header

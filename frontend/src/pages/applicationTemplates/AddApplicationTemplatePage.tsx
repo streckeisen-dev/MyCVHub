@@ -52,7 +52,7 @@ export function AddApplicationTemplatePage(): ReactNode {
         setIsLoading(false)
       }
     }
-    loadData()
+    void loadData()
   }, [])
 
   function handleSave(template: ApplicationTemplateDto) {

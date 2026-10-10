@@ -64,7 +64,7 @@ export function CvDownload() {
       }
     }
 
-    loadData()
+    void loadData()
   }, [])
 
   async function handleDownload() {

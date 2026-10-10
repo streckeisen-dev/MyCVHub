@@ -66,7 +66,7 @@ export function ApplicationTemplateOverviewPage(): ReactNode {
         setIsLoading(false)
       }
     }
-    loadTemplates()
+    void loadTemplates()
   }, [])
 
   function handleView(id: number) {

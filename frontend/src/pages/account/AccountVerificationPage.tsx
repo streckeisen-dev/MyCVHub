@@ -44,7 +44,7 @@ export function AccountVerificationPage(): ReactNode {
         setIsLoading(false)
       }
     }
-    verifyAccount()
+    void verifyAccount()
   }, [])
 
   return (

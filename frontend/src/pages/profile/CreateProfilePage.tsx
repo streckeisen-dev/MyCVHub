@@ -21,7 +21,7 @@ export function CreateProfilePage(): ReactNode {
         setIsLoading(false)
       }
     }
-    loadProfile()
+    void loadProfile()
   }, [])
 
   return isLoading ? <Spinner /> : <ProfileEditor />

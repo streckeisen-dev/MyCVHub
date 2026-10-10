@@ -60,7 +60,7 @@ export function AuthorizationProvider(props: Readonly<PropsWithChildren>): React
         setIsLoading(false)
       }
     }
-    getAuth()
+    void getAuth()
   }, [i18n])
 
   useEffect(() => {
