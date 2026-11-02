@@ -5,11 +5,11 @@
 #let color-darkgray = rgb("#333333")
 #let color-gray = rgb("#5d5d5d")
 
-#let phone-icon = box(fa-icon("phone", fill: color-darknight))
-#let email-icon = box(fa-icon("envelope", fill: color-darknight))
-#let github-icon = box(fa-icon("github", fill: color-darknight))
-#let linkedin-icon = box(fa-icon("linkedin", fill: color-darknight))
-#let website-icon = box(fa-icon("globe", fill: color-darknight))
+#let phone-icon = fa-icon("phone", fill: color-darknight, size: 0.85em)
+#let email-icon = fa-icon("envelope", fill: color-darknight, size: 0.85em)
+#let github-icon = fa-icon("github", fill: color-darknight, size: 0.85em)
+#let linkedin-icon = fa-icon("linkedin", fill: color-darknight, size: 0.85em)
+#let website-icon = fa-icon("globe", fill: color-darknight, size: 0.85em)
 
 #let config = json("config.json")
 
@@ -138,41 +138,38 @@
   }
   
   let contacts = {
-    set box(height: 9pt)
-    
-    let separator = [  #box(sym.bar.v)  ]
+    // Keep icons and contact text inline so they share the text baseline.
+    let separator = [  #sym.bar.v  ]
     let author_list = ()
 
     if ("phone" in author) {
       author_list.push[
         #phone-icon
-        #box[#text(author.phone)]
+        #text(author.phone)
       ]
     }
     if ("email" in author) {
       author_list.push[
         #email-icon
-        #box[#link("mailto:" + author.email)[#author.email]]
+        #link("mailto:" + author.email)[#author.email]
       ]
     }
     if ("github" in author) {
       author_list.push[
         #github-icon
-        #box[#link("https://github.com/" + author.github)[#author.github]]
+        #link("https://github.com/" + author.github)[#author.github]
       ]
     }
     if ("linkedin" in author) {
       author_list.push[
         #linkedin-icon
-        #box[
-          #link("https://www.linkedin.com/in/" + author.linkedin)[#author.firstName #author.lastName]
-        ]
+        #link("https://www.linkedin.com/in/" + author.linkedin)[#author.firstName #author.lastName]
       ]
     }
     if ("website" in author) {
       author_list.push[
         #website-icon
-        #box[#link(author.website)[#author.website]]
+        #link(author.website)[#author.website]
       ]
     }
 
@@ -306,7 +303,7 @@
   target: if (config.application.contactPerson != none) {config.application.contactPerson} else {none},
   name: config.application.company,
   street: config.application.companyAddress.line1,
-  city: config.application.companyAddress.line1,
+  city: config.application.companyAddress.line2,
 )
 
 #letter-heading(
