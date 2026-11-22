@@ -1,4 +1,4 @@
-FROM eclipse-temurin:26-jdk-alpine
+FROM eclipse-temurin:27.0.1.1_4-jdk-alpine
 
 RUN apk update \
     && apk add typst \
