@@ -44,8 +44,8 @@ class AdminAuthenticationServiceTest {
             id = 1
         )
         adminAccountRepository = mockk {
-            every { findByUsername(eq(ADMIN_USERNAME)) } returns Optional.of(admin)
-            every { findById(eq(1)) } returns Optional.of(admin)
+            every { findByUsernameForUpdate(eq(ADMIN_USERNAME)) } returns Optional.of(admin)
+            every { findByIdForUpdate(eq(1)) } returns Optional.of(admin)
             every { save(any<AdminAccountEntity>()) } answers { firstArg() }
         }
         passwordEncoder = mockk {

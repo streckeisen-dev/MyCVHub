@@ -1,18 +1,16 @@
-import AdminAuthApi from '@/api/AdminAuthApi.ts'
 import AdminDashboardApi from '@/api/AdminDashboardApi.ts'
 import { Button } from '@/components/ui/Button.tsx'
-import { Card, CardBody, CardHeader, Chip } from '@/components/ui/Display.tsx'
+import { Card, CardBody, CardHeader } from '@/components/ui/Display.tsx'
 import { Page, PageHeader, PageTitle } from '@/components/ui/Layout.tsx'
-import { AdminAuthorizationContext } from '@/context/AdminAuthorizationContext.tsx'
 import { addErrorToast } from '@/helpers/ToastHelper.ts'
+import { formatAdminDateTime } from '@/helpers/AdminDateTime.ts'
 import { LoadingWrapper } from '@/layouts/LoadingWrapper.tsx'
 import { AdminDashboardDto, AdminDashboardMetricPointDto } from '@/types/admin/AdminDashboardDto.ts'
 import { RestError } from '@/types/RestError.ts'
 import clsx from 'clsx'
-import { ReactNode, use, useEffect, useMemo, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FaArrowRightFromBracket, FaChartLine, FaClock, FaUserCheck, FaUsers } from 'react-icons/fa6'
-import { useNavigate } from 'react-router-dom'
+import { FaChartLine, FaClock, FaUserCheck, FaUsers } from 'react-icons/fa6'
 
 type DashboardRange = '7d' | '30d' | '90d'
 
@@ -20,11 +18,9 @@ const ranges: DashboardRange[] = ['7d', '30d', '90d']
 
 export function AdminDashboardPage(): ReactNode {
   const { t, i18n } = useTranslation()
-  const { admin, handleAdminLogout } = use(AdminAuthorizationContext)
   const [dashboard, setDashboard] = useState<AdminDashboardDto>()
   const [range, setRange] = useState<DashboardRange>('30d')
   const [isLoading, setIsLoading] = useState(true)
-  const navigate = useNavigate()
 
   useEffect(() => {
     let ignore = false
@@ -52,27 +48,14 @@ export function AdminDashboardPage(): ReactNode {
     }
   }, [i18n.language, range, t])
 
-  async function handleLogout() {
-    await AdminAuthApi.logout(i18n.language)
-    handleAdminLogout()
-    navigate('/admin/login', { replace: true })
-  }
-
   return (
-    <Page size="wide">
+    <Page size="wide" className="px-4 sm:px-6">
       <PageHeader className="flex-row items-start justify-between gap-4">
         <div className="flex flex-col gap-2">
           <PageTitle>{t('admin.dashboard.title')}</PageTitle>
-          <div className="flex flex-wrap items-center gap-2 text-sm text-default-600">
-            <span>{admin?.username}</span>
-            {admin?.role && <Chip>{admin.role}</Chip>}
-          </div>
         </div>
-        <Button variant="outline" onPress={handleLogout}>
-          <FaArrowRightFromBracket aria-hidden />
-          {t('admin.logout')}
-        </Button>
       </PageHeader>
+
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex rounded-full border border-default-200 bg-content1 p-1">
@@ -90,7 +73,7 @@ export function AdminDashboardPage(): ReactNode {
         {dashboard && (
           <div className="flex items-center gap-2 text-sm text-default-600">
             <FaClock aria-hidden />
-            <span>{t('admin.dashboard.asOf', { value: formatDateTime(dashboard.asOf, i18n.language) })}</span>
+            <span>{t('admin.dashboard.asOf', { value: formatAdminDateTime(dashboard.asOf, i18n.language), interpolation: { escapeValue: false } })}</span>
           </div>
         )}
       </div>
@@ -265,11 +248,4 @@ function formatNumber(value: number): string {
 
 function formatDate(value: string, locale: string): string {
   return new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric' }).format(new Date(value))
-}
-
-function formatDateTime(value: string, locale: string): string {
-  return new Intl.DateTimeFormat(locale, {
-    dateStyle: 'medium',
-    timeStyle: 'short'
-  }).format(new Date(value))
 }

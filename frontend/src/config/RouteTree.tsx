@@ -34,7 +34,11 @@ import { AddApplicationTemplatePage } from '@/pages/applicationTemplates/AddAppl
 import { EditApplicationTemplatePage } from '@/pages/applicationTemplates/EditApplicationTemplatePage.tsx'
 import { CoverLetterDownloadPage } from '@/pages/download/CoverLetterDownloadPage.tsx'
 import { AdminLoginPage } from '@/pages/admin/AdminLoginPage.tsx'
-import { AdminDashboardPage } from '@/pages/admin/AdminDashboardPage.tsx'
+import { AdminHomePage } from '@/pages/admin/AdminHomePage.tsx'
+import { AdminUsersPage } from '@/pages/admin/AdminUsersPage.tsx'
+import { AdminAuditLogPage } from '@/pages/admin/AdminAuditLogPage.tsx'
+import { AdminRole } from '@/types/admin/AdminRole.ts'
+import { AdminLayout } from '@/layouts/AdminLayout.tsx'
 import { AdminChangePasswordPage } from '@/pages/admin/AdminChangePasswordPage.tsx'
 import { AdminSecurityCheck } from '@/components/security/AdminSecurityCheck.tsx'
 
@@ -266,6 +270,8 @@ const ROUTE_DEFINITIONS = defineRoutes([
   {
     id: 'AdminRoot',
     path: '/admin',
+    requiresAuth: false,
+    element: <AdminLayout />,
     children: [
       {
         id: 'AdminDashboard',
@@ -273,9 +279,21 @@ const ROUTE_DEFINITIONS = defineRoutes([
         requiresAuth: false,
         element: (
           <AdminSecurityCheck>
-            <AdminDashboardPage />
+            <AdminHomePage />
           </AdminSecurityCheck>
         )
+      },
+      {
+        id: 'AdminUsers',
+        path: 'users',
+        requiresAuth: false,
+        element: <AdminSecurityCheck requiredRole={AdminRole.ADMIN}><AdminUsersPage /></AdminSecurityCheck>
+      },
+      {
+        id: 'AdminAuditLog',
+        path: 'audit-log',
+        requiresAuth: false,
+        element: <AdminSecurityCheck requiredRole={AdminRole.ADMIN}><AdminAuditLogPage /></AdminSecurityCheck>
       },
       {
         id: 'AdminLogin',

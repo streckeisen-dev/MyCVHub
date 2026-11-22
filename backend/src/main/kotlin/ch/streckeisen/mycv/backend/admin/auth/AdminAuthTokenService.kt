@@ -7,7 +7,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import java.time.ZoneId
 
 const val ADMIN_REFRESH_TOKEN_NAME = "adminRefreshToken"
 const val ADMIN_ACCESS_TOKEN_NAME = "adminAccessToken"
@@ -39,16 +38,6 @@ class AdminAuthTokenService(
         val admin = userDetails.admin
         if (admin.mustChangePassword && admin.temporaryPasswordExpiresAt?.isBefore(java.time.LocalDateTime.now()) == true) {
             return Result.failure(JwtException("Temporary admin password expired"))
-        }
-        val passwordChangedAt = admin.passwordChangedAt
-        if (passwordChangedAt != null) {
-            val issuedAt = jwtService.extractIssuedAtFromRefreshToken(refreshToken)
-                .toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime()
-            if (issuedAt.isBefore(passwordChangedAt)) {
-                return Result.failure(JwtException("Admin refresh token was issued before the current password"))
-            }
         }
         if (!jwtService.isRefreshTokenValid(refreshToken, userDetails, JwtTokenType.ADMIN)) {
             return Result.failure(JwtException("Invalid admin refresh token"))

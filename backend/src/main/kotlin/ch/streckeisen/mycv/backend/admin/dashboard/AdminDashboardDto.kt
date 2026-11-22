@@ -1,7 +1,7 @@
 package ch.streckeisen.mycv.backend.admin.dashboard
 
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 data class AdminDashboardDto(
     val totalRegisteredUsers: Long,
@@ -14,7 +14,7 @@ data class AdminDashboardDto(
     val unverifiedAccountCount: Long,
     val oauthSignupCount: Long,
     val passwordSignupCount: Long,
-    val asOf: LocalDateTime
+    val asOf: OffsetDateTime
 )
 
 data class AdminDashboardMetricPointDto(

@@ -11,8 +11,6 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.time.ZoneId
-import java.util.Date
 
 private const val TOKEN_USERNAME = "admin@example.com"
 private const val REFRESH_TOKEN = "refresh-token"
@@ -55,13 +53,10 @@ class AdminAuthTokenServiceTest {
     }
 
     @Test
-    fun testRefreshTokenRejectedWhenIssuedBeforePasswordChange() {
+    fun testRefreshTokenRejectedWhenCredentialsHaveChanged() {
         admin.mustChangePassword = false
         admin.temporaryPasswordExpiresAt = null
-        admin.passwordChangedAt = LocalDateTime.now()
-        every { jwtService.extractIssuedAtFromRefreshToken(eq(REFRESH_TOKEN)) } returns Date.from(
-            admin.passwordChangedAt!!.minusMinutes(1).atZone(ZoneId.systemDefault()).toInstant()
-        )
+        every { jwtService.isRefreshTokenValid(eq(REFRESH_TOKEN), any(), eq(JwtTokenType.ADMIN)) } returns false
 
         val result = adminAuthTokenService.validateRefreshToken(REFRESH_TOKEN)
 

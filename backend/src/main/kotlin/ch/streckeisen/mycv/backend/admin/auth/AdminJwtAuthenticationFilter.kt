@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.servlet.HandlerExceptionResolver
 import java.time.LocalDateTime
-import java.time.ZoneId
 
 private val logger = KotlinLogging.logger {}
 
@@ -65,11 +64,7 @@ class AdminJwtAuthenticationFilter(
             .onSuccess { userDetails ->
                 if (jwtService.isAccessTokenValid(accessToken, userDetails, JwtTokenType.ADMIN)) {
                     val admin = userDetails.admin
-                    if (!admin.isActive || isTemporaryPasswordExpired(admin) || isTokenIssuedBeforePasswordChange(
-                            accessToken,
-                            admin
-                        )
-                    ) {
+                    if (!admin.isActive || isTemporaryPasswordExpired(admin)) {
                         SecurityContextHolder.getContext().authentication = null
                         return
                     }
@@ -93,15 +88,4 @@ class AdminJwtAuthenticationFilter(
         return admin.mustChangePassword && admin.temporaryPasswordExpiresAt?.isBefore(LocalDateTime.now()) == true
     }
 
-    private fun isTokenIssuedBeforePasswordChange(
-        accessToken: String,
-        admin: ch.streckeisen.mycv.backend.admin.account.AdminAccountEntity
-    ): Boolean {
-        val passwordChangedAt = admin.passwordChangedAt ?: return false
-        val issuedAt = jwtService.extractIssuedAtFromAccessToken(accessToken)
-            .toInstant()
-            .atZone(ZoneId.systemDefault())
-            .toLocalDateTime()
-        return issuedAt.isBefore(passwordChangedAt)
-    }
 }

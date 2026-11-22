@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 
 class AdminDashboardServiceTest {
     private lateinit var applicantAccountRepository: ApplicantAccountRepository
@@ -68,7 +70,9 @@ class AdminDashboardServiceTest {
         assertEquals(10, dashboard.unverifiedAccountCount)
         assertEquals(8, dashboard.oauthSignupCount)
         assertEquals(34, dashboard.passwordSignupCount)
-        assertEquals(LocalDateTime.of(2026, 8, 14, 4, 0), dashboard.asOf)
+        val expectedAsOf = LocalDateTime.of(2026, 8, 14, 4, 0)
+            .atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.ofHours(1)).toOffsetDateTime()
+        assertEquals(expectedAsOf, dashboard.asOf)
         assertEquals(3, dashboard.activeUserSeries.size)
         assertEquals(3, dashboard.signupSeries.size)
         assertEquals(4, dashboard.activeUserSeries[2].value)

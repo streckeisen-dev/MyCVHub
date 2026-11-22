@@ -3,6 +3,7 @@ package ch.streckeisen.mycv.backend.admin.dashboard
 import ch.streckeisen.mycv.backend.account.ApplicantAccountRepository
 import ch.streckeisen.mycv.backend.admin.activity.ActivityEventType
 import ch.streckeisen.mycv.backend.admin.activity.UserActivityEventRepository
+import ch.streckeisen.mycv.backend.admin.toAdminOffsetDateTime
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -57,7 +58,7 @@ class AdminDashboardService(
             unverifiedAccountCount = applicantAccountRepository.countUnverifiedCompleteAccounts(),
             oauthSignupCount = applicantAccountRepository.countByIsOAuthUser(true),
             passwordSignupCount = applicantAccountRepository.countByIsOAuthUser(false),
-            asOf = lastAggregatedAt
+            asOf = lastAggregatedAt.toAdminOffsetDateTime()
         )
     }
 

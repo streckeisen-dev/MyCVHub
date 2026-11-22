@@ -10,6 +10,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.security.core.userdetails.User
+import ch.streckeisen.mycv.backend.admin.account.AdminAccountEntity
+import ch.streckeisen.mycv.backend.admin.account.AdminRole
+import ch.streckeisen.mycv.backend.admin.auth.AdminUserDetails
 
 private const val JWT_ACCESS_SECRET = "wHqRTjE8tXtgm/zhvn1qmmxLkcA+MvjnbX0aLkNhLm4="
 private const val JWT_REFRESH_SECRET = "AXElBHoFbc5nZ2QACGIsRHY/adM8f7WDRaoI5KsJBGA="
@@ -18,6 +21,23 @@ private const val JWT_REFRESH_EXPIRY_TIME = 123456789L
 
 class JwtServiceTest {
     private lateinit var jwtService: JwtService
+
+    @Test
+    fun adminTokensFollowCurrentCredentialsAndAccountIdentity() {
+        val account = AdminAccountEntity(username = "admin", password = "hash-one", role = AdminRole.ADMIN, isActive = true, mustChangePassword = false, id = 1)
+        val details = AdminUserDetails(account)
+        val access = jwtService.generateAccessToken(details, JwtTokenType.ADMIN)
+        val refresh = jwtService.generateRefreshToken(details, JwtTokenType.ADMIN)
+        assertTrue(jwtService.isAccessTokenValid(access, details, JwtTokenType.ADMIN))
+        assertTrue(jwtService.isRefreshTokenValid(refresh, details, JwtTokenType.ADMIN))
+        account.password = "hash-two"
+        assertFalse(jwtService.isAccessTokenValid(access, details, JwtTokenType.ADMIN))
+        assertFalse(jwtService.isRefreshTokenValid(refresh, details, JwtTokenType.ADMIN))
+        val replacement = jwtService.generateAccessToken(details, JwtTokenType.ADMIN)
+        assertTrue(jwtService.isAccessTokenValid(replacement, details, JwtTokenType.ADMIN))
+        account.id = 2
+        assertFalse(jwtService.isAccessTokenValid(replacement, details, JwtTokenType.ADMIN))
+    }
 
     @BeforeEach
     fun setup() {

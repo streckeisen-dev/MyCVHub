@@ -4,8 +4,29 @@ import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import java.util.Optional
+import java.time.LocalDateTime
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 
 interface ApplicantAccountRepository : CrudRepository<ApplicantAccountEntity, Long> {
+    @Query("""
+        SELECT a FROM ApplicantAccountEntity a LEFT JOIN FETCH a.accountDetails d
+        WHERE (:search = '' OR LOWER(a.username) LIKE LOWER(CONCAT('%', :search, '%'))
+            OR LOWER(d.email) LIKE LOWER(CONCAT('%', :search, '%')))
+        ORDER BY a.username, a.id
+    """, countQuery = """
+        SELECT COUNT(a) FROM ApplicantAccountEntity a LEFT JOIN a.accountDetails d
+        WHERE (:search = '' OR LOWER(a.username) LIKE LOWER(CONCAT('%', :search, '%'))
+            OR LOWER(d.email) LIKE LOWER(CONCAT('%', :search, '%')))
+    """)
+    fun findRegisteredUsers(search: String, pageable: Pageable): Page<ApplicantAccountEntity>
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE ApplicantAccountEntity a SET a.lastLoginAt = :occurredAt WHERE a.id = :accountId AND (a.lastLoginAt IS NULL OR a.lastLoginAt < :occurredAt)")
+    fun updateLastLoginAt(accountId: Long, occurredAt: LocalDateTime): Int
+
     fun findByUsername(username: String): Optional<ApplicantAccountEntity>
 
     fun countByIsVerified(isVerified: Boolean): Long

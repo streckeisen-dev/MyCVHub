@@ -142,7 +142,9 @@ class ApplicantAccountService(
             oauthIntegrations = existingAccount.oauthIntegrations,
             accountVerification = existingAccount.accountVerification,
             applications = existingAccount.applications,
-            applicationTemplates = existingAccount.applicationTemplates
+            applicationTemplates = existingAccount.applicationTemplates,
+            createdAt = existingAccount.createdAt,
+            lastLoginAt = existingAccount.lastLoginAt
         )
         val result = applicantAccountRepository.save(account)
         if (!account.isVerified) {
