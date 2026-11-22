@@ -27,7 +27,7 @@ Planned features:
 
 | Component      | Technologies                      |
 |----------------|-----------------------------------|
-| Backend        | Java 26, Kotlin, Spring Boot 4    |
+| Backend        | Java 27 (Temurin 27.0.1.1+4 or later), Kotlin, Spring Boot 4 |
 | PDF generation | typst                             |
 | Frontend       | Node.js 24, React, HeroUI, yarn   |
 | Database       | PostgreSQL                        |
