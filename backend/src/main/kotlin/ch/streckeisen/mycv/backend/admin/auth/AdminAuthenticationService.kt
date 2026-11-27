@@ -50,7 +50,7 @@ class AdminAuthenticationService(
             return Result.failure(BadCredentialsException(INVALID_ADMIN_CREDENTIALS_MESSAGE))
         }
 
-        val admin = adminAccountRepository.findByUsername(username)
+        val admin = adminAccountRepository.findByUsernameForUpdate(username)
             .getOrElse {
                 adminAuditService.record(
                     admin = null,
@@ -101,7 +101,7 @@ class AdminAuthenticationService(
 
     @Transactional
     fun changePassword(adminId: Long, changePasswordDto: AdminChangePasswordDto): Result<AdminAuthTokens> {
-        val admin = adminAccountRepository.findById(adminId)
+        val admin = adminAccountRepository.findByIdForUpdate(adminId)
             .getOrElse { return Result.failure(IllegalArgumentException("Admin not found")) }
 
         val validationErrorBuilder = ValidationException.ValidationErrorBuilder()

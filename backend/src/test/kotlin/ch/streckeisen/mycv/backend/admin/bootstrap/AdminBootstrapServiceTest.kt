@@ -38,7 +38,7 @@ class AdminBootstrapServiceTest {
             id = 1
         )
         adminAccountRepository = mockk {
-            every { findByUsername(eq(BOOTSTRAP_USERNAME)) } returns Optional.of(admin)
+            every { findByUsernameForUpdate(eq(BOOTSTRAP_USERNAME)) } returns Optional.of(admin)
             every { save(any<AdminAccountEntity>()) } answers { firstArg() }
         }
         passwordEncoder = mockk {

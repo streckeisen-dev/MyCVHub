@@ -115,6 +115,12 @@ With Docker Compose, set `ADMIN_BOOTSTRAP_RESET_EXISTING=true` and rerun:
 docker compose --profile admin-bootstrap run --rm admin-bootstrap
 ```
 
+Super-admins manage regular admin accounts from the admin home page. A newly created admin receives a temporary password displayed once; pass it to the recipient through a secure channel before it expires. The recipient must change it on first login. Super-admins can reset an expired or lost password and deactivate admin accounts, but cannot access the dashboard or registered-user list. Regular admins can access the dashboard and search registered users, but cannot manage admin accounts.
+
+The user list shows the last successful login and creation date when known. Existing dates are backfilled only from activity events still retained at migration time, so older values may be unknown. Login activity events remain account-linked and are retained under the existing policy.
+
+Admin UI timestamps are displayed at a fixed UTC+1 offset. Existing timezone-free database timestamps continue to be interpreted in the backend server's local timezone before conversion; the server timezone must remain consistent with the timezone used when those values were recorded. Daily dashboard date boundaries remain based on server time.
+
 Admin login has a database-backed per-username lockout shared by all app instances. Configure it with:
 
 ```bash

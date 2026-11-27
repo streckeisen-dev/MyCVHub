@@ -1,6 +1,7 @@
 package ch.streckeisen.mycv.backend.admin.dashboard
 
 import ch.streckeisen.mycv.backend.security.annotations.RequiresAdminRole
+import ch.streckeisen.mycv.backend.admin.account.AdminRole
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/admin/dashboard")
-@RequiresAdminRole
+@RequiresAdminRole(role = AdminRole.ADMIN, exact = true)
 class AdminDashboardResource(
     private val adminDashboardService: AdminDashboardService
 ) {

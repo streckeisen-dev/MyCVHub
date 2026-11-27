@@ -18,6 +18,8 @@ class AdminAuditLogEntity(
     var result: String,
     var targetType: String?,
     var targetId: String?,
+    var actorUsername: String? = null,
+    var actorIdSnapshot: Long? = null,
     var timestamp: LocalDateTime = LocalDateTime.now(),
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

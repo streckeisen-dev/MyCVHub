@@ -9,8 +9,12 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import java.util.Date
 import javax.crypto.SecretKey
+import ch.streckeisen.mycv.backend.admin.auth.AdminUserDetails
+import java.security.MessageDigest
+import java.util.Base64
 
 private const val TOKEN_TYPE_CLAIM = "tokenType"
+private const val ADMIN_CREDENTIAL_CLAIM = "adminCredential"
 
 enum class JwtTokenType {
     APPLICANT,
@@ -49,13 +53,13 @@ class JwtService(
     }
 
     fun generateAccessToken(userDetails: UserDetails, tokenType: JwtTokenType = JwtTokenType.APPLICANT): String {
-        return buildToken(mapOf(TOKEN_TYPE_CLAIM to tokenType.name), userDetails, jwtAccessExpirationTime, getAccessSignInKey())
+        return buildToken(tokenClaims(userDetails, tokenType), userDetails, jwtAccessExpirationTime, getAccessSignInKey())
     }
 
     fun getAccessTokenExpirationTime() = jwtAccessExpirationTime
 
     fun generateRefreshToken(userDetails: UserDetails, tokenType: JwtTokenType = JwtTokenType.APPLICANT): String {
-        return buildToken(mapOf(TOKEN_TYPE_CLAIM to tokenType.name), userDetails, jwtRefreshExpirationTime, getRefreshSignInKey())
+        return buildToken(tokenClaims(userDetails, tokenType), userDetails, jwtRefreshExpirationTime, getRefreshSignInKey())
     }
 
     fun getRefreshTokenExpirationTime() = jwtRefreshExpirationTime
@@ -68,6 +72,7 @@ class JwtService(
         val username = extractUsernameFromAccessToken(token)
         return userDetails.username == username &&
             isTokenTypeValid(token, getAccessSignInKey(), tokenType) &&
+            isAdminCredentialValid(token, getAccessSignInKey(), userDetails, tokenType) &&
             !isTokenExpired(token, getAccessSignInKey())
     }
 
@@ -79,12 +84,33 @@ class JwtService(
         val username = extractUsernameFromRefreshToken(token)
         return userDetails.username == username &&
             isTokenTypeValid(token, getRefreshSignInKey(), tokenType) &&
+            isAdminCredentialValid(token, getRefreshSignInKey(), userDetails, tokenType) &&
             !isTokenExpired(token, getRefreshSignInKey())
     }
 
     private fun isTokenTypeValid(token: String, key: SecretKey, tokenType: JwtTokenType): Boolean {
         val actualTokenType = extractAllClaims(token, key)[TOKEN_TYPE_CLAIM] as String?
         return actualTokenType == tokenType.name
+    }
+
+    private fun tokenClaims(user: UserDetails, type: JwtTokenType): Map<String, Any> {
+        val claims = mutableMapOf<String, Any>(TOKEN_TYPE_CLAIM to type.name)
+        if (type == JwtTokenType.ADMIN && user is AdminUserDetails) {
+            claims[ADMIN_CREDENTIAL_CLAIM] = adminCredential(user)
+        }
+        return claims
+    }
+
+    private fun adminCredential(user: AdminUserDetails): String {
+        val input = "${user.admin.id}:${user.admin.password}".toByteArray(Charsets.UTF_8)
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(MessageDigest.getInstance("SHA-256").digest(input))
+    }
+
+    private fun isAdminCredentialValid(token: String, key: SecretKey, user: UserDetails, type: JwtTokenType): Boolean {
+        if (type != JwtTokenType.ADMIN) return true
+        if (user !is AdminUserDetails || !user.admin.isActive) return false
+        val actual = extractAllClaims(token, key)[ADMIN_CREDENTIAL_CLAIM] as? String ?: return false
+        return MessageDigest.isEqual(actual.toByteArray(Charsets.UTF_8), adminCredential(user).toByteArray(Charsets.UTF_8))
     }
 
     private fun buildToken(

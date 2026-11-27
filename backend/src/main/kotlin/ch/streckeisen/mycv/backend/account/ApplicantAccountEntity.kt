@@ -14,6 +14,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
+import java.time.LocalDateTime
 
 @Entity
 class ApplicantAccountEntity(
@@ -39,5 +40,8 @@ class ApplicantAccountEntity(
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "account")
     var applications: List<ApplicationEntity> = emptyList(),
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], mappedBy = "account")
-    var applicationTemplates: List<ApplicationTemplateEntity> = emptyList()
+    var applicationTemplates: List<ApplicationTemplateEntity> = emptyList(),
+    var createdAt: LocalDateTime? = LocalDateTime.now(),
+    @Column(updatable = false)
+    var lastLoginAt: LocalDateTime? = null
 )

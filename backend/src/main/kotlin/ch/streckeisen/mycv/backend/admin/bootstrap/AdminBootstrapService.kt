@@ -25,7 +25,7 @@ class AdminBootstrapService(
 ) {
     @Transactional
     fun bootstrap(username: String, resetExisting: Boolean): AdminBootstrapResult {
-        val admin = adminAccountRepository.findByUsername(username)
+        val admin = adminAccountRepository.findByUsernameForUpdate(username)
             .getOrElse {
                 adminAuditService.record(
                     admin = null,

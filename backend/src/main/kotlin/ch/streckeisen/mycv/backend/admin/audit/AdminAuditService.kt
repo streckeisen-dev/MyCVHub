@@ -27,6 +27,8 @@ class AdminAuditService(
             adminAuditLogRepository.save(
                 AdminAuditLogEntity(
                     admin = admin,
+                    actorUsername = admin?.username,
+                    actorIdSnapshot = admin?.id,
                     actorSource = actorSource,
                     action = action,
                     result = result,
