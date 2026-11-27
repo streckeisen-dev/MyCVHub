@@ -46,12 +46,13 @@ class WorkExperienceService(
             WorkExperienceEntity(
                 id = existingWorkExperience?.id,
                 jobTitle = workExperience.jobTitle!!,
-                company = workExperience.company!!,
+                company = if (workExperience.careerBreak) "" else workExperience.company!!,
                 positionStart = workExperience.positionStart!!,
                 positionEnd = workExperience.positionEnd,
-                location = workExperience.location!!,
-                description = workExperience.description!!,
-                profile = profile
+                location = if (workExperience.careerBreak) "" else workExperience.location!!,
+                description = workExperience.description.orEmpty(),
+                profile = profile,
+                careerBreak = workExperience.careerBreak
             )
         )
         return Result.success(saved.toDto())

@@ -39,13 +39,17 @@ export type EditWorkExperienceModalProps = Readonly<
   Omit<ModalProps, 'children'> & {
     onSaved: (update: WorkExperienceDto) => void
     initialValue: WorkExperienceFormData | undefined
+    careerBreak: boolean
   }
 >
 
 export function EditWorkExperienceModal(props: EditWorkExperienceModalProps): ReactNode {
   const { t, i18n } = useTranslation()
-  const { initialValue, onSaved, onClose, ...modalProps } = props
+  const { initialValue, onSaved, onClose, careerBreak, ...modalProps } = props
   const [data, setData] = useState<WorkExperienceFormData>(initialValue ?? EMPTY_WORK_EXPERIENCE)
+  const title = careerBreak
+    ? t(initialValue ? 'workExperience.editor.editCareerBreak' : 'workExperience.editor.addCareerBreak')
+    : t(initialValue ? 'workExperience.editor.edit' : 'workExperience.editor.add')
   const [isSaving, setIsSaving] = useState(false)
   const [errorMessages, setErrorMessages] = useState<ErrorMessages>({})
 
@@ -75,6 +79,7 @@ export function EditWorkExperienceModal(props: EditWorkExperienceModalProps): Re
 
     const update: WorkExperienceUpdateDto = {
       ...data,
+      careerBreak,
       positionStart: toDateString(data.positionStart),
       positionEnd: toDateString(data.positionEnd)
     }
@@ -103,15 +108,13 @@ export function EditWorkExperienceModal(props: EditWorkExperienceModalProps): Re
         {(onClose) => (
           <>
             <ModalHeader>
-              <h3 className={h3()}>
-                {initialValue ? t('workExperience.editor.edit') : t('workExperience.editor.add')}
-              </h3>
+              <h3 className={h3()}>{title}</h3>
             </ModalHeader>
             <ModalBody>
               <Form onSubmit={handleSubmit} className="flex flex-col gap-6">
                 <Input
                   name="jobTitle"
-                  label={t('fields.jobTitle')}
+                  label={t(careerBreak ? 'workExperience.careerBreakTitle' : 'fields.jobTitle')}
                   value={data.jobTitle}
                   onChange={handleChange}
                   isRequired
@@ -119,25 +122,29 @@ export function EditWorkExperienceModal(props: EditWorkExperienceModalProps): Re
                   errorMessage={errorMessages.jobTitle}
                 />
 
-                <Input
-                  name="location"
-                  label={t('fields.location')}
-                  value={data.location}
-                  onChange={handleChange}
-                  isRequired
-                  isInvalid={errorMessages.location != null}
-                  errorMessage={errorMessages.location}
-                />
+                {!careerBreak && (
+                  <>
+                    <Input
+                      name="location"
+                      label={t('fields.location')}
+                      value={data.location}
+                      onChange={handleChange}
+                      isRequired
+                      isInvalid={errorMessages.location != null}
+                      errorMessage={errorMessages.location}
+                    />
 
-                <Input
-                  name="company"
-                  label={t('fields.company')}
-                  value={data.company}
-                  onChange={handleChange}
-                  isRequired
-                  isInvalid={errorMessages.company != null}
-                  errorMessage={errorMessages.company}
-                />
+                    <Input
+                      name="company"
+                      label={t('fields.company')}
+                      value={data.company}
+                      onChange={handleChange}
+                      isRequired
+                      isInvalid={errorMessages.company != null}
+                      errorMessage={errorMessages.company}
+                    />
+                  </>
+                )}
 
                 <DateInput
                   name="positionStart"
@@ -170,7 +177,7 @@ export function EditWorkExperienceModal(props: EditWorkExperienceModalProps): Re
                   onChange={handleChange}
                   isInvalid={errorMessages.description != null}
                   errorMessage={errorMessages.description}
-                  isRequired
+                  isRequired={!careerBreak}
                   rows={6}
                 />
 

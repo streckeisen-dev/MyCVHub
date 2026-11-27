@@ -7,5 +7,6 @@ fun WorkExperienceEntity.toDto() = WorkExperienceDto(
     positionStart,
     positionEnd,
     location,
-    description
+    description,
+    careerBreak
 )

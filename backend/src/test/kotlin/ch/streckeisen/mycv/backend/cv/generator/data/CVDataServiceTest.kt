@@ -334,6 +334,33 @@ class CVDataServiceTest {
         assertEquals(expectedEntry, cvData.workExperiences[0])
     }
 
+    @Test
+    fun preservesCareerBreakWhenHidingDescriptionForExport() {
+        val careerBreak = workExperiences().first().copy(
+            jobTitle = "Travel",
+            company = "",
+            location = "",
+            careerBreak = true
+        )
+        val selected = cvDataService.filterWorkExperiences(
+            listOf(careerBreak),
+            listOf(IncludedCVItem(careerBreak.id!!, false))
+        )
+        val cvData = cvDataService.createCVData(
+            profile(),
+            selected,
+            emptyList(),
+            emptyList(),
+            emptyList(),
+            emptyMap()
+        )
+
+        val entry = cvData.workExperiences.single()
+        assertEquals("Travel", entry.title)
+        assertEquals(true, entry.careerBreak)
+        assertEquals("", entry.description)
+    }
+
     private fun workExperiences() = listOf(
         currentJob(),
         previousJob()

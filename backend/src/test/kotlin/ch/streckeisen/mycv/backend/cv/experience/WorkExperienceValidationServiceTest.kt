@@ -37,6 +37,29 @@ class WorkExperienceValidationServiceTest {
     }
 
     @Test
+    fun careerBreakOnlyRequiresTitleAndStartDate() {
+        val careerBreak = WorkExperienceUpdateDto(
+            id = null,
+            jobTitle = "Travel",
+            location = null,
+            company = null,
+            positionStart = LocalDate.of(2024, 1, 1),
+            positionEnd = null,
+            description = null,
+            careerBreak = true
+        )
+
+        assertTrue(workExperienceValidationService.validateWorkExperience(careerBreak).isSuccess)
+        assertTrue(workExperienceValidationService.validateWorkExperience(careerBreak.copy(careerBreak = false)).isFailure)
+        assertTrue(workExperienceValidationService.validateWorkExperience(careerBreak.copy(jobTitle = " ")).isFailure)
+        assertTrue(
+            workExperienceValidationService.validateWorkExperience(
+                careerBreak.copy(positionEnd = LocalDate.of(2023, 12, 31))
+            ).isFailure
+        )
+    }
+
+    @Test
     fun testValidateWorkExperienceAllowingFutureStart() {
         val workExperienceUpdate = WorkExperienceUpdateDto(
             null,

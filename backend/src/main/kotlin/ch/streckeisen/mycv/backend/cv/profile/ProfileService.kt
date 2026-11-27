@@ -101,7 +101,8 @@ class ProfileService(
                     positionStart = workExperience.positionStart,
                     positionEnd = workExperience.positionEnd,
                     location = workExperience.location,
-                    description = workExperience.description
+                    description = workExperience.description,
+                    careerBreak = workExperience.careerBreak
                 )
             },
             education = education.map { education ->

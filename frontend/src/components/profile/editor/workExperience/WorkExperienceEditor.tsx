@@ -36,18 +36,16 @@ export function WorkExperienceEditor(props: WorkExperienceEditorProps): ReactNod
   const { t, i18n } = useTranslation()
   const { initialValue } = props
   const [workExperiences, setWorkExperiences] = useState<WorkExperienceDto[]>(initialValue)
-  const [isEditing, setIsEditing] = useState(false)
-  const [editingWorkExperience, setEditingWorkExperience] = useState<
-    WorkExperienceFormData | undefined
-  >()
-
-  function handleAdd() {
-    setIsEditing(true)
-  }
+  const [editor, setEditor] = useState<{
+    careerBreak: boolean
+    initialValue?: WorkExperienceFormData
+  }>()
 
   const handleEdit: WorkExperienceModificationEvent = (workExperience) => {
-    setIsEditing(true)
-    setEditingWorkExperience(toFormData(workExperience))
+    setEditor({
+      careerBreak: workExperience.careerBreak ?? false,
+      initialValue: toFormData(workExperience)
+    })
   }
 
   async function handleDelete(id: number) {
@@ -63,11 +61,6 @@ export function WorkExperienceEditor(props: WorkExperienceEditorProps): ReactNod
     }
   }
 
-  function handleModalClose() {
-    setEditingWorkExperience(undefined)
-    setIsEditing(false)
-  }
-
   function handleSaved(workExperience: WorkExperienceDto) {
     setWorkExperiences((prev) => {
       return [...prev.filter((w) => w.id !== workExperience.id), workExperience]
@@ -76,8 +69,11 @@ export function WorkExperienceEditor(props: WorkExperienceEditorProps): ReactNod
 
   return (
     <section className="flex flex-col gap-4">
-      <div className="flex flex-col items-end">
-        <Button className="w-min" variant="primary" onPress={handleAdd}>
+      <div className="flex flex-wrap justify-end gap-2">
+        <Button variant="secondary" onPress={() => setEditor({ careerBreak: true })}>
+          {t('workExperience.editor.addCareerBreak')}
+        </Button>
+        <Button variant="primary" onPress={() => setEditor({ careerBreak: false })}>
           {t('workExperience.editor.add')}
         </Button>
       </div>
@@ -87,11 +83,12 @@ export function WorkExperienceEditor(props: WorkExperienceEditorProps): ReactNod
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
-      {isEditing && (
+      {editor && (
         <EditWorkExperienceModal
           isOpen={true}
-          onClose={handleModalClose}
-          initialValue={editingWorkExperience}
+          onClose={() => setEditor(undefined)}
+          initialValue={editor.initialValue}
+          careerBreak={editor.careerBreak}
           onSaved={handleSaved}
         />
       )}

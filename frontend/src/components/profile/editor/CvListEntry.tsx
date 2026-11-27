@@ -9,7 +9,7 @@ export interface CvEntry {
   id: number | undefined
   title: string
   topRight: string | ReactNode
-  bottomLeft: string
+  bottomLeft: ReactNode
   start: string
   end: string | undefined
   description: string | undefined

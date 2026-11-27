@@ -5,6 +5,7 @@ import ch.streckeisen.mycv.backend.cv.profile.ProfileService
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -124,6 +125,29 @@ class WorkExperienceServiceTest {
 
         verify(exactly = 1) { workExperienceValidationService.validateWorkExperience(any()) }
         verify(exactly = 1) { workExperienceRepository.save(any()) }
+    }
+
+    @Test
+    fun savesCareerBreakWithoutEmployerDetails() {
+        every { workExperienceValidationService.validateWorkExperience(any()) } returns Result.success(Unit)
+        val request = WorkExperienceUpdateDto(
+            id = null,
+            jobTitle = "Travel",
+            company = "Submitted company",
+            location = "Submitted location",
+            positionStart = LocalDate.of(2024, 1, 1),
+            positionEnd = null,
+            description = null,
+            careerBreak = true
+        )
+
+        val saved = workExperienceService.save(1, request).getOrThrow()
+
+        assertTrue(saved.careerBreak)
+        assertEquals("Travel", saved.jobTitle)
+        assertEquals("", saved.company)
+        assertEquals("", saved.location)
+        assertEquals("", saved.description)
     }
 
     @Test

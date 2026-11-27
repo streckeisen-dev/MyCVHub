@@ -1,5 +1,6 @@
 export interface WorkExperienceDto {
   id: number
+  careerBreak?: boolean
   jobTitle: string
   company: string
   positionStart: string
