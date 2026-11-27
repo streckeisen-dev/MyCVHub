@@ -85,7 +85,8 @@ function getCoverLetterAttributes(config: CoverLetterConfigurationDto, t: TFunct
     },
     {
       name: t('coverLetter.content'),
-      value: <p className="whitespace-break-spaces">{config.content}</p>
+      value: <p className="whitespace-break-spaces wrap-anywhere">{config.content}</p>,
+      fullWidth: true
     },
     {
       name: t('fields.closing'),
@@ -225,9 +226,10 @@ export function ApplicationTemplateDetailsPage(): ReactNode {
             </TemplateSection>
 
             <TemplateSection title={t('coverLetter.name')}>
-              <div className="grid w-full max-w-5xl gap-6 xl:grid-cols-[minmax(18rem,24rem)_minmax(20rem,28rem)] xl:items-start">
+              <div className="flex w-full flex-col gap-6">
                 <CoverLetterGallery
                   styles={coverLetterStyles}
+                  compact
                   selectedStyle={template.coverLetterConfiguration.style}
                   disabled
                 />

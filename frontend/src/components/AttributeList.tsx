@@ -4,6 +4,7 @@ import clsx from 'clsx'
 export interface Attribute {
   name: string
   value: string | ReactNode
+  fullWidth?: boolean
 }
 
 export type AttributeListProps = Readonly<{
@@ -22,8 +23,22 @@ export function AttributeList(props: AttributeListProps) {
     >
       {attributes.map((attribute) => (
         <Fragment key={attribute.name}>
-          <dt className="text-sm font-semibold text-default-500">{attribute.name}</dt>
-          <dd className="min-w-0 text-sm leading-6 text-foreground">{attribute.value}</dd>
+          <dt
+            className={clsx(
+              'text-sm font-semibold text-default-500',
+              attribute.fullWidth && 'sm:col-span-2'
+            )}
+          >
+            {attribute.name}
+          </dt>
+          <dd
+            className={clsx(
+              'min-w-0 text-sm leading-6 text-foreground',
+              attribute.fullWidth && 'sm:col-span-2'
+            )}
+          >
+            {attribute.value}
+          </dd>
         </Fragment>
       ))}
     </dl>
