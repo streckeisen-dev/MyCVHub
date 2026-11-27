@@ -47,9 +47,9 @@ export function EditWorkExperienceModal(props: EditWorkExperienceModalProps): Re
   const { t, i18n } = useTranslation()
   const { initialValue, onSaved, onClose, careerBreak, ...modalProps } = props
   const [data, setData] = useState<WorkExperienceFormData>(initialValue ?? EMPTY_WORK_EXPERIENCE)
-  const title = careerBreak
-    ? t(initialValue ? 'workExperience.editor.editCareerBreak' : 'workExperience.editor.addCareerBreak')
-    : t(initialValue ? 'workExperience.editor.edit' : 'workExperience.editor.add')
+  const addTitleKey = careerBreak ? 'workExperience.editor.addCareerBreak' : 'workExperience.editor.add'
+  const editTitleKey = careerBreak ? 'workExperience.editor.editCareerBreak' : 'workExperience.editor.edit'
+  const title = t(initialValue ? editTitleKey : addTitleKey)
   const [isSaving, setIsSaving] = useState(false)
   const [errorMessages, setErrorMessages] = useState<ErrorMessages>({})
 
