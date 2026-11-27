@@ -12,7 +12,9 @@ interface ApplicationRepository : JpaRepository<ApplicationEntity, Long> {
             SELECT a
             FROM ApplicationEntity a
             WHERE a.account.id = :accountId 
-                AND (:searchTerm IS NULL OR a.jobTitle LIKE %:searchTerm% OR a.company LIKE %:searchTerm%)
+                AND (:searchTerm IS NULL
+                    OR LOWER(a.jobTitle) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+                    OR LOWER(a.company) LIKE LOWER(CONCAT('%', :searchTerm, '%')))
                 AND (:status IS NULL OR a.status = :status)
                 AND (:includeArchived = TRUE OR a.isArchived = FALSE)"""
     )
