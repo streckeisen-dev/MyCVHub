@@ -269,7 +269,11 @@ frontend:
   workExperience:
     title: "Work Experience"
     noEntries: "No work experiences yet."
+    careerBreak: "Career break"
+    careerBreakTitle: "Career break title"
     editor:
+      addCareerBreak: "Add Career Break"
+      editCareerBreak: "Edit Career Break"
       add: "Add Work Experience"
       edit: "Edit Work Experience"
       addError: "Failed to add work experience"

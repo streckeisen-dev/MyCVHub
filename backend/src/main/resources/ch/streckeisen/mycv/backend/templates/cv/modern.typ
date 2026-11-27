@@ -4,7 +4,7 @@ Changes: same formatting for firstname & lastname, increased skill category colu
 */
 
 #import "@preview/fontawesome:0.6.2": fa-icon
-#import "shared.typ": project_link, getTitle
+#import "shared.typ": project_link, getTitle, career-break-title
 
 #let color-darknight = rgb("#131A28")
 #let color-darkgray = rgb("#333333")
@@ -432,16 +432,19 @@ Changes: same formatting for firstname & lastname, increased skill category colu
       heading(getTitle(profile.language, "Berufserfahrung", "Work Experience"))
 
       for experience in profile.workExperiences {
+        let career-break = experience.at("careerBreak", default: false)
         block(breakable: false,
           [
             #resume-entry(
               title: experience.title,
-              location: experience.location,
+              location: if career-break { "" } else { experience.location },
               date: [#experience.startDate - #experience.endDate],
-              description: experience.institution,
+              description: if career-break {
+                emph(career-break-title(profile.language))
+              } else { experience.institution },
             )
 
-            #if (experience.at("description", default: none) != none) [
+            #if (experience.at("description", default: none) not in (none, "")) [
               #resume-item[#experience.description]
             ]
           ]

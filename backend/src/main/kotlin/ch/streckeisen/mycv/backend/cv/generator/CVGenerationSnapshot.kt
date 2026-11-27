@@ -32,7 +32,8 @@ data class CVWorkExperienceSnapshot(
     val positionStart: LocalDate,
     val positionEnd: LocalDate?,
     val location: String,
-    val description: String
+    val description: String,
+    val careerBreak: Boolean = false
 )
 
 data class CVEducationSnapshot(

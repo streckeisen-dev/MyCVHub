@@ -77,7 +77,9 @@ export function CvContentCustomizationView(props: CvCustomizationViewProps) {
             const selected = value.workExperience.find((w) => w.id === experience.id)
             return {
               id: experience.id,
-              title: `${experience.jobTitle} @ ${experience.company}`,
+              title: experience.careerBreak
+                ? `${experience.jobTitle} (${t('workExperience.careerBreak')})`
+                : `${experience.jobTitle} @ ${experience.company}`,
               selected: selected != null,
               includeDescription: selected?.includeDescription ?? true
             }

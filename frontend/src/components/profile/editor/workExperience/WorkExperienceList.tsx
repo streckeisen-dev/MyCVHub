@@ -48,14 +48,18 @@ export function WorkExperienceList(props: WorkExperienceListProps): ReactNode {
   }
 
   return props.workExperiences.length ? (
-    props.workExperiences.sort(sortExperience).map((experience) => (
+    [...props.workExperiences].sort(sortExperience).map((experience) => (
       <CvListEntry
-        key={(experience as WorkExperienceDto).id || `${experience.jobTitle}@${experience.company}`}
+        key={(experience as WorkExperienceDto).id ?? JSON.stringify(experience)}
         value={{
           id: (experience as WorkExperienceDto).id,
           title: experience.jobTitle,
-          topRight: experience.location,
-          bottomLeft: experience.company,
+          topRight: experience.careerBreak ? '' : experience.location,
+          bottomLeft: experience.careerBreak ? (
+            <span className="inline-block rounded-full bg-default px-2 py-1 text-sm text-default-foreground">
+              {t('workExperience.careerBreak')}
+            </span>
+          ) : experience.company,
           start: experience.positionStart,
           end: experience.positionEnd,
           description: experience.description

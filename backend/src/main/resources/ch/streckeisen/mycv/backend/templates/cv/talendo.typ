@@ -1,5 +1,5 @@
 #import "@preview/fontawesome:0.6.2": fa-icon
-#import "shared.typ": project_link, getTitle, getEntryDescription
+#import "shared.typ": project_link, getTitle, career-break-title, getEntryDescription
 
 #let profile = json("profile.json")
 
@@ -38,15 +38,20 @@
   )
 }
 
-#let timeline-entry(startDate, endDate, institution, location, title, description, links: ()) = {
+#let timeline-entry(startDate, endDate, institution, location, title, description, links: (), career-break-label: none) = {
   let lines = 3
   let hasLinks = links != none and links.len() > 0
   let content = grid(
     columns: (2cm, auto),
     [#startDate - #endDate],
     [
-      #text(weight: "bold")[#institution, #location]#linebreak()
-      #title #linebreak()
+      #if career-break-label != none [
+        #strong(title)#linebreak()
+        #emph(career-break-label)#linebreak()
+      ] else [
+        #text(weight: "bold")[#institution, #location]#linebreak()
+        #title #linebreak()
+      ]
       #if (description != none and description != "") {
         lines += (description.len() / 55)
         getEntryDescription(description, hasLinks: hasLinks)
@@ -70,12 +75,14 @@
         pad(left: 0.7mm)[
           #rect(width: 0.4mm, height: 7pt, fill: black)
         ],
-        // Circle marker (hollow)
-        circle(
-          radius: 1mm,
-          stroke: black,
-          fill: none
-        ),
+        if career-break-label != none {
+          polygon(
+            (1mm, 0mm), (2mm, 1mm), (1mm, 2mm), (0mm, 1mm),
+            stroke: black,
+          )
+        } else {
+          circle(radius: 1mm, stroke: black, fill: none)
+        },
         // Spacer below the circle so the line begins below it
         pad(left: 0.7mm)[
           #rect(width: 0.4mm, height: (lines * (11pt + 3pt) + linkBuffer), fill: black)
@@ -144,7 +151,13 @@
 
       let workContent = (),
       for work in profile.workExperiences {
-        workContent.push(timeline-entry(work.startDate, work.endDate, work.institution, work.location, work.title, work.description))
+        let break-label = if work.at("careerBreak", default: false) {
+          career-break-title(profile.language)
+        }
+        workContent.push(timeline-entry(
+          work.startDate, work.endDate, work.institution, work.location, work.title, work.description,
+          career-break-label: break-label,
+        ))
       },
       ..workContent.flatten()
     )

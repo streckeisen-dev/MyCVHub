@@ -56,7 +56,8 @@ fun WorkExperienceEntity.toPublicDto(hideDescription: Boolean) = PublicWorkExper
     positionStart,
     positionEnd,
     location,
-    description = if (hideDescription) null else description
+    description = if (hideDescription) null else description,
+    careerBreak = careerBreak
 )
 
 fun SkillEntity.toPublicDto() = PublicSkillDto(

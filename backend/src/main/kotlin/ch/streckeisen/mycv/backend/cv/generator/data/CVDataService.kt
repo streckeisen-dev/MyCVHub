@@ -98,8 +98,9 @@ class CVDataService(
                     endDate = it.positionEnd?.format(cvDateFormatter)
                         ?: messagesService.getMessage(TODAY_MESSAGE),
                     institution = it.company,
-                    it.description,
-                    links = listOf()
+                    description = it.description,
+                    links = listOf(),
+                    careerBreak = it.careerBreak
                 )
             },
             skills = skills.groupBy { it.type }.entries

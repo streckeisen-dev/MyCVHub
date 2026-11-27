@@ -9,5 +9,6 @@ data class WorkExperienceUpdateDto(
     val company: String?,
     val positionStart: LocalDate?,
     val positionEnd: LocalDate?,
-    val description: String?
+    val description: String?,
+    val careerBreak: Boolean = false
 )

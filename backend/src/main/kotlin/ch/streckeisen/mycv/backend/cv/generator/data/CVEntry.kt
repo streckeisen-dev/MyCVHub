@@ -7,5 +7,6 @@ data class CVEntry(
     val endDate: String,
     val institution: String,
     val description: String?,
-    val links: List<CVLink>
+    val links: List<CVLink>,
+    val careerBreak: Boolean = false
 )

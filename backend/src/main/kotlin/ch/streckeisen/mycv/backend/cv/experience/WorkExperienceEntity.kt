@@ -22,5 +22,6 @@ class WorkExperienceEntity(
     var description: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    var profile: ProfileEntity
+    var profile: ProfileEntity,
+    var careerBreak: Boolean = false
 )

@@ -123,6 +123,19 @@ jobs:
         run: |
           python generate_messages.py --type backend
 
+      - name: Setup Typst
+        uses: typst-community/setup-typst@v5
+        with:
+          typst-version: '0.15.1'
+
+      - name: Install Poppler
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes poppler-utils
+
+      - name: Test Typst CV templates
+        run: python backend/src/test/typst/test_cv_templates.py
+
       # required since test report action uses git
       - name: Configure Git Safe Directory
         run: |

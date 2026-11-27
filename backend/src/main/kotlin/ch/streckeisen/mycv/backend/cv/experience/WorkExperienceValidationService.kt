@@ -33,19 +33,21 @@ class WorkExperienceValidationService(
             validationErrorBuilder = validationErrorBuilder
         )
 
-        stringValidator.validateRequiredString(
-            requiredField = LOCATION_FIELD_KEY,
-            value = workExperience.location,
-            maxLength = LOCATION_MAX_LENGTH,
-            validationErrorBuilder = validationErrorBuilder
-        )
+        if (!workExperience.careerBreak) {
+            stringValidator.validateRequiredString(
+                requiredField = LOCATION_FIELD_KEY,
+                value = workExperience.location,
+                maxLength = LOCATION_MAX_LENGTH,
+                validationErrorBuilder = validationErrorBuilder
+            )
 
-        stringValidator.validateRequiredString(
-            requiredField = COMPANY_FIELD_KEY,
-            value = workExperience.company,
-            maxLength = COMPANY_MAX_LENGTH,
-            validationErrorBuilder = validationErrorBuilder
-        )
+            stringValidator.validateRequiredString(
+                requiredField = COMPANY_FIELD_KEY,
+                value = workExperience.company,
+                maxLength = COMPANY_MAX_LENGTH,
+                validationErrorBuilder = validationErrorBuilder
+            )
+        }
 
         if (workExperience.positionStart == null) {
             val error = messagesService.requiredFieldMissingError(POSITION_START_FIELD_KEY)
@@ -67,11 +69,13 @@ class WorkExperienceValidationService(
             validationErrorBuilder.addError(POSITION_END_FIELD_KEY, error)
         }
 
-        stringValidator.validateRequiredString(
-            requiredField = DESCRIPTION_FIELD_KEY,
-            value = workExperience.description,
-            validationErrorBuilder = validationErrorBuilder
-        )
+        if (!workExperience.careerBreak) {
+            stringValidator.validateRequiredString(
+                requiredField = DESCRIPTION_FIELD_KEY,
+                value = workExperience.description,
+                validationErrorBuilder = validationErrorBuilder
+            )
+        }
 
         if (validationErrorBuilder.hasErrors()) {
             return Result.failure(validationErrorBuilder.build(messagesService.getMessage(VALIDATION_ERROR_KEY)))

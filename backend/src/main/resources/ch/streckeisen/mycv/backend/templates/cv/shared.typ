@@ -39,3 +39,4 @@
     }
   }
 }
+#let career-break-title(language) = getTitle(language, "Berufliche Auszeit", "Career break")

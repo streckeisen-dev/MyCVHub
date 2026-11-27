@@ -268,7 +268,11 @@ frontend:
   workExperience:
     title: "Berufserfahrung"
     noEntries: "Noch keine Berufserfahrung."
+    careerBreak: "Berufliche Auszeit"
+    careerBreakTitle: "Titel der beruflichen Auszeit"
     editor:
+      addCareerBreak: "Berufliche Auszeit hinzufügen"
+      editCareerBreak: "Berufliche Auszeit bearbeiten"
       add: "Berufserfahrung hinzufügen"
       edit: "Berufserfahrung bearbeiten"
       addError: "Berufserfahrung konnte nicht hinzugefügt werden"
