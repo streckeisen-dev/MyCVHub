@@ -41,9 +41,6 @@ private const val ARCHIVE_OPEN_NOT_ALLOWED_MESSAGE_KEY = "$MYCV_KEY_PREFIX.appli
 
 private const val DESCENDING_KEY = "descending"
 
-private const val UPDATED_COLUMN_KEY = "updatedAt"
-private const val CREATED_COLUMN_KEY = "createdAt"
-
 @Service
 class ApplicationService(
     private val applicationRepository: ApplicationRepository,
@@ -70,27 +67,26 @@ class ApplicationService(
         accountId: Long,
         searchRequest: ApplicationSearchRequest
     ): Result<Page<ApplicationSearchDto>> {
-        val pageable = if (!searchRequest.sort.isNullOrBlank()) {
-            val sortBy = if (searchRequest.sortDirection == DESCENDING_KEY) {
-                Sort.by(Sort.Direction.DESC, searchRequest.sort)
+        val sortColumn = searchRequest.sort?.takeUnless { it.isBlank() }
+        val tieBreaker = Sort.by(Sort.Direction.DESC, "id")
+        val sort = if (sortColumn == null) {
+            tieBreaker
+        } else {
+            val direction = if (searchRequest.sortDirection == DESCENDING_KEY) {
+                Sort.Direction.DESC
             } else {
-                Sort.by(Sort.Direction.ASC, searchRequest.sort)
+                Sort.Direction.ASC
             }
-            PageRequest.of(searchRequest.page, searchRequest.pageSize, sortBy)
-        } else PageRequest.of(
-            searchRequest.page,
-            searchRequest.pageSize,
-            Sort.by(
-                Sort.Order(Sort.Direction.DESC, UPDATED_COLUMN_KEY),
-                Sort.Order(Sort.Direction.DESC, CREATED_COLUMN_KEY)
-            )
-        )
+            Sort.by(direction, sortColumn).and(tieBreaker)
+        }
+        val pageable = PageRequest.of(searchRequest.page, searchRequest.pageSize, sort)
         val result = applicationRepository.searchByAccountId(
             accountId,
             searchRequest.searchTerm,
             searchRequest.status,
             searchRequest.includeArchived,
-            pageable
+            pageable,
+            sortByRelevance = sortColumn == null
         )
         return Result.success(result.map { application -> application.toSearchDto(messagesService) })
     }
