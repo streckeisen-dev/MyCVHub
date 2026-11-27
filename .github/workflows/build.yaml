@@ -123,18 +123,15 @@ jobs:
         run: |
           python generate_messages.py --type backend
 
-      - name: Install Typst and Poppler
-        env:
-          TYPST_VERSION: '0.15.1'
+      - name: Setup Typst
+        uses: typst-community/setup-typst@v5
+        with:
+          typst-version: '0.15.1'
+
+      - name: Install Poppler
         run: |
           sudo apt-get update
           sudo apt-get install --yes poppler-utils
-          archive=typst-x86_64-unknown-linux-musl
-          curl --fail --silent --show-error --location --retry 3 \
-            "https://github.com/typst/typst/releases/download/v${TYPST_VERSION}/${archive}.tar.xz" \
-            --output "$RUNNER_TEMP/${archive}.tar.xz"
-          tar -xJf "$RUNNER_TEMP/${archive}.tar.xz" -C "$RUNNER_TEMP" "${archive}/typst"
-          echo "$RUNNER_TEMP/${archive}" >> "$GITHUB_PATH"
 
       - name: Test Typst CV templates
         run: python backend/src/test/typst/test_cv_templates.py
